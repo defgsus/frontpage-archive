@@ -12,9 +12,8 @@ scraper_classes = dict()
 
 class Scraper:
 
-    # must be filename compatible
-    ID: str = None
-    NAME: str = None
+    ID: str = None      # must be filename compatible
+    NAME: str = None    # leave None to copy ID
     URL: str = None
 
     # set to True in abstract classes
@@ -27,6 +26,10 @@ class Scraper:
 
     def __init_subclass__(cls, **kwargs):
         if not cls.ABSTRACT:
+
+            if cls.NAME is None:
+                cls.NAME = cls.ID
+
             for required_key in ("ID", "NAME", "URL"):
                 assert getattr(cls, required_key), f"Define {cls.__name__}.{required_key}"
 
@@ -48,9 +51,12 @@ class Scraper:
 
     def iter_files(self) -> Generator[Tuple[str, str], None, None]:
         """
-        Yield tuples of (filename, content)
+        Yield tuples of (filename, text-content)
+
+        The base method simply yields "index.html" and the response from self.URL
         """
-        raise NotImplementedError
+        response = self.request(self.URL)
+        yield "index.html", response.text
 
     def download(self) -> dict:
         """

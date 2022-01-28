@@ -6,11 +6,11 @@ from ..scraper import Scraper
 
 
 class Spiegel(Scraper):
-
     ID = "spiegel.de"
-    NAME = "spiegel.de"
     URL = "https://www.spiegel.de/"
 
-    def iter_files(self) -> Generator[Tuple[str, str], None, None]:
-        response = self.request(self.URL)
-        yield "index.html", response.text
+
+class SpiegelDaily(Scraper):
+    ID = "spiegeldaily.de"
+    URL = "https://www.spiegeldaily.de/"
+

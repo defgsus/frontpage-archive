@@ -1,1 +1,2 @@
-from .spiegel import Spiegel
+from .spiegel import *
+
