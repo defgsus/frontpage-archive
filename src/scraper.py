@@ -1,6 +1,9 @@
 import os
 import sys
 import glob
+import json
+import datetime
+import traceback
 from pathlib import Path
 from typing import Generator, Tuple, Union, Optional
 
@@ -15,6 +18,11 @@ class Scraper:
     ID: str = None      # must be filename compatible
     NAME: str = None    # leave None to copy ID
     URL: str = None
+
+    # base implementation of iter_files() yields these urls
+    SUB_URLS = [
+        ("index.html", URL),
+    ]
 
     # set to True in abstract classes
     ABSTRACT: bool = False
@@ -44,6 +52,7 @@ class Scraper:
         self.session.headers = {
             "User-Agent": "github.com/defgsus/frontpage-archive"
         }
+        self.status = dict()
 
     @classmethod
     def path(cls) -> Path:
@@ -53,10 +62,14 @@ class Scraper:
         """
         Yield tuples of (filename, text-content)
 
-        The base method simply yields "index.html" and the response from self.URL
+        The base method yields all filenames and web responses from self.SUB_URLS
         """
-        response = self.request(self.URL)
-        yield "index.html", response.text
+        for filename, url in self.SUB_URLS:
+            try:
+                response = self.request(url)
+                yield filename, response.text
+            except Exception as e:
+                pass
 
     def download(self) -> dict:
         """
@@ -64,18 +77,27 @@ class Scraper:
 
         Returns a small report dict
         """
+        self.status = dict()
+
         report = {
             "files": 0,
         }
-        for short_filename, content in self.iter_files():
+        try:
+            for short_filename, content in self.iter_files():
 
-            filename = self.path() / short_filename
-            os.makedirs(str(filename.parent), exist_ok=True)
+                filename = self.path() / short_filename
+                os.makedirs(str(filename.parent), exist_ok=True)
 
-            self.log("storing", filename)
-            filename.write_text(content)
-            report["files"] += 1
+                self.log("storing", filename)
+                filename.write_text(content)
+                report["files"] += 1
+        except:
+            report["exception"] = traceback.format_exc(limit=-2)
 
+        (self.path() / "status.json").write_text(
+            json.dumps(self.status, indent=2, sort_keys=True, ensure_ascii=False)
+        )
+        report["request_exceptions"] = sum([1 for s in self.status.values() if s.get("exception")])
         return report
 
     def log(self, *args):
@@ -85,7 +107,23 @@ class Scraper:
     def request(self, url: str, method: str = "GET", **kwargs) -> requests.Response:
         kwargs.setdefault("timeout", self.REQUEST_TIMEOUT)
         self.log("requesting", url)
-        return self.session.request(method=method, url=url, **kwargs)
+
+        self.status[url] = status = {
+            "date": datetime.datetime.utcnow().isoformat(),
+            "url": url,
+        }
+        try:
+            response = self.session.request(method=method, url=url, **kwargs)
+            status.update({
+                "status": response.status_code,
+                "headers": dict(response.headers),
+            })
+            return response
+        except Exception as e:
+            status.update({
+                "exception": f"{e.__class__.__name__}: {e}"
+            })
+            raise
 
     @classmethod
     def to_soup(cls, html) -> bs4.BeautifulSoup:
