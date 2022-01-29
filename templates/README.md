@@ -28,6 +28,3 @@ Should have started this 20 years ago!
 - https://www.kicker.de/
 - https://www.achgut.com/
 - https://www.stern.de/
-
-- https://www.t-online.de/
-
