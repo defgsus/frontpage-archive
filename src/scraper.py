@@ -4,8 +4,9 @@ import glob
 import json
 import datetime
 import traceback
+import urllib.parse
 from pathlib import Path
-from typing import Generator, Tuple, Union, Optional
+from typing import Generator, Tuple, Union, Optional, List
 
 import requests
 import bs4
@@ -20,9 +21,11 @@ class Scraper:
     URL: str = None
 
     # base implementation of iter_files() yields these urls
-    SUB_URLS = [
-        ("index.html", URL),
-    ]
+    #   defaults to [("index.html", URL)]
+    SUB_URLS: List[Tuple[str, str]] = []
+
+    # add names of links to follow on the first SUB_URLS page, like "Impressum"
+    SUB_LINK_NAMES = []
 
     # set to True in abstract classes
     ABSTRACT: bool = False
@@ -40,6 +43,9 @@ class Scraper:
 
             for required_key in ("ID", "NAME", "URL"):
                 assert getattr(cls, required_key), f"Define {cls.__name__}.{required_key}"
+
+            if not cls.SUB_URLS:
+                cls.SUB_URLS = [("index.html", cls.URL)]
 
             if cls.ID in scraper_classes:
                 raise AssertionError(f"Duplicate name '{cls.ID}' for class {cls.__name__}")
@@ -64,12 +70,59 @@ class Scraper:
 
         The base method yields all filenames and web responses from self.SUB_URLS
         """
+        first_page = None
         for filename, url in self.SUB_URLS:
+
             try:
-                response = self.request(url)
-                yield filename, response.text
-            except Exception as e:
+                content = self.request(url).text
+
+                if first_page is None:
+                    first_page = content
+
+                yield filename, content
+            except:
+                self.log(traceback.format_exc())
                 pass
+
+        if first_page is not None:
+            yield from self.iter_sub_link_files(first_page)
+
+    def iter_sub_link_files(self, markup: str) -> Generator[Tuple[str, str], None, None]:
+        """
+        Iterates through self.SUB_LINK_NAMES and yields all response of links
+        whose text matches one of the names.
+
+        :param markup: str of html
+        """
+        requested_urls = set()
+        filename_counter = dict()
+
+        soup = self.to_soup(markup)
+        for a in soup.find_all("a"):
+            if not a.text:
+                continue
+
+            link_name = a.text.strip()
+            if a.get("href") and link_name in self.SUB_LINK_NAMES:
+
+                url = urllib.parse.urljoin(self.URL, a["href"])
+                if url in requested_urls:
+                    continue
+                requested_urls.add(url)
+
+                try:
+                    response = self.request(url)
+                except:
+                    self.log(traceback.format_exc())
+                    continue
+
+                filename = "".join(c for c in link_name.lower() if "a" <= c <= "z")
+                filename_counter[filename] = filename_counter.get(filename, 0) + 1
+
+                if filename_counter[filename] > 1:
+                    filename = f"{filename}{filename_counter[filename]}"
+
+                yield filename + ".html", response.text
 
     def download(self) -> dict:
         """
