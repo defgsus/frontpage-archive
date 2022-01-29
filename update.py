@@ -6,6 +6,7 @@ from typing import List
 
 import src.sources  # register classes
 from src.scraper import Scraper, scraper_classes
+from src.summary import summary, PROJECT_PATH
 
 
 def parse_args() -> dict:
@@ -22,6 +23,10 @@ def parse_args() -> dict:
     parser.add_argument(
         "-j", "--threads", type=int, default=1,
         help="Number of parallel threads (per scraper)"
+    )
+    parser.add_argument(
+        "-u", "--update-readme", type=bool, nargs="?", default=False, const=True,
+        help="Update README with statistics"
     )
 
     return vars(parser.parse_args())
@@ -46,7 +51,7 @@ def scrape(scraper: Scraper) -> str:
     return msg
 
 
-def main(filter: List[str], verbose: bool, threads: int):
+def main(filter: List[str], verbose: bool, threads: int, update_readme: bool):
 
     filtered_classes = []
     for name in sorted(scraper_classes.keys()):
@@ -64,6 +69,13 @@ def main(filter: List[str], verbose: bool, threads: int):
     messages.sort()
 
     print("\n".join(messages))
+
+    if update_readme:
+        readme_template = (PROJECT_PATH / "templates" / "README.md").read_text()
+        readme_template %= {
+            "table": summary(list(scraper_classes.values()))
+        }
+        (PROJECT_PATH / "README.md").write_text(readme_template)
 
 
 if __name__ == "__main__":
