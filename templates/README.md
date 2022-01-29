@@ -10,3 +10,25 @@ Should have started this 20 years ago!
 
 %(table)s
 
+
+### TODO
+
+- https://www.n-tv.de/
+- https://www.sueddeutsche.de/
+- https://www.handelsblatt.com/
+- https://www.taz.de/
+- https://www.wa.de/
+- https://www.rnd.de/
+- https://www.nzz.ch/
+- https://www.bazonline.ch/
+- https://www.focus.de/
+- https://www.tagesschau.de/
+- https://www.heise.de/tp/
+- https://www.golem.de/
+- https://www.kicker.de/
+- https://www.achgut.com/
+- https://www.stern.de/
+
+- https://www.t-online.de/
+- https://web.de/
+- https://www.gmx.net/
