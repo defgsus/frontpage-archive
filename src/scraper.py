@@ -172,7 +172,8 @@ class Scraper:
                 response = self.session.request(method=method, url=url, **kwargs)
             else:
                 response = requests.request(method=method, url=url, **kwargs)
-            print(len(response.content))
+            self.log(response.status_code, f"{len(response.content):,}")
+            
             status.update({
                 "status": response.status_code,
                 "headers": dict(response.headers),
