@@ -30,5 +30,4 @@ Should have started this 20 years ago!
 - https://www.stern.de/
 
 - https://www.t-online.de/
-- https://web.de/
-- https://www.gmx.net/
+
