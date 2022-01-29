@@ -67,12 +67,6 @@ class Scraper:
     def path(cls) -> Path:
         return cls.BASE_PATH / cls.ID
 
-    def iter_articles(self, filename: str, content: str) -> Generator[dict, None, None]:
-        """
-        Override this to extract article data from each scraped file.
-        """
-        pass
-
     def iter_files(self) -> Generator[Tuple[str, str], None, None]:
         """
         Yield tuples of (filename, text-content)
@@ -228,6 +222,55 @@ class Scraper:
 
         text = text.strip().replace("\n", " ").replace("\t", " ")
         return _RE_MULTI_SPACE.sub(" ", text)
+
+    @classmethod
+    def create_article_dict(
+            cls,
+            title: Optional[str] = None,
+            teaser: Optional[str] = None,
+            url: Optional[str] = None,
+            image_url: Optional[str] = None,
+            image_title: Optional[str] = None,
+    ) -> dict:
+        return {
+            "title": title,
+            "teaser": teaser,
+            "url": url,
+            "image_url": image_url,
+            "image_title": image_title,
+        }
+
+    def iter_articles(self, filename: str, content: str) -> Generator[dict, None, None]:
+        """
+        Override this to extract article data from each scraped file.
+
+        Base implementation looks for common <article> tag structures
+        """
+        soup = self.to_soup(content)
+        for tag in soup.find_all("article"):
+            if not (tag.text and tag.text.strip()):
+                continue
+
+            headline = tag.find("h3")
+            if not headline:
+                continue
+
+            article = self.create_article_dict(
+                title=self.strip(headline),
+                teaser=self.strip(tag.find("p")),
+            )
+
+            a = tag.find("a")
+            if a and a.get("href"):
+                article["url"] = a["href"]
+
+            image = tag.find("img")
+            if image and image.get("src"):
+                article["image_url"] = image["src"]
+                if image.get("alt"):
+                    article["image_title"] = self.strip(image["alt"])
+
+            yield article
 
 
 _RE_MULTI_SPACE = re.compile(r"\s+")
