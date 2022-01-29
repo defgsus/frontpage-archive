@@ -14,7 +14,6 @@ Should have started this 20 years ago!
 ### TODO
 
 - https://www.n-tv.de/
-- https://www.sueddeutsche.de/
 - https://www.handelsblatt.com/
 - https://www.taz.de/
 - https://www.wa.de/
