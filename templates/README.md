@@ -11,6 +11,11 @@ Should have started this 20 years ago!
 %(table)s
 
 
+Well, let's see how far this goes with a free github account. 
+Many websites transmit click-ids and random uuids in their
+documents so there is a change in every file in each snapshot. 
+
+
 ### TODO
 
 - https://www.n-tv.de/
