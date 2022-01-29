@@ -1,6 +1,6 @@
 from typing import Generator, Tuple
 
-from ..scraper import Scraper
+from ...scraper import Scraper
 
 
 class FrankfurterRundschau(Scraper):
