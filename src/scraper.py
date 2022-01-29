@@ -1,3 +1,4 @@
+import re
 import os
 import sys
 import glob
@@ -65,6 +66,12 @@ class Scraper:
     @classmethod
     def path(cls) -> Path:
         return cls.BASE_PATH / cls.ID
+
+    def iter_articles(self, filename: str, content: str) -> Generator[dict, None, None]:
+        """
+        Override this to extract article data from each scraped file.
+        """
+        pass
 
     def iter_files(self) -> Generator[Tuple[str, str], None, None]:
         """
@@ -186,5 +193,25 @@ class Scraper:
             raise
 
     @classmethod
-    def to_soup(cls, html) -> bs4.BeautifulSoup:
+    def to_soup(cls, html: str) -> bs4.BeautifulSoup:
         return bs4.BeautifulSoup(html, features="html.parser")
+
+    @classmethod
+    def strip(cls, x: Optional[Union[str, bs4.Tag]]) -> Optional[str]:
+        if x is None:
+            return None
+        elif isinstance(x, str):
+            text = x
+        elif isinstance(x, bs4.Tag):
+            text = x.text
+        else:
+            raise TypeError(f"Can not strip type {type(x).__name__} ({x})")
+
+        if text is None:
+            return None
+
+        text = text.strip().replace("\n", " ").replace("\t", " ")
+        return _RE_MULTI_SPACE.sub(" ", text)
+
+
+_RE_MULTI_SPACE = re.compile(r"\s+")

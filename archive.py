@@ -1,6 +1,7 @@
 import argparse
 import datetime
 import traceback
+import json
 from multiprocessing.pool import ThreadPool
 from typing import List
 
@@ -16,7 +17,7 @@ def parse_args() -> dict:
 
     parser.add_argument(
         "command", type=str,
-        choices=["list", "scrape", "readme"],
+        choices=["list", "scrape", "readme", "articles"],
         help="What to do?"
     )
     parser.add_argument(
@@ -52,6 +53,17 @@ def scrape(scraper: Scraper) -> str:
         msg += f"```\n{traceback.format_exc(limit=-2)}```\n"
 
     return msg
+
+
+def dump_articles(scrapers: List[Scraper]):
+    for scraper in scrapers:
+        print(f"\n-------- {scraper.ID} --------\n")
+        for filename in sorted(scraper.path().glob("*.html")):
+            print(f"\n-- {scraper.ID} - {filename.name} --\n")
+            for article in scraper.iter_articles(
+                    filename.name, filename.read_text()
+            ):
+                print(json.dumps(article, indent=2, ensure_ascii=False))
 
 
 def main(
@@ -94,6 +106,8 @@ def main(
         }
         (PROJECT_PATH / "README.md").write_text(readme_template)
 
+    elif command == "articles":
+        dump_articles(scrapers)
 
 if __name__ == "__main__":
     main(**parse_args())
