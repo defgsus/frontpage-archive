@@ -5,6 +5,7 @@
 Collector of raw index.html files and the like.
 Should have started this 20 years ago! 
 
+
 ## Scraped sites:
 
 | id                                                          | since      |   files | url                              |
@@ -15,6 +16,7 @@ Should have started this 20 years ago!
 | [heise.de](docs/snapshots/heise.de)                         | 2022-01-28 |      12 | https://www.heise.de/            |
 | [spiegel.de](docs/snapshots/spiegel.de)                     | 2022-01-28 |      21 | https://www.spiegel.de/          |
 | [spiegeldaily.de](docs/snapshots/spiegeldaily.de)           | 2022-01-28 |       5 | https://www.spiegeldaily.de/     |
+| [volksstimme.de](docs/snapshots/volksstimme.de)             | 2022-01-29 |       8 | https://www.volksstimme.de/      |
 | [welt.de](docs/snapshots/welt.de)                           | 2022-01-29 |      16 | https://www.welt.de              |
 | [zeit.de](docs/snapshots/zeit.de)                           | 2022-01-29 |      16 | https://www.zeit.de/             |
 | [zeitfuerdieschule.de](docs/snapshots/zeitfuerdieschule.de) | 2022-01-29 |       5 | https://www.zeitfuerdieschule.de |
