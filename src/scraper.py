@@ -83,7 +83,7 @@ class Scraper:
         for filename, url in self.SUB_URLS:
 
             try:
-                content = self.request(url).text
+                content = self.request(url, filename=filename).text
 
                 if first_page is None:
                     first_page = content
@@ -119,17 +119,17 @@ class Scraper:
                     continue
                 requested_urls.add(url)
 
-                try:
-                    response = self.request(url)
-                except:
-                    self.log(traceback.format_exc())
-                    continue
-
                 filename = "".join(c for c in link_name.lower() if "a" <= c <= "z")
                 filename_counter[filename] = filename_counter.get(filename, 0) + 1
 
                 if filename_counter[filename] > 1:
                     filename = f"{filename}{filename_counter[filename]}"
+
+                try:
+                    response = self.request(url, filename=filename)
+                except:
+                    self.log(traceback.format_exc())
+                    continue
 
                 yield filename + ".html", response.text
 
@@ -166,11 +166,27 @@ class Scraper:
         if self.verbose:
             print(f"{self.__class__.__name__}:", *args, file=sys.stderr)
 
-    def request(self, url: str, method: str = "GET", **kwargs) -> requests.Response:
+    def request(
+            self,
+            url: str,
+            method: str = "GET",
+            filename: Optional[str] = None,
+            **kwargs,
+    ) -> requests.Response:
+        """
+        Do a HTTP request
+        :param url: str, full url
+        :param method: str, defaults to "GET"
+        :param filename: optional str, The key in the `status.json` file, defaults to url
+        :param kwargs: any additional requests.request() arguments
+        :return: requests.Response instance
+        """
         kwargs.setdefault("timeout", self.REQUEST_TIMEOUT)
         self.log("requesting", url)
 
-        self.status[url] = status = {
+        status_key = filename or url
+
+        self.status[status_key] = status = {
             "date": datetime.datetime.utcnow().isoformat(),
             "url": url,
         }
