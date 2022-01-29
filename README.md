@@ -18,6 +18,7 @@ Should have started this 20 years ago!
 | [heise.de](docs/snapshots/heise.de)                         | 2022-01-28 |      12 | https://www.heise.de/            |
 | [spiegel.de](docs/snapshots/spiegel.de)                     | 2022-01-28 |      21 | https://www.spiegel.de/          |
 | [spiegeldaily.de](docs/snapshots/spiegeldaily.de)           | 2022-01-28 |       5 | https://www.spiegeldaily.de/     |
+| [sueddeutsche.de](docs/snapshots/sueddeutsche.de)           | 2022-01-29 |       7 | https://www.sueddeutsche.de/     |
 | [t-online.de](docs/snapshots/t-online.de)                   | 2022-01-29 |       8 | https://www.t-online.de/         |
 | [volksstimme.de](docs/snapshots/volksstimme.de)             | 2022-01-29 |       8 | https://www.volksstimme.de/      |
 | [web.de](docs/snapshots/web.de)                             | 2022-01-29 |      15 | https://web.de                   |
@@ -30,6 +31,9 @@ Well, let's see how far this goes with a free github account.
 Many websites transmit click-ids and random uuids in their
 documents so there is a change in every file in each snapshot. 
 
+Anyways, currently each snapshot adds about 10mb to the
+repository size (size of `.git` directory). That's not going
+to work for long :-(
 
 ### TODO
 
