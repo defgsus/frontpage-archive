@@ -32,6 +32,8 @@ class Scraper:
 
     # request timeout in seconds
     REQUEST_TIMEOUT: float = 10
+    # Set to false to run every request in individual session
+    USE_SESSION: bool = True
 
     BASE_PATH: Path = Path(__file__).resolve().parent.parent / "docs" / "snapshots"
 
@@ -166,7 +168,11 @@ class Scraper:
             "url": url,
         }
         try:
-            response = self.session.request(method=method, url=url, **kwargs)
+            if self.USE_SESSION:
+                response = self.session.request(method=method, url=url, **kwargs)
+            else:
+                response = requests.request(method=method, url=url, **kwargs)
+            print(len(response.content))
             status.update({
                 "status": response.status_code,
                 "headers": dict(response.headers),
