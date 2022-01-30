@@ -19,6 +19,13 @@ Anyways, currently each snapshot adds about 10mb to the
 repository size (size of `.git` directory). That's not going
 to work for long :-(
 
+## UPDATE
+
+Okay, raw data is just too much. The snapshot rate is now set
+to **once a month**. I'll try to scrape just the article 
+headlines and archive them in another repository.  
+
+
 ### TODO
 
 - https://www.n-tv.de/
