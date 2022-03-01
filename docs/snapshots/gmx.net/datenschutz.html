@@ -1709,7 +1709,68 @@ datenschutz@gmxnet.de
     </div>
     <script src="//js.ui-portal.de/cd/products/gmx.net/5.10.0/products.js"></script>
                 <script src="//s.uicdn.com/nav-cdn/shared/jquery/2.2.4/jquery-2.2.4.min.js"></script>
-            <script type="text/javascript">
+        
+
+    <script type="text/javascript" src="https://uim.tifbs.net/js/6911.js"></script>
+
+<script type="text/javascript" src="https://img.ui-portal.de/pos-cdn/tracklib/3.7.0/tracklib.poly.min.js"></script>
+<script type="text/javascript">
+    
+    var preset = {
+        'lib': {
+                        parameter: {
+                softwareversion: lastmodified,
+                source: source,
+                brand: trackingBrand,
+                software: 'cmfspa',
+                environment:  'standalone'             }
+        },
+        'tif' : {
+            properties : {
+                system : {
+                    tif_container: NSfTIF,
+                    brain_tif_mapping: 'url',
+                    prefix: 'produkte'
+                }
+            }
+        }
+    };
+
+    document.addEventListener('tcfLoad', function(event) {
+        trackPi();
+    });
+
+    setTimeout(trackPi, 3000);
+
+    var tracker = new TrackLib(preset);
+
+    function trackPi() {
+        if(atracked === false) {
+            if ($(document).find('div section.error.white.inline').length > 0) {
+                tracker.track({
+                    section: 'page.view.' + source,
+                    count: moduleno,
+                    trackingtype: 'pi',
+                    result: '36000001'
+                }, {
+                    tif: {active: true}
+                });
+            } else {
+                tracker.track({
+                    section: 'page.view.' + source,
+                    count: moduleno,
+                    trackingtype: 'pi',
+                    result: ''
+                }, {
+                    tif: {active: true}
+                });
+            }
+            atracked = true;
+        }
+    }
+</script>
+
+    <script type="text/javascript">
     function trackSlider(section, count, eventposition, contentposition) {
         tracker.track({
             section: section,
@@ -1977,65 +2038,6 @@ $('.navigation > ul > li span.close.icon').on('click', function () {
                 trackView(modules, 'page.basefooter.view', moduleno, moduleno, basefooter.getAttribute('data-tracking-contentposition'));
             }
         }, 400));
-    }
-</script>
-
-    <script type="text/javascript" src="https://uim.tifbs.net/js/6911.js"></script>
-
-<script type="text/javascript" src="https://img.ui-portal.de/pos-cdn/tracklib/3.7.0/tracklib.poly.min.js"></script>
-<script type="text/javascript">
-    
-    var preset = {
-        'lib': {
-                        parameter: {
-                softwareversion: lastmodified,
-                source: source,
-                brand: trackingBrand,
-                software: 'cmfspa',
-                environment:  'standalone'             }
-        },
-        'tif' : {
-            properties : {
-                system : {
-                    tif_container: NSfTIF,
-                    brain_tif_mapping: 'url',
-                    prefix: 'produkte'
-                }
-            }
-        }
-    };
-
-    document.addEventListener('tcfLoad', function(event) {
-        trackPi();
-    });
-
-    setTimeout(trackPi, 3000);
-
-    var tracker = new TrackLib(preset);
-
-    function trackPi() {
-        if(atracked === false) {
-            if ($(document).find('div section.error.white.inline').length > 0) {
-                tracker.track({
-                    section: 'page.view.' + source,
-                    count: moduleno,
-                    trackingtype: 'pi',
-                    result: '36000001'
-                }, {
-                    tif: {active: true}
-                });
-            } else {
-                tracker.track({
-                    section: 'page.view.' + source,
-                    count: moduleno,
-                    trackingtype: 'pi',
-                    result: ''
-                }, {
-                    tif: {active: true}
-                });
-            }
-            atracked = true;
-        }
     }
 </script>
         <script type="text/javascript">
