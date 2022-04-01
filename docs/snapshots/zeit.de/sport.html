@@ -20,14 +20,14 @@
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/tabletgothic/TabletGothic-Regular.woff2?v1" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/tabletgothic/TabletGothic-Bold.woff2?v1" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/franziska/FranziskaWebPro.woff" as="font" type="font/woff" crossorigin>
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/normalize.e0da9b1352e31388502ccf5901353346.css">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/base/base.a37549d9c96ec23bd2bb2a713f7f9b24.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/normalize.b648639a8a670ac0c5193dc2aa040d9c.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/base/base.36e77e00694dac6fcc63a1332ab5881c.css">
     
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/css/web.site/standalone/footer.8e7e333df8caf4cc52cde9e8647633aa.css" as="style">
     <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/standalone/footer.8e7e333df8caf4cc52cde9e8647633aa.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/standalone/footer.8e7e333df8caf4cc52cde9e8647633aa.css"></noscript>
 
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/centerpage/centerpage.fd4e2fcf5cffd45a8af64d832b756a63.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/centerpage/centerpage.03cf93e3b8158f7eb1acf3b012f74cab.css">
     <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/base/print.1116f578d2c5f1aed6b1c97c69870d6f.css" media="print">
         
     <script id="zonConfig" type="application/json">
@@ -66,7 +66,7 @@
                 "spark_clicktracking": true,
                 "sticky_mobile_navigation": false,
                 "sticky_navigation": true,
-                "zwe_fix_viewport_height_via_js": true
+                "zwe_hijack_images_scrolling": true
                 },
             "settings": {
                 "addefend_cookie_expire": 30,
@@ -93,15 +93,17 @@
                 "sourcepoint_vendor_manager_id": "364876",
                 "sso_cookie": "zeit_sso_201501",
                 "sso_session_cookie": "zeit_sso_session_201501",
-                "tickaroo_liveblog_deep_link_limit": "",
-                "tickaroo_liveblog_limit": "",
+                "tickaroo_liveblog_deep_link_limit": 50,
+                "tickaroo_liveblog_limit": 25,
                 "sso_url": "https://meine.zeit.de"
                 },
             "view": {
                 "advertising_enabled": true,
                 "banner_channel": "sport/centerpage",
+                "genre": null,
                 "is_pure_page": false,
                 "ressort": "sport",
+                "show_sticky_mobile_navigation": false,
                 "sub_ressort": "",
                 "type": "centerpage"
                 },
@@ -146,17 +148,23 @@
                 },
                 isAdBlocker: undefined,
                 device: {
-                    hasFastConnection: (function() {
+                    hasSlowConnection: (function() {
                         if ( 'connection' in navigator ) {
                             if ( navigator.connection.type == 'cellular' ) {
-                                return false;
+                                return true;
                             }
     
-                            if ( parseInt( navigator.connection.effectiveType, 10 ) >= 4 ) {
+                            if ( parseInt( navigator.connection.effectiveType, 10 ) < 4 ) {
                                 return true;
                             }
                         }
     
+                        return false;
+                    })(),
+                    hasDataSaverEnabled: (function () {
+                        if ('connection' in navigator) {
+                            return navigator.connection.saveData;
+                        }
                         return false;
                     })()
                 },
@@ -285,27 +293,29 @@
                 require: function() {
                     this.queue.push( arguments );
                 },
-                setFontSize: function(size, updateStorage) {
-                    updateStorage = (typeof updateStorage !== 'undefined') ?  updateStorage : true;
-                    size = parseInt(size, 10);
-                    if (size >= 30 && size <= 300 && window.localStorage) {
-                        document.querySelector('html').style.fontSize = size + '%';
-                        if (updateStorage) window.localStorage.setItem( 'fontsize', size );
-                        return size;
-                    }
+                setFontSize: function( size, updateStorage ) {
+                    size = parseInt( size, 10 );
+                    try {
+                        if ( size >= 50 && size <= 200 && window.localStorage ) {
+                            document.documentElement.style.fontSize = size + '%';
+                            if ( size === 100 ) {
+                                window.localStorage.removeItem( 'fontsize' );
+                            } else if ( updateStorage !== false ) {
+                                window.localStorage.setItem( 'fontsize', size );
+                            }
+                            return size;
+                        }
+                    } catch ( e ) {}
                 },
                 getFontSize: function() {
                     try {
-                        if (window.localStorage) {
+                        if ( window.localStorage ) {
                             var size = window.localStorage.getItem( 'fontsize' );
-                            size = parseInt(size, 10);
-                            if (size >= 30 && size <= 300) {
+                            if ( size >= 50 && size !== 100 && size <= 200 ) {
                                 return size;
                             }
                         }
-                    } catch ( Exception ) {
-                        return false;
-                    }
+                    } catch ( e ) {}
                 },
                 cookieCreate: function( name, value, days, domain, secure, samesite ) {
                     var expires = '',
@@ -446,7 +456,6 @@
         window.Zeit.loadJS('https://' + ioDomain + '/iomm/latest/bootstrap/stub.js');
     </script>
 
-                
     <meta name="robots" content="index,follow,noarchive,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
@@ -476,9 +485,10 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="Sport">
     <meta property="og:description" content="Der Sport bei ZEIT ONLINE: Informationen, News und Reportagen rund um Fußball, Tennis, Radsport und Handball ">
-    <meta property="og:url" content="https://www.zeit.de/sport/index">    <link rel="canonical" href="https://www.zeit.de/sport/index">
+    <meta property="og:url" content="https://www.zeit.de/sport/index">
+    <link rel="canonical" href="https://www.zeit.de/sport/index">
     <link type="application/rss+xml" rel="alternate" href="https://newsfeed.zeit.de/sport/index">
-    
+
     
 
     <script type="application/ld+json">
@@ -540,13 +550,13 @@
     </script>
 
     <script type="application/ld+json">
-        {"@context": "http://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://www.zeit.de/sport/2022-02/sanktionen-russland-ukraine-krieg-fifa-uefa-ausschluss-gazprom"}, {"@type": "ListItem", "position": 2, "url": "https://www.zeit.de/sport/2022-02/ioc-russland-belarus-athleten-ausschluss-ukraine-krieg"}, {"@type": "ListItem", "position": 3, "url": "https://www.zeit.de/sport/2022-02/schalke-04-gazprom-sponsor-russland-ukraine-krieg"}, {"@type": "ListItem", "position": 4, "url": "https://www.zeit.de/sport/2022-02/schalke-04-gazprom-russland-ukraine-krieg"}, {"@type": "ListItem", "position": 5, "url": "https://www.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal-robert-hoyzer-ante-sapina"}, {"@type": "ListItem", "position": 6, "url": "https://www.zeit.de/sport/2022-02/fifa-russland-sanktionen-fussball-wm"}, {"@type": "ListItem", "position": 7, "url": "https://www.zeit.de/sport/2022-02/ukraine-bundesliga-rueckschau-videobeweis"}, {"@type": "ListItem", "position": 8, "url": "https://www.zeit.de/sport/2022-02/bundesliga-24-spieltag-fussball-spielberichte"}, {"@type": "ListItem", "position": 9, "url": "https://www.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland-schweden-polen-boykott"}, {"@type": "ListItem", "position": 10, "url": "https://www.zeit.de/sport/2022-02/sport-russland-ukraine-krieg-menschenrechte"}, {"@type": "ListItem", "position": 11, "url": "https://www.zeit.de/sport/2022-02/gazprom-sponsoring-russland-schalke-04-uefa"}, {"@type": "ListItem", "position": 12, "url": "https://www.zeit.de/sport/2022-02/king-richard-serena-venus-williams-vater-tennis-kinofilm"}, {"@type": "ListItem", "position": 13, "url": "https://www.zeit.de/sport/2022-02/fc-bayern-muenchen-borussia-dortmund-ukraine-bundesliga-vorschau"}, {"@type": "ListItem", "position": 14, "url": "https://www.zeit.de/sport/2022-02/uefa-champions-league-finale-austragungsort-sankt-petersburg-paris"}, {"@type": "ListItem", "position": 15, "url": "https://www.zeit.de/sport/2022-02/kelly-slater-surfer-pipeline-hawaii-weltmeister"}, {"@type": "ListItem", "position": 16, "url": "https://www.zeit.de/sport/2022-02/kamila-walijewa-eiskunstlaeuferin-olympia-wunderkind-druck"}, {"@type": "ListItem", "position": 17, "url": "https://www.zeit.de/sport/2022-02/alexander-zverev-tennis-atp-mexiko"}, {"@type": "ListItem", "position": 18, "url": "https://www.zeit.de/sport/club-o-mat-fussball-verein-bundesliga"}, {"@type": "ListItem", "position": 19, "url": "https://www.zeit.de/sport/2021-05/steffi-nerius-schlimmster-tag-suizid-trainer-speerwerfen"}, {"@type": "ListItem", "position": 20, "url": "https://www.zeit.de/sport/2021-04/jens-weissflog-schlimmster-tag-olympia-1988-skispringen-schleudertrauma-calgary"}, {"@type": "ListItem", "position": 21, "url": "https://www.zeit.de/sport/2021-04/heiner-brand-handball-nationaltrainer-mein-schlimmster-tag"}, {"@type": "ListItem", "position": 22, "url": "https://www.zeit.de/sport/2021-03/britta-steffen-fans-erwartungen-schwimmerin-mein-schlimmster-tag"}, {"@type": "ListItem", "position": 23, "url": "https://www.zeit.de/sport/2021-10/fussball-wm-rhythmus-zwei-jahre-fifa-celia-sasic-philipp-lahm"}, {"@type": "ListItem", "position": 24, "url": "https://www.zeit.de/sport/2021-09/champions-league-paris-saint-germain-lionel-messi-neymar-kylian-mbappe-fussball"}, {"@type": "ListItem", "position": 25, "url": "https://www.zeit.de/sport/2021-04/pep-guardiola-fussball-trainer-manchester-city-philipp-lahm-ansichten-eines-fussballers"}, {"@type": "ListItem", "position": 26, "url": "https://www.zeit.de/sport/2021-04/champions-league-fussball-laender-europa-vielfalt-philipp-lahm-ansichten-eines-fussballers"}, {"@type": "ListItem", "position": 27, "url": "https://www.zeit.de/sport/2021-02/wandern-manuel-andrack-corona-wanderwege-pilgern-wanderlust"}, {"@type": "ListItem", "position": 28, "url": "https://www.zeit.de/sport/2020-12/adriene-mishler-yoga-youtube-yogalehrerin-atmung-uebungen"}, {"@type": "ListItem", "position": 29, "url": "https://www.zeit.de/sport/2020-10/sabrina-mockenhaupt-gregor-laueferin-laufen-tipps"}, {"@type": "ListItem", "position": 30, "url": "https://www.zeit.de/sport/2020-10/jens-voigt-radrennfahrer-tour-de-france-radsport-tipps"}, {"@type": "ListItem", "position": 31, "url": "https://www.zeit.de/sport/2020-03/laufen-anfaenger-joggen-tipps"}, {"@type": "ListItem", "position": 32, "url": "https://www.zeit.de/wissen/gesundheit/2020-04/joggen-gesundheit-laufen-ungesund"}, {"@type": "ListItem", "position": 33, "url": "https://www.zeit.de/sport/2020-04/laufen-ernaehrung-gesundheit-sport-joggen"}, {"@type": "ListItem", "position": 34, "url": "https://www.zeit.de/sport/2020-05/krafttraining-zu-hause-fitnessgeraete-uebungen"}, {"@type": "ListItem", "position": 35, "url": "https://www.zeit.de/sport/2020-04/rueckengesundheit-homeoffice-bueroarbeit-training-vorbeugung"}, {"@type": "ListItem", "position": 36, "url": "https://www.zeit.de/sport/2020-04/bewegung-homeoffice-corona-krise-gesundheit-beweglichkeit"}]}
+        {"@context": "http://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://www.zeit.de/sport/2022-03/wm-qualifikation-aegypten-mo-salah"}, {"@type": "ListItem", "position": 2, "url": "https://www.zeit.de/sport/2022-03/zuschauer-weltrekord-frauenfussball-fc-barcelona"}, {"@type": "ListItem", "position": 3, "url": "https://www.zeit.de/sport/2022-03/holland-deutschland-jamal-musiala-thomas-mueller"}, {"@type": "ListItem", "position": 4, "url": "https://www.zeit.de/sport/2022-03/boris-becker-insolvenzverfahren-london-vermoegensverschleierung"}, {"@type": "ListItem", "position": 5, "url": "https://www.zeit.de/sport/2022-03/der-fluch-der-megaclubs-christian-spiller-fans"}, {"@type": "ListItem", "position": 6, "url": "https://www.zeit.de/sport/2022-03/laenderspiel-test-deutschland-niederlande-unentschieden"}, {"@type": "ListItem", "position": 7, "url": "https://www.zeit.de/sport/2022-03/fussball-ukraine-krieg-charkiw"}, {"@type": "ListItem", "position": 8, "url": "https://www.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel"}, {"@type": "ListItem", "position": 9, "url": "https://www.zeit.de/sport/2022-03/fussball-weltmeisterschaft-laenderspiel-deutschland-israel-testspiel"}, {"@type": "ListItem", "position": 10, "url": "https://www.zeit.de/sport/2022-03/thomas-mueller-fussball-wm-katar-menschenrechtsverletzungen"}, {"@type": "ListItem", "position": 11, "url": "https://www.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal-robert-hoyzer-ante-sapina"}, {"@type": "ListItem", "position": 12, "url": "https://www.zeit.de/sport/2022-03/handball-bundesliga-sc-magdeburg-thw-kiel"}, {"@type": "ListItem", "position": 13, "url": "https://www.zeit.de/sport/2022-03/fussball-wm-qualifikation-italien-halbfinale-niederlage"}, {"@type": "ListItem", "position": 14, "url": "https://www.zeit.de/sport/2022-03/becherwurf-gladbach-spielabbruch-bochum-dfb"}, {"@type": "ListItem", "position": 15, "url": "https://www.zeit.de/sport/2022-03/hertha-bsc-lars-windhorst-investition-abstiegskampf"}, {"@type": "ListItem", "position": 16, "url": "https://www.zeit.de/sport/club-o-mat-fussball-verein-bundesliga"}, {"@type": "ListItem", "position": 17, "url": "https://www.zeit.de/sport/2022-01/thomas-mueller-schlimmster-tag-bayern-muenchen-champions-league-finale-niederlage-fc-chelsea"}, {"@type": "ListItem", "position": 18, "url": "https://www.zeit.de/sport/2021-05/steffi-nerius-schlimmster-tag-suizid-trainer-speerwerfen"}, {"@type": "ListItem", "position": 19, "url": "https://www.zeit.de/sport/2021-04/jens-weissflog-schlimmster-tag-olympia-1988-skispringen-schleudertrauma-calgary"}, {"@type": "ListItem", "position": 20, "url": "https://www.zeit.de/sport/2021-04/heiner-brand-handball-nationaltrainer-mein-schlimmster-tag"}, {"@type": "ListItem", "position": 21, "url": "https://www.zeit.de/sport/2021-03/britta-steffen-fans-erwartungen-schwimmerin-mein-schlimmster-tag"}, {"@type": "ListItem", "position": 22, "url": "https://www.zeit.de/sport/2021-10/fussball-wm-rhythmus-zwei-jahre-fifa-celia-sasic-philipp-lahm"}, {"@type": "ListItem", "position": 23, "url": "https://www.zeit.de/sport/2021-09/champions-league-paris-saint-germain-lionel-messi-neymar-kylian-mbappe-fussball"}, {"@type": "ListItem", "position": 24, "url": "https://www.zeit.de/sport/2021-04/pep-guardiola-fussball-trainer-manchester-city-philipp-lahm-ansichten-eines-fussballers"}, {"@type": "ListItem", "position": 25, "url": "https://www.zeit.de/sport/2021-04/champions-league-fussball-laender-europa-vielfalt-philipp-lahm-ansichten-eines-fussballers"}, {"@type": "ListItem", "position": 26, "url": "https://www.zeit.de/sport/2021-02/wandern-manuel-andrack-corona-wanderwege-pilgern-wanderlust"}, {"@type": "ListItem", "position": 27, "url": "https://www.zeit.de/sport/2020-12/adriene-mishler-yoga-youtube-yogalehrerin-atmung-uebungen"}, {"@type": "ListItem", "position": 28, "url": "https://www.zeit.de/sport/2020-10/sabrina-mockenhaupt-gregor-laueferin-laufen-tipps"}, {"@type": "ListItem", "position": 29, "url": "https://www.zeit.de/sport/2020-10/jens-voigt-radrennfahrer-tour-de-france-radsport-tipps"}, {"@type": "ListItem", "position": 30, "url": "https://www.zeit.de/sport/2020-03/laufen-anfaenger-joggen-tipps"}, {"@type": "ListItem", "position": 31, "url": "https://www.zeit.de/wissen/gesundheit/2020-04/joggen-gesundheit-laufen-ungesund"}, {"@type": "ListItem", "position": 32, "url": "https://www.zeit.de/sport/2020-04/laufen-ernaehrung-gesundheit-sport-joggen"}, {"@type": "ListItem", "position": 33, "url": "https://www.zeit.de/sport/2020-05/krafttraining-zu-hause-fitnessgeraete-uebungen"}, {"@type": "ListItem", "position": 34, "url": "https://www.zeit.de/sport/2020-04/rueckengesundheit-homeoffice-bueroarbeit-training-vorbeugung"}, {"@type": "ListItem", "position": 35, "url": "https://www.zeit.de/sport/2020-04/bewegung-homeoffice-corona-krise-gesundheit-beweglichkeit"}]}
     </script>
 
     
     
     <script>
-        window.Zeit.user = {"ssoid": null, "state": null, "adFree": false, "paywall": null, "iqd_usergroup": null, "C1-Meter-Type": "none", "C1-Meter-Status": "open", "C1-Meter-Info": "tracking_entitlement", "C1-Meter-User-Status": "anonymous", "C1-Meter-User-Group-Action": "{\"cms_snippet\":{\"parameters\":[\"dynamic_user\",\"abtest_paywall_euro\",\"block\"]}}", "C1-Meter-Count": "0", "C1-Meter-Max-Count": "0", "C1-Meter-Access-Group": "dynamic"};
+        window.Zeit.user = {"ssoid": null, "state": null, "adFree": false, "paywall": null, "iqd_usergroup": null, "C1-Meter-Info": "tracking_entitlement", "C1-Meter-Max-Count": "0", "C1-Meter-User-Group-Action": "{\"cms_snippet\":{\"parameters\":[\"abtest_paywall_euro_2\",\"block\"]}}", "C1-Meter-Type": "none", "C1-Meter-User-Status": "anonymous", "C1-Meter-Status": "open", "C1-Meter-Count": "0", "C1-Meter-Access-Group": "free"};
 
         </script>
     
@@ -620,12 +630,16 @@
                     ( navigator.msMaxTouchPoints > 0 ) );
             }
 
-            function isMacOS1015Firefox() {
+            function hasScrollSnapBug() {
                 // Firefox froze the Mac OS Version from 10.15 upwards. this isn't
                 // good, but what can we do...
                 // this is for https://bugzil.la/1737820
+                // this bug is fixed in firefox version 99 (released april 2022)
                 const UA = navigator.userAgent;
-                return ['MAC OS X 10.15', 'Firefox/'].some(el => UA.includes(el));
+                const splittedUA = UA.split('/');
+                const isMacOSFirefox = ['MAC OS X 10.15', 'Firefox/'].some(el => UA.includes(el));
+                const isVersion99 = parseFloat(splittedUA[splittedUA.length - 1]) >= 99;
+                return isMacOSFirefox && !isVersion99;
             }
 
             // .(no-)js as basic
@@ -644,7 +658,7 @@
             }
 
             // disable scrollsnapping in firefox (https://bugzil.la/1737820)
-            if (isMacOS1015Firefox()) {
+            if (hasScrollSnapBug()) {
                 html.classList.add( 'no-scroll-snap' );
             } else {
                 html.classList.add( 'scroll-snap' );
@@ -778,11 +792,10 @@
 <!-- ad controller head end -->
 <style>
     :root {
-        --vh: 100vh;         --100vh: 100vh;
-        
+        --vh: 100vh;         
     }
     </style>
-    <script src="https://static.zeit.de/p/zeit.web/js/colorscheme.0d2d6ff8569f8039cd45.js" ></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/colorscheme.ac931398b3d53e7c5f76.js" ></script>
     <!-- zeit.web.core.template.include_in_head injection point -->
 </head>
 <body data-page-type="centerpage" data-is-hp="false" data-unique-id="http://xml.zeit.de/sport/index" data-overscrolling="off">
@@ -847,7 +860,6 @@
         <a href="https://www.zeit.de/index" class="sticky-nav__logo-container" data-ct-label="logo"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="25" viewBox="0 0 20 25" class="svg-symbol sticky-nav__icon--zon" preserveAspectRatio="xMinYMin meet" role="img" aria-label="ZEIT ONLINE "><title>ZEIT ONLINE </title><path d="M2.4 14.2s.1 0 .1-.1l7.4-13V1h-.4s-.1 0-.1.1L2 14.1v.1h.4Zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H.3L8.2 1H6.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1C1 3.5 2.4.1 2.4.1s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1Z"/></svg></a>            <div class="sticky-nav__focuspoints">
                 <h3 class="visually-hidden">Schwerpunkte</h3>
                 <ul class="sticky-nav__list" data-ct-row="article-tag-sticky">
-                                            <li class="sticky-nav__item"><a href="https://www.zeit.de/thema/olympische-winterspiele" class="sticky-nav__tag">Olympische Spiele</a></li>
                                             <li class="sticky-nav__item"><a href="https://www.zeit.de/thema/bundesliga" class="sticky-nav__tag">Bundesliga </a></li>
                                             <li class="sticky-nav__item"><a href="https://www.zeit.de/thema/champions-league " class="sticky-nav__tag">Champions League </a></li>
                                         <li class="sticky-nav__item"><a href="https://www.zeit.de/thema/index" class="sticky-nav__tag">Alle Themen</a></li>
@@ -994,7 +1006,7 @@
     </a>
     <noscript class="webtrekk_noscript">
     <div>
-        <img alt="" width="1" height="1" src="https://audev.zeit.de/981949533494636/wt.pl?p=453min-3,redaktion.sport...centerpage.zede%7Cwww.zeit.de/sport/index,0,0,0,0,0,0,0,0&amp;cg1=redaktion&amp;cg2=centerpage&amp;cg3=sport&amp;cg4=zede&amp;cg5=&amp;cg6=&amp;cg7=index&amp;cg8=sport%2Fcenterpage&amp;cg9=2019-06-12&amp;cp1=&amp;cp2=sport%2Fbild-text&amp;cp3=1%2F1&amp;cp4=noriaki+kasai%3Bjakob+b%C3%B6rner%3Bchristian+spiller%3Bjulian+stahnke%3Boliver+fritsch%3Bpyeongchang%3Bbayern%3Bdortmund%3Bdeutschland%3Bsotschi&amp;cp5=2021-06-11+09%3A35%3A43.272341%2B02%3A00&amp;cp6=&amp;cp8=zede&amp;cp9=sport%2Fcenterpage&amp;cp10=yes&amp;cp12=desktop.site&amp;cp13=stationaer&amp;cp15=&amp;cp25=original&amp;cp26=centerpage.centerpage&amp;cp27=&amp;cp28=free&amp;cp29=unfeasible&amp;cp30=open&amp;cp34=&amp;cp38=undefined&amp;cp40=undefined&amp;cp49=57c63023-a6e4-472e-b605-1e5d000e4be2&amp;cp23=nicht_angemeldet&amp;cp46=false&amp;cd=" />
+        <img alt="" width="1" height="1" src="https://audev.zeit.de/981949533494636/wt.pl?p=453min-3,redaktion.sport...centerpage.zede%7Cwww.zeit.de/sport/index,0,0,0,0,0,0,0,0&amp;cg1=redaktion&amp;cg2=centerpage&amp;cg3=sport&amp;cg4=zede&amp;cg5=&amp;cg6=&amp;cg7=index&amp;cg8=sport%2Fcenterpage&amp;cg9=2019-06-12&amp;cp1=&amp;cp2=sport%2Fbild-text&amp;cp3=1%2F1&amp;cp4=uri_too_long&amp;cp5=2021-06-11+09%3A35%3A43.272341%2B02%3A00&amp;cp6=&amp;cp8=zede&amp;cp9=sport%2Fcenterpage&amp;cp10=yes&amp;cp12=desktop.site&amp;cp13=stationaer&amp;cp15=&amp;cp25=original&amp;cp26=centerpage.centerpage&amp;cp27=&amp;cp28=free&amp;cp29=unfeasible&amp;cp30=open&amp;cp34=&amp;cp38=undefined&amp;cp40=undefined&amp;cp49=57c63023-a6e4-472e-b605-1e5d000e4be2&amp;cp23=nicht_angemeldet&amp;cp46=undefined&amp;cd=" />
     </div>
 </noscript>
 
@@ -1027,6 +1039,10 @@
         <a href="https://www.zeit.de/kultur/musik/index" itemprop="url"><span itemprop="name">Musik</span></a></li>
     <li class="nav__dropdown-item--kunst">
         <a href="https://www.zeit.de/kultur/kunst/index" itemprop="url"><span itemprop="name">Kunst</span></a></li>
+    <li class="nav__dropdown-item--has-label" data-label="Anzeige">
+        <a href="https://www.zeit.de/angebote/buchtipp/index" itemprop="url"><span itemprop="name">Buch-Entdeckungen</span></a></li>
+    <li class="nav__dropdown-item--has-label" data-label="Anzeige">
+        <a href="https://www.zeit.de/angebote/ecsite2022/index" itemprop="url"><span itemprop="name">Wissen schafft Erleben</span></a></li>
 
 </ul></li>
     <li class="nav__ressorts-item--wissen">
@@ -1086,6 +1102,10 @@
     <li class="nav__ressorts-item--schlagzeilen">
         <a href="https://www.zeit.de/news/index" itemprop="url"><span itemprop="name">Schlagzeilen</span></a></li>
     <li class="nav__ressorts-item--has-label" data-label="Anzeige">
+        <a href="https://www.zeit.de/angebote/mit-karte-bitte/podcast/index" itemprop="url"><span itemprop="name">Podcast: Alles was zahlt</span></a></li>
+    <li class="nav__ressorts-item--has-label" data-label="Anzeige">
+        <a href="https://cmk.zeit.de/cms/microsite/13636/wandel-nachhaltig-digital-verantwort-ungsvoll" itemprop="url"><span itemprop="name">Accenture: Wandel gestalten</span></a></li>
+    <li class="nav__ressorts-item--has-label" data-label="Anzeige">
         <a href="https://cmk.zeit.de/cms/hub/10991/13078/anzeige/hp-deutschland-gmbh-hp-inc" itemprop="url"><span itemprop="name">Remote Coach powered by HP</span></a></li>
     <li class="nav__ressorts-item--has-label" data-label="Anzeige">
         <a href="https://www.zeit.de/angebote/digitale-pioniere/index" itemprop="url"><span itemprop="name">Deutschlands Digitale Pioniere</span></a></li>
@@ -1114,8 +1134,7 @@
     </ul></nav>
 <div class="nav__metadata">
         <div class="nav__tags" data-ct-row="article-tag">
-                                <a href="https://www.zeit.de/thema/olympische-winterspiele" class="nav__tag">Olympische Spiele</a>
-                                    <a href="https://www.zeit.de/thema/bundesliga" class="nav__tag">Bundesliga </a>
+                                <a href="https://www.zeit.de/thema/bundesliga" class="nav__tag">Bundesliga </a>
                                     <a href="https://www.zeit.de/thema/champions-league " class="nav__tag">Champions League </a>
                                 <a href="https://www.zeit.de/thema/index" class="nav__tag">Alle Themen</a>
             </div>
@@ -1151,11 +1170,14 @@
 <div class="cp-area cp-area--standard" data-ct-context="standard">
                                                                             
                                                             
-                                    <article class="zon-teaser-classic  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/sanktionen-russland-ukraine-krieg-fifa-uefa-ausschluss-gazprom">
-                                        <a href="https://www.zeit.de/sport/2022-02/sanktionen-russland-ukraine-krieg-fifa-uefa-ausschluss-gazprom" class="zon-teaser-classic__faux-link" title="Sanktionen gegen Russland: Fifa und Uefa schließen Russland von allen Wettbewerben aus" tabindex="-1" aria-hidden="true" data-ct-label="link">Sanktionen gegen Russland: Fifa und Uefa schließen Russland von allen Wettbewerben aus</a>    <div class="zon-teaser-classic__container">
-        <a href="https://www.zeit.de/sport/2022-02/sanktionen-russland-ukraine-krieg-fifa-uefa-ausschluss-gazprom" class="zon-teaser-classic__heading-link">
+                                    <article class="zon-teaser-classic  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/wm-qualifikation-aegypten-mo-salah" data-zplus="zplus-dynamic">
+                                        <a href="https://www.zeit.de/sport/2022-03/wm-qualifikation-aegypten-mo-salah" class="zon-teaser-classic__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="WM-Qualifikation: Träume, die in der 124. Minute enden">WM-Qualifikation: Träume, die in der 124. Minute enden</a>    <div class="zon-teaser-classic__container">
+        <a href="https://www.zeit.de/sport/2022-03/wm-qualifikation-aegypten-mo-salah" class="zon-teaser-classic__heading-link">
         <h3 class="zon-teaser-classic__heading">
-                <span class="zon-teaser-classic__kicker">Sanktionen gegen Russland</span><span class="visually-hidden">: </span><span class="zon-teaser-classic__title">Fifa und Uefa schließen Russland von allen Wettbewerben aus</span>
+                <span class="zon-teaser-classic__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
+        <use xlink:href="#svg-zplus" />
+    </svg>
+WM-Qualifikation</span><span class="visually-hidden">: </span><span class="zon-teaser-classic__title">Träume, die in der 124. Minute enden</span>
                 </h3>
         </a>
         
@@ -1167,23 +1189,23 @@
         
         <picture class="zon-teaser-classic__media-container">
             <source media="(min-width:768px) and (-webkit-min-device-pixel-ratio: 2)"
-                    srcset="https://img.zeit.de/sport/2022-02/russland/cinema__900x385__scale_2 900w, https://img.zeit.de/sport/2022-02/russland/cinema__1000x428__scale_2 1000w"
+                    srcset="https://img.zeit.de/sport/2022-03/algerien-kamerun/cinema__900x385__scale_2 900w, https://img.zeit.de/sport/2022-03/algerien-kamerun/cinema__1000x428__scale_2 1000w"
                     sizes = "(min-width:1000px) 1000px, 100vw"
                     />
             <source media="(min-width:768px)"
-                    srcset="https://img.zeit.de/sport/2022-02/russland/cinema__900x385 900w, https://img.zeit.de/sport/2022-02/russland/cinema__1000x428 1000w"
+                    srcset="https://img.zeit.de/sport/2022-03/algerien-kamerun/cinema__900x385 900w, https://img.zeit.de/sport/2022-03/algerien-kamerun/cinema__1000x428 1000w"
                     sizes = "(min-width:1000px) 1000px, 100vw"
                     />
             <source media="(-webkit-min-device-pixel-ratio: 2)"
-                    srcset="https://img.zeit.de/sport/2022-02/russland/wide__360x202__scale_2 360w, https://img.zeit.de/sport/2022-02/russland/wide__480x270__scale_2 480w, https://img.zeit.de/sport/2022-02/russland/wide__660x371__scale_2 660w, https://img.zeit.de/sport/2022-02/russland/wide__767x431__scale_2 767w"
+                    srcset="https://img.zeit.de/sport/2022-03/algerien-kamerun/wide__360x202__scale_2 360w, https://img.zeit.de/sport/2022-03/algerien-kamerun/wide__480x270__scale_2 480w, https://img.zeit.de/sport/2022-03/algerien-kamerun/wide__660x371__scale_2 660w, https://img.zeit.de/sport/2022-03/algerien-kamerun/wide__767x431__scale_2 767w"
                     sizes = "100vw"
                     />
-            <source srcset="https://img.zeit.de/sport/2022-02/russland/wide__360x202 360w, https://img.zeit.de/sport/2022-02/russland/wide__480x270 480w, https://img.zeit.de/sport/2022-02/russland/wide__660x371 660w, https://img.zeit.de/sport/2022-02/russland/wide__767x431 767w"
+            <source srcset="https://img.zeit.de/sport/2022-03/algerien-kamerun/wide__360x202 360w, https://img.zeit.de/sport/2022-03/algerien-kamerun/wide__480x270 480w, https://img.zeit.de/sport/2022-03/algerien-kamerun/wide__660x371 660w, https://img.zeit.de/sport/2022-03/algerien-kamerun/wide__767x431 767w"
                     sizes = "100vw"
                     />
             <img class="zon-teaser-classic__media-item"
-                 src="https://img.zeit.de/sport/2022-02/russland/cinema__980x420"
-                 alt="Das russische Wappen wird bei der Fußball-WM 2022 wohl nicht zu sehen sein." />
+                 src="https://img.zeit.de/sport/2022-03/algerien-kamerun/cinema__980x420"
+                 alt="" />
             </picture>
 
         
@@ -1194,15 +1216,18 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sport/2022-02/russland/cinema__480x205",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Kirill Kudryavtsev/\u200bGetty Images"}
+    "url": "https://img.zeit.de/sport/2022-03/algerien-kamerun/cinema__480x205",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0AFP/\u200bGetty Images"}
 }
-</script>        <p class="zon-teaser-classic__text">Keine WM, keine Europa League – russische Fußballclubs und das Nationalteam sind bis auf Weiteres suspendiert. Die Uefa kündigte zudem den Vertrag mit Gazprom.</p>
+</script>        <p class="zon-teaser-classic__text">Fiese Laserpointer, Platzstürme und ein jubelndes Eishockeyland: Zumindest sportlich könnte die WM in Katar aufregend werden, wie die letzten Tage der Quali zeigten.</p>
         
 
+            <div class="zon-teaser-classic__metadata">
+            <span><span class="zon-teaser-classic__byline">    Von            Christian Spiller</span>
+    </span></div>
         </div>
 
-    <button value="70c494fd-e69e-4c52-bd18-bd43f0c54777" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="5a5d1308-232f-47fc-a8c4-0b215f03b81c" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -1229,14 +1254,14 @@
 </div>
                                                                 
                                                             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/ioc-russland-belarus-athleten-ausschluss-ukraine-krieg">
-                                        <a href="https://www.zeit.de/sport/2022-02/ioc-russland-belarus-athleten-ausschluss-ukraine-krieg" class="zon-teaser-standard__faux-link" title="IOC: IOC empfiehlt Ausschluss von russischen und belarussischen Sportlern" tabindex="-1" aria-hidden="true" data-ct-label="link">IOC: IOC empfiehlt Ausschluss von russischen und belarussischen Sportlern</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/zuschauer-weltrekord-frauenfussball-fc-barcelona" data-zplus="zplus-dynamic">
+                                        <a href="https://www.zeit.de/sport/2022-03/zuschauer-weltrekord-frauenfussball-fc-barcelona" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Zuschauerweltrekord im Frauenfußball: Früher spielten sie dort, wo die Männer parkten">Zuschauerweltrekord im Frauenfußball: Früher spielten sie dort, wo die Männer parkten</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/sport/2022-02/russland-eishockey/wide__822x462">
+            <noscript data-src="https://img.zeit.de/sport/2022-03/frauenfussball-weltrekord-fc-barcelona/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="IOC: IOC empfiehlt Ausschluss von russischen und belarussischen Sportlern"
-                     src="https://img.zeit.de/sport/2022-02/russland-eishockey/wide__822x462"
-                     data-src="https://img.zeit.de/sport/2022-02/russland-eishockey/wide"
+                          alt="Zuschauerweltrekord im Frauenfußball: Früher spielten sie dort, wo die Männer parkten"
+                     src="https://img.zeit.de/sport/2022-03/frauenfussball-weltrekord-fc-barcelona/wide__822x462"
+                     data-src="https://img.zeit.de/sport/2022-03/frauenfussball-weltrekord-fc-barcelona/wide"
                      data-ratio="1.77777777778"
                      decoding="async">
                             </noscript></div>
@@ -1245,37 +1270,43 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sport/2022-02/russland-eishockey/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0KIRILL KUDRYAVTSEV/\u200bGetty Images"}
+    "url": "https://img.zeit.de/sport/2022-03/frauenfussball-weltrekord-fc-barcelona/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Josep Lago/\u200bGetty Images"}
 }
 </script>        </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/sport/2022-02/ioc-russland-belarus-athleten-ausschluss-ukraine-krieg" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/sport/2022-03/zuschauer-weltrekord-frauenfussball-fc-barcelona" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">IOC</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">IOC empfiehlt Ausschluss von russischen und belarussischen Sportlern</span>
+                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
+        <use xlink:href="#svg-zplus" />
+    </svg>
+Zuschauerweltrekord im Frauenfußball</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Früher spielten sie dort, wo die Männer parkten</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Athleten aus Russland und Belarus sollen an keinen internationalen Wettbewerben mehr teilnehmen dürfen. Zudem will die Fifa Russland von ihren Wettbewerben ausschließen.</p>
+        <p class="zon-teaser-standard__text">91.553 Zuschauende kommen zu einem Fußballspiel der Frauen. Dem FC Barcelona ist mit dem Weltrekord ein Statement geglückt, das in Deutschland neidisch verfolgt wird.</p>
                             
 
+            <div class="zon-teaser-standard__metadata">
+            <span><span class="zon-teaser-standard__byline">    Von            Frank Hellmann</span>
+    </span></div>
     
     </div>
 
-    <button value="270f9d49-8d67-44f4-9239-f4ed63290f79" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="25e7de54-be56-4a4e-bce9-e60b0f0d994d" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
                             <!-- adtile1mobile is omitted to avoid duplicates. -->
                                                                     
                                                             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/schalke-04-gazprom-sponsor-russland-ukraine-krieg">
-                                        <a href="https://www.zeit.de/sport/2022-02/schalke-04-gazprom-sponsor-russland-ukraine-krieg" class="zon-teaser-standard__faux-link" title="Russland-Ukraine-Krieg: FC Schalke 04 beendet Zusammenarbeit mit russischem Sponsor Gazprom" tabindex="-1" aria-hidden="true" data-ct-label="link">Russland-Ukraine-Krieg: FC Schalke 04 beendet Zusammenarbeit mit russischem Sponsor Gazprom</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/holland-deutschland-jamal-musiala-thomas-mueller">
+                                        <a href="https://www.zeit.de/sport/2022-03/holland-deutschland-jamal-musiala-thomas-mueller" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Fußballnationalmannschaft: Erster Gegner, fast die erste Niederlage">Fußballnationalmannschaft: Erster Gegner, fast die erste Niederlage</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/sport/2022-02/schalke-04-gazprom-sponsor-russland-ukraine-krieg-bild/wide__822x462">
+            <noscript data-src="https://img.zeit.de/sport/2022-03/fussball-deutschland-niederlande-julian-brandt/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="Russland-Ukraine-Krieg: FC Schalke 04 beendet Zusammenarbeit mit russischem Sponsor Gazprom"
-                     src="https://img.zeit.de/sport/2022-02/schalke-04-gazprom-sponsor-russland-ukraine-krieg-bild/wide__822x462"
-                     data-src="https://img.zeit.de/sport/2022-02/schalke-04-gazprom-sponsor-russland-ukraine-krieg-bild/wide"
+                          alt="Fußballnationalmannschaft: Erster Gegner, fast die erste Niederlage"
+                     src="https://img.zeit.de/sport/2022-03/fussball-deutschland-niederlande-julian-brandt/wide__822x462"
+                     data-src="https://img.zeit.de/sport/2022-03/fussball-deutschland-niederlande-julian-brandt/wide"
                      data-ratio="1.77777777778"
                      decoding="async">
                             </noscript></div>
@@ -1284,23 +1315,26 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sport/2022-02/schalke-04-gazprom-sponsor-russland-ukraine-krieg-bild/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Ina Fassbender/\u200bdpa"}
+    "url": "https://img.zeit.de/sport/2022-03/fussball-deutschland-niederlande-julian-brandt/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Alex Grimm/\u200bGetty Images"}
 }
 </script>        </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/sport/2022-02/schalke-04-gazprom-sponsor-russland-ukraine-krieg" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/sport/2022-03/holland-deutschland-jamal-musiala-thomas-mueller" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">Russland-Ukraine-Krieg</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">FC Schalke 04 beendet Zusammenarbeit mit russischem Sponsor Gazprom</span>
+                <span class="zon-teaser-standard__kicker">Fußballnationalmannschaft</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Erster Gegner, fast die erste Niederlage</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Schalke 04 wird wegen des Krieges in der Ukraine die Zusammenarbeit mit Gazprom vorzeitig beenden. Der russische Staatskonzern war der wichtigste Geldgeber des Vereins.</p>
+        <p class="zon-teaser-standard__text">Nach vielen leichten Siegen traf Hansi Flicks Elf auf die Niederlande. Es wurde ein abwechslungsreiches Spiel, in dem der Videobeweis Deutschland beim Unentschieden half.</p>
                             
 
+            <div class="zon-teaser-standard__metadata">
+            <span><span class="zon-teaser-standard__byline">    Von            Oliver Fritsch</span>
+    <a class="zon-teaser-standard__commentcount" href="https://www.zeit.de/sport/2022-03/holland-deutschland-jamal-musiala-thomas-mueller#comments" data-ct-label="comments" title="Kommentare anzeigen" tabindex="-1">153 Kommentare</a></span></div>
     
     </div>
 
-    <button value="43b2ca0b-3301-4395-8814-74b39715215f" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="5927d214-e3c2-4b90-9a9c-ca957cb0bffd" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -1352,14 +1386,14 @@
 <div class="cp-area cp-area--duo" data-ct-context="duo">
                                                                             
                                                             
-                                    <article class="zon-teaser-square  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/schalke-04-gazprom-russland-ukraine-krieg" data-zplus="zplus-dynamic">
-                                        <a href="https://www.zeit.de/sport/2022-02/schalke-04-gazprom-russland-ukraine-krieg" class="zon-teaser-square__faux-link" title="Schalke 04: Die Gazprom-Lücke" tabindex="-1" aria-hidden="true" data-ct-label="link">Schalke 04: Die Gazprom-Lücke</a>                <figure class="zon-teaser-square__media zon-teaser-square__media--force-mobile scaled-image variant variant--square is-pixelperfect">
+                                    <article class="zon-teaser-square  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/boris-becker-insolvenzverfahren-london-vermoegensverschleierung" data-zplus="zplus-dynamic">
+                                        <a href="https://www.zeit.de/sport/2022-03/boris-becker-insolvenzverfahren-london-vermoegensverschleierung" class="zon-teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Insolvenzverfahren: Die Queen gegen Boris Becker">Insolvenzverfahren: Die Queen gegen Boris Becker</a>                <figure class="zon-teaser-square__media zon-teaser-square__media--force-mobile scaled-image variant variant--square is-pixelperfect">
                 <div class="zon-teaser-square__media-container ">
-            <noscript data-src="https://img.zeit.de/sport/2022-02/schalke-04/square__460x460">
+            <noscript data-src="https://img.zeit.de/sport/2022-03/boris-becker-insolvenzverfahren-london/square__460x460">
                                 <img class="zon-teaser-square__media-item"
-                          alt="Schalke 04: Die Gazprom-Lücke"
-                     src="https://img.zeit.de/sport/2022-02/schalke-04/square__460x460"
-                     data-src="https://img.zeit.de/sport/2022-02/schalke-04/square"
+                          alt="Insolvenzverfahren: Die Queen gegen Boris Becker"
+                     src="https://img.zeit.de/sport/2022-03/boris-becker-insolvenzverfahren-london/square__460x460"
+                     data-src="https://img.zeit.de/sport/2022-03/boris-becker-insolvenzverfahren-london/square"
                      data-ratio="1.0"
                      decoding="async">
                             </noscript></div>
@@ -1368,23 +1402,23 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sport/2022-02/schalke-04/square__460x460",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Thomas Niederm\u00fcller/\u200bGetty Images"}
+    "url": "https://img.zeit.de/sport/2022-03/boris-becker-insolvenzverfahren-london/square__460x460",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Tayfun Salci/\u200bZuma/\u200bddp"}
 }
 </script>        </figure>
 <div class="zon-teaser-square__container">
-        <a href="https://www.zeit.de/sport/2022-02/schalke-04-gazprom-russland-ukraine-krieg" class="zon-teaser-square__heading-link">
+        <a href="https://www.zeit.de/sport/2022-03/boris-becker-insolvenzverfahren-london-vermoegensverschleierung" class="zon-teaser-square__heading-link">
         <h3 class="zon-teaser-square__heading">
                 <span class="zon-teaser-square__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
         <use xlink:href="#svg-zplus" />
     </svg>
-Schalke 04</span><span class="visually-hidden">: </span><span class="zon-teaser-square__title">Die Gazprom-Lücke</span>
+Insolvenzverfahren</span><span class="visually-hidden">: </span><span class="zon-teaser-square__title">Die Queen gegen Boris Becker</span>
                 </h3>
         </a>
-        <p class="zon-teaser-square__text">Kein deutscher Verein ist so abhängig vom russischen Geld wie Schalke 04. Nun trat der Club erstmals ohne seinen Hauptsponsor an. Doch kann er ihn ganz aufgeben?</p>
+        <p class="zon-teaser-square__text">In London steht Boris Becker wegen Insolvenzverschleppung vor Gericht, er soll Pokale versteckt und Vermögen verschleiert haben. Ihm drohen bis zu sieben Jahre Haft.</p>
             </div>
 
-    <button value="9dd6cbf5-67d7-4e6f-9bfc-d02813afbe67" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="56e574a9-ccaf-4000-aea9-678d29f7a17d" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -1394,14 +1428,14 @@ Schalke 04</span><span class="visually-hidden">: </span><span class="zon-teaser-
 <div class="cp-area cp-area--duo" data-ct-context="duo">
                                                                             
                                                             
-                                    <article class="zon-teaser-square  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal-robert-hoyzer-ante-sapina" data-zplus="zplus-dynamic">
-                                        <a href="https://www.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal-robert-hoyzer-ante-sapina" class="zon-teaser-square__faux-link" title="Felix Zwayer: &#34;Mit dem kann man arbeiten&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Felix Zwayer: &#34;Mit dem kann man arbeiten&#34;</a>                <figure class="zon-teaser-square__media zon-teaser-square__media--force-mobile scaled-image variant variant--square is-pixelperfect">
+                                    <article class="zon-teaser-square  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/der-fluch-der-megaclubs-christian-spiller-fans">
+                                        <a href="https://www.zeit.de/sport/2022-03/der-fluch-der-megaclubs-christian-spiller-fans" class="zon-teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="&#34;Der Fluch der Megaclubs&#34;: Die neuen Fans">&#34;Der Fluch der Megaclubs&#34;: Die neuen Fans</a>                <figure class="zon-teaser-square__media zon-teaser-square__media--force-mobile scaled-image variant variant--square is-pixelperfect">
                 <div class="zon-teaser-square__media-container ">
-            <noscript data-src="https://img.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal/square__460x460">
+            <noscript data-src="https://img.zeit.de/sport/2022-03/der-fluch-der-megaclubs-paris-saint-germain-fans/square__460x460">
                                 <img class="zon-teaser-square__media-item"
-                          alt="Felix Zwayer: &#34;Mit dem kann man arbeiten&#34;"
-                     src="https://img.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal/square__460x460"
-                     data-src="https://img.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal/square"
+                          alt="&#34;Der Fluch der Megaclubs&#34;: Die neuen Fans"
+                     src="https://img.zeit.de/sport/2022-03/der-fluch-der-megaclubs-paris-saint-germain-fans/square__460x460"
+                     data-src="https://img.zeit.de/sport/2022-03/der-fluch-der-megaclubs-paris-saint-germain-fans/square"
                      data-ratio="1.0"
                      decoding="async">
                             </noscript></div>
@@ -1410,23 +1444,20 @@ Schalke 04</span><span class="visually-hidden">: </span><span class="zon-teaser-
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal/square__460x460",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0imago images"}
+    "url": "https://img.zeit.de/sport/2022-03/der-fluch-der-megaclubs-paris-saint-germain-fans/square__460x460",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Matthias Hangst/\u200bGetty Images"}
 }
 </script>        </figure>
 <div class="zon-teaser-square__container">
-        <a href="https://www.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal-robert-hoyzer-ante-sapina" class="zon-teaser-square__heading-link">
+        <a href="https://www.zeit.de/sport/2022-03/der-fluch-der-megaclubs-christian-spiller-fans" class="zon-teaser-square__heading-link">
         <h3 class="zon-teaser-square__heading">
-                <span class="zon-teaser-square__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
-        <use xlink:href="#svg-zplus" />
-    </svg>
-Felix Zwayer</span><span class="visually-hidden">: </span><span class="zon-teaser-square__title">&#34;Mit dem kann man arbeiten&#34;</span>
+                <span class="zon-teaser-square__kicker">&#34;Der Fluch der Megaclubs&#34;</span><span class="visually-hidden">: </span><span class="zon-teaser-square__title">Die neuen Fans</span>
                 </h3>
         </a>
-        <p class="zon-teaser-square__text">Vor seinem Bundesliga-Comeback sagt der Schiedsrichter Felix Zwayer, er habe nie Geld angenommen. Nun widerspricht einer, der es besser wissen könnte: Ante Šapina.</p>
+        <p class="zon-teaser-square__text">Veger kommt aus München und trägt Trikots von PSG, die Super League hätte er gut gefunden. Er gehört zu einem Typus Fußballfans, denen Erfolg wichtiger ist als Tradition.</p>
             </div>
 
-    <button value="221d62c5-84b9-4e80-ac0b-41176ac1dfe5" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="81759b0b-d7ec-4d71-a94d-3518f541736a" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -1435,14 +1466,14 @@ Felix Zwayer</span><span class="visually-hidden">: </span><span class="zon-tease
 <div class="cp-area cp-area--standard" data-ct-context="standard">
                                                                             
                                                             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/fifa-russland-sanktionen-fussball-wm">
-                                        <a href="https://www.zeit.de/sport/2022-02/fifa-russland-sanktionen-fussball-wm" class="zon-teaser-standard__faux-link" title="Fifa-Sanktionen: Russland wird vom internationalen Fußball isoliert" tabindex="-1" aria-hidden="true" data-ct-label="link">Fifa-Sanktionen: Russland wird vom internationalen Fußball isoliert</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/laenderspiel-test-deutschland-niederlande-unentschieden">
+                                        <a href="https://www.zeit.de/sport/2022-03/laenderspiel-test-deutschland-niederlande-unentschieden" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Fußballländerspiel: Deutschland und Niederlande trennen sich unentschieden">Fußballländerspiel: Deutschland und Niederlande trennen sich unentschieden</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/sport/2022-02/fifa-russland-sanktionen-fussball-wm-bild/wide__822x462">
+            <noscript data-src="https://img.zeit.de/sport/2022-03/laenderspiel-test-deutschland-niederlande-unentschieden-bild-mueller/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="Fifa-Sanktionen: Russland wird vom internationalen Fußball isoliert"
-                     src="https://img.zeit.de/sport/2022-02/fifa-russland-sanktionen-fussball-wm-bild/wide__822x462"
-                     data-src="https://img.zeit.de/sport/2022-02/fifa-russland-sanktionen-fussball-wm-bild/wide"
+                          alt="Fußballländerspiel: Deutschland und Niederlande trennen sich unentschieden"
+                     src="https://img.zeit.de/sport/2022-03/laenderspiel-test-deutschland-niederlande-unentschieden-bild-mueller/wide__822x462"
+                     data-src="https://img.zeit.de/sport/2022-03/laenderspiel-test-deutschland-niederlande-unentschieden-bild-mueller/wide"
                      data-ratio="1.77777777778"
                      decoding="async">
                             </noscript></div>
@@ -1451,39 +1482,37 @@ Felix Zwayer</span><span class="visually-hidden">: </span><span class="zon-tease
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sport/2022-02/fifa-russland-sanktionen-fussball-wm-bild/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Evgenia Novozhenina/\u200bReuters"}
+    "url": "https://img.zeit.de/sport/2022-03/laenderspiel-test-deutschland-niederlande-unentschieden-bild-mueller/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Federico Gambarini/\u200bdpa/\u200bdpa"}
 }
 </script>        </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/sport/2022-02/fifa-russland-sanktionen-fussball-wm" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/sport/2022-03/laenderspiel-test-deutschland-niederlande-unentschieden" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">Fifa-Sanktionen</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Russland wird vom internationalen Fußball isoliert</span>
+                <span class="zon-teaser-standard__kicker">Fußballländerspiel</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Deutschland und Niederlande trennen sich unentschieden</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Auch Dänemark, Norwegen, England und die Schweiz wollen nicht mehr gegen Russland spielen. Die Fifa greift ein. Kritikern geht das aber nicht weit genug.</p>
+        <p class="zon-teaser-standard__text">Im Freundschaftsspiel in den Niederlanden hat Deutschland 1:1 gespielt. Thomas Müller erzielte den einzigen Treffer für die Nationalmannschaft.</p>
                             
 
-            <div class="zon-teaser-standard__metadata">
-            <span><a class="zon-teaser-standard__commentcount" href="https://www.zeit.de/sport/2022-02/fifa-russland-sanktionen-fussball-wm#comments" data-ct-label="comments" title="Kommentare anzeigen" tabindex="-1">109 Kommentare</a></span></div>
     
     </div>
 
-    <button value="7e302742-4d05-49d7-868c-1545615e546a" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="bbc99fa5-6652-44b7-8b20-a17c92de4d2b" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
                             <!-- adtile1mobile is omitted to avoid duplicates. -->
                                                                     
                                                             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/ukraine-bundesliga-rueckschau-videobeweis">
-                                        <a href="https://www.zeit.de/sport/2022-02/ukraine-bundesliga-rueckschau-videobeweis" class="zon-teaser-standard__faux-link" title="Bundesliga-Rückschau: Ein Spieltag für den Frieden" tabindex="-1" aria-hidden="true" data-ct-label="link">Bundesliga-Rückschau: Ein Spieltag für den Frieden</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/fussball-ukraine-krieg-charkiw" data-zplus="zplus">
+                                        <a href="https://www.zeit.de/sport/2022-03/fussball-ukraine-krieg-charkiw" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Fußball in der Ukraine: &#34;Der Hass auf die Russen ist immens&#34;">Fußball in der Ukraine: &#34;Der Hass auf die Russen ist immens&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/sport/2022-02/vfl-bochum-ukraine/wide__822x462">
+            <noscript data-src="https://img.zeit.de/sport/2022-03/charkiw-feuer/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="Bundesliga-Rückschau: Ein Spieltag für den Frieden"
-                     src="https://img.zeit.de/sport/2022-02/vfl-bochum-ukraine/wide__822x462"
-                     data-src="https://img.zeit.de/sport/2022-02/vfl-bochum-ukraine/wide"
+                          alt="Fußball in der Ukraine: &#34;Der Hass auf die Russen ist immens&#34;"
+                     src="https://img.zeit.de/sport/2022-03/charkiw-feuer/wide__822x462"
+                     data-src="https://img.zeit.de/sport/2022-03/charkiw-feuer/wide"
                      data-ratio="1.77777777778"
                      decoding="async">
                             </noscript></div>
@@ -1492,40 +1521,43 @@ Felix Zwayer</span><span class="visually-hidden">: </span><span class="zon-tease
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sport/2022-02/vfl-bochum-ukraine/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Joosep Martinson/\u200bGetty Images"}
+    "url": "https://img.zeit.de/sport/2022-03/charkiw-feuer/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Felipe Dana /\u200b Picture Alliance/\u200bdpa"}
 }
 </script>        </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/sport/2022-02/ukraine-bundesliga-rueckschau-videobeweis" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/sport/2022-03/fussball-ukraine-krieg-charkiw" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">Bundesliga-Rückschau</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Ein Spieltag für den Frieden</span>
+                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
+        <use xlink:href="#svg-zplus" />
+    </svg>
+Fußball in der Ukraine</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">&#34;Der Hass auf die Russen ist immens&#34;</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Es war kein normales Fußballwochenende. Drei emotionale Szenen stachen dabei heraus. Die Alltagsprobleme aber blieben. Alles vom 24. Spieltag</p>
+        <p class="zon-teaser-standard__text">Die Spieler bei ihren Familien, die Fans an der Front: ein Gespräch mit dem Finanzdirektor des Charkiwer Fußballclubs über Verlust und Zusammenhalt in Kriegszeiten</p>
                             
 
             <div class="zon-teaser-standard__metadata">
-            <span><span class="zon-teaser-standard__byline">    Von            Fabian Scheler</span>
+            <span><span class="zon-teaser-standard__byline">    Interview:            Fabian Scheler</span>
     </span></div>
     
     </div>
 
-    <button value="a367ee27-0cf7-43a0-a6e6-2c938b9aaa3f" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="1f0dce8f-1136-46ff-827b-7c8f250429e9" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
                             <!-- adtile1mobile is omitted to avoid duplicates. -->
                                                                     
                                                             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/bundesliga-24-spieltag-fussball-spielberichte">
-                                        <a href="https://www.zeit.de/sport/2022-02/bundesliga-24-spieltag-fussball-spielberichte" class="zon-teaser-standard__faux-link" title="Bundesliga, 24. Spieltag: FC Augsburg und der BVB trennen sich unentschieden" tabindex="-1" aria-hidden="true" data-ct-label="link">Bundesliga, 24. Spieltag: FC Augsburg und der BVB trennen sich unentschieden</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel">
+                                        <a href="https://www.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Deutschland - Israel: Vielen Dank, Sinsheim">Deutschland - Israel: Vielen Dank, Sinsheim</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/sport/2022-02/bundesliga-24-spieltag-fussball-spielberichte-dortmund/wide__822x462">
+            <noscript data-src="https://img.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel-bild/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="Bundesliga, 24. Spieltag: FC Augsburg und der BVB trennen sich unentschieden"
-                     src="https://img.zeit.de/sport/2022-02/bundesliga-24-spieltag-fussball-spielberichte-dortmund/wide__822x462"
-                     data-src="https://img.zeit.de/sport/2022-02/bundesliga-24-spieltag-fussball-spielberichte-dortmund/wide"
+                          alt="Deutschland - Israel: Vielen Dank, Sinsheim"
+                     src="https://img.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel-bild/wide__822x462"
+                     data-src="https://img.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel-bild/wide"
                      data-ratio="1.77777777778"
                      decoding="async">
                             </noscript></div>
@@ -1534,23 +1566,26 @@ Felix Zwayer</span><span class="visually-hidden">: </span><span class="zon-tease
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sport/2022-02/bundesliga-24-spieltag-fussball-spielberichte-dortmund/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Matthias Balk/\u200bdpa"}
+    "url": "https://img.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel-bild/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Alexander Hassenstein/\u200bGetty Images"}
 }
 </script>        </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/sport/2022-02/bundesliga-24-spieltag-fussball-spielberichte" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">Bundesliga, 24. Spieltag</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">FC Augsburg und der BVB trennen sich unentschieden</span>
+                <span class="zon-teaser-standard__kicker">Deutschland - Israel</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Vielen Dank, Sinsheim</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Borussia Dortmund hat nach einem 1:1 gegen Augsburg nur noch wenig Chancen auf den Meistertitel. Leipzig siegt mit einem späten Tor gegen Bochum. Die Spielberichte</p>
+        <p class="zon-teaser-standard__text">Wer interessiert sich schon für einen Freundschaftskick der Nationalelf? Die Menschen aus dem Kraichgau, die den 2:0-Sieg gegen Israel zu einem kleinen Volksfest machen.</p>
                             
 
+            <div class="zon-teaser-standard__metadata">
+            <span><span class="zon-teaser-standard__byline">    Von            Oliver Fritsch</span>
+    </span></div>
     
     </div>
 
-    <button value="4dfb7df5-5612-4904-aa82-d9b22fe49e6e" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="3bcf08e4-c295-42f6-89cf-525ab9713e7f" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -1558,7 +1593,7 @@ Felix Zwayer</span><span class="visually-hidden">: </span><span class="zon-tease
                                                                     
                                                             
                                     <article class="zon-teaser-standard zon-teaser-standard--ad" data-unique-id="http://xml.zeit.de/angebote/Links/ressort-teaser-oa/oa-teaser/teaser-link-sport">
-                                        <a href="https://studiengaenge.zeit.de/studienangebote?suche=sport&amp;wt_zmc=fix.int.zonpmr.zeitde.verlagteasersport.suma.verlagsteaser.basketball.x&amp;utm_medium=fix&amp;utm_source=zeitde_zonpmr_int&amp;utm_campaign=verlagteasersport&amp;utm_content=suma_verlagsteaser_basketball_x" class="zon-teaser-standard__faux-link" title="Studienorientierung: Mehr als Bundesjugendspiele" tabindex="-1" aria-hidden="true" data-ct-label="link" target="_blank" rel="noopener">Studienorientierung: Mehr als Bundesjugendspiele</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://studiengaenge.zeit.de/studienangebote?suche=sport&amp;wt_zmc=fix.int.zonpmr.sport-ressort.verlagsteaser-ressort.suma.bildtext.basketball.x&amp;utm_medium=fix&amp;utm_source=sport-ressort_zonpmr_int&amp;utm_campaign=verlagsteaser-ressort&amp;utm_content=suma_bildtext_basketball_x" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" target="_blank" rel="noopener" title="Studienorientierung: Mehr als Bundesjugendspiele">Studienorientierung: Mehr als Bundesjugendspiele</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/angebote/Links/ressort-teaser-oa/oa-bilder/oa-teaser-sport1/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -1578,7 +1613,7 @@ Felix Zwayer</span><span class="visually-hidden">: </span><span class="zon-tease
 }
 </script>        </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://studiengaenge.zeit.de/studienangebote?suche=sport&amp;wt_zmc=fix.int.zonpmr.zeitde.verlagteasersport.suma.verlagsteaser.basketball.x&amp;utm_medium=fix&amp;utm_source=zeitde_zonpmr_int&amp;utm_campaign=verlagteasersport&amp;utm_content=suma_verlagsteaser_basketball_x" class="zon-teaser-standard__heading-link">
+        <a href="https://studiengaenge.zeit.de/studienangebote?suche=sport&amp;wt_zmc=fix.int.zonpmr.sport-ressort.verlagsteaser-ressort.suma.bildtext.basketball.x&amp;utm_medium=fix&amp;utm_source=sport-ressort_zonpmr_int&amp;utm_campaign=verlagsteaser-ressort&amp;utm_content=suma_bildtext_basketball_x" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
                 <span class="zon-teaser-standard__kicker zon-teaser-standard__kicker--ad">Verlagsangebot</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Mehr als Bundesjugendspiele</span>
                 </h3>
@@ -1591,14 +1626,14 @@ Felix Zwayer</span><span class="visually-hidden">: </span><span class="zon-tease
                             <!-- adtile1mobile is omitted to avoid duplicates. -->
                                                                     
                                                             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland-schweden-polen-boykott">
-                                        <a href="https://www.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland-schweden-polen-boykott" class="zon-teaser-standard__faux-link" title="WM-Play-offs: Auch Tschechien will nicht gegen Russland spielen" tabindex="-1" aria-hidden="true" data-ct-label="link">WM-Play-offs: Auch Tschechien will nicht gegen Russland spielen</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/fussball-weltmeisterschaft-laenderspiel-deutschland-israel-testspiel">
+                                        <a href="https://www.zeit.de/sport/2022-03/fussball-weltmeisterschaft-laenderspiel-deutschland-israel-testspiel" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Fußballweltmeisterschaft: DFB-Auswahl gewinnt WM-Testspiel 2:0 gegen Israel">Fußballweltmeisterschaft: DFB-Auswahl gewinnt WM-Testspiel 2:0 gegen Israel</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland/wide__822x462">
+            <noscript data-src="https://img.zeit.de/sport/2022-03/fussball-weltmeisterschaft-laenderspiel-deutschland-israel-wm-testspiel/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="WM-Play-offs: Auch Tschechien will nicht gegen Russland spielen"
-                     src="https://img.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland/wide__822x462"
-                     data-src="https://img.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland/wide"
+                          alt="Fußballweltmeisterschaft: DFB-Auswahl gewinnt WM-Testspiel 2:0 gegen Israel"
+                     src="https://img.zeit.de/sport/2022-03/fussball-weltmeisterschaft-laenderspiel-deutschland-israel-wm-testspiel/wide__822x462"
+                     data-src="https://img.zeit.de/sport/2022-03/fussball-weltmeisterschaft-laenderspiel-deutschland-israel-wm-testspiel/wide"
                      data-ratio="1.77777777778"
                      decoding="async">
                             </noscript></div>
@@ -1607,25 +1642,23 @@ Felix Zwayer</span><span class="visually-hidden">: </span><span class="zon-tease
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Robert Michael/\u200bdpa"}
+    "url": "https://img.zeit.de/sport/2022-03/fussball-weltmeisterschaft-laenderspiel-deutschland-israel-wm-testspiel/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Uwe Anspach/\u200bdpa"}
 }
 </script>        </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland-schweden-polen-boykott" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/sport/2022-03/fussball-weltmeisterschaft-laenderspiel-deutschland-israel-testspiel" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">WM-Play-offs</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Auch Tschechien will nicht gegen Russland spielen</span>
+                <span class="zon-teaser-standard__kicker">Fußballweltmeisterschaft</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">DFB-Auswahl gewinnt WM-Testspiel 2:0 gegen Israel</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Wie bereits Polen und Schweden weigert sich nun Tschechien, in der WM-Qualifikation Ende März gegen Russland anzutreten. Damit gerät die Fifa unter Druck.</p>
+        <p class="zon-teaser-standard__text">Die deutsche Nationalmannschaft hat zum achten Mal in Folge seit Hansi Flicks Antritt als Bundestrainer gewonnen. Dieser experimentierte mit der Aufstellung der Spieler.</p>
                             
 
-            <div class="zon-teaser-standard__metadata">
-            <span><a class="zon-teaser-standard__commentcount" href="https://www.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland-schweden-polen-boykott#comments" data-ct-label="comments" title="Kommentare anzeigen" tabindex="-1">189 Kommentare</a></span></div>
     
     </div>
 
-    <button value="410716f3-6f5f-4442-9cd4-8920c910d33e" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="1fce4313-78e2-4a27-9e45-b5ff532d7981" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -1685,14 +1718,14 @@ Felix Zwayer</span><span class="visually-hidden">: </span><span class="zon-tease
 <div class="cp-area cp-area--duo" data-ct-context="duo">
                                                                             
                                                             
-                                    <article class="zon-teaser-square  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/sport-russland-ukraine-krieg-menschenrechte">
-                                        <a href="https://www.zeit.de/sport/2022-02/sport-russland-ukraine-krieg-menschenrechte" class="zon-teaser-square__faux-link" title="Krieg gegen die Ukraine: Appeasement ist vorbei" tabindex="-1" aria-hidden="true" data-ct-label="link">Krieg gegen die Ukraine: Appeasement ist vorbei</a>                <figure class="zon-teaser-square__media zon-teaser-square__media--force-mobile scaled-image variant variant--square is-pixelperfect">
+                                    <article class="zon-teaser-square  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/thomas-mueller-fussball-wm-katar-menschenrechtsverletzungen" data-zplus="zplus-dynamic">
+                                        <a href="https://www.zeit.de/sport/2022-03/thomas-mueller-fussball-wm-katar-menschenrechtsverletzungen" class="zon-teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Thomas Müller: Er muss es noch trainieren">Thomas Müller: Er muss es noch trainieren</a>                <figure class="zon-teaser-square__media zon-teaser-square__media--force-mobile scaled-image variant variant--square is-pixelperfect">
                 <div class="zon-teaser-square__media-container ">
-            <noscript data-src="https://img.zeit.de/sport/2022-02/putin-fifa-wm-sport-menschenrechte/square__460x460">
+            <noscript data-src="https://img.zeit.de/sport/2022-03/thomas-mueller-fussball-katar-menschenrechtsverletzungen/square__460x460">
                                 <img class="zon-teaser-square__media-item"
-                          alt="Krieg gegen die Ukraine: Appeasement ist vorbei"
-                     src="https://img.zeit.de/sport/2022-02/putin-fifa-wm-sport-menschenrechte/square__460x460"
-                     data-src="https://img.zeit.de/sport/2022-02/putin-fifa-wm-sport-menschenrechte/square"
+                          alt="Thomas Müller: Er muss es noch trainieren"
+                     src="https://img.zeit.de/sport/2022-03/thomas-mueller-fussball-katar-menschenrechtsverletzungen/square__460x460"
+                     data-src="https://img.zeit.de/sport/2022-03/thomas-mueller-fussball-katar-menschenrechtsverletzungen/square"
                      data-ratio="1.0"
                      decoding="async">
                             </noscript></div>
@@ -1701,20 +1734,23 @@ Felix Zwayer</span><span class="visually-hidden">: </span><span class="zon-tease
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sport/2022-02/putin-fifa-wm-sport-menschenrechte/square__460x460",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Matthias Hangst/\u200bGetty Images"}
+    "url": "https://img.zeit.de/sport/2022-03/thomas-mueller-fussball-katar-menschenrechtsverletzungen/square__460x460",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0[M] ZEIT ONLINE Foto: Sebastian Gollnow/\u200bdpa"}
 }
 </script>        </figure>
 <div class="zon-teaser-square__container">
-        <a href="https://www.zeit.de/sport/2022-02/sport-russland-ukraine-krieg-menschenrechte" class="zon-teaser-square__heading-link">
+        <a href="https://www.zeit.de/sport/2022-03/thomas-mueller-fussball-wm-katar-menschenrechtsverletzungen" class="zon-teaser-square__heading-link">
         <h3 class="zon-teaser-square__heading">
-                <span class="zon-teaser-square__kicker">Krieg gegen die Ukraine</span><span class="visually-hidden">: </span><span class="zon-teaser-square__title">Appeasement ist vorbei</span>
+                <span class="zon-teaser-square__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
+        <use xlink:href="#svg-zplus" />
+    </svg>
+Thomas Müller</span><span class="visually-hidden">: </span><span class="zon-teaser-square__title">Er muss es noch trainieren</span>
                 </h3>
         </a>
-        <p class="zon-teaser-square__text">Wer bisher an Sport und Menschenrechte dachte, hatte wenig Gehör. Russlands Krieg verändert das. Die Lehre ist klar: Es braucht neue Grundsätze.</p>
+        <p class="zon-teaser-square__text">Die WM in Katar steht an und immer mehr Fußballer reden über Menschenrechte. Das ist gut, aber auch das muss man üben, wie das Beispiel Thomas Müller zeigt.</p>
             </div>
 
-    <button value="ed5ef672-70dc-42eb-ab27-9d9ea3794e5b" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="4ebecc6c-a883-45fa-9dc8-9e4fb80036a8" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -1724,14 +1760,14 @@ Felix Zwayer</span><span class="visually-hidden">: </span><span class="zon-tease
 <div class="cp-area cp-area--duo" data-ct-context="duo">
                                                                             
                                                             
-                                    <article class="zon-teaser-square  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/gazprom-sponsoring-russland-schalke-04-uefa" data-zplus="zplus-dynamic">
-                                        <a href="https://www.zeit.de/sport/2022-02/gazprom-sponsoring-russland-schalke-04-uefa" class="zon-teaser-square__faux-link" title="Sponsoring aus Russland: Das Gazprom-Netz" tabindex="-1" aria-hidden="true" data-ct-label="link">Sponsoring aus Russland: Das Gazprom-Netz</a>                <figure class="zon-teaser-square__media zon-teaser-square__media--force-mobile scaled-image variant variant--square is-pixelperfect">
+                                    <article class="zon-teaser-square  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal-robert-hoyzer-ante-sapina" data-zplus="zplus-dynamic">
+                                        <a href="https://www.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal-robert-hoyzer-ante-sapina" class="zon-teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Felix Zwayer: &#34;Mit dem kann man arbeiten&#34;">Felix Zwayer: &#34;Mit dem kann man arbeiten&#34;</a>                <figure class="zon-teaser-square__media zon-teaser-square__media--force-mobile scaled-image variant variant--square is-pixelperfect">
                 <div class="zon-teaser-square__media-container ">
-            <noscript data-src="https://img.zeit.de/sport/2022-02/gazprom-schalke-fans/square__460x460">
+            <noscript data-src="https://img.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal/square__460x460">
                                 <img class="zon-teaser-square__media-item"
-                          alt="Sponsoring aus Russland: Das Gazprom-Netz"
-                     src="https://img.zeit.de/sport/2022-02/gazprom-schalke-fans/square__460x460"
-                     data-src="https://img.zeit.de/sport/2022-02/gazprom-schalke-fans/square"
+                          alt="Felix Zwayer: &#34;Mit dem kann man arbeiten&#34;"
+                     src="https://img.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal/square__460x460"
+                     data-src="https://img.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal/square"
                      data-ratio="1.0"
                      decoding="async">
                             </noscript></div>
@@ -1740,23 +1776,23 @@ Felix Zwayer</span><span class="visually-hidden">: </span><span class="zon-tease
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sport/2022-02/gazprom-schalke-fans/square__460x460",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0picture alliance /\u200b Ina Fassbender/\u200bdpa | Ina Fassbender/\u200bdpa"}
+    "url": "https://img.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal/square__460x460",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0imago images"}
 }
 </script>        </figure>
 <div class="zon-teaser-square__container">
-        <a href="https://www.zeit.de/sport/2022-02/gazprom-sponsoring-russland-schalke-04-uefa" class="zon-teaser-square__heading-link">
+        <a href="https://www.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal-robert-hoyzer-ante-sapina" class="zon-teaser-square__heading-link">
         <h3 class="zon-teaser-square__heading">
                 <span class="zon-teaser-square__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
         <use xlink:href="#svg-zplus" />
     </svg>
-Sponsoring aus Russland</span><span class="visually-hidden">: </span><span class="zon-teaser-square__title">Das Gazprom-Netz</span>
+Felix Zwayer</span><span class="visually-hidden">: </span><span class="zon-teaser-square__title">&#34;Mit dem kann man arbeiten&#34;</span>
                 </h3>
         </a>
-        <p class="zon-teaser-square__text">Die Uefa und Schalke sind die bekanntesten Sport-Institutionen, die Gazprom finanziert. Putins Unternehmen spielt auch im Eishockey und Volleyball mit. Bleibt es dabei?</p>
+        <p class="zon-teaser-square__text">Vor seinem Bundesliga-Comeback sagt der Schiedsrichter Felix Zwayer, er habe nie Geld angenommen. Nun widerspricht einer, der es besser wissen könnte: Ante Šapina.</p>
             </div>
 
-    <button value="36e5b5c5-c0c7-4e3e-b50b-7c406396b70f" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="221d62c5-84b9-4e80-ac0b-41176ac1dfe5" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -1765,14 +1801,14 @@ Sponsoring aus Russland</span><span class="visually-hidden">: </span><span class
 <div class="cp-area cp-area--standard" data-ct-context="standard">
                                                                             
                                                             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/king-richard-serena-venus-williams-vater-tennis-kinofilm" data-zplus="zplus">
-                                        <a href="https://www.zeit.de/sport/2022-02/king-richard-serena-venus-williams-vater-tennis-kinofilm" class="zon-teaser-standard__faux-link" title="&#34;King Richard&#34;: Der König war nicht für alle da" tabindex="-1" aria-hidden="true" data-ct-label="link">&#34;King Richard&#34;: Der König war nicht für alle da</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/handball-bundesliga-sc-magdeburg-thw-kiel" data-zplus="zplus-dynamic">
+                                        <a href="https://www.zeit.de/sport/2022-03/handball-bundesliga-sc-magdeburg-thw-kiel" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Handball: Moneyball in Magdeburg">Handball: Moneyball in Magdeburg</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/sport/2022-02/king-williams/wide__822x462">
+            <noscript data-src="https://img.zeit.de/sport/2022-03/bennet-wiegert-sc-magdeburg/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="&#34;King Richard&#34;: Der König war nicht für alle da"
-                     src="https://img.zeit.de/sport/2022-02/king-williams/wide__822x462"
-                     data-src="https://img.zeit.de/sport/2022-02/king-williams/wide"
+                          alt="Handball: Moneyball in Magdeburg"
+                     src="https://img.zeit.de/sport/2022-03/bennet-wiegert-sc-magdeburg/wide__822x462"
+                     data-src="https://img.zeit.de/sport/2022-03/bennet-wiegert-sc-magdeburg/wide"
                      data-ratio="1.77777777778"
                      decoding="async">
                             </noscript></div>
@@ -1781,43 +1817,43 @@ Sponsoring aus Russland</span><span class="visually-hidden">: </span><span class
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sport/2022-02/king-williams/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Ken Levine /\u200b Allsport/\u200bGetty Images"}
+    "url": "https://img.zeit.de/sport/2022-03/bennet-wiegert-sc-magdeburg/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Simon Hofmann/\u200bGetty Images"}
 }
 </script>        </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/sport/2022-02/king-richard-serena-venus-williams-vater-tennis-kinofilm" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/sport/2022-03/handball-bundesliga-sc-magdeburg-thw-kiel" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
+                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
         <use xlink:href="#svg-zplus" />
     </svg>
-&#34;King Richard&#34;</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Der König war nicht für alle da</span>
+Handball</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Moneyball in Magdeburg</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Über Venus und Serena Williams&#39; Vater kursieren irre Geschichten, viele erzählt er selbst. Will Smith spielt ihn nun in &#34;King Richard&#34;. Leider fehlt dem Film die Hälfte.</p>
+        <p class="zon-teaser-standard__text">Mit einer simpel klingenden Philosophie siegt sich Magdeburg durch die Handball-Saison: Wer näher am Tor steht, trifft häufiger. Die Meisterschaft ist nahe.</p>
                             
 
             <div class="zon-teaser-standard__metadata">
-            <span><span class="zon-teaser-standard__byline">    Von            Florian Goosmann</span>
+            <span><span class="zon-teaser-standard__byline">    Von            Christoph Dach</span>
     </span></div>
     
     </div>
 
-    <button value="5fc85dae-f327-4042-9666-9ca5f468d241" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="2ccf0f4c-4125-43f5-9bc5-56d84d2c9b69" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
                             <!-- adtile1mobile is omitted to avoid duplicates. -->
                                                                     
                                                             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/fc-bayern-muenchen-borussia-dortmund-ukraine-bundesliga-vorschau">
-                                        <a href="https://www.zeit.de/sport/2022-02/fc-bayern-muenchen-borussia-dortmund-ukraine-bundesliga-vorschau" class="zon-teaser-standard__faux-link" title="Bundesligavorschau: &#34;Mein Land gehört den Ukrainern&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Bundesligavorschau: &#34;Mein Land gehört den Ukrainern&#34;</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/fussball-wm-qualifikation-italien-halbfinale-niederlage">
+                                        <a href="https://www.zeit.de/sport/2022-03/fussball-wm-qualifikation-italien-halbfinale-niederlage" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Fußball-WM: Italien verpasst WM-Teilnahme">Fußball-WM: Italien verpasst WM-Teilnahme</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/sport/2022-02/oleksandr-sintschenko-ukraine/wide__822x462">
+            <noscript data-src="https://img.zeit.de/sport/2022-03/fussball-wm-qualifikation-italien-halbfinale-niederlage-bild-2/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="Bundesligavorschau: &#34;Mein Land gehört den Ukrainern&#34;"
-                     src="https://img.zeit.de/sport/2022-02/oleksandr-sintschenko-ukraine/wide__822x462"
-                     data-src="https://img.zeit.de/sport/2022-02/oleksandr-sintschenko-ukraine/wide"
+                          alt="Fußball-WM: Italien verpasst WM-Teilnahme"
+                     src="https://img.zeit.de/sport/2022-03/fussball-wm-qualifikation-italien-halbfinale-niederlage-bild-2/wide__822x462"
+                     data-src="https://img.zeit.de/sport/2022-03/fussball-wm-qualifikation-italien-halbfinale-niederlage-bild-2/wide"
                      data-ratio="1.77777777778"
                      decoding="async">
                             </noscript></div>
@@ -1826,40 +1862,39 @@ Sponsoring aus Russland</span><span class="visually-hidden">: </span><span class
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sport/2022-02/oleksandr-sintschenko-ukraine/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Daniel Mihailescu/\u200bAFP/\u200bGetty Images"}
+    "url": "https://img.zeit.de/sport/2022-03/fussball-wm-qualifikation-italien-halbfinale-niederlage-bild-2/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Claudio Villa/\u200bGetty Images"}
 }
 </script>        </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/sport/2022-02/fc-bayern-muenchen-borussia-dortmund-ukraine-bundesliga-vorschau" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/sport/2022-03/fussball-wm-qualifikation-italien-halbfinale-niederlage" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">Bundesligavorschau</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">&#34;Mein Land gehört den Ukrainern&#34;</span>
+                <span class="zon-teaser-standard__kicker">Fußball-WM</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Italien verpasst WM-Teilnahme</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Die Bayern gewinnen vielleicht, der BVB ächzt weiter durch die graue Saison. Doch was zählt das, wenn in Europa Krieg wütet? Alles Wichtige zum 24. Spieltag</p>
+        <p class="zon-teaser-standard__text">Fußball-WM ohne den Europameister: Italien verlor in den Play-offs überraschend gegen Nordmazedonien. Auch die Türkei und Österreich werden nicht in Katar dabei sein.</p>
                             
 
             <div class="zon-teaser-standard__metadata">
-            <span><span class="zon-teaser-standard__byline">    Von            Fabian Scheler            und            Oliver Fritsch</span>
-    </span></div>
+            <span><a class="zon-teaser-standard__commentcount" href="https://www.zeit.de/sport/2022-03/fussball-wm-qualifikation-italien-halbfinale-niederlage#comments" data-ct-label="comments" title="Kommentare anzeigen" tabindex="-1">193 Kommentare</a></span></div>
     
     </div>
 
-    <button value="377f0022-8b4c-487e-968d-66ee8ac6835b" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="6ff9d332-21c3-4a23-bcbb-c6b998318584" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
                             <!-- adtile1mobile is omitted to avoid duplicates. -->
                                                                     
                                                             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/uefa-champions-league-finale-austragungsort-sankt-petersburg-paris">
-                                        <a href="https://www.zeit.de/sport/2022-02/uefa-champions-league-finale-austragungsort-sankt-petersburg-paris" class="zon-teaser-standard__faux-link" title="Uefa: Champions-League-Finale wird in Paris ausgetragen" tabindex="-1" aria-hidden="true" data-ct-label="link">Uefa: Champions-League-Finale wird in Paris ausgetragen</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/becherwurf-gladbach-spielabbruch-bochum-dfb">
+                                        <a href="https://www.zeit.de/sport/2022-03/becherwurf-gladbach-spielabbruch-bochum-dfb" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Fußball-Bundesliga: DFB wertet abgebrochenes Spiel für Gladbach">Fußball-Bundesliga: DFB wertet abgebrochenes Spiel für Gladbach</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/sport/2022-02/uefa-champions-league-finale-austragungsort-sankt-petersburg-paris-bild/wide__822x462">
+            <noscript data-src="https://img.zeit.de/sport/2022-03/becherwurf-gladbach-spielabbruch-bochum-dfb-bild/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="Uefa: Champions-League-Finale wird in Paris ausgetragen"
-                     src="https://img.zeit.de/sport/2022-02/uefa-champions-league-finale-austragungsort-sankt-petersburg-paris-bild/wide__822x462"
-                     data-src="https://img.zeit.de/sport/2022-02/uefa-champions-league-finale-austragungsort-sankt-petersburg-paris-bild/wide"
+                          alt="Fußball-Bundesliga: DFB wertet abgebrochenes Spiel für Gladbach"
+                     src="https://img.zeit.de/sport/2022-03/becherwurf-gladbach-spielabbruch-bochum-dfb-bild/wide__822x462"
+                     data-src="https://img.zeit.de/sport/2022-03/becherwurf-gladbach-spielabbruch-bochum-dfb-bild/wide"
                      data-ratio="1.77777777778"
                      decoding="async">
                             </noscript></div>
@@ -1868,23 +1903,23 @@ Sponsoring aus Russland</span><span class="visually-hidden">: </span><span class
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sport/2022-02/uefa-champions-league-finale-austragungsort-sankt-petersburg-paris-bild/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Franck Fife/\u200bAFP/\u200bGetty Images"}
+    "url": "https://img.zeit.de/sport/2022-03/becherwurf-gladbach-spielabbruch-bochum-dfb-bild/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Bernd Thissen/\u200bdpa"}
 }
 </script>        </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/sport/2022-02/uefa-champions-league-finale-austragungsort-sankt-petersburg-paris" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/sport/2022-03/becherwurf-gladbach-spielabbruch-bochum-dfb" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">Uefa</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Champions-League-Finale wird in Paris ausgetragen</span>
+                <span class="zon-teaser-standard__kicker">Fußball-Bundesliga</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">DFB wertet abgebrochenes Spiel für Gladbach</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Die Uefa und die Formel 1 werden ihre Wettkämpfe nicht in Russland austragen. Das Finale der Champions League wurde verlegt, der Große Preis von Russland abgesagt.</p>
+        <p class="zon-teaser-standard__text">Ein Unbekannter hatte beim Spiel Bochum-Mönchengladbach einen Becher auf den Linienrichter geworfen. Das damals abgebrochene Spiel wertet der DFB nun für Mönchengladbach.</p>
                             
 
     
     </div>
 
-    <button value="a0cd8544-5ddb-4108-855d-6385c2735b45" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="81cd426c-b13b-4b5d-8b41-08476b40a2a8" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -1955,14 +1990,14 @@ Sponsoring aus Russland</span><span class="visually-hidden">: </span><span class
             </thead>
             <tbody>
                                                 <tr>
-                                                                    <td>                                                                                                                                                            <article class="zon-teaser-kpi-table  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland-schweden-polen-boykott">
-                                        <a href="https://www.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland-schweden-polen-boykott" class="zon-teaser-kpi-table__faux-link" title="WM-Play-offs: Auch Tschechien will nicht gegen Russland spielen" tabindex="-1" aria-hidden="true" data-ct-label="link">WM-Play-offs: Auch Tschechien will nicht gegen Russland spielen</a>        <figure class="zon-teaser-kpi-table__media  scaled-image variant variant--wide">
+                                                                    <td>                                                                                                                                                            <article class="zon-teaser-kpi-table  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel">
+                                        <a href="https://www.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel" class="zon-teaser-kpi-table__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Deutschland - Israel: Vielen Dank, Sinsheim">Deutschland - Israel: Vielen Dank, Sinsheim</a>        <figure class="zon-teaser-kpi-table__media  scaled-image variant variant--wide">
                 <div class="zon-teaser-kpi-table__media-container ">
-            <noscript data-src="https://img.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland/wide__822x462">
+            <noscript data-src="https://img.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel-bild/wide__822x462">
                                 <img class="zon-teaser-kpi-table__media-item"
-                          alt="WM-Play-offs: Auch Tschechien will nicht gegen Russland spielen"
-                     src="https://img.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland/wide__822x462"
-                     data-src="https://img.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland/wide"
+                          alt="Deutschland - Israel: Vielen Dank, Sinsheim"
+                     src="https://img.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel-bild/wide__822x462"
+                     data-src="https://img.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel-bild/wide"
                      data-ratio="1.77777777778"
                      decoding="async">
                             </noscript></div>
@@ -1971,35 +2006,35 @@ Sponsoring aus Russland</span><span class="visually-hidden">: </span><span class
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Robert Michael/\u200bdpa"}
+    "url": "https://img.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel-bild/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Alexander Hassenstein/\u200bGetty Images"}
 }
 </script>        </figure>
 <div class="zon-teaser-kpi-table__container">
-        <a href="https://www.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland-schweden-polen-boykott" class="zon-teaser-kpi-table__heading-link">
+        <a href="https://www.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel" class="zon-teaser-kpi-table__heading-link">
         <h3 class="zon-teaser-kpi-table__heading">
-                <span class="zon-teaser-kpi-table__kicker">WM-Play-offs</span><span class="visually-hidden">: </span><span class="zon-teaser-kpi-table__title">Auch Tschechien will nicht gegen Russland spielen</span>
+                <span class="zon-teaser-kpi-table__kicker">Deutschland - Israel</span><span class="visually-hidden">: </span><span class="zon-teaser-kpi-table__title">Vielen Dank, Sinsheim</span>
                 </h3>
         </a>
             <span class="zon-teaser-kpi-table__metadata">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="11" viewBox="0 0 22 11" class="svg-symbol zon-teaser-kpi-table__icon zon-teaser-kpi-table__icon--mostread" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Leser</title><path d="M21.283 5.5C18.836 8.844 14.98 11 10.642 11S2.447 8.844 0 5.5C2.447 2.156 6.303 0 10.642 0s8.194 2.156 10.641 5.5zM10.761 9c1.85 0 3.348-1.567 3.348-3.5S12.61 2 10.761 2 7.413 3.567 7.413 5.5 8.913 9 10.761 9zm0-2c.793 0 1.435-.672 1.435-1.5S11.554 4 10.761 4c-.792 0-1.435.672-1.435 1.5S9.97 7 10.761 7z"/></svg>
-            52.900 Aufrufe
+            41.550 Aufrufe
         </span>
     </div>
 
-    <div class="zon-teaser-kpi-table__bookmark-shim"><button value="410716f3-6f5f-4442-9cd4-8920c910d33e" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <div class="zon-teaser-kpi-table__bookmark-shim"><button value="3bcf08e4-c295-42f6-89cf-525ab9713e7f" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </div></article>
                                                         </td>
-                                                                        <td>                                                                                                                                                            <article class="zon-teaser-kpi-table  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/kelly-slater-surfer-pipeline-hawaii-weltmeister" data-zplus="zplus">
-                                        <a href="https://www.zeit.de/sport/2022-02/kelly-slater-surfer-pipeline-hawaii-weltmeister" class="zon-teaser-kpi-table__faux-link" title="Kelly Slater: Der Mann, dem Gott die Wellen schenkt" tabindex="-1" aria-hidden="true" data-ct-label="link">Kelly Slater: Der Mann, dem Gott die Wellen schenkt</a>        <figure class="zon-teaser-kpi-table__media zon-teaser-kpi-table__media--force-mobile scaled-image variant variant--wide">
+                                                                        <td>                                                                                                                                                            <article class="zon-teaser-kpi-table  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/hertha-bsc-lars-windhorst-investition-abstiegskampf" data-zplus="zplus">
+                                        <a href="https://www.zeit.de/sport/2022-03/hertha-bsc-lars-windhorst-investition-abstiegskampf" class="zon-teaser-kpi-table__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Hertha BSC: Die verschwundenen 374 Millionen">Hertha BSC: Die verschwundenen 374 Millionen</a>        <figure class="zon-teaser-kpi-table__media zon-teaser-kpi-table__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-kpi-table__media-container ">
-            <noscript data-src="https://img.zeit.de/sport/2022-02/kelly-slater-surfer/wide__822x462">
+            <noscript data-src="https://img.zeit.de/sport/2022-03/hertha-bsc/wide__822x462">
                                 <img class="zon-teaser-kpi-table__media-item"
-                          alt="Kelly Slater: Der Mann, dem Gott die Wellen schenkt"
-                     src="https://img.zeit.de/sport/2022-02/kelly-slater-surfer/wide__822x462"
-                     data-src="https://img.zeit.de/sport/2022-02/kelly-slater-surfer/wide"
+                          alt="Hertha BSC: Die verschwundenen 374 Millionen"
+                     src="https://img.zeit.de/sport/2022-03/hertha-bsc/wide__822x462"
+                     data-src="https://img.zeit.de/sport/2022-03/hertha-bsc/wide"
                      data-ratio="1.77777777778"
                      decoding="async">
                             </noscript></div>
@@ -2008,34 +2043,34 @@ Sponsoring aus Russland</span><span class="visually-hidden">: </span><span class
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sport/2022-02/kelly-slater-surfer/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Erik Kabik Photography/\u200bMediaPunch/\u200bimago images"}
+    "url": "https://img.zeit.de/sport/2022-03/hertha-bsc/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Stuart Franklin/\u200bGetty Images"}
 }
 </script>        </figure>
 <div class="zon-teaser-kpi-table__container">
-        <a href="https://www.zeit.de/sport/2022-02/kelly-slater-surfer-pipeline-hawaii-weltmeister" class="zon-teaser-kpi-table__heading-link">
+        <a href="https://www.zeit.de/sport/2022-03/hertha-bsc-lars-windhorst-investition-abstiegskampf" class="zon-teaser-kpi-table__heading-link">
         <h3 class="zon-teaser-kpi-table__heading">
                 <span class="zon-teaser-kpi-table__kicker">    <svg class="svg-symbol zplus-logo" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
         <use xlink:href="#svg-zplus" />
     </svg>
-Kelly Slater</span><span class="visually-hidden">: </span><span class="zon-teaser-kpi-table__title">Der Mann, dem Gott die Wellen schenkt</span>
+Hertha BSC</span><span class="visually-hidden">: </span><span class="zon-teaser-kpi-table__title">Die verschwundenen 374 Millionen</span>
                 </h3>
         </a>
             </div>
 
-    <div class="zon-teaser-kpi-table__bookmark-shim"><button value="832d48a4-0d82-4e88-9d41-b93aa60de2a2" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <div class="zon-teaser-kpi-table__bookmark-shim"><button value="4a3b24ed-9725-44be-a0bd-27088fe6d24b" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </div></article>
                                                         </td>
-                                                                        <td>                                                                                                                                                            <article class="zon-teaser-kpi-table  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/alexander-zverev-tennis-atp-mexiko">
-                                        <a href="https://www.zeit.de/sport/2022-02/alexander-zverev-tennis-atp-mexiko" class="zon-teaser-kpi-table__faux-link" title="Tennis: Alexander Zverev nach Wutausbruch bei Tennisturnier disqualifiziert" tabindex="-1" aria-hidden="true" data-ct-label="link">Tennis: Alexander Zverev nach Wutausbruch bei Tennisturnier disqualifiziert</a>        <figure class="zon-teaser-kpi-table__media  scaled-image variant variant--wide">
+                                                                        <td>                                                                                                                                                            <article class="zon-teaser-kpi-table  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/holland-deutschland-jamal-musiala-thomas-mueller">
+                                        <a href="https://www.zeit.de/sport/2022-03/holland-deutschland-jamal-musiala-thomas-mueller" class="zon-teaser-kpi-table__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Fußballnationalmannschaft: Erster Gegner, fast die erste Niederlage">Fußballnationalmannschaft: Erster Gegner, fast die erste Niederlage</a>        <figure class="zon-teaser-kpi-table__media  scaled-image variant variant--wide">
                 <div class="zon-teaser-kpi-table__media-container ">
-            <noscript data-src="https://img.zeit.de/sport/2022-02/alexander-zverev-tennis-atp-mexiko-bild/wide__822x462">
+            <noscript data-src="https://img.zeit.de/sport/2022-03/fussball-deutschland-niederlande-julian-brandt/wide__822x462">
                                 <img class="zon-teaser-kpi-table__media-item"
-                          alt="Tennis: Alexander Zverev nach Wutausbruch bei Tennisturnier disqualifiziert"
-                     src="https://img.zeit.de/sport/2022-02/alexander-zverev-tennis-atp-mexiko-bild/wide__822x462"
-                     data-src="https://img.zeit.de/sport/2022-02/alexander-zverev-tennis-atp-mexiko-bild/wide"
+                          alt="Fußballnationalmannschaft: Erster Gegner, fast die erste Niederlage"
+                     src="https://img.zeit.de/sport/2022-03/fussball-deutschland-niederlande-julian-brandt/wide__822x462"
+                     data-src="https://img.zeit.de/sport/2022-03/fussball-deutschland-niederlande-julian-brandt/wide"
                      data-ratio="1.77777777778"
                      decoding="async">
                             </noscript></div>
@@ -2044,136 +2079,107 @@ Kelly Slater</span><span class="visually-hidden">: </span><span class="zon-tease
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sport/2022-02/alexander-zverev-tennis-atp-mexiko-bild/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Henry Romero/\u200bReuters"}
+    "url": "https://img.zeit.de/sport/2022-03/fussball-deutschland-niederlande-julian-brandt/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Alex Grimm/\u200bGetty Images"}
 }
 </script>        </figure>
 <div class="zon-teaser-kpi-table__container">
-        <a href="https://www.zeit.de/sport/2022-02/alexander-zverev-tennis-atp-mexiko" class="zon-teaser-kpi-table__heading-link">
+        <a href="https://www.zeit.de/sport/2022-03/holland-deutschland-jamal-musiala-thomas-mueller" class="zon-teaser-kpi-table__heading-link">
         <h3 class="zon-teaser-kpi-table__heading">
-                <span class="zon-teaser-kpi-table__kicker">Tennis</span><span class="visually-hidden">: </span><span class="zon-teaser-kpi-table__title">Alexander Zverev nach Wutausbruch bei Tennisturnier disqualifiziert</span>
+                <span class="zon-teaser-kpi-table__kicker">Fußballnationalmannschaft</span><span class="visually-hidden">: </span><span class="zon-teaser-kpi-table__title">Erster Gegner, fast die erste Niederlage</span>
                 </h3>
         </a>
             <span class="zon-teaser-kpi-table__metadata">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" viewBox="0 0 14 12" class="svg-symbol zon-teaser-kpi-table__icon zon-teaser-kpi-table__icon--comments" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Kommentare</title><path d="M.31 8.774h2.362v2.893c0 .341.209.436.465.21l3.406-3.103H12.9c.17 0 .31-.139.31-.31V.31A.31.31 0 0 0 12.9 0H.31A.31.31 0 0 0 0 .31v8.155c0 .17.14.31.31.31z"/></svg>
-            207 Kommentare
+            153 Kommentare
         </span>
     </div>
 
-    <div class="zon-teaser-kpi-table__bookmark-shim"><button value="74e29f9e-5d81-4037-8c1d-848a7c5e655d" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <div class="zon-teaser-kpi-table__bookmark-shim"><button value="5927d214-e3c2-4b90-9a9c-ca957cb0bffd" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </div></article>
                                                         </td>
                                                             </tr>
                                 <tr>
-                                                                    <td>                                                                                                                                                            <article class="zon-teaser-kpi-table  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/schalke-04-gazprom-russland-ukraine-krieg" data-zplus="zplus-dynamic">
-                                        <a href="https://www.zeit.de/sport/2022-02/schalke-04-gazprom-russland-ukraine-krieg" class="zon-teaser-kpi-table__faux-link" title="Schalke 04: Die Gazprom-Lücke" tabindex="-1" aria-hidden="true" data-ct-label="link">Schalke 04: Die Gazprom-Lücke</a>    <div class="zon-teaser-kpi-table__container">
-        <a href="https://www.zeit.de/sport/2022-02/schalke-04-gazprom-russland-ukraine-krieg" class="zon-teaser-kpi-table__heading-link">
+                                                                    <td>                                                                                                                                                            <article class="zon-teaser-kpi-table  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/thomas-mueller-fussball-wm-katar-menschenrechtsverletzungen" data-zplus="zplus-dynamic">
+                                        <a href="https://www.zeit.de/sport/2022-03/thomas-mueller-fussball-wm-katar-menschenrechtsverletzungen" class="zon-teaser-kpi-table__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Thomas Müller: Er muss es noch trainieren">Thomas Müller: Er muss es noch trainieren</a>    <div class="zon-teaser-kpi-table__container">
+        <a href="https://www.zeit.de/sport/2022-03/thomas-mueller-fussball-wm-katar-menschenrechtsverletzungen" class="zon-teaser-kpi-table__heading-link">
         <h3 class="zon-teaser-kpi-table__heading">
                 <span class="zon-teaser-kpi-table__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
         <use xlink:href="#svg-zplus" />
     </svg>
-Schalke 04</span><span class="visually-hidden">: </span><span class="zon-teaser-kpi-table__title">Die Gazprom-Lücke</span>
+Thomas Müller</span><span class="visually-hidden">: </span><span class="zon-teaser-kpi-table__title">Er muss es noch trainieren</span>
                 </h3>
         </a>
             <span class="zon-teaser-kpi-table__metadata">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="11" viewBox="0 0 22 11" class="svg-symbol zon-teaser-kpi-table__icon zon-teaser-kpi-table__icon--mostread" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Leser</title><path d="M21.283 5.5C18.836 8.844 14.98 11 10.642 11S2.447 8.844 0 5.5C2.447 2.156 6.303 0 10.642 0s8.194 2.156 10.641 5.5zM10.761 9c1.85 0 3.348-1.567 3.348-3.5S12.61 2 10.761 2 7.413 3.567 7.413 5.5 8.913 9 10.761 9zm0-2c.793 0 1.435-.672 1.435-1.5S11.554 4 10.761 4c-.792 0-1.435.672-1.435 1.5S9.97 7 10.761 7z"/></svg>
-            39.810 Aufrufe
+            35.521 Aufrufe
         </span>
     </div>
 
-    <button value="9dd6cbf5-67d7-4e6f-9bfc-d02813afbe67" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="4ebecc6c-a883-45fa-9dc8-9e4fb80036a8" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
                                                         </td>
-                                                                        <td>                                                                                                                                                            <article class="zon-teaser-kpi-table  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/kamila-walijewa-eiskunstlaeuferin-olympia-wunderkind-druck" data-zplus="zplus-dynamic">
-                                        <a href="https://www.zeit.de/sport/2022-02/kamila-walijewa-eiskunstlaeuferin-olympia-wunderkind-druck" class="zon-teaser-kpi-table__faux-link" title="Kamila Walijewa: Bleich wie das Eis" tabindex="-1" aria-hidden="true" data-ct-label="link">Kamila Walijewa: Bleich wie das Eis</a>    <div class="zon-teaser-kpi-table__container">
-        <a href="https://www.zeit.de/sport/2022-02/kamila-walijewa-eiskunstlaeuferin-olympia-wunderkind-druck" class="zon-teaser-kpi-table__heading-link">
+                                                                        <td>                                                        </td>
+                                                                        <td>                                                                                                                                                            <article class="zon-teaser-kpi-table  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel">
+                                        <a href="https://www.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel" class="zon-teaser-kpi-table__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Deutschland - Israel: Vielen Dank, Sinsheim">Deutschland - Israel: Vielen Dank, Sinsheim</a>    <div class="zon-teaser-kpi-table__container">
+        <a href="https://www.zeit.de/sport/2022-03/deutschland-israel-kai-havertz-laenderspiel" class="zon-teaser-kpi-table__heading-link">
         <h3 class="zon-teaser-kpi-table__heading">
-                <span class="zon-teaser-kpi-table__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
-        <use xlink:href="#svg-zplus" />
-    </svg>
-Kamila Walijewa</span><span class="visually-hidden">: </span><span class="zon-teaser-kpi-table__title">Bleich wie das Eis</span>
-                </h3>
-        </a>
-            </div>
-
-    <button value="1789da14-2e49-421e-b31b-68e1338a8151" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
-        <use xlink:href="#svg-bookmark" />
-    </svg></button>
-</article>
-                                                        </td>
-                                                                        <td>                                                                                                                                                            <article class="zon-teaser-kpi-table  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland-schweden-polen-boykott">
-                                        <a href="https://www.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland-schweden-polen-boykott" class="zon-teaser-kpi-table__faux-link" title="WM-Play-offs: Auch Tschechien will nicht gegen Russland spielen" tabindex="-1" aria-hidden="true" data-ct-label="link">WM-Play-offs: Auch Tschechien will nicht gegen Russland spielen</a>    <div class="zon-teaser-kpi-table__container">
-        <a href="https://www.zeit.de/sport/2022-02/wm-playoffs-tschechien-russland-schweden-polen-boykott" class="zon-teaser-kpi-table__heading-link">
-        <h3 class="zon-teaser-kpi-table__heading">
-                <span class="zon-teaser-kpi-table__kicker">WM-Play-offs</span><span class="visually-hidden">: </span><span class="zon-teaser-kpi-table__title">Auch Tschechien will nicht gegen Russland spielen</span>
+                <span class="zon-teaser-kpi-table__kicker">Deutschland - Israel</span><span class="visually-hidden">: </span><span class="zon-teaser-kpi-table__title">Vielen Dank, Sinsheim</span>
                 </h3>
         </a>
             <span class="zon-teaser-kpi-table__metadata">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" viewBox="0 0 14 12" class="svg-symbol zon-teaser-kpi-table__icon zon-teaser-kpi-table__icon--comments" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Kommentare</title><path d="M.31 8.774h2.362v2.893c0 .341.209.436.465.21l3.406-3.103H12.9c.17 0 .31-.139.31-.31V.31A.31.31 0 0 0 12.9 0H.31A.31.31 0 0 0 0 .31v8.155c0 .17.14.31.31.31z"/></svg>
-            189 Kommentare
+            91 Kommentare
         </span>
     </div>
 
-    <button value="410716f3-6f5f-4442-9cd4-8920c910d33e" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="3bcf08e4-c295-42f6-89cf-525ab9713e7f" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
                                                         </td>
                                                             </tr>
                                 <tr>
-                                                                    <td>                                                                                                                                                            <article class="zon-teaser-kpi-table  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/fifa-russland-sanktionen-fussball-wm">
-                                        <a href="https://www.zeit.de/sport/2022-02/fifa-russland-sanktionen-fussball-wm" class="zon-teaser-kpi-table__faux-link" title="Fifa-Sanktionen: Russland wird vom internationalen Fußball isoliert" tabindex="-1" aria-hidden="true" data-ct-label="link">Fifa-Sanktionen: Russland wird vom internationalen Fußball isoliert</a>    <div class="zon-teaser-kpi-table__container">
-        <a href="https://www.zeit.de/sport/2022-02/fifa-russland-sanktionen-fussball-wm" class="zon-teaser-kpi-table__heading-link">
+                                                                    <td>                                                                                                                                                            <article class="zon-teaser-kpi-table  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/holland-deutschland-jamal-musiala-thomas-mueller">
+                                        <a href="https://www.zeit.de/sport/2022-03/holland-deutschland-jamal-musiala-thomas-mueller" class="zon-teaser-kpi-table__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Fußballnationalmannschaft: Erster Gegner, fast die erste Niederlage">Fußballnationalmannschaft: Erster Gegner, fast die erste Niederlage</a>    <div class="zon-teaser-kpi-table__container">
+        <a href="https://www.zeit.de/sport/2022-03/holland-deutschland-jamal-musiala-thomas-mueller" class="zon-teaser-kpi-table__heading-link">
         <h3 class="zon-teaser-kpi-table__heading">
-                <span class="zon-teaser-kpi-table__kicker">Fifa-Sanktionen</span><span class="visually-hidden">: </span><span class="zon-teaser-kpi-table__title">Russland wird vom internationalen Fußball isoliert</span>
+                <span class="zon-teaser-kpi-table__kicker">Fußballnationalmannschaft</span><span class="visually-hidden">: </span><span class="zon-teaser-kpi-table__title">Erster Gegner, fast die erste Niederlage</span>
                 </h3>
         </a>
             <span class="zon-teaser-kpi-table__metadata">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="11" viewBox="0 0 22 11" class="svg-symbol zon-teaser-kpi-table__icon zon-teaser-kpi-table__icon--mostread" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Leser</title><path d="M21.283 5.5C18.836 8.844 14.98 11 10.642 11S2.447 8.844 0 5.5C2.447 2.156 6.303 0 10.642 0s8.194 2.156 10.641 5.5zM10.761 9c1.85 0 3.348-1.567 3.348-3.5S12.61 2 10.761 2 7.413 3.567 7.413 5.5 8.913 9 10.761 9zm0-2c.793 0 1.435-.672 1.435-1.5S11.554 4 10.761 4c-.792 0-1.435.672-1.435 1.5S9.97 7 10.761 7z"/></svg>
-            35.092 Aufrufe
+            34.798 Aufrufe
         </span>
     </div>
 
-    <button value="7e302742-4d05-49d7-868c-1545615e546a" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="5927d214-e3c2-4b90-9a9c-ca957cb0bffd" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
                                                         </td>
-                                                                        <td>                                                                                                                                                            <article class="zon-teaser-kpi-table  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal-robert-hoyzer-ante-sapina" data-zplus="zplus-dynamic">
-                                        <a href="https://www.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal-robert-hoyzer-ante-sapina" class="zon-teaser-kpi-table__faux-link" title="Felix Zwayer: &#34;Mit dem kann man arbeiten&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Felix Zwayer: &#34;Mit dem kann man arbeiten&#34;</a>    <div class="zon-teaser-kpi-table__container">
-        <a href="https://www.zeit.de/sport/2022-02/felix-zwayer-fussball-wettskandal-robert-hoyzer-ante-sapina" class="zon-teaser-kpi-table__heading-link">
+                                                                        <td>                                                        </td>
+                                                                        <td>                                                                                                                                                            <article class="zon-teaser-kpi-table  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-03/thomas-mueller-fussball-wm-katar-menschenrechtsverletzungen" data-zplus="zplus-dynamic">
+                                        <a href="https://www.zeit.de/sport/2022-03/thomas-mueller-fussball-wm-katar-menschenrechtsverletzungen" class="zon-teaser-kpi-table__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Thomas Müller: Er muss es noch trainieren">Thomas Müller: Er muss es noch trainieren</a>    <div class="zon-teaser-kpi-table__container">
+        <a href="https://www.zeit.de/sport/2022-03/thomas-mueller-fussball-wm-katar-menschenrechtsverletzungen" class="zon-teaser-kpi-table__heading-link">
         <h3 class="zon-teaser-kpi-table__heading">
                 <span class="zon-teaser-kpi-table__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
         <use xlink:href="#svg-zplus" />
     </svg>
-Felix Zwayer</span><span class="visually-hidden">: </span><span class="zon-teaser-kpi-table__title">&#34;Mit dem kann man arbeiten&#34;</span>
-                </h3>
-        </a>
-            </div>
-
-    <button value="221d62c5-84b9-4e80-ac0b-41176ac1dfe5" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
-        <use xlink:href="#svg-bookmark" />
-    </svg></button>
-</article>
-                                                        </td>
-                                                                        <td>                                                                                                                                                            <article class="zon-teaser-kpi-table  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-02/fifa-russland-sanktionen-fussball-wm">
-                                        <a href="https://www.zeit.de/sport/2022-02/fifa-russland-sanktionen-fussball-wm" class="zon-teaser-kpi-table__faux-link" title="Fifa-Sanktionen: Russland wird vom internationalen Fußball isoliert" tabindex="-1" aria-hidden="true" data-ct-label="link">Fifa-Sanktionen: Russland wird vom internationalen Fußball isoliert</a>    <div class="zon-teaser-kpi-table__container">
-        <a href="https://www.zeit.de/sport/2022-02/fifa-russland-sanktionen-fussball-wm" class="zon-teaser-kpi-table__heading-link">
-        <h3 class="zon-teaser-kpi-table__heading">
-                <span class="zon-teaser-kpi-table__kicker">Fifa-Sanktionen</span><span class="visually-hidden">: </span><span class="zon-teaser-kpi-table__title">Russland wird vom internationalen Fußball isoliert</span>
+Thomas Müller</span><span class="visually-hidden">: </span><span class="zon-teaser-kpi-table__title">Er muss es noch trainieren</span>
                 </h3>
         </a>
             <span class="zon-teaser-kpi-table__metadata">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" viewBox="0 0 14 12" class="svg-symbol zon-teaser-kpi-table__icon zon-teaser-kpi-table__icon--comments" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Kommentare</title><path d="M.31 8.774h2.362v2.893c0 .341.209.436.465.21l3.406-3.103H12.9c.17 0 .31-.139.31-.31V.31A.31.31 0 0 0 12.9 0H.31A.31.31 0 0 0 0 .31v8.155c0 .17.14.31.31.31z"/></svg>
-            109 Kommentare
+            40 Kommentare
         </span>
     </div>
 
-    <button value="7e302742-4d05-49d7-868c-1545615e546a" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="4ebecc6c-a883-45fa-9dc8-9e4fb80036a8" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -2199,7 +2205,7 @@ Felix Zwayer</span><span class="visually-hidden">: </span><span class="zon-tease
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/club-o-mat-fussball-verein-bundesliga">
-                                        <a href="https://www.zeit.de/sport/club-o-mat-fussball-verein-bundesliga" class="zon-teaser-standard__faux-link lp_headed_0" title="Club-O-Mat: Welcher Verein sind Sie?" tabindex="-1" aria-hidden="true" data-ct-label="link">Club-O-Mat: Welcher Verein sind Sie?</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/club-o-mat-fussball-verein-bundesliga" class="zon-teaser-standard__faux-link lp_headed_0" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Club-O-Mat: Welcher Verein sind Sie?">Club-O-Mat: Welcher Verein sind Sie?</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2021-08/club-o-mat-fussball-verein-bundesliga/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -2248,8 +2254,53 @@ Felix Zwayer</span><span class="visually-hidden">: </span><span class="zon-tease
         </div>
                                                                     
                                                             
+                                            <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2022-01/thomas-mueller-schlimmster-tag-bayern-muenchen-champions-league-finale-niederlage-fc-chelsea" data-zplus="zplus">
+                                        <a href="https://www.zeit.de/sport/2022-01/thomas-mueller-schlimmster-tag-bayern-muenchen-champions-league-finale-niederlage-fc-chelsea" class="zon-teaser-standard__faux-link lp_headed_0" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Thomas Müller: Mein schlimmster Tag: &#34;Am liebsten wären wir zum Heulen unter die Bettdecke gekrochen&#34;">Thomas Müller: Mein schlimmster Tag: &#34;Am liebsten wären wir zum Heulen unter die Bettdecke gekrochen&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                <div class="zon-teaser-standard__media-container ">
+            <noscript data-src="https://img.zeit.de/sport/2022-01/thomas-mueller-schlimmster-tag-bayern-muenchen-champions-league-finale-niederlage-fc-chelsea-bild/wide__822x462">
+                                <img class="zon-teaser-standard__media-item"
+                          alt="Thomas Müller: Mein schlimmster Tag: &#34;Am liebsten wären wir zum Heulen unter die Bettdecke gekrochen&#34;"
+                     src="https://img.zeit.de/sport/2022-01/thomas-mueller-schlimmster-tag-bayern-muenchen-champions-league-finale-niederlage-fc-chelsea-bild/wide__822x462"
+                     data-src="https://img.zeit.de/sport/2022-01/thomas-mueller-schlimmster-tag-bayern-muenchen-champions-league-finale-niederlage-fc-chelsea-bild/wide"
+                     data-ratio="1.77777777778"
+                     decoding="async">
+                            </noscript></div>
+
+        <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ImageObject",
+    "url": "https://img.zeit.de/sport/2022-01/thomas-mueller-schlimmster-tag-bayern-muenchen-champions-league-finale-niederlage-fc-chelsea-bild/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0MIS/\u200bimago images"}
+}
+</script>        </figure>
+    <div class="zon-teaser-standard__container">
+        <a href="https://www.zeit.de/sport/2022-01/thomas-mueller-schlimmster-tag-bayern-muenchen-champions-league-finale-niederlage-fc-chelsea" class="zon-teaser-standard__heading-link">
+        <h3 class="zon-teaser-standard__heading">
+                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
+        <use xlink:href="#svg-zplus" />
+    </svg>
+Thomas Müller: Mein schlimmster Tag</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">&#34;Am liebsten wären wir zum Heulen unter die Bettdecke gekrochen&#34;</span>
+                </h3>
+        </a>
+        <p class="zon-teaser-standard__text">Bayern gegen Chelsea, Champions-League-Finale in München: Wie Thomas Müller den extremsten Moment seiner Karriere erlebte und die Narbe einer großen Niederlage heilte.</p>
+                            
+
+            <div class="zon-teaser-standard__metadata">
+            <span><span class="zon-teaser-standard__byline">    Von            Nico Horn</span>
+    </span></div>
+    
+    </div>
+
+    <button value="8cc639fe-5270-49a4-947b-9ca29fde7505" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+        <use xlink:href="#svg-bookmark" />
+    </svg></button>
+</article>
+                            <!-- adtile1mobile is omitted to avoid duplicates. -->
+                                                                    
+                                                            
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2021-05/steffi-nerius-schlimmster-tag-suizid-trainer-speerwerfen" data-zplus="zplus">
-                                        <a href="https://www.zeit.de/sport/2021-05/steffi-nerius-schlimmster-tag-suizid-trainer-speerwerfen" class="zon-teaser-standard__faux-link lp_headed_0" title="Steffi Nerius: Mein schlimmster Tag: &#34;Vielleicht konnte Rudi einfach nicht mehr&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Steffi Nerius: Mein schlimmster Tag: &#34;Vielleicht konnte Rudi einfach nicht mehr&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/2021-05/steffi-nerius-schlimmster-tag-suizid-trainer-speerwerfen" class="zon-teaser-standard__faux-link lp_headed_1" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Steffi Nerius: Mein schlimmster Tag: &#34;Vielleicht konnte Rudi einfach nicht mehr&#34;">Steffi Nerius: Mein schlimmster Tag: &#34;Vielleicht konnte Rudi einfach nicht mehr&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2021-05/steffi-nerius-schlimmster-tag-suizid-trainer/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -2294,7 +2345,7 @@ Steffi Nerius: Mein schlimmster Tag</span><span class="visually-hidden">: </span
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2021-04/jens-weissflog-schlimmster-tag-olympia-1988-skispringen-schleudertrauma-calgary" data-zplus="zplus">
-                                        <a href="https://www.zeit.de/sport/2021-04/jens-weissflog-schlimmster-tag-olympia-1988-skispringen-schleudertrauma-calgary" class="zon-teaser-standard__faux-link lp_headed_1" title="Jens Weißflog: Mein schlimmster Tag: &#34;Aber es war ja Olympia&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Jens Weißflog: Mein schlimmster Tag: &#34;Aber es war ja Olympia&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/2021-04/jens-weissflog-schlimmster-tag-olympia-1988-skispringen-schleudertrauma-calgary" class="zon-teaser-standard__faux-link lp_headed_2" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Jens Weißflog: Mein schlimmster Tag: &#34;Aber es war ja Olympia&#34;">Jens Weißflog: Mein schlimmster Tag: &#34;Aber es war ja Olympia&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2021-04/jens-weissflog-schlimmster-tag-olympia-1988-skispringen-schleudertrauma-calgary-bild-1/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -2339,7 +2390,7 @@ Jens Weißflog: Mein schlimmster Tag</span><span class="visually-hidden">: </spa
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2021-04/heiner-brand-handball-nationaltrainer-mein-schlimmster-tag" data-zplus="zplus">
-                                        <a href="https://www.zeit.de/sport/2021-04/heiner-brand-handball-nationaltrainer-mein-schlimmster-tag" class="zon-teaser-standard__faux-link lp_headed_2" title="Heiner Brand: Mein schlimmster Tag : &#34;Jo erwachte erst nach 131 Tagen wieder&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Heiner Brand: Mein schlimmster Tag : &#34;Jo erwachte erst nach 131 Tagen wieder&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/2021-04/heiner-brand-handball-nationaltrainer-mein-schlimmster-tag" class="zon-teaser-standard__faux-link lp_headed_3" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Heiner Brand: Mein schlimmster Tag : &#34;Jo erwachte erst nach 131 Tagen wieder&#34;">Heiner Brand: Mein schlimmster Tag : &#34;Jo erwachte erst nach 131 Tagen wieder&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2021-04/heiner-brand-handball-nationaltrainer-mein-schlimmster-tag-tribuene-bild/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -2384,7 +2435,7 @@ Heiner Brand: Mein schlimmster Tag </span><span class="visually-hidden">: </span
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2021-03/britta-steffen-fans-erwartungen-schwimmerin-mein-schlimmster-tag" data-zplus="zplus">
-                                        <a href="https://www.zeit.de/sport/2021-03/britta-steffen-fans-erwartungen-schwimmerin-mein-schlimmster-tag" class="zon-teaser-standard__faux-link lp_headed_3" title="Britta Steffen: Mein schlimmster Tag: &#34;Ich fühlte mich ungeschützt, fast erdrückt&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Britta Steffen: Mein schlimmster Tag: &#34;Ich fühlte mich ungeschützt, fast erdrückt&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/2021-03/britta-steffen-fans-erwartungen-schwimmerin-mein-schlimmster-tag" class="zon-teaser-standard__faux-link lp_headed_4" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Britta Steffen: Mein schlimmster Tag: &#34;Ich fühlte mich ungeschützt, fast erdrückt&#34;">Britta Steffen: Mein schlimmster Tag: &#34;Ich fühlte mich ungeschützt, fast erdrückt&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2021-04/britta-steffen-fans-erwartungen-schwimmerin-mein-schlimmster-tag-bild/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -2479,7 +2530,7 @@ Britta Steffen: Mein schlimmster Tag</span><span class="visually-hidden">: </spa
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2021-10/fussball-wm-rhythmus-zwei-jahre-fifa-celia-sasic-philipp-lahm">
-                                        <a href="https://www.zeit.de/sport/2021-10/fussball-wm-rhythmus-zwei-jahre-fifa-celia-sasic-philipp-lahm" class="zon-teaser-standard__faux-link lp_headed_0" title="WM-Rhythmus: &#34;Es entsteht der Eindruck, es geht im Fußball ausschließlich ums Geld&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">WM-Rhythmus: &#34;Es entsteht der Eindruck, es geht im Fußball ausschließlich ums Geld&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/2021-10/fussball-wm-rhythmus-zwei-jahre-fifa-celia-sasic-philipp-lahm" class="zon-teaser-standard__faux-link lp_headed_0" tabindex="-1" aria-hidden="true" data-ct-label="link" title="WM-Rhythmus: &#34;Es entsteht der Eindruck, es geht im Fußball ausschließlich ums Geld&#34;">WM-Rhythmus: &#34;Es entsteht der Eindruck, es geht im Fußball ausschließlich ums Geld&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/politik/deutschland/2021-10/fussball-wm-rhythmus-zwei-jahre-fifa-celia-sasic-philipp-lahm-bild/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -2511,7 +2562,7 @@ Britta Steffen: Mein schlimmster Tag</span><span class="visually-hidden">: </spa
             <img class="zon-teaser-standard-byline__media"
         srcset="https://img.zeit.de/autoren/L/Philipp_Lahm/philipp-lahm/square__38x38, https://img.zeit.de/autoren/L/Philipp_Lahm/philipp-lahm/square__57x57 1.5x, https://img.zeit.de/autoren/L/Philipp_Lahm/philipp-lahm/square__76x76 2x"
         src="https://img.zeit.de/autoren/L/Philipp_Lahm/philipp-lahm/square__38x38" alt="Philipp Lahm" loading="lazy" width="40" height="40"><span><span class="zon-teaser-standard__byline">    Eine Kolumne von            Philipp Lahm</span>
-    <a class="zon-teaser-standard__commentcount" href="https://www.zeit.de/sport/2021-10/fussball-wm-rhythmus-zwei-jahre-fifa-celia-sasic-philipp-lahm#comments" data-ct-label="comments" title="Kommentare anzeigen" tabindex="-1">219 Kommentare</a></span></div>
+    <a class="zon-teaser-standard__commentcount" href="https://www.zeit.de/sport/2021-10/fussball-wm-rhythmus-zwei-jahre-fifa-celia-sasic-philipp-lahm#comments" data-ct-label="comments" title="Kommentare anzeigen" tabindex="-1">222 Kommentare</a></span></div>
     
     </div>
 
@@ -2523,7 +2574,7 @@ Britta Steffen: Mein schlimmster Tag</span><span class="visually-hidden">: </spa
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2021-09/champions-league-paris-saint-germain-lionel-messi-neymar-kylian-mbappe-fussball">
-                                        <a href="https://www.zeit.de/sport/2021-09/champions-league-paris-saint-germain-lionel-messi-neymar-kylian-mbappe-fussball" class="zon-teaser-standard__faux-link lp_headed_1" title="Champions League: Paris Saint-Germain ist das Luxuskaufhaus des Fußballs" tabindex="-1" aria-hidden="true" data-ct-label="link">Champions League: Paris Saint-Germain ist das Luxuskaufhaus des Fußballs</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/2021-09/champions-league-paris-saint-germain-lionel-messi-neymar-kylian-mbappe-fussball" class="zon-teaser-standard__faux-link lp_headed_1" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Champions League: Paris Saint-Germain ist das Luxuskaufhaus des Fußballs">Champions League: Paris Saint-Germain ist das Luxuskaufhaus des Fußballs</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2021-09/champions-league-paris-saint-germain-lionel-messi-neymar-kylian-mbappe-fussball-bild-2/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -2555,7 +2606,7 @@ Britta Steffen: Mein schlimmster Tag</span><span class="visually-hidden">: </spa
             <img class="zon-teaser-standard-byline__media"
         srcset="https://img.zeit.de/autoren/L/Philipp_Lahm/philipp-lahm/square__38x38, https://img.zeit.de/autoren/L/Philipp_Lahm/philipp-lahm/square__57x57 1.5x, https://img.zeit.de/autoren/L/Philipp_Lahm/philipp-lahm/square__76x76 2x"
         src="https://img.zeit.de/autoren/L/Philipp_Lahm/philipp-lahm/square__38x38" alt="Philipp Lahm" loading="lazy" width="40" height="40"><span><span class="zon-teaser-standard__byline">    Eine Kolumne von            Philipp Lahm</span>
-    <a class="zon-teaser-standard__commentcount" href="https://www.zeit.de/sport/2021-09/champions-league-paris-saint-germain-lionel-messi-neymar-kylian-mbappe-fussball#comments" data-ct-label="comments" title="Kommentare anzeigen" tabindex="-1">240 Kommentare</a></span></div>
+    <a class="zon-teaser-standard__commentcount" href="https://www.zeit.de/sport/2021-09/champions-league-paris-saint-germain-lionel-messi-neymar-kylian-mbappe-fussball#comments" data-ct-label="comments" title="Kommentare anzeigen" tabindex="-1">241 Kommentare</a></span></div>
     
     </div>
 
@@ -2567,7 +2618,7 @@ Britta Steffen: Mein schlimmster Tag</span><span class="visually-hidden">: </spa
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2021-04/pep-guardiola-fussball-trainer-manchester-city-philipp-lahm-ansichten-eines-fussballers">
-                                        <a href="https://www.zeit.de/sport/2021-04/pep-guardiola-fussball-trainer-manchester-city-philipp-lahm-ansichten-eines-fussballers" class="zon-teaser-standard__faux-link lp_headed_2" title="Manchester City: Pep Guardiola ist der Diener seiner Spieler" tabindex="-1" aria-hidden="true" data-ct-label="link">Manchester City: Pep Guardiola ist der Diener seiner Spieler</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/2021-04/pep-guardiola-fussball-trainer-manchester-city-philipp-lahm-ansichten-eines-fussballers" class="zon-teaser-standard__faux-link lp_headed_2" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Manchester City: Pep Guardiola ist der Diener seiner Spieler">Manchester City: Pep Guardiola ist der Diener seiner Spieler</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2021-04/pep-guardiola-fussball-trainer-manchester/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -2611,7 +2662,7 @@ Britta Steffen: Mein schlimmster Tag</span><span class="visually-hidden">: </spa
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2021-04/champions-league-fussball-laender-europa-vielfalt-philipp-lahm-ansichten-eines-fussballers">
-                                        <a href="https://www.zeit.de/sport/2021-04/champions-league-fussball-laender-europa-vielfalt-philipp-lahm-ansichten-eines-fussballers" class="zon-teaser-standard__faux-link lp_headed_3" title="Champions League: Mir gefällt die kosmopolitische Idee einer Europaliga" tabindex="-1" aria-hidden="true" data-ct-label="link">Champions League: Mir gefällt die kosmopolitische Idee einer Europaliga</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/2021-04/champions-league-fussball-laender-europa-vielfalt-philipp-lahm-ansichten-eines-fussballers" class="zon-teaser-standard__faux-link lp_headed_3" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Champions League: Mir gefällt die kosmopolitische Idee einer Europaliga">Champions League: Mir gefällt die kosmopolitische Idee einer Europaliga</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2021-04/philipp-lahm-ansichten-eines-fussballers-bild/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -2705,7 +2756,7 @@ Britta Steffen: Mein schlimmster Tag</span><span class="visually-hidden">: </spa
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2021-02/wandern-manuel-andrack-corona-wanderwege-pilgern-wanderlust" data-zplus="zplus">
-                                        <a href="https://www.zeit.de/sport/2021-02/wandern-manuel-andrack-corona-wanderwege-pilgern-wanderlust" class="zon-teaser-standard__faux-link lp_headed_0" title="Manuel Andrack: &#34;Der Wanderer ist ein Antiläufer&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Manuel Andrack: &#34;Der Wanderer ist ein Antiläufer&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/2021-02/wandern-manuel-andrack-corona-wanderwege-pilgern-wanderlust" class="zon-teaser-standard__faux-link lp_headed_0" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Manuel Andrack: &#34;Der Wanderer ist ein Antiläufer&#34;">Manuel Andrack: &#34;Der Wanderer ist ein Antiläufer&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2021-02/wandern-manuel-andrack-corona-wanderwege-pilgern-wanderlust-bild-2/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -2750,7 +2801,7 @@ Manuel Andrack</span><span class="visually-hidden">: </span><span class="zon-tea
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2020-12/adriene-mishler-yoga-youtube-yogalehrerin-atmung-uebungen" data-zplus="zplus">
-                                        <a href="https://www.zeit.de/sport/2020-12/adriene-mishler-yoga-youtube-yogalehrerin-atmung-uebungen" class="zon-teaser-standard__faux-link lp_headed_1" title="Adriene Mishler: &#34;Ich sage immer: Vergiss, was du glaubst über Yoga zu wissen&#34; " tabindex="-1" aria-hidden="true" data-ct-label="link">Adriene Mishler: &#34;Ich sage immer: Vergiss, was du glaubst über Yoga zu wissen&#34; </a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/2020-12/adriene-mishler-yoga-youtube-yogalehrerin-atmung-uebungen" class="zon-teaser-standard__faux-link lp_headed_1" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Adriene Mishler: &#34;Ich sage immer: Vergiss, was du glaubst über Yoga zu wissen&#34; ">Adriene Mishler: &#34;Ich sage immer: Vergiss, was du glaubst über Yoga zu wissen&#34; </a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2020-12/adriene-mishler-2/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -2795,7 +2846,7 @@ Adriene Mishler</span><span class="visually-hidden">: </span><span class="zon-te
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2020-10/sabrina-mockenhaupt-gregor-laueferin-laufen-tipps" data-zplus="zplus">
-                                        <a href="https://www.zeit.de/sport/2020-10/sabrina-mockenhaupt-gregor-laueferin-laufen-tipps" class="zon-teaser-standard__faux-link lp_headed_2" title="Laufen: &#34;Ein Marathon ist zwölf Kilometer zu lang&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Laufen: &#34;Ein Marathon ist zwölf Kilometer zu lang&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/2020-10/sabrina-mockenhaupt-gregor-laueferin-laufen-tipps" class="zon-teaser-standard__faux-link lp_headed_2" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Laufen: &#34;Ein Marathon ist zwölf Kilometer zu lang&#34;">Laufen: &#34;Ein Marathon ist zwölf Kilometer zu lang&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2020-10/sabrina-mockenhaupt-gregor-laueferin-laufen-tipps-sabrina-mockenhaupt-sprint-bild/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -2837,7 +2888,7 @@ Laufen</span><span class="visually-hidden">: </span><span class="zon-teaser-stan
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2020-10/jens-voigt-radrennfahrer-tour-de-france-radsport-tipps" data-zplus="zplus">
-                                        <a href="https://www.zeit.de/sport/2020-10/jens-voigt-radrennfahrer-tour-de-france-radsport-tipps" class="zon-teaser-standard__faux-link lp_headed_3" title="Rennradfahren: &#34;Wenn du schnell sein willst, musst du erst langsamer werden&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Rennradfahren: &#34;Wenn du schnell sein willst, musst du erst langsamer werden&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/2020-10/jens-voigt-radrennfahrer-tour-de-france-radsport-tipps" class="zon-teaser-standard__faux-link lp_headed_3" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Rennradfahren: &#34;Wenn du schnell sein willst, musst du erst langsamer werden&#34;">Rennradfahren: &#34;Wenn du schnell sein willst, musst du erst langsamer werden&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2020-10/jens-voigt-radrennfahrer-tour-de-france-radsport-tipps-bild/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -2911,7 +2962,7 @@ Rennradfahren</span><span class="visually-hidden">: </span><span class="zon-teas
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2020-03/laufen-anfaenger-joggen-tipps" data-zplus="zplus">
-                                        <a href="https://www.zeit.de/sport/2020-03/laufen-anfaenger-joggen-tipps" class="zon-teaser-standard__faux-link lp_headed_0" title="Laufen für Anfänger: &#34;Selbst erfahrene Läufer sind oft viel zu schnell&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Laufen für Anfänger: &#34;Selbst erfahrene Läufer sind oft viel zu schnell&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/2020-03/laufen-anfaenger-joggen-tipps" class="zon-teaser-standard__faux-link lp_headed_0" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Laufen für Anfänger: &#34;Selbst erfahrene Läufer sind oft viel zu schnell&#34;">Laufen für Anfänger: &#34;Selbst erfahrene Läufer sind oft viel zu schnell&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2020-03/laufen-anfaenger-joggen-gesundheit-tipps-4/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -2956,7 +3007,7 @@ Laufen für Anfänger</span><span class="visually-hidden">: </span><span class="
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/wissen/gesundheit/2020-04/joggen-gesundheit-laufen-ungesund" data-zplus="zplus">
-                                        <a href="https://www.zeit.de/wissen/gesundheit/2020-04/joggen-gesundheit-laufen-ungesund" class="zon-teaser-standard__faux-link lp_headed_1" title="Joggen : So gesund ist Laufen – und so ungesund" tabindex="-1" aria-hidden="true" data-ct-label="link">Joggen : So gesund ist Laufen – und so ungesund</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/wissen/gesundheit/2020-04/joggen-gesundheit-laufen-ungesund" class="zon-teaser-standard__faux-link lp_headed_1" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Joggen : So gesund ist Laufen – und so ungesund">Joggen : So gesund ist Laufen – und so ungesund</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2020-03/richtig-joggen-gesundheit-laufen/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -3001,7 +3052,7 @@ Joggen </span><span class="visually-hidden">: </span><span class="zon-teaser-sta
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2020-04/laufen-ernaehrung-gesundheit-sport-joggen" data-zplus="zplus">
-                                        <a href="https://www.zeit.de/sport/2020-04/laufen-ernaehrung-gesundheit-sport-joggen" class="zon-teaser-standard__faux-link lp_headed_2" title="Laufen und Ernährung: &#34;Man sollte nicht mit Hunger loslaufen&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Laufen und Ernährung: &#34;Man sollte nicht mit Hunger loslaufen&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/2020-04/laufen-ernaehrung-gesundheit-sport-joggen" class="zon-teaser-standard__faux-link lp_headed_2" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Laufen und Ernährung: &#34;Man sollte nicht mit Hunger loslaufen&#34;">Laufen und Ernährung: &#34;Man sollte nicht mit Hunger loslaufen&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2020-04/laufen-ernaehrung-gesundheit-sport-3/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -3046,7 +3097,7 @@ Laufen und Ernährung</span><span class="visually-hidden">: </span><span class="
                                                                     
                                                             
                                             <article class="zon-teaser-standard zon-teaser-standard--ad" data-unique-id="http://xml.zeit.de/angebote/Links/digitalabo">
-                                        <a href="https://premium.zeit.de/abo/probeabo?wt_mc=pm.intern.mosaik.zeitde.abo.digipak.box.cross" class="zon-teaser-standard__faux-link lp_headed_3" title="Testen Sie 4x die digitale ZEIT" tabindex="-1" aria-hidden="true" data-ct-label="link">Testen Sie 4x die digitale ZEIT</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://premium.zeit.de/abo/probeabo?wt_mc=pm.intern.mosaik.zeitde.abo.digipak.box.cross" class="zon-teaser-standard__faux-link lp_headed_3" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Testen Sie 4x die digitale ZEIT">Testen Sie 4x die digitale ZEIT</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/angebote/Links/Bilder/digital_paket_neu060513/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -3088,7 +3139,7 @@ Laufen und Ernährung</span><span class="visually-hidden">: </span><span class="
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2020-05/krafttraining-zu-hause-fitnessgeraete-uebungen" data-zplus="zplus">
-                                        <a href="https://www.zeit.de/sport/2020-05/krafttraining-zu-hause-fitnessgeraete-uebungen" class="zon-teaser-standard__faux-link lp_headed_0" title="Krafttraining zu Hause: Die besten Fitnessgeräte, die eigentlich keine sind" tabindex="-1" aria-hidden="true" data-ct-label="link">Krafttraining zu Hause: Die besten Fitnessgeräte, die eigentlich keine sind</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/2020-05/krafttraining-zu-hause-fitnessgeraete-uebungen" class="zon-teaser-standard__faux-link lp_headed_0" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Krafttraining zu Hause: Die besten Fitnessgeräte, die eigentlich keine sind">Krafttraining zu Hause: Die besten Fitnessgeräte, die eigentlich keine sind</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2020-05/krafttraining-zu-hause-fitnessgeraete-2/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -3133,7 +3184,7 @@ Krafttraining zu Hause</span><span class="visually-hidden">: </span><span class=
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2020-04/rueckengesundheit-homeoffice-bueroarbeit-training-vorbeugung" data-zplus="zplus">
-                                        <a href="https://www.zeit.de/sport/2020-04/rueckengesundheit-homeoffice-bueroarbeit-training-vorbeugung" class="zon-teaser-standard__faux-link lp_headed_1" title="Rückengesundheit: &#34;An manchen Tagen wechsle ich 250 Mal den Platz&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Rückengesundheit: &#34;An manchen Tagen wechsle ich 250 Mal den Platz&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/2020-04/rueckengesundheit-homeoffice-bueroarbeit-training-vorbeugung" class="zon-teaser-standard__faux-link lp_headed_1" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Rückengesundheit: &#34;An manchen Tagen wechsle ich 250 Mal den Platz&#34;">Rückengesundheit: &#34;An manchen Tagen wechsle ich 250 Mal den Platz&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2020-04/rueckengesundheit-homeoffice-bueroarbeit/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -3178,7 +3229,7 @@ Rückengesundheit</span><span class="visually-hidden">: </span><span class="zon-
                                                                     
                                                             
                                             <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sport/2020-04/bewegung-homeoffice-corona-krise-gesundheit-beweglichkeit" data-zplus="zplus">
-                                        <a href="https://www.zeit.de/sport/2020-04/bewegung-homeoffice-corona-krise-gesundheit-beweglichkeit" class="zon-teaser-standard__faux-link lp_headed_2" title="Bewegung im Homeoffice: &#34;Wer sich quälen muss, macht was falsch&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Bewegung im Homeoffice: &#34;Wer sich quälen muss, macht was falsch&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                        <a href="https://www.zeit.de/sport/2020-04/bewegung-homeoffice-corona-krise-gesundheit-beweglichkeit" class="zon-teaser-standard__faux-link lp_headed_2" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Bewegung im Homeoffice: &#34;Wer sich quälen muss, macht was falsch&#34;">Bewegung im Homeoffice: &#34;Wer sich quälen muss, macht was falsch&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
             <noscript data-src="https://img.zeit.de/sport/2020-04/bewegung-homeoffice-corona-krise-luftsprung/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
@@ -3559,11 +3610,11 @@ Bewegung im Homeoffice</span><span class="visually-hidden">: </span><span class=
     
     <!-- popover -->
     
-    <script src="https://static.zeit.de/p/zeit.web/js/mausabhaengigeszaehlinstrument.874ac05ef198cd09e8cb.js" async></script>
-    <script src="https://static.zeit.de/p/zeit.web/js/images.71dcbd5609a06533a96d.js" async></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/mausabhaengigeszaehlinstrument.e0d2464c275212f2acb6.js" async></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/images.94e661e927624d4ca428.js" async></script>
 
-    <script src="https://static.zeit.de/p/zeit.web/js/promise.9472eaf6a943f5f06679.js" nomodule defer></script>
-    <script src="https://static.zeit.de/p/zeit.web/js/site.fddfa9c3565b327bc6e6.js" defer></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/promise.d3aeb3fa22c2d515fcca.js" nomodule defer></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/site.d37687e24a5cde4b8650.js" defer></script>
 
     <script>
     if ( 'serviceWorker' in window.navigator ) {
@@ -3658,7 +3709,7 @@ window.Zeit.loadJS( 'https://scripts.zeit.de/static/js/webtrekk/webtrekk_v4.5.3.
 
         
         wt.customParameter[23] = 'nicht_angemeldet';
-        wt.customParameter[46] = 'false';
+        wt.customParameter[46] = window.Zeit.cookieRead('zonconsent') ? 'false' : 'undefined';
 
         if ( window.Zeit.user ) {
             if ( window.Zeit.user.ssoid ) {

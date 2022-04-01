@@ -40,7 +40,7 @@
 <meta http-equiv="content-script-type" content="text/javascript" />
 <title>Datenschutz</title>
 <script type="text/javascript">/*<![CDATA[*/
-var T = {T0:(new Date()).getTime(), EGO:'toi', MP:2, SN:2, ID:88397036, EWA:true, AJ:false, TI:64756648, SLIN:1, STH:1, disableAdblockLayer:1, PN:'t-online.de', PORT:1, GAME:0, ART:1, EINSPALTIG: 1,  ASTCK:1, SCRIBBLE:0, MZT:0, VIDEO:0, AS:0, GL:0, RECIPE:0, PRE:0, KG:'40040000', DMN:'.t-online.de', DCL:1, R0:'https://www.t-online.de/datenschutz/id_88397036/tid_ajax_empty/index', STATION_ID: "K11000000", SVO: false,  PA:'/00-t-online-de-startseite/datenschutz-consent-layer', TPD:'https://www.t-online.de', TS:1646098378}, TMS = {IVW:['https://','toi.ivwbox.de/cgi-bin/ivw/','CP']};
+var T = {T0:(new Date()).getTime(), EGO:'toi', MP:2, SN:2, ID:88397036, EWA:true, AJ:false, TI:64756648, SLIN:1, STH:1, disableAdblockLayer:1, PN:'t-online.de', PORT:1, GAME:0, ART:1, EINSPALTIG: 1,  ASTCK:1, SCRIBBLE:0, MZT:0, VIDEO:0, AS:0, GL:0, RECIPE:0, PRE:0, KG:'40040000', DMN:'.t-online.de', DCL:1, R0:'https://www.t-online.de/datenschutz/id_88397036/tid_ajax_empty/index', STATION_ID: "K11000000", SVO: false,  PA:'/00-t-online-de-startseite/datenschutz-consent-layer', TPD:'https://www.t-online.de', TS:1648777877}, TMS = {IVW:['https://','toi.ivwbox.de/cgi-bin/ivw/','CP']};
 /*]]>*/</script>
 
 
@@ -160,9 +160,7 @@ function setTestVariation(testVariation, cKey, days) {
       var testvariation = getTestVariation('consent');
       if(!testvariation) {
          var cases = {
-            "2021-12-13-cmp-test-pur-4-C" : 20,
-            "2021-12-13-cmp-test-pur-4-B" : 20,
-            "2021-12-13-cmp-test-pur-4-A" : 60
+            "2022-03-21-cmp-pur-5-A" : 100
          }
          testvariation = weightedRandom(cases);
       }
@@ -1060,18 +1058,6 @@ if(typeof consentManager === 'undefined') {
     'placehtext': '<p class="TConsentEmbed-Text">Wir benötigen Ihre Zustimmung, um den von unserer Redaktion eingebundenen externen Inhalt unseres Dienstleisters Famobi GmbH anzuzeigen. Sie können diesen (und damit auch alle weiteren externen Inhalte von Famobi GmbH auf t-online) mit einem Klick anzeigen lassen und auch wieder deaktivieren.</p>  <div class="TConsentEmbedSwitchToggle">   <div class="TConsentEmbedSwitchToggleContainer">      <label class="switch">        <input type="checkbox">        <span class="slider"></span>      </label>    </div>    <p>Famobi Inhalte immer anzeigen</p> ',
     'providers': ['Famobi GmbH', 'famobi gmbh']
   },
-  'wordle': {
-    'extraConsent': true,
-    'vendor': 'wordleat',
-    'label': 'WORDLE',
-    'providers': ['Wordle.at', 'wordleat']
-  },
-  'teamdeuschland': {
-    'extraConsent': true,
-    'vendor': 'teamdeuschland',
-    'label': 'Olympia Team Deutschland',
-    'providers': ['teamdeutschland']
-  },
   'glomex': {
     'vendor': '5eb9779c2a005a254474efde',
     'label': 'Glomex Videoplayer',
@@ -1419,12 +1405,44 @@ if ( typeof consentManager === 'undefined' ) {
 
 <script>
   var googleConsentCookie = typeof TgC == 'function' ? TgC('TconsentStateV755') : 'no-consent-state';
+  // Loginbox message handler (ENGAGE-362)
+  var mailloginstate = 'no mail-login-state';
+  if ( localStorage.getItem( 'nonolobostat' ) ) mailloginstate = localStorage.getItem( 'nonolobostat' );
+
+  window.addEventListener("message", function(ev) {
+    // Do we trust the sender of this message?
+    if (ev.origin !== "https://www.t-online.de" || typeof ev.data != 'string')
+      return;
+
+    // ev.source is window.opener
+    // ev.data is "Loginbox:Status:[not-logged-in|loggedin|loggedin-firstview]"
+    if ( loginstate=ev.data.match(/Loginbox:Status:(.*)/) ) {
+      switch( loginstate[1] ) {
+        case 'not-logged-in':
+          dataLayer.push({'mailLoginState' : 'logged-out'});
+          break;
+        case 'loggedin':
+          dataLayer.push({'mailLoginState' : 'logged-in'});
+          break;
+        case 'loggedin-firstview':
+          dataLayer.push({'mailLoginState' : 'logged-in_first_view'});
+          break;
+        default:
+          break;
+      }
+    }
+  });
 </script>
 <script>
-var obVariation = null
+var obVariation = null;
+var betaBlacklisted = null;
 if (typeof TgC !== 'function' ||  !TgC('tbremmxxi')); 
-else if (TgC('tbremmxxi') == 'rd' ) obVariation = "beta";
-else if (TgC('tbremmxxi').substr(0,2) == 'bl' ) obVariation = "live"; ; 
+else if (TgC('tbremmxxi').substr(0,2) == 'rd' ) obVariation = "beta";
+else if (TgC('tbremmxxi').substr(0,2) == 'bl' ) obVariation = "live";
+else if (TgC('tbremmxxi').substr(0,2) == 'bk' ) {
+  obVariation = "live";
+  betaBlacklisted = 1;
+};
 </script>
 <script>
   if ( ! googleConsentCookie ) googleConsentCookie = 'no-consent-state';
@@ -1471,8 +1489,10 @@ dataLayer = [{
 'testVariation':    getTestVariation(),
 'testVariationCMS': getTestVariation(true),
 'consentStateV755': googleConsentCookie,
-'consentVariant':   getTestVariation('consent'), 
-'obVariation' : obVariation
+'consentVariant':   getTestVariation('consent'),
+'betaBlacklisted' : betaBlacklisted,
+'obVariation' : obVariation,
+'mailLoginState' : mailloginstate
 
 }];
 
@@ -1597,7 +1617,7 @@ IM.GlobalAdTag.register = function (){
    document.write('<script>var gatTimer = Date.now();Tconsolelog("%c before: Globaladtag defined?", "background:#fde100;", typeof IM);</scr'+'ipt><script src="//cdn.stroeerdigitalgroup.de/metatag/live/t-o-home/metaTag.min.js"></sc'+'ript><script>Tconsolelog("%c after:Globaladtag defined?", "background:#fde100;", typeof IM, "run "+ (Date.now() - gatTimer) + " ms");</sc'+'ript><script>initializeIM();</scri'+'pt>');
 }
  </script> <meta name="news_keywords" content="">
-<meta itemprop="datePublished" content="2021-11-10T14:44+01:00">
+<meta itemprop="datePublished" content="2021-11-10T14:44+02:00">
 <meta property="article:publisher" content="https://www.facebook.com/tonline" />
 <meta property="article:author" content="https://www.facebook.com/tonline" />
 
@@ -1621,7 +1641,7 @@ IM.GlobalAdTag.register = function (){
 
 
 
-<script type="application/ld+json">{"headline":"Datenschutz","@context":"https://schema.org","author":[],"dateModified":"2021-11-10T14:44:37+01:00","keywords":"","@type":"Article","datePublished":"2020-08-18T09:40:02+01:00","image":["https://stats.t-online.de/-/id_85478668/index","https://stats.t-online.de/-/id_85478668/index","https://stats.t-online.de/-/id_85478668/index","https://stats.t-online.de/-/id_85478668/index"],"alternativeHeadline":" - Hinweise zum Datenschutz (mit Werbeeinwilligung)","mainEntityOfPage":"https://www.t-online.de/datenschutz/id_88397036/index","publisher":{"logo":{"height":"32","@type":"ImageObject","width":"125","url":"https://img.toi.de/t-logo.png"},"@type":"Organization","name":"t-online"}}</script> <meta name="company" content="Ströer Digital Publishing GmbH" />
+<script type="application/ld+json">{"headline":"Datenschutz","@context":"https://schema.org","author":[],"dateModified":"2021-11-10T14:44:37+02:00","keywords":"","@type":"Article","datePublished":"2020-08-18T09:40:02+02:00","image":["https://stats.t-online.de/-/id_85478668/index","https://stats.t-online.de/-/id_85478668/index","https://stats.t-online.de/-/id_85478668/index","https://stats.t-online.de/-/id_85478668/index"],"alternativeHeadline":" - Hinweise zum Datenschutz (mit Werbeeinwilligung)","mainEntityOfPage":"https://www.t-online.de/datenschutz/id_88397036/index","publisher":{"logo":{"height":"32","@type":"ImageObject","width":"125","url":"https://img.toi.de/t-logo.png"},"@type":"Organization","name":"t-online"}}</script> <meta name="company" content="Ströer Digital Publishing GmbH" />
  <meta name="copyright" content="t-online.de" />
 
  <meta name="description" itemprop="description" content="Wir, die Ströer Digital Publishing GmbH, Ströer-Allee 1, 50999 Köln („ Ströer“, „ wir“ oder „ uns“), freuen uns über Ihren Besuch auf t-online.de. 1. t-online" />
@@ -1632,7 +1652,7 @@ IM.GlobalAdTag.register = function (){
  <meta name="scc_messung" content="true" />
 <meta name="referrer" content="unsafe-url">
 
-<link rel="stylesheet" type="text/css" href="https://stats.t-online.de/rl13-726-css/id_63141836/tid_css/index_ts37963834090.css" />
+<link rel="stylesheet" type="text/css" href="https://stats.t-online.de/rl13-726-css/id_63141836/tid_css/index_ts78763141836.css" />
 <script>
   var _smartWaiter = function (selector, callback) {
   function _requestFunction() {
@@ -1698,7 +1718,7 @@ perfMarksDealer.start();
 
 
 </script>
-<script type="text/javascript" src="https://stats.t-online.de/rl13-js-537/id_63608454/tid_js/index_ts686360170.js"></script>
+<script type="text/javascript" src="https://stats.t-online.de/rl13-js-537/id_63608454/tid_js/index_ts6764609914.js"></script>
 <!--<script>!function(){var e;try{e=top.location.href}catch(t){e=document.referrer||location.href}var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.setAttribute("rel","preload"),t.setAttribute("as","script"),t.src="//d.nativendo.de/cds/delivery/init?url="+e;var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r)
 var t1=document.createElement("script");t1.type="text/javascript",t1.async=!0,t1.setAttribute("rel","preconnect"),t1.setAttribute("as","script"),t1.src="//d.nativendo.de/cds/delivery/init?url="+e;var r1=document.getElementsByTagName("script")[1];r1.parentNode.insertBefore(t1,r1)
 }();console.log("PER");
@@ -1797,7 +1817,7 @@ if(typeof consentManager !== 'undefined') {
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P9FVTRJ"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) --><div id="Tstart"><a id="top" name="top"></a></div>
-<script type="text/javascript">/*<![CDATA[*/TfA();/*]]>*/</script><div id="Tstat"><script type="text/javascript">/*<![CDATA[*/ var par=T.PA.split(/\//);
+<script type="text/javascript">/*<![CDATA[*/TfA();/*]]>*/</script><div id="Tstat"><script type="text/javascript">/*<![CDATA[*/  var par=T.PA.split(/\//);
     if (typeof T.MP == U) T.MP=3;
     var KGnG="",pls=0;
     var trsl8m = { 
@@ -1808,8 +1828,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
        'Ä' : 'Ae', 
        'Ü' : 'Ue', 
        'ß' : 'ss' 
-     };
-    var st='toi';  var sv = (T.ID==46 || T.ID==71040302) ? 'ke' : 'in';  for(i=0; i < par.length && pls < T.MP; i++){
+     }; 
+for(i=0; i < par.length && pls < T.MP; i++){
       if(par[i] && par[i] != '' && par[i].indexOf('ar-') < 0 && par[i].indexOf('fp-') < 0 && par[i].indexOf('p_') < 0) { 
         KGnG+='/'+TTrsl8Char( par[i], trsl8m ); 
         pls++; 
@@ -1821,10 +1841,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       else if (xtcustom.cms_doc_types.indexOf('Fotoshow_spiele')>-1) KGnG+='/fs';
       else if (xtcustom.cms_doc_types.indexOf('Artikelshow')>-1) KGnG+='/as';
       else if (T.DCL == 0 && xtcustom.cms_doc_types.indexOf('Video')>-1) KGnG+='/vd';
-    }
-
-    var iam_data = {st:st, sv:sv, co:"kommentar", sc:"yes"}; 
-    iam_data[ T.PRE ? 'xp' : 'cp' ] = KGnG;  iom.c(iam_data); /*]]>*/</script>
+    } 
+/*]]>*/</script>
 
 <!-- Script Konfiguration Measurement Manager -->
 <script type='text/javascript'>
@@ -1832,13 +1850,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
      IOMm('configure',
       { 
        st: 'mobtoi',
-       dn: 'data-1df8532686.t-online.de'
+       dn: 'data-1df8532686.t-online.de',
+       mh:5
       });
     } else {
     IOMm('configure',
       { 
        st: 'toi',
-       dn: 'data-501446ac98.t-online.de'
+       dn: 'data-501446ac98.t-online.de',
+       mh:5
       });
     }
  </script>
@@ -1846,11 +1866,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
  <!-- Anfang Pageview -->
 <script type='text/javascript'>
-  IOMm('pageview',
-  { 
-   cp: KGnG,
-   co: 'kommentar'
-  });
+  var ptca = '';
+  if(T.PRE){ ptca = 'xp';} else { ptca = 'cp'; }
+    IOMm('pageview',
+    { 
+      pt: ptca,
+      cp: KGnG,
+      co: 'kommentar'
+    });
 </script>
  <!-- Ende Pageview -->
 
@@ -3010,6 +3033,6 @@ T$(function(){
 
 </body>
 
-<!--generated: Tue Mar 01 02:32:58 CET 2022, host: 'cmsweb02/04', release: CM7-2013-foundation-17.2.0.4, backend: cmsweb02:21120, id.version: 88397036.97-->
+<!--generated: Fri Apr 01 03:51:17 CEST 2022, host: 'cmsweb01/04', release: CM7-2013-foundation-17.2.0.4, backend: cmsweb01:21120, id.version: 88397036.97-->
 
 </html>

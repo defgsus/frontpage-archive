@@ -40,7 +40,7 @@
 <meta http-equiv="content-script-type" content="text/javascript" />
 <title>Politik aktuell: Nachrichten aus Deutschland, Europa und der Welt</title>
 <script type="text/javascript">/*<![CDATA[*/
-var T = {T0:(new Date()).getTime(), EGO:'toi', MP:2, SN:2, ID:12358564, EWA:false, AJ:false, TI:40001030, SLIN:1, STH:1, disableAdblockLayer:0, PN:'Politik', PORT:1, GAME:0, ART:0, ASTCK:0, SCRIBBLE:0, MZT:0, VIDEO:0, AS:0, GL:0, RECIPE:0, PRE:0, KG:'11000000', DMN:'.t-online.de', DCL:1, R0:'https://www.t-online.de/nachrichten/id_12358564/tid_ajax_empty/politik-aktuell-nachrichten-aus-deutschland-europa-und-der-welt.html', STATION_ID: "K11000000", SVO: false,  PA:'/nachrichten/00-startseite/12358564-th-nachrichten', TPD:'https://www.t-online.de', TS:1646098437}, TMS = {IVW:['https://','toi.ivwbox.de/cgi-bin/ivw/','CP']};
+var T = {T0:(new Date()).getTime(), EGO:'toi', MP:2, SN:2, ID:12358564, EWA:false, AJ:false, TI:40001030, SLIN:1, STH:1, disableAdblockLayer:0, PN:'Politik', PORT:1, GAME:0, ART:0, ASTCK:0, SCRIBBLE:0, MZT:0, VIDEO:0, AS:0, GL:0, RECIPE:0, PRE:0, KG:'11000000', DMN:'.t-online.de', DCL:1, R0:'https://www.t-online.de/nachrichten/id_12358564/tid_ajax_empty/politik-aktuell-nachrichten-aus-deutschland-europa-und-der-welt.html', STATION_ID: "K11000000", SVO: false,  PA:'/nachrichten/00-startseite/12358564-th-nachrichten', TPD:'https://www.t-online.de', TS:1648778150}, TMS = {IVW:['https://','toi.ivwbox.de/cgi-bin/ivw/','CP']};
 /*]]>*/</script>
 
 
@@ -162,9 +162,7 @@ function setTestVariation(testVariation, cKey, days) {
       var testvariation = getTestVariation('consent');
       if(!testvariation) {
          var cases = {
-            "2021-12-13-cmp-test-pur-4-C" : 20,
-            "2021-12-13-cmp-test-pur-4-B" : 20,
-            "2021-12-13-cmp-test-pur-4-A" : 60
+            "2022-03-21-cmp-pur-5-A" : 100
          }
          testvariation = weightedRandom(cases);
       }
@@ -1062,18 +1060,6 @@ if(typeof consentManager === 'undefined') {
     'placehtext': '<p class="TConsentEmbed-Text">Wir benötigen Ihre Zustimmung, um den von unserer Redaktion eingebundenen externen Inhalt unseres Dienstleisters Famobi GmbH anzuzeigen. Sie können diesen (und damit auch alle weiteren externen Inhalte von Famobi GmbH auf t-online) mit einem Klick anzeigen lassen und auch wieder deaktivieren.</p>  <div class="TConsentEmbedSwitchToggle">   <div class="TConsentEmbedSwitchToggleContainer">      <label class="switch">        <input type="checkbox">        <span class="slider"></span>      </label>    </div>    <p>Famobi Inhalte immer anzeigen</p> ',
     'providers': ['Famobi GmbH', 'famobi gmbh']
   },
-  'wordle': {
-    'extraConsent': true,
-    'vendor': 'wordleat',
-    'label': 'WORDLE',
-    'providers': ['Wordle.at', 'wordleat']
-  },
-  'teamdeuschland': {
-    'extraConsent': true,
-    'vendor': 'teamdeuschland',
-    'label': 'Olympia Team Deutschland',
-    'providers': ['teamdeutschland']
-  },
   'glomex': {
     'vendor': '5eb9779c2a005a254474efde',
     'label': 'Glomex Videoplayer',
@@ -1421,12 +1407,44 @@ if ( typeof consentManager === 'undefined' ) {
 
 <script>
   var googleConsentCookie = typeof TgC == 'function' ? TgC('TconsentStateV755') : 'no-consent-state';
+  // Loginbox message handler (ENGAGE-362)
+  var mailloginstate = 'no mail-login-state';
+  if ( localStorage.getItem( 'nonolobostat' ) ) mailloginstate = localStorage.getItem( 'nonolobostat' );
+
+  window.addEventListener("message", function(ev) {
+    // Do we trust the sender of this message?
+    if (ev.origin !== "https://www.t-online.de" || typeof ev.data != 'string')
+      return;
+
+    // ev.source is window.opener
+    // ev.data is "Loginbox:Status:[not-logged-in|loggedin|loggedin-firstview]"
+    if ( loginstate=ev.data.match(/Loginbox:Status:(.*)/) ) {
+      switch( loginstate[1] ) {
+        case 'not-logged-in':
+          dataLayer.push({'mailLoginState' : 'logged-out'});
+          break;
+        case 'loggedin':
+          dataLayer.push({'mailLoginState' : 'logged-in'});
+          break;
+        case 'loggedin-firstview':
+          dataLayer.push({'mailLoginState' : 'logged-in_first_view'});
+          break;
+        default:
+          break;
+      }
+    }
+  });
 </script>
 <script>
-var obVariation = null
+var obVariation = null;
+var betaBlacklisted = null;
 if (typeof TgC !== 'function' ||  !TgC('tbremmxxi')); 
-else if (TgC('tbremmxxi') == 'rd' ) obVariation = "beta";
-else if (TgC('tbremmxxi').substr(0,2) == 'bl' ) obVariation = "live"; ; 
+else if (TgC('tbremmxxi').substr(0,2) == 'rd' ) obVariation = "beta";
+else if (TgC('tbremmxxi').substr(0,2) == 'bl' ) obVariation = "live";
+else if (TgC('tbremmxxi').substr(0,2) == 'bk' ) {
+  obVariation = "live";
+  betaBlacklisted = 1;
+};
 </script>
 <script>
   if ( ! googleConsentCookie ) googleConsentCookie = 'no-consent-state';
@@ -1472,8 +1490,10 @@ dataLayer = [{
 'testVariation':    getTestVariation(),
 'testVariationCMS': getTestVariation(true),
 'consentStateV755': googleConsentCookie,
-'consentVariant':   getTestVariation('consent'), 
-'obVariation' : obVariation
+'consentVariant':   getTestVariation('consent'),
+'betaBlacklisted' : betaBlacklisted,
+'obVariation' : obVariation,
+'mailLoginState' : mailloginstate
 
 }];
 
@@ -1622,7 +1642,7 @@ IM.GlobalAdTag.register = function (){
  <meta name="scc_messung" content="true" />
 <meta name="referrer" content="unsafe-url">
 
-<link rel="stylesheet" type="text/css" href="https://stats.t-online.de/rl13-726-css/id_63141836/tid_css/index_ts37963834090.css" />
+<link rel="stylesheet" type="text/css" href="https://stats.t-online.de/rl13-726-css/id_63141836/tid_css/index_ts78763141836.css" />
 <script>
   var _smartWaiter = function (selector, callback) {
   function _requestFunction() {
@@ -1688,7 +1708,7 @@ perfMarksDealer.start();
 
 
 </script>
-<script type="text/javascript" src="https://stats.t-online.de/rl13-js-537/id_63608454/tid_js/index_ts686360170.js"></script>
+<script type="text/javascript" src="https://stats.t-online.de/rl13-js-537/id_63608454/tid_js/index_ts6764609914.js"></script>
 <!--<script>!function(){var e;try{e=top.location.href}catch(t){e=document.referrer||location.href}var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.setAttribute("rel","preload"),t.setAttribute("as","script"),t.src="//d.nativendo.de/cds/delivery/init?url="+e;var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r)
 var t1=document.createElement("script");t1.type="text/javascript",t1.async=!0,t1.setAttribute("rel","preconnect"),t1.setAttribute("as","script"),t1.src="//d.nativendo.de/cds/delivery/init?url="+e;var r1=document.getElementsByTagName("script")[1];r1.parentNode.insertBefore(t1,r1)
 }();console.log("PER");
@@ -1862,7 +1882,7 @@ if(typeof consentManager !== 'undefined') {
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P9FVTRJ"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) --><div id="Tstart"><a id="top" name="top"></a></div>
-<script type="text/javascript">/*<![CDATA[*/TfA();/*]]>*/</script><div id="Tstat"><script type="text/javascript">/*<![CDATA[*/ var par=T.PA.split(/\//);
+<script type="text/javascript">/*<![CDATA[*/TfA();/*]]>*/</script><div id="Tstat"><script type="text/javascript">/*<![CDATA[*/  var par=T.PA.split(/\//);
     if (typeof T.MP == U) T.MP=3;
     var KGnG="",pls=0;
     var trsl8m = { 
@@ -1873,8 +1893,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
        'Ä' : 'Ae', 
        'Ü' : 'Ue', 
        'ß' : 'ss' 
-     };
-    var st='toi';  var sv = (T.ID==46 || T.ID==71040302) ? 'ke' : 'in';  for(i=0; i < par.length && pls < T.MP; i++){
+     }; 
+for(i=0; i < par.length && pls < T.MP; i++){
       if(par[i] && par[i] != '' && par[i].indexOf('ar-') < 0 && par[i].indexOf('fp-') < 0 && par[i].indexOf('p_') < 0) { 
         KGnG+='/'+TTrsl8Char( par[i], trsl8m ); 
         pls++; 
@@ -1886,10 +1906,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       else if (xtcustom.cms_doc_types.indexOf('Fotoshow_spiele')>-1) KGnG+='/fs';
       else if (xtcustom.cms_doc_types.indexOf('Artikelshow')>-1) KGnG+='/as';
       else if (T.DCL == 0 && xtcustom.cms_doc_types.indexOf('Video')>-1) KGnG+='/vd';
-    }
-
-    var iam_data = {st:st, sv:sv, co:"kommentar", sc:"yes"}; 
-    iam_data[ T.PRE ? 'xp' : 'cp' ] = KGnG;  iom.c(iam_data); /*]]>*/</script>
+    } 
+/*]]>*/</script>
 
 <!-- Script Konfiguration Measurement Manager -->
 <script type='text/javascript'>
@@ -1897,13 +1915,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
      IOMm('configure',
       { 
        st: 'mobtoi',
-       dn: 'data-1df8532686.t-online.de'
+       dn: 'data-1df8532686.t-online.de',
+       mh:5
       });
     } else {
     IOMm('configure',
       { 
        st: 'toi',
-       dn: 'data-501446ac98.t-online.de'
+       dn: 'data-501446ac98.t-online.de',
+       mh:5
       });
     }
  </script>
@@ -1911,11 +1931,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
  <!-- Anfang Pageview -->
 <script type='text/javascript'>
-  IOMm('pageview',
-  { 
-   cp: KGnG,
-   co: 'kommentar'
-  });
+  var ptca = '';
+  if(T.PRE){ ptca = 'xp';} else { ptca = 'cp'; }
+    IOMm('pageview',
+    { 
+      pt: ptca,
+      cp: KGnG,
+      co: 'kommentar'
+    });
 </script>
  <!-- Ende Pageview -->
 
@@ -2102,7 +2125,7 @@ Lotto </a> </div>
   <ul class="Tnextnav1">  <li><a href="https://www.t-online.de">Home</a></li>  <li  class="Tnnak "> <a href="https://www.t-online.de/nachrichten/">Politik</a> </li>  <li > <a href="https://www.t-online.de/nachrichten/ausland/id_91726686/ukraine-krieg-alle-infos-zum-konflikt-und-der-aktuellen-lage-im-kriegsgebiet.html">Ukraine</a> </li>  <li > <a href="https://www.t-online.de/coronavirus-news-ratgeber-und-alle-informationen-zur-erkrankung/id_87248472/index">Coronavirus</a> </li>  <li > <a href="https://www.t-online.de/nachrichten/panorama/">Panorama</a> </li>  <li > <a href="https://www.t-online.de/sport/">Sport</a> </li>  <li > <a href="https://www.t-online.de/unterhaltung/">Unterhaltung</a> </li>  <li > <a href="https://www.t-online.de/digital/">Digital</a> </li>  <li > <a href="https://www.t-online.de/finanzen/">Wirtschaft &amp; Finanzen</a> </li>  <li > <a href="https://www.t-online.de/auto/">Auto</a> </li>  <li > <a href="https://www.t-online.de/gesundheit/">Gesundheit</a> </li>  <li > <a href="https://www.t-online.de/leben/">Leben</a> </li>  <li > <a href="https://www.t-online.de/spiele/">Spiele</a> </li>  <li > <a href="https://www.t-online.de/region/">Regional</a> </li>  <li > <a href="https://www.t-online.de/heim-garten/">Heim &amp; Garten</a> </li>  <li > <a href="https://www.t-online.de/tv/">Video</a> </li>  <li > <a href="https://www.t-online.de/ratgeber/">Kaufberatung</a> </li>  <li > <a href="https://www.t-online.de/nachhaltigkeit/">Nachhaltigkeit</a> </li>  <li > <a href="https://www.t-online.de/spenden">Spenden</a> </li>  </ul>
  <div class="TslideTo" title="mehr"></div>
 </div>
-<ul class="Tnextnav2">  <li class=" Thst Tnnaa"> <a href="https://www.t-online.de/nachrichten/deutschland/">Deutschland</a> <dl>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/gesellschaft/">Gesellschaft</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/innenpolitik/">Innenpolitik</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/aussenpolitik/">Au&szlig;enpolitik</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/parteien/">Parteien</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/militaer-verteidigung/">Milit&auml;r &amp; Verteidigung</a> </dt>  </dl>  </li>  <li > <a href="https://www.t-online.de/nachrichten/ausland/id_91726686/ukraine-krieg-alle-infos-zum-konflikt-und-der-aktuellen-lage-im-kriegsgebiet.html">Ukraine</a> </li>  <li > <a href="https://www.t-online.de/nachrichten/deutschland/id_91622410/landtagswahl-saarland-kandidaten-umfragen-prognosen-parteien.html">Landtagswahl Saarland</a> </li>  <li class=" Thst"> <a href="https://www.t-online.de/nachrichten/ausland/">Ausland</a> <dl>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/id_90673670/konflikt-in-afghanistan-alle-infos-und-news-zum-einzug-der-taliban-in-kabul.html">Afghanistan-Konflikt</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/krisen/">Krisen &amp; Konflikte</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/terrorismus/">Terrorismus</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/internationale-politik/">Internationale Politik</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/eu/">Europ&auml;ische Union</a> </dt>  </dl>  </li>  <li > <a href="https://www.t-online.de/nachrichten/panorama/id_87559708/coronavirus-in-deutschland-und-der-welt-alle-news-und-informationen.html">Corona-Krise</a> </li>  <li class=" Thst"> <a href="https://www.t-online.de/nachrichten/id_82378816/kolumnen-bei-t-online-experten-analysieren-die-aktuellen-themen.html">Kolumnen</a> <dl>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/usa/id_82378160/gerhard-spoerl-kolumnen-zur-innen-und-weltpolitik-bei-t-online-de.html">Gerhard Sp&ouml;rl</a> </dt>  <dt > <a href="https://www.t-online.de/finanzen/id_82381564/wirtschafts-kolumnen-ursula-weidenfeld-schreibt-fuer-t-online-de.html">Ursula Weidenfeld</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/id_90196594/kolumne-einspruch-christoph-schwennicke-schreibt-fuer-t-online.html">Christoph Schwennicke</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/tagesanbruch/">Florian Harms</a> </dt>  <dt > <a href="https://www.t-online.de/sport/fussball/bundesliga/id_82381568/kolumnen-von-stefan-effenberg-bei-t-online-de.html">Stefan Effenberg</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/id_89894550/kolumne-klartext-vom-altkanzler-gerhard-schroeder-schreibt-fuer-t-online.html">Gerhard Schr&ouml;der</a> </dt>  <dt > <a href="https://www.t-online.de/digital/id_87318860/digital-kolumne-nicole-diekmann-filetiert-aufreger-rund-ums-internet.html">Nicole Diekmann</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/panorama/id_86214984/wetter-kolumne-von-michaela-koschak-ist-das-noch-wetter-oder-schon-klima-.html">Michaela Koschak</a> </dt>  <dt > <a href="https://www.t-online.de/sport/fussball/bundesliga/id_82381572/kolumnen-von-berti-vogts-bei-t-online-de.html">Berti Vogts</a> </dt>  <dt > <a href="https://www.t-online.de/gesundheit/id_87290174/-die-psychologin-hilft-kolumnen-von-ulrike-scheuermann.html">Ulrike Scheuermann</a> </dt>  <dt > <a href="https://www.t-online.de/leben/liebe/id_82381574/-lust-laster-und-liebe-kolumnen-von-jennifer-buchholz.html">Jennifer Buchholz</a> </dt>  <dt > <a href="https://www.t-online.de/unterhaltung/tv/id_84450690/janna-halbroth-kolumnen-zu-den-hoehe-und-tiefpunkten-im-tv.html">Janna Halbroth</a> </dt>  </dl>  </li>  <li class=" Thst"> <a href="https://www.t-online.de/nachrichten/tagesanbruch/">Tagesanbruch</a> <dl>  <dt > <a href="https://www.t-online.de/podcasts/tagesanbruch/" target="_blank">Podcast zum Tagesanbruch</a> </dt>  </dl>  </li>  <li > <a href="https://www.t-online.de/nachrichten/specials/id_90759258/politik-kompass-zur-btw-2021-die-wichtigsten-fragen-zur-wahl.html">Politik-Kompass</a> </li>  <li > <a href="https://www.t-online.de/region/">Regional</a> </li> </ul></div> <script>Tnnav.ini();</script>
+<ul class="Tnextnav2">  <li class=" Thst Tnnaa"> <a href="https://www.t-online.de/nachrichten/deutschland/">Deutschland</a> <dl>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/gesellschaft/">Gesellschaft</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/innenpolitik/">Innenpolitik</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/aussenpolitik/">Au&szlig;enpolitik</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/parteien/">Parteien</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/militaer-verteidigung/">Milit&auml;r &amp; Verteidigung</a> </dt>  </dl>  </li>  <li > <a href="https://www.t-online.de/nachrichten/ausland/id_91726686/ukraine-krieg-alle-infos-zum-konflikt-und-der-aktuellen-lage-im-kriegsgebiet.html">Ukraine</a> </li>  <li > <a href="https://www.t-online.de/nachrichten/deutschland/id_91622410/landtagswahl-saarland-news-hintergruende-umfragen.html">Landtagswahl Saarland</a> </li>  <li class=" Thst"> <a href="https://www.t-online.de/nachrichten/ausland/">Ausland</a> <dl>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/id_90673670/konflikt-in-afghanistan-alle-infos-und-news-zum-einzug-der-taliban-in-kabul.html">Afghanistan-Konflikt</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/krisen/">Krisen &amp; Konflikte</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/terrorismus/">Terrorismus</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/internationale-politik/">Internationale Politik</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/eu/">Europ&auml;ische Union</a> </dt>  </dl>  </li>  <li > <a href="https://www.t-online.de/nachrichten/panorama/id_87559708/coronavirus-in-deutschland-und-der-welt-alle-news-und-informationen.html">Corona-Krise</a> </li>  <li class=" Thst"> <a href="https://www.t-online.de/nachrichten/id_82378816/kolumnen-bei-t-online-experten-analysieren-die-aktuellen-themen.html">Kolumnen</a> <dl>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/usa/id_82378160/gerhard-spoerl-kolumnen-zur-innen-und-weltpolitik-bei-t-online-de.html">Gerhard Sp&ouml;rl</a> </dt>  <dt > <a href="https://www.t-online.de/finanzen/id_82381564/wirtschafts-kolumnen-ursula-weidenfeld-schreibt-fuer-t-online-de.html">Ursula Weidenfeld</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/id_90196594/kolumne-einspruch-christoph-schwennicke-schreibt-fuer-t-online.html">Christoph Schwennicke</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/tagesanbruch/">Florian Harms</a> </dt>  <dt > <a href="https://www.t-online.de/sport/fussball/bundesliga/id_82381568/kolumnen-von-stefan-effenberg-bei-t-online-de.html">Stefan Effenberg</a> </dt>  <dt > <a href="https://www.t-online.de/digital/id_87318860/digital-kolumne-nicole-diekmann-filetiert-aufreger-rund-ums-internet.html">Nicole Diekmann</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/panorama/id_86214984/wetter-kolumne-von-michaela-koschak-ist-das-noch-wetter-oder-schon-klima-.html">Michaela Koschak</a> </dt>  <dt > <a href="https://www.t-online.de/sport/fussball/bundesliga/id_82381572/kolumnen-von-berti-vogts-bei-t-online-de.html">Berti Vogts</a> </dt>  <dt > <a href="https://www.t-online.de/gesundheit/id_87290174/-die-psychologin-hilft-kolumnen-von-ulrike-scheuermann.html">Ulrike Scheuermann</a> </dt>  <dt > <a href="https://www.t-online.de/leben/liebe/id_82381574/-lust-laster-und-liebe-kolumnen-von-jennifer-buchholz.html">Jennifer Buchholz</a> </dt>  <dt > <a href="https://www.t-online.de/unterhaltung/tv/id_84450690/janna-halbroth-kolumnen-zu-den-hoehe-und-tiefpunkten-im-tv.html">Janna Halbroth</a> </dt>  </dl>  </li>  <li class=" Thst"> <a href="https://www.t-online.de/nachrichten/tagesanbruch/">Tagesanbruch</a> <dl>  <dt > <a href="https://www.t-online.de/podcasts/tagesanbruch/" target="_blank">Podcast zum Tagesanbruch</a> </dt>  </dl>  </li>  <li > <a href="https://www.t-online.de/nachrichten/specials/id_90759258/politik-kompass-zur-btw-2021-die-wichtigsten-fragen-zur-wahl.html">Politik-Kompass</a> </li>  <li > <a href="https://www.t-online.de/region/">Regional</a> </li> </ul></div> <script>Tnnav.ini();</script>
 
 <div id="Tcb" ><!--noindex:-->
         <script type="text/javascript">/*<![CDATA[*/if (typeof consentAdHandler != 'undefined') {
@@ -2163,94 +2186,67 @@ Lotto </a> </div>
 
 
 <!-- MrRu RenderBlock false -->
-<div class="Tmm  Tts Tww2 Thh4 Tmc2xl Tafm  " id="T-91745136" onfocus="A('zid=91745136;mp=0101-01;vn=11')" > <div class='Tstage-text'> 
+<div class="Tmm  Tts Tww2 Thh4 Tmc2xl Tafm  " id="T-91936698" onfocus="A('zid=91936698;mp=0101-01;vn=44')" > <div class='Tstage-text'> 
 
 
-<a href="https://www.t-online.de/nachrichten/ausland/krisen/id_91745136/vier-bewohner-von-kiew-berichten-ich-hetze-den-russen-meine-hunde-auf-den-hals-.html">                   <h6><span>Vier Kiewer berichten </span></h6>
-                   <h5 data-tb-region-item-title="&quot;Ich hetze den Russen meine Hunde auf den Hals&quot;"><span>&quot;Ich</span><span>hetze</span><span>den</span><span>Russen</span><span>meine</span><span>Hunde</span><span>auf</span><span>den</span><span>Hals&quot;</span></h5>        </a> </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/krisen/id_91745136/vier-bewohner-von-kiew-berichten-ich-hetze-den-russen-meine-hunde-auf-den-hals-.html">
+<a href="https://www.t-online.de/nachrichten/ausland/usa/id_91936698/verteidigungsministerin-lambrecht-auf-us-reise-madame-zwei-prozent-.html">                   <h6><span>&quot;Madame Zwei Prozent&quot; auf US-Reise</span></h6>
+                   <h5 data-tb-region-item-title="Lambrechts heikle Bew&auml;hrungsprobe"><span>Lambrechts</span><span>heikle</span><span>Bew&auml;hrungsprobe</span></h5><span class="Tzusaufmtxt">Von Bastian Brauns, Washington</span>        </a> </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/usa/id_91936698/verteidigungsministerin-lambrecht-auf-us-reise-madame-zwei-prozent-.html">
         
 
 
 
-<img height="343" width="610" alt="Wohnhaus in Kiew: Die Bewohner der ukrainischen Hauptstadt suchen Sicherheit in Kellern und U-Bahnhöfen.  (Quelle: imago images/Yuliia Ovsiannikova)" src="https://bilder.t-online.de/b/91/74/54/16/id_91745416/610_80/tid_da/wohnhaus-in-kiew-die-bewohner-der-ukrainischen-hauptstadt-suchen-sicherheit-in-kellern-und-u-bahnhoefen-.jpg" title="Wohnhaus in Kiew: Die Bewohner der ukrainischen Hauptstadt suchen Sicherheit in Kellern und U-Bahnhöfen.  (Quelle: imago images/Yuliia Ovsiannikova)" />                                                              
+<img height="343" width="610" alt="Antrittsbesuch bei US-Verteidigungsminister Lloyd Austin: Christine Lambrecht sprach im Pentagon auch über Waffenlieferungen an die Ukraine. (Quelle: dpa/Andrew Harnik)" src="https://bilder.t-online.de/b/91/93/83/34/id_91938334/610_80/tid_da/antrittsbesuch-bei-us-verteidigungsminister-lloyd-austin-christine-lambrecht-sprach-im-pentagon-auch-ueber-waffenlieferungen-an-die-ukraine-.jpg" title="Antrittsbesuch bei US-Verteidigungsminister Lloyd Austin: Christine Lambrecht sprach im Pentagon auch über Waffenlieferungen an die Ukraine. (Quelle: dpa/Andrew Harnik)" />                                                              
                                                           <div class=""><i></i></div>
                       </a></div></div>
 
 
-<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-91746788" onfocus="A('zid=91746788;mp=0101-02;vn=9')" > <div class="Ttsc Ttsh100"> 
+<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-91939012" onfocus="A('zid=91939012;mp=0101-02;vn=2')" > <div class="Ttsc Ttsh100"> 
 
 
-<a href="https://www.t-online.de/nachrichten/ausland/id_91746788/ukraine-krise-selenskyj-fordert-flugverbotszone-und-tribunal-gegen-russland.html">                   <h6>UN-Sitz in Frage gestellt</h6>
-                   <h5 data-tb-region-item-title="">Selenskyj fordert Kriegsverbrecher-Tribunal gegen Russland</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91746788/ukraine-krise-selenskyj-fordert-flugverbotszone-und-tribunal-gegen-russland.html">
+<a href="https://www.t-online.de/nachrichten/ausland/id_91939012/wieder-wirbel-um-deutsche-waffenlieferungen-an-die-ukraine.html">                   <h6>Ukraine offenbar verstimmt</h6>
+                   <h5 data-tb-region-item-title="">Wieder Wirbel um deutsche Waffenlieferungen</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91939012/wieder-wirbel-um-deutsche-waffenlieferungen-an-die-ukraine.html">
         
 
 
 
-<img height="100" width="100" alt="Der ukrainische Präsident Wolodymyr Selenskyj sprach bei seiner Videobotschaft über weitere Sanktionen gegen Russland. (Quelle: Screenshot Videobotschaft Selenskyjs)" src="https://bilder.t-online.de/b/91/74/67/92/id_91746792/100_95/c_Master-1-1-Small/tid_da/der-ukrainische-praesident-wolodymyr-selenskyj-sprach-bei-seiner-videobotschaft-ueber-weitere-sanktionen-gegen-russland-.png" title="Der ukrainische Präsident Wolodymyr Selenskyj sprach bei seiner Videobotschaft über weitere Sanktionen gegen Russland. (Quelle: Screenshot Videobotschaft Selenskyjs)" />                                                              
+<img height="100" width="100" alt="Ukrainische Soldaten bauen eine Drohne auf (Archivbild): Diese Flugkörper werden wohl besonders dringend gebraucht. (Quelle: imago images/Pavlo Palamarchuk)" src="https://bilder.t-online.de/b/91/93/90/24/id_91939024/100_95/c_Master-1-1-Small/tid_da/ukrainische-soldaten-bauen-eine-drohne-auf-archivbild-diese-flugkoerper-werden-wohl-besonders-dringend-gebraucht-.jpg" title="Ukrainische Soldaten bauen eine Drohne auf (Archivbild): Diese Flugkörper werden wohl besonders dringend gebraucht. (Quelle: imago images/Pavlo Palamarchuk)" />                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div>
 </div>
 
 
-<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-91746672" onfocus="A('zid=91746672;mp=0101-03;vn=5')" > <div class="Ttsc Ttsh100"> 
+<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-91938892" onfocus="A('zid=91938892;mp=0101-03;vn=3')" > <div class="Ttsc Ttsh100"> 
 
 
-<a href="https://www.t-online.de/nachrichten/ausland/id_91746672/wie-gross-sind-die-militaerischen-verluste-in-der-ukraine-krise-.html">                   <h6>Panzer und Flugzeuge zerst&ouml;rt</h6>
-                   <h5 data-tb-region-item-title="">Wie gro&szlig; sind die milit&auml;rischen Verluste im Ukraine-Krieg?</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91746672/wie-gross-sind-die-militaerischen-verluste-in-der-ukraine-krise-.html">
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91938892/rki-gipfel-der-corona-welle-wahrscheinlich-erreicht-.html">                   <h6>Risiko bleibt dennoch hoch</h6>
+                   <h5 data-tb-region-item-title="">RKI: Gipfel der Corona-Welle &quot;wahrscheinlich erreicht&quot;</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91938892/rki-gipfel-der-corona-welle-wahrscheinlich-erreicht-.html">
         
 
 
 
-<img height="100" width="100" alt="Ein zerstörtes Militärfahrzeug nahe der Stadt Bucha: Genaue Zahlen über Verluste im Ukraine-Krieg sind nicht verfügbar. (Quelle: Reuters/Maksim Levin)" src="https://bilder.t-online.de/b/91/74/66/76/id_91746676/100_95/c_Master-1-1-Small/tid_da/ein-zerstoertes-militaerfahrzeug-nahe-der-stadt-bucha-genaue-zahlen-ueber-verluste-im-ukraine-krieg-sind-nicht-verfuegbar-.jpg" title="Ein zerstörtes Militärfahrzeug nahe der Stadt Bucha: Genaue Zahlen über Verluste im Ukraine-Krieg sind nicht verfügbar. (Quelle: Reuters/Maksim Levin)" />                                                              
+<img height="100" width="100" alt="Die aktuelle Coronawelle könnte laut dem RKI nun ihren Höhepunkt erreicht haben. (Symbolfoto) (Quelle: dpa/ Annette Riedl)" src="https://bilder.t-online.de/b/91/93/89/14/id_91938914/100_95/c_Master-1-1-Small/tid_da/die-aktuelle-coronawelle-koennte-laut-dem-rki-nun-ihren-hoehepunkt-erreicht-haben-symbolfoto-.jpg" title="Die aktuelle Coronawelle könnte laut dem RKI nun ihren Höhepunkt erreicht haben. (Symbolfoto) (Quelle: dpa/ Annette Riedl)" />                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div>
 </div>
 
 
-<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-91746664" onfocus="A('zid=91746664;mp=0101-04;vn=1')" > <div class="Ttsc Ttsh100"> 
+<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-91933280" onfocus="A('zid=91933280;mp=0101-04;vn=41')" > <div class="Ttsc Ttsh100"> 
 
 
-<a href="https://www.t-online.de/nachrichten/ausland/id_91746664/empoerung-wegen-rassismus-vorwuerfen-polen-widerspricht.html">                   <h6>An polnisch-ukrainischer Grenze</h6>
-                   <h5 data-tb-region-item-title="">Emp&ouml;rung wegen Rassismus-Vorw&uuml;rfen &ndash; Polen widerspricht</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91746664/empoerung-wegen-rassismus-vorwuerfen-polen-widerspricht.html">
+<a href="https://www.t-online.de/nachrichten/ausland/id_91933280/news-zum-ukraine-krieg-i-britischer-geheimdienst-sieht-russische-truppenverschiebungen.html">                   <h6>Newsblog zum Ukraine-Krieg</h6>
+                   <h5 data-tb-region-item-title="">Britischer Geheimdienst sieht russische Truppenverschiebungen</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91933280/news-zum-ukraine-krieg-i-britischer-geheimdienst-sieht-russische-truppenverschiebungen.html">
         
 
 
 
-<img height="100" width="100" alt="Polnisches Grenzgebiet: Zahlreiche Menschen verlassen nach dem Angriff Russlands auf die Ukraine das Land. (Quelle: dpa/Michael Kappeler)" src="https://bilder.t-online.de/b/91/74/66/70/id_91746670/100_95/c_Master-1-1-Small/tid_da/polnisches-grenzgebiet-zahlreiche-menschen-verlassen-nach-dem-angriff-russlands-auf-die-ukraine-das-land-.jpg" title="Polnisches Grenzgebiet: Zahlreiche Menschen verlassen nach dem Angriff Russlands auf die Ukraine das Land. (Quelle: dpa/Michael Kappeler)" />                                                              
-                                                          <div class=""><i></i></div>
+<img height="100" width="100" alt="Ein Soldat der Separatisten in Donetsk steht vor einem Militärlaster (Archivbild): Nach britischen Berichten ziehen sich russische Truppen zurück. (Quelle: imago images)" src="https://bilder.t-online.de/b/91/93/92/28/id_91939228/100_95/c_Master-1-1-Small/tid_da/ein-soldat-der-separatisten-in-donetsk-steht-vor-einem-militaerlaster-archivbild-nach-britischen-berichten-ziehen-sich-russische-truppen-zurueck-.jpg" title="Ein Soldat der Separatisten in Donetsk steht vor einem Militärlaster (Archivbild): Nach britischen Berichten ziehen sich russische Truppen zurück. (Quelle: imago images)" />                                                              
+                                                          <div class="Ticon Tplay"><i></i></div>
                       </a></div> </div>
 </div>
 
 
 
 
-<!-- MrRu RenderBlock false -->
-
-<div class="Tmm Tccc  " id="T-86120732" onfocus="A('mp=0101-05;vn=14')"><div id="podigeePlayerContainer" data-embed-hash="86120732"></div>
-<script>
-
-(function() {
- var now = new Date();
- var hour = now.getHours() + now.getMinutes() / 60;
- var isWeekend = now.getDay() === 0 || now.getDay() === 6;
- var podContainer = document.getElementById('podigeePlayerContainer');
- if ((isWeekend && hour >= 6 && hour <= 11) || (!isWeekend && hour >= 6 && hour <= 11) || T.PRE) {
- podContainer.setAttribute('class', 'Tmm Tccc TwwP100 Ttsni Tts--nolink');
- consentEmbedHandler.add(podContainer, "&lt;script class=&quot;podigee-podcast-player&quot; src=&quot;https://cdn.podigee.com/podcast-player/javascripts/podigee-podcast-player.js&quot; data-configuration=&quot;https://tagesanbruch.podigee.io/embed?context=external&quot;&gt;&lt;/script&gt;", 'Podigee');
- if (T.DCL != 3) {
- Tready(function() {
- var Tgbox = document.querySelector('#Tcontboxi .Tgbox');
- Tgbox.insertBefore(podContainer, Tgbox.firstChild);
- });
- } else {
- podContainer.style.marginBottom = '9px';
- }
- } else {
- podContainer.remove();
- }
-})();
-</script>
-</div>
 
 
  </div> <div id="imToCbar"></div> <script>T$('#Tgboxh img.Tlz').lazyload();T$(D).trigger('scroll');</script>  <div id="Tcontboxi">  <div class="Tgbox" id="Tg-81195560"> 
@@ -2269,24 +2265,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91746620" onfocus="A('zid=91746620;mp=0201-01;vn=3')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91939336" onfocus="A('zid=91939336;mp=0201-01;vn=1')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/ausland/id_91746620/ukraine-krieg-un-mitgliedsstaaten-richten-eindringliche-appelle-an-russland.html"> Dringlichkeitssitzung in New York - UN-Mitgliedsstaaten richten eindringliche Appelle an Russland
+<a href="https://www.t-online.de/nachrichten/ausland/id_91939336/habeck-bei-lanz-habeck-politik-bedeutet-sich-die-haende-schmutzig-zu-machen-.html"> Ukraine-Talk bei Lanz - Habeck: "Politik bedeutet, sich die Hände schmutzig zu machen"
   </a>
 
 
- <h6>Dringlichkeitssitzung in New York</h6>  <h5 data-tb-region-item-title="">UN-Mitgliedsstaaten richten eindringliche Appelle an Russland</h5>
+ <h6>Ukraine-Talk bei Lanz</h6>  <h5 data-tb-region-item-title="">Habeck: &quot;Politik bedeutet, sich die H&auml;nde schmutzig zu machen&quot;</h5>
 
-<p class="Ttst">Wegen des Ukraine-Kriegs haben sich die Mitglieder der Vereinten Nationen zu einer Dringlichkeitssitzung versammelt. Ihre Forderung an Russland ist klar: Der Angriff auf die Ukraine müsse sofort enden.
+<p class="Ttst">Robert Habeck macht derzeit keine moralisch blütenreine Politik und hat kein Problem damit. Geld für Putin, Deal mit Katar, Atomkraft? Alles vertretbar, findet der Vizekanzler und fragt Kritiker: Was tankt ihr eigentlich?
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91746620/ukraine-krieg-un-mitgliedsstaaten-richten-eindringliche-appelle-an-russland.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91939336/habeck-bei-lanz-habeck-politik-bedeutet-sich-die-haende-schmutzig-zu-machen-.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/74/66/44/id_91746644/300_80/tid_da/antonio-guterres-die-kaempfe-in-der-ukraine-muessen-jetzt-enden-.jpg" width="300" class="Tlz" alt="Antonio Guterres: 'Die Kämpfe in der Ukraine müssen jetzt enden.' (Quelle: AP/dpa/Seth Wenig)" src="https://img.toi.de/t.gif" title="Antonio Guterres: 'Die Kämpfe in der Ukraine müssen jetzt enden.' (Quelle: AP/dpa/Seth Wenig)" /><noscript><img src="https://bilder.t-online.de/b/91/74/66/44/id_91746644/300_80/tid_da/antonio-guterres-die-kaempfe-in-der-ukraine-muessen-jetzt-enden-.jpg" width="300" height="169" alt="Antonio Guterres: 'Die Kämpfe in der Ukraine müssen jetzt enden.'" /></noscript>                                                              
+<img height="168" data-original="https://bilder.t-online.de/b/91/93/93/52/id_91939352/300_80/tid_da/robert-habeck-bei-einer-lanz-sendung-archivbild-der-wirtschaftsminister-verteidigte-die-realpolitik-in-der-ukraine-krise-.jpg" width="300" class="Tlz" alt="Robert Habeck bei einer 'Lanz'-Sendung (Archivbild): Der Wirtschaftsminister verteidigte die Realpolitik in der Ukraine-Krise. (Quelle: imago images/teutopress)" src="https://img.toi.de/t.gif" title="Robert Habeck bei einer 'Lanz'-Sendung (Archivbild): Der Wirtschaftsminister verteidigte die Realpolitik in der Ukraine-Krise. (Quelle: imago images/teutopress)" /><noscript><img src="https://bilder.t-online.de/b/91/93/93/52/id_91939352/300_80/tid_da/robert-habeck-bei-einer-lanz-sendung-archivbild-der-wirtschaftsminister-verteidigte-die-realpolitik-in-der-ukraine-krise-.jpg" width="300" height="169" alt="Robert Habeck bei einer 'Lanz'-Sendung (Archivbild): Der Wirtschaftsminister verteidigte die Realpolitik in der Ukraine-Krise." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2299,25 +2295,25 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91746574" onfocus="A('zid=91746574;mp=0201-02;vn=10')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91935358" onfocus="A('zid=91935358;mp=0201-02;vn=51')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/id_91746574/im-video-kiewer-kinderkrankenhaus-im-belagerungszustand.html"> Kinderkrankenhaus in Kiew - Beklemmende Bilder: Kleine Patienten flüchten in den Keller
+<a href="https://www.t-online.de/nachrichten/ausland/id_91935358/berichte-von-us-geheimdiensten-die-maenner-die-putin-wohl-in-die-irre-fuehren.html"> Berichte von US-Geheimdiensten - Die Männer, die Putin wohl in die Irre führen
   </a>
 
 
- <h6>Kinderkrankenhaus in Kiew</h6>  <h5 data-tb-region-item-title="">Beklemmende Bilder: Kleine Patienten fl&uuml;chten in den Keller</h5>
+ <h6>Berichte von US-Geheimdiensten</h6>  <h5 data-tb-region-item-title="">Die M&auml;nner, die Putin wohl in die Irre f&uuml;hren</h5>
 
-<p class="Ttst">Die Lage in einem Kinderkrankenhaus in der ukrainischen Hauptstadt spitzt sich dramatisch zu. Ein Arzt schildert vor der Kamera, woran es in der Klinik am meisten fehlt.
+<p class="Ttst">Der Krieg in der Ukraine läuft für Russland nicht nach Plan. Die USA glauben, dass Putin von seinen engsten Beratern nicht richtig über die Lage informiert werde. Auf wen hört Putin überhaupt noch? Ein Überblick. I Von L. Becke
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/id_91746574/im-video-kiewer-kinderkrankenhaus-im-belagerungszustand.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91935358/berichte-von-us-geheimdiensten-die-maenner-die-putin-wohl-in-die-irre-fuehren.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/74/65/80/id_91746580/300_80/tid_da/index.jpg" width="300" class="Tlz" alt=" (Quelle: Reuters)" src="https://img.toi.de/t.gif" title=" (Quelle: Reuters)" /><noscript><img src="https://bilder.t-online.de/b/91/74/65/80/id_91746580/300_80/tid_da/index.jpg" width="300" height="169" alt="" /></noscript>                                                              
-                                                          <div class="Ticon Tplay"><i></i></div>
+<img height="168" data-original="https://bilder.t-online.de/b/91/93/79/76/id_91937976/300_80/tid_da/gemeinsame-mittagspause-schoigu-und-putin-waehrend-eines-wochenendtrips-im-sibirischen-wald-im-maerz-2021-.jpg" width="300" class="Tlz" alt="Gemeinsame Mittagspause: Schoigu und Putin während eines Wochenendtrips im sibirischen Wald im März 2021.  (Quelle: Alexei Druzhinin/Kremlin Pool)" src="https://img.toi.de/t.gif" title="Gemeinsame Mittagspause: Schoigu und Putin während eines Wochenendtrips im sibirischen Wald im März 2021.  (Quelle: Alexei Druzhinin/Kremlin Pool)" /><noscript><img src="https://bilder.t-online.de/b/91/93/79/76/id_91937976/300_80/tid_da/gemeinsame-mittagspause-schoigu-und-putin-waehrend-eines-wochenendtrips-im-sibirischen-wald-im-maerz-2021-.jpg" width="300" height="169" alt="Gemeinsame Mittagspause: Schoigu und Putin während eines Wochenendtrips im sibirischen Wald im März 2021. " /></noscript>                                                              
+                                                          <div class=""><i></i></div>
                       </a></div> </div> </div>
 
 
@@ -2329,24 +2325,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91746498" onfocus="A('zid=91746498;mp=0201-03;vn=6')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91938606" onfocus="A('zid=91938606;mp=0201-03;vn=2')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/ausland/id_91746498/ukraine-krieg-beruechtigte-putin-soeldner-in-kiew-us-regierung-hat-hinweise.html"> Ukraine-Krieg - Berüchtigte Putin-Söldner in Kiew? US-Regierung hat Hinweise
+<a href="https://www.t-online.de/nachrichten/ausland/id_91938606/ukraine-krieg-buergermeister-von-melitopol-berichtet-von-russischer-gefangenschaft.html"> Verschleppter Bürgermeister von Melitopol - "Ich hörte die Schreie von Gefolterten nebenan"
   </a>
 
 
- <h6>Ukraine-Krieg</h6>  <h5 data-tb-region-item-title="">Ber&uuml;chtigte Putin-S&ouml;ldner in Kiew? US-Regierung hat Hinweise</h5>
+ <h6>Verschleppter B&uuml;rgermeister von Melitopol</h6>  <h5 data-tb-region-item-title="">&quot;Ich h&ouml;rte die Schreie von Gefolterten nebenan&quot;</h5>
 
-<p class="Ttst">Bei den Angriffen auf die Ukraine setzt Russland offenbar auch die berüchtigten Söldner der "Gruppe Wagner" ein. Ob sie darauf angesetzt wurden, den ukrainischen Präsidenten zu ermorden, ist aber unklar.
+<p class="Ttst">Seine Stadt besetzt, er selbst verschleppt: Mehrere Tage lang wurde der Bürgermeister von Melitopol, Iwan Fedorow, von russischen Kräften festgehalten. Nun erzählt er von der Zeit im Gefängnis.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91746498/ukraine-krieg-beruechtigte-putin-soeldner-in-kiew-us-regierung-hat-hinweise.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91938606/ukraine-krieg-buergermeister-von-melitopol-berichtet-von-russischer-gefangenschaft.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/74/65/62/id_91746562/300_80/tid_da/strassensperrungen-in-richtung-kiew-es-gibt-offenbar-hinweise-darauf-dass-russische-soeldner-im-ukraine-krieg-im-einsatz-sind-.jpg" width="300" class="Tlz" alt="Straßensperrungen in Richtung Kiew: Es gibt offenbar Hinweise darauf, dass russische Söldner im Ukraine-Krieg im Einsatz sind. (Quelle: AP/dpa/Emilio Morenatti)" src="https://img.toi.de/t.gif" title="Straßensperrungen in Richtung Kiew: Es gibt offenbar Hinweise darauf, dass russische Söldner im Ukraine-Krieg im Einsatz sind. (Quelle: AP/dpa/Emilio Morenatti)" /><noscript><img src="https://bilder.t-online.de/b/91/74/65/62/id_91746562/300_80/tid_da/strassensperrungen-in-richtung-kiew-es-gibt-offenbar-hinweise-darauf-dass-russische-soeldner-im-ukraine-krieg-im-einsatz-sind-.jpg" width="300" height="169" alt="Straßensperrungen in Richtung Kiew: Es gibt offenbar Hinweise darauf, dass russische Söldner im Ukraine-Krieg im Einsatz sind." /></noscript>                                                              
+<img height="168" data-original="https://bilder.t-online.de/b/91/93/86/58/id_91938658/300_80/tid_da/russischer-soldat-in-melitopol-dieses-foto-des-staatlichen-russischen-senders-sputnik-soll-russische-truppenpraesenz-in-der-suedukrainischen-stadt-zeigen-.jpg" width="300" class="Tlz" alt="Russischer Soldat in Melitopol: Dieses Foto des staatlichen russischen Senders Sputnik soll russische Truppenpräsenz in der südukrainischen Stadt zeigen. (Quelle: imago images/SNA)" src="https://img.toi.de/t.gif" title="Russischer Soldat in Melitopol: Dieses Foto des staatlichen russischen Senders Sputnik soll russische Truppenpräsenz in der südukrainischen Stadt zeigen. (Quelle: imago images/SNA)" /><noscript><img src="https://bilder.t-online.de/b/91/93/86/58/id_91938658/300_80/tid_da/russischer-soldat-in-melitopol-dieses-foto-des-staatlichen-russischen-senders-sputnik-soll-russische-truppenpraesenz-in-der-suedukrainischen-stadt-zeigen-.jpg" width="300" height="169" alt="Russischer Soldat in Melitopol: Dieses Foto des staatlichen russischen Senders Sputnik soll russische Truppenpräsenz in der südukrainischen Stadt zeigen." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2369,50 +2365,50 @@ Lotto </a> </div>
 
 
 <!-- MrRu RenderBlock false -->
-<div class="Tmm  Tts Tww2 Thh4 Tmc2xl Tafm  " id="T-91742880" onfocus="A('zid=91742880;mp=0202-02;vn=27')" > <div class='Tstage-text'> 
+<div class="Tmm  Tts Tww2 Thh4 Tmc2xl Tafm  " id="T-91936632" onfocus="A('zid=91936632;mp=0202-02;vn=21')" > <div class='Tstage-text'> 
 
 
-<a href="https://www.t-online.de/nachrichten/id_91742880/furchtlose-ukrainerin-hat-waffen-russische-panzer-sind-willkommen-.html">                   <h6><span class="Tts__label Tts__label--interview">INTERVIEW</span><span>Ukrainer drohen Russland</span></h6>
-                   <h5 data-tb-region-item-title="&quot;Wir werden sie vergiften&quot;"><span>&quot;Wir</span><span>werden</span><span>sie</span><span>vergiften&quot;</span></h5><span class="Tzusaufmtxt">Von B. Brauns, N. Lindken, S. Loelke</span>        </a> </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/id_91742880/furchtlose-ukrainerin-hat-waffen-russische-panzer-sind-willkommen-.html">
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91936632/corona-impfpflicht-neuer-kompromiss-stoesst-auf-skepsis.html">                   <h6><span>Corona-Pandemie</span></h6>
+                   <h5 data-tb-region-item-title="&Uuml;ber diesen Impfpflicht-Kompromiss wird jetzt verhandelt"><span>&Uuml;ber</span><span>diesen</span><span>Impfpflicht-Kompromiss</span><span>wird</span><span>jetzt</span><span>verhandelt</span></h5><span class="Tzusaufmtxt">Von Johannes Bebermeier</span>        </a> </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91936632/corona-impfpflicht-neuer-kompromiss-stoesst-auf-skepsis.html">
         
 
 
 
-<img height="343" width="610" alt="DONETSK, DONETSK PEOPLE S REPUBLIC - FEBRUARY 28, 2022: Shellfire damage in Donetsk s Kiyevsky District. Tension began t (Quelle: imago images)" src="https://bilder.t-online.de/b/91/74/57/44/id_91745744/610_80/tid_da/donetsk-donetsk-people-s-republic-february-28-2022-shellfire-damage-in-donetsk-s-kiyevsky-district-tension-began-t.jpg" title="DONETSK, DONETSK PEOPLE S REPUBLIC - FEBRUARY 28, 2022: Shellfire damage in Donetsk s Kiyevsky District. Tension began t (Quelle: imago images)" />                                                              
-                                                          <div class="Ticon Tplay"><i></i></div>
+<img height="343" width="610" alt="Karl Lauterbach: Kommt noch eine Impfpflicht? (Quelle: dpa/Bernd von Jutrczenka)" src="https://bilder.t-online.de/b/91/93/71/18/id_91937118/610_80/tid_da/karl-lauterbach-kommt-noch-eine-impfpflicht-.jpg" title="Karl Lauterbach: Kommt noch eine Impfpflicht? (Quelle: dpa/Bernd von Jutrczenka)" />                                                              
+                                                          <div class=""><i></i></div>
                       </a></div></div>
 
 
-<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc1 Tww1 Thh3 " id="T-91742982" onfocus="A('zid=91742982;mp=0202-03;vn=13')" > <div class="Ttsc Ttsv169">
-<!-- self parsedID: 91742982 --> <a href="https://www.t-online.de/nachrichten/ausland/id_91742982/wladimir-putin-zwingt-die-deutschen-zu-anpassungen-die-keiner-wollte.html" class="Ttslink">
+<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc1 Tww1 Thh3 " id="T-91928140" onfocus="A('zid=91928140;mp=0202-03;vn=26')" > <div class="Ttsc Ttsv169">
+<!-- self parsedID: 91928140 --> <a href="https://www.t-online.de/nachrichten/ausland/id_91928140/demonstrativ-neutral-die-ex-sowjetrepubliken-frustrieren-putin.html" class="Ttslink">
 
 
- <h6><span class="Tts__label Tts__label--meinung">MEINUNG</span>Angriff auf die Ukraine</h6>  <h5 data-tb-region-item-title="">Putins Krieg hat Folgen f&uuml;r Deutschland in f&uuml;nf Ebenen</h5>
+ <h6>Verhalten im Ukraine-Krieg</h6>  <h5 data-tb-region-item-title="">Das Putin-Dilemma der Ex-Sowjetrepubliken</h5>
    
-     </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91742982/wladimir-putin-zwingt-die-deutschen-zu-anpassungen-die-keiner-wollte.html">
+     </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91928140/demonstrativ-neutral-die-ex-sowjetrepubliken-frustrieren-putin.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/74/40/12/id_91744012/300_80/tid_da/scholz-und-baerbock-vor-der-sitzung-des-sicherheitsrates-so-haben-sie-sich-ihre-ersten-100-tage-sicher-nicht-vorgestellt-.png" width="300" class="Tlz" alt="Scholz und Baerbock vor der Sitzung des Sicherheitsrates: So haben sie sich ihre ersten 100 Tage sicher nicht vorgestellt. (Quelle: imago images)" src="https://img.toi.de/t.gif" title="Scholz und Baerbock vor der Sitzung des Sicherheitsrates: So haben sie sich ihre ersten 100 Tage sicher nicht vorgestellt. (Quelle: imago images)" /><noscript><img src="https://bilder.t-online.de/b/91/74/40/12/id_91744012/300_80/tid_da/scholz-und-baerbock-vor-der-sitzung-des-sicherheitsrates-so-haben-sie-sich-ihre-ersten-100-tage-sicher-nicht-vorgestellt-.png" width="300" height="169" alt="Scholz und Baerbock vor der Sitzung des Sicherheitsrates: So haben sie sich ihre ersten 100 Tage sicher nicht vorgestellt." /></noscript>                                                              
-                                                                       
-                                </a></div> </div> </div>
+<img height="169" data-original="https://bilder.t-online.de/b/91/92/89/66/id_91928966/300_80/tid_da/wladimir-putin-und-die-sowjetunion-beobachter-glauben-er-will-seinen-einflussbereich-russland-auf-sowjetzeiten-ausdehnen-.jpg" width="300" class="Tlz" alt="Wladimir Putin und die Sowjetunion: Beobachter glauben, er will seinen Einflussbereich Russland auf Sowjetzeiten ausdehnen. (Quelle: t-online)" src="https://img.toi.de/t.gif" title="Wladimir Putin und die Sowjetunion: Beobachter glauben, er will seinen Einflussbereich Russland auf Sowjetzeiten ausdehnen. (Quelle: t-online)" /><noscript><img src="https://bilder.t-online.de/b/91/92/89/66/id_91928966/300_80/tid_da/wladimir-putin-und-die-sowjetunion-beobachter-glauben-er-will-seinen-einflussbereich-russland-auf-sowjetzeiten-ausdehnen-.jpg" width="300" height="169" alt="Wladimir Putin und die Sowjetunion: Beobachter glauben, er will seinen Einflussbereich Russland auf Sowjetzeiten ausdehnen." /></noscript>                                                              
+                                                          <div class=""><i></i></div>
+                      </a></div> </div> </div>
 
 
-<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc1 Tww1 Thh3 " id="T-91740348" onfocus="A('zid=91740348;mp=0202-04;vn=57')" > <div class="Ttsc Ttsv169">
-<!-- self parsedID: 91740348 --> <a href="https://www.t-online.de/nachrichten/ausland/krisen/id_91740348/russlands-angriff-auf-die-ukraine-putins-kapitale-fehler.html" class="Ttslink">
+<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc1 Tww1 Thh3 " id="T-91931666" onfocus="A('zid=91931666;mp=0202-04;vn=20')" > <div class="Ttsc Ttsv169">
+<!-- self parsedID: 91931666 --> <a href="https://www.t-online.de/nachrichten/id_91931666/tagesanbruch-die-realitaet-kann-unterschiedliche-formen-annehmen.html" class="Ttslink">
 
 
- <h6>Russlands Angriff auf die Ukraine</h6>  <h5 data-tb-region-item-title="">Putins kapitale Fehler</h5>
+ <h6><span class="Tts__label Tts__label--meinung">MEINUNG</span>Tagesanbruch</h6>  <h5 data-tb-region-item-title="">Hier verbirgt sich die Wahrheit</h5>
    
-     </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/krisen/id_91740348/russlands-angriff-auf-die-ukraine-putins-kapitale-fehler.html">
+     </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/id_91931666/tagesanbruch-die-realitaet-kann-unterschiedliche-formen-annehmen.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/74/03/52/id_91740352/300_80/tid_da/ein-russischer-panzer-in-der-ukraine-groessere-ukrainische-staedte-konnte-russland-bisher-nicht-einnehmen-.jpg" width="300" class="Tlz" alt="Ein russischer Panzer in der Ukraine: Größere ukrainische Städte konnte Russland bisher nicht einnehmen.  (Quelle: Reuters)" src="https://img.toi.de/t.gif" title="Ein russischer Panzer in der Ukraine: Größere ukrainische Städte konnte Russland bisher nicht einnehmen.  (Quelle: Reuters)" /><noscript><img src="https://bilder.t-online.de/b/91/74/03/52/id_91740352/300_80/tid_da/ein-russischer-panzer-in-der-ukraine-groessere-ukrainische-staedte-konnte-russland-bisher-nicht-einnehmen-.jpg" width="300" height="169" alt="Ein russischer Panzer in der Ukraine: Größere ukrainische Städte konnte Russland bisher nicht einnehmen. " /></noscript>                                                              
-                                                                       
-                                </a></div> </div> </div>
+<img height="169" data-original="https://bilder.t-online.de/b/91/93/17/42/id_91931742/300_80/tid_da/in-buechern-finden-sich-wahrheiten-.jpg" width="300" class="Tlz" alt="In Büchern finden sich Wahrheiten.  (Quelle: imago images)" src="https://img.toi.de/t.gif" title="In Büchern finden sich Wahrheiten.  (Quelle: imago images)" /><noscript><img src="https://bilder.t-online.de/b/91/93/17/42/id_91931742/300_80/tid_da/in-buechern-finden-sich-wahrheiten-.jpg" width="300" height="169" alt="In Büchern finden sich Wahrheiten. " /></noscript>                                                              
+                                                          <div class=""><i></i></div>
+                      </a></div> </div> </div>
 
 
 
@@ -2442,24 +2438,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91746326" onfocus="A('zid=91746326;mp=0203;vn=11')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91938230" onfocus="A('zid=91938230;mp=0203;vn=3')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/ausland/id_91746326/in-deutschland-stehen-kaum-noch-bunker-zur-verfuegung.html"> Unterhalt war zu teuer - In Deutschland stehen kaum noch Bunker zur Verfügung
+<a href="https://www.t-online.de/nachrichten/ausland/krisen/id_91938230/afghanistan-annalena-baerbock-verspricht-zusaetzliche-millionen-fuer-humanitaere-hilfe.html"> Humanitäre Hilfe - Baerbock verspricht zusätzliche Millionen für Afghanistan
   </a>
 
 
- <h6>Unterhalt war zu teuer</h6>  <h5 data-tb-region-item-title="">In Deutschland stehen kaum noch Bunker zur Verf&uuml;gung</h5>
+ <h6>Humanit&auml;re Hilfe</h6>  <h5 data-tb-region-item-title="">Baerbock verspricht zus&auml;tzliche Millionen f&uuml;r Afghanistan</h5>
 
-<p class="Ttst">Fast ein Viertel aller Bunker im Westen Deutschlands wurde in den vergangenen Jahren rückabgewickelt. Unter anderem seien sie zu teuer. Im Verteidigungsfall fallen sie als schützende Orte weg.
+<p class="Ttst">Vier Milliarden Euro müsste die Staatengemeinschaft für Afghanistan aufbringen, schätzen die Vereinten Nationen. 200 Millionen sollen aus Deutschland kommen, kündigt Außenministerin Baerbock an.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91746326/in-deutschland-stehen-kaum-noch-bunker-zur-verfuegung.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/krisen/id_91938230/afghanistan-annalena-baerbock-verspricht-zusaetzliche-millionen-fuer-humanitaere-hilfe.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/74/63/32/id_91746332/300_80/tid_da/eine-frau-steht-im-februar-2022-am-eingang-eines-schutzbunkers-in-einer-schule-im-ukrainischen-mykolaivka-in-deutschland-stehen-solche-nicht-mehr-zur-verfuegung-.jpg" width="300" class="Tlz" alt="Eine Frau steht im Februar 2022 am Eingang eines Schutzbunkers in einer Schule im ukrainischen Mykolaivka: In Deutschland stehen solche nicht mehr zur Verfügung. (Quelle: dpa/Mstyslav Chernov/AP)" src="https://img.toi.de/t.gif" title="Eine Frau steht im Februar 2022 am Eingang eines Schutzbunkers in einer Schule im ukrainischen Mykolaivka: In Deutschland stehen solche nicht mehr zur Verfügung. (Quelle: dpa/Mstyslav Chernov/AP)" /><noscript><img src="https://bilder.t-online.de/b/91/74/63/32/id_91746332/300_80/tid_da/eine-frau-steht-im-februar-2022-am-eingang-eines-schutzbunkers-in-einer-schule-im-ukrainischen-mykolaivka-in-deutschland-stehen-solche-nicht-mehr-zur-verfuegung-.jpg" width="300" height="169" alt="Eine Frau steht im Februar 2022 am Eingang eines Schutzbunkers in einer Schule im ukrainischen Mykolaivka: In Deutschland stehen solche nicht mehr zur Verfügung." /></noscript>                                                              
+<img height="168" data-original="https://bilder.t-online.de/b/91/93/83/04/id_91938304/300_80/tid_da/annalena-baerbock-die-aussenministerin-nutzte-die-gelegenheit-um-noch-einmal-an-die-taliban-zu-appellieren-.jpg" width="300" class="Tlz" alt="Annalena Baerbock: Die Außenministerin nutzte die Gelegenheit um noch einmal an die Taliban zu appellieren. (Quelle: imago images/photothek)" src="https://img.toi.de/t.gif" title="Annalena Baerbock: Die Außenministerin nutzte die Gelegenheit um noch einmal an die Taliban zu appellieren. (Quelle: imago images/photothek)" /><noscript><img src="https://bilder.t-online.de/b/91/93/83/04/id_91938304/300_80/tid_da/annalena-baerbock-die-aussenministerin-nutzte-die-gelegenheit-um-noch-einmal-an-die-taliban-zu-appellieren-.jpg" width="300" height="169" alt="Annalena Baerbock: Die Außenministerin nutzte die Gelegenheit um noch einmal an die Taliban zu appellieren." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2469,54 +2465,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91745964" onfocus="A('zid=91745964;mp=0203;vn=2')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91936688" onfocus="A('zid=91936688;mp=0203;vn=9')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/deutschland/militaer-verteidigung/id_91745964/nach-eklat-um-russland-aeusserungen-neuer-chef-der-deutschen-marine-steht-fest.html"> Nach Eklat um Russland-Äußerungen - Neuer Chef der deutschen Marine steht fest
+<a href="https://www.t-online.de/nachrichten/ausland/id_91936688/ukraine-hier-muessen-autofahrer-durch-ein-russisches-minenfeld.html"> Nervenaufreibendes Video - Hier müssen Autofahrer durch ein russisches Minenfeld 
   </a>
 
 
- <h6>Nach Eklat um Russland-&Auml;u&szlig;erungen</h6>  <h5 data-tb-region-item-title="">Neuer Chef der deutschen Marine steht fest</h5>
+ <h6>Nervenaufreibendes Video</h6>  <h5 data-tb-region-item-title="">Hier m&uuml;ssen Autofahrer durch ein russisches Minenfeld</h5>
 
-<p class="Ttst">Der Vorgänger bezeichnete den befürchteten russischen Einmarsch in der Ukraine als "Nonsens" – und musste zurücktreten. Nun soll der bisherige Befehlshaber der Flotte in das neue Amt eingeführt werden. 
+<p class="Ttst">Ein bisschen zu weit links oder rechts – und das Auto fliegt in die Luft: Ein Video aus der Region Kiew zeigt, wie gefährlich die Lage für die Menschen auch nach dem Abzug der russischen Truppen ist. 
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/militaer-verteidigung/id_91745964/nach-eklat-um-russland-aeusserungen-neuer-chef-der-deutschen-marine-steht-fest.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91936688/ukraine-hier-muessen-autofahrer-durch-ein-russisches-minenfeld.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/74/59/88/id_91745988/300_80/tid_da/marinestuetzpunkt-warnemuende-archiv-in-seiner-karriere-hat-kaack-laut-marine-fuehrungserfahrungen-auf-schnellbooten-zerstoerern-und-fregatten-gesammelt-.jpg" width="300" class="Tlz" alt="Marinestützpunkt Warnemünde (Archiv): In seiner Karriere hat Kaack laut Marine Führungserfahrungen auf Schnellbooten, Zerstörern und Fregatten gesammelt.  (Quelle: imago images/BildFunkMV)" src="https://img.toi.de/t.gif" title="Marinestützpunkt Warnemünde (Archiv): In seiner Karriere hat Kaack laut Marine Führungserfahrungen auf Schnellbooten, Zerstörern und Fregatten gesammelt.  (Quelle: imago images/BildFunkMV)" /><noscript><img src="https://bilder.t-online.de/b/91/74/59/88/id_91745988/300_80/tid_da/marinestuetzpunkt-warnemuende-archiv-in-seiner-karriere-hat-kaack-laut-marine-fuehrungserfahrungen-auf-schnellbooten-zerstoerern-und-fregatten-gesammelt-.jpg" width="300" height="169" alt="Marinestützpunkt Warnemünde (Archiv): In seiner Karriere hat Kaack laut Marine Führungserfahrungen auf Schnellbooten, Zerstörern und Fregatten gesammelt. " /></noscript>                                                              
-                                                          <div class=""><i></i></div>
-                      </a></div> </div> </div>
-
-
-
-
-
-
-
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91746374" onfocus="A('zid=91746374;mp=0203;vn=7')" >
-<div class="Ttsc Ttsh300"> 
-<div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/id_91746374/ukraine-krieg-panzer-sorgt-fuer-spott-und-stuetzt-erstaunliche-vermutung.html"> Wirbel um virales Video - Russen-Panzer sorgt für Spott – und stützt eine erstaunliche Vermutung
-  </a>
-
-
- <h6>Wirbel um virales Video</h6>  <h5 data-tb-region-item-title="">Russen-Panzer sorgt f&uuml;r Spott &ndash; und st&uuml;tzt eine erstaunliche Vermutung</h5>
-
-<p class="Ttst">In den sozialen Medien sorgt derzeit ein Video aus dem Ukraine-Krieg für Spott.  Es soll einen russischen Panzer zeigen. Häme kommt auch von Abgeordneten und Botschaftern.
-
-
-
-
-</p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/id_91746374/ukraine-krieg-panzer-sorgt-fuer-spott-und-stuetzt-erstaunliche-vermutung.html">
-        
-
-
-
-<img height="169" data-original="https://bilder.t-online.de/b/91/74/37/32/id_91743732/300_80/tid_da/index.jpg" width="300" class="Tlz" alt=" (Quelle: t-online - Social)" src="https://img.toi.de/t.gif" title=" (Quelle: t-online - Social)" /><noscript><img src="https://bilder.t-online.de/b/91/74/37/32/id_91743732/300_80/tid_da/index.jpg" width="300" height="169" alt="" /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/93/77/92/id_91937792/300_80/tid_da/ausschnitt-aus-dem-auf-twitter-kursierenden-video-die-ukrainische-armee-bestaetigt-dass-die-russische-armee-bei-kiew-minenfelder-hinterlassen-hat-.jpg" width="300" class="Tlz" alt="Ausschnitt aus dem auf Twitter kursierenden Video: Die ukrainische Armee bestätigt, dass die russische Armee bei Kiew Minenfelder hinterlassen hat. (Quelle: Screenshot/Twitter@Liveuamap)" src="https://img.toi.de/t.gif" title="Ausschnitt aus dem auf Twitter kursierenden Video: Die ukrainische Armee bestätigt, dass die russische Armee bei Kiew Minenfelder hinterlassen hat. (Quelle: Screenshot/Twitter@Liveuamap)" /><noscript><img src="https://bilder.t-online.de/b/91/93/77/92/id_91937792/300_80/tid_da/ausschnitt-aus-dem-auf-twitter-kursierenden-video-die-ukrainische-armee-bestaetigt-dass-die-russische-armee-bei-kiew-minenfelder-hinterlassen-hat-.jpg" width="300" height="169" alt="Ausschnitt aus dem auf Twitter kursierenden Video: Die ukrainische Armee bestätigt, dass die russische Armee bei Kiew Minenfelder hinterlassen hat." /></noscript>                                                              
                                                           <div class="Ticon Tplay"><i></i></div>
                       </a></div> </div> </div>
 
@@ -2526,24 +2492,26 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91745796" onfocus="A('zid=91745796;mp=0203;vn=7')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91937576" onfocus="A('zid=91937576;mp=0203;vn=4')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/ausland/id_91745796/ukraine-krieg-mehrere-oligarchen-wenden-sich-gegen-wladimir-putin.html"> "Undenkbar und inakzeptabel" - Russische Oligarchen wenden sich gegen Putin
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91937576/thueringen-koalition-scheitert-mit-verlaengerung-der-corona-regeln.html"> Keine Hotspot-Maßnahmen - Thüringer Koalition scheitert mit Verlängerung der Corona-Regeln
   </a>
 
 
- <h6>&quot;Undenkbar und inakzeptabel&quot;</h6>  <h5 data-tb-region-item-title="">Russische Oligarchen wenden sich gegen Putin</h5>
+ <h6>Keine Hotspot-Ma&szlig;nahmen</h6>  <h5 data-tb-region-item-title="">Th&uuml;ringer Koalition scheitert mit Verl&auml;ngerung der Corona-Regeln</h5>
 
-<p class="Ttst">Die vom Westen verhängten Sanktionen treffen auch Russlands Superreiche: Nun kritisieren mehrere von ihnen die Politik des Kremls öffentlich. Einer fordert ein Ende des Blutvergießens.
+<p class="Ttst">Die Landesregierung um Bodo Ramelow wollte Thüringen zum Hotspot erklären. Doch dafür hätte sie Stimmen aus der Opposition gebraucht. Diese blieben aus – Maskenpflicht um Co. enden nun am Samstag.
+
+
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91745796/ukraine-krieg-mehrere-oligarchen-wenden-sich-gegen-wladimir-putin.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91937576/thueringen-koalition-scheitert-mit-verlaengerung-der-corona-regeln.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/74/58/66/id_91745866/300_80/tid_da/wladimir-putin-und-oleg-deripaska-angesichts-der-wirtschaftssanktionen-uebt-der-milliardaer-kritik-am-vorgehen-des-kreml-.jpg" width="300" class="Tlz" alt="Wladimir Putin und Oleg Deripaska: Angesichts der Wirtschaftssanktionen übt der Milliardär Kritik am Vorgehen des Kreml.  (Quelle: imago images/Itar-Tass)" src="https://img.toi.de/t.gif" title="Wladimir Putin und Oleg Deripaska: Angesichts der Wirtschaftssanktionen übt der Milliardär Kritik am Vorgehen des Kreml.  (Quelle: imago images/Itar-Tass)" /><noscript><img src="https://bilder.t-online.de/b/91/74/58/66/id_91745866/300_80/tid_da/wladimir-putin-und-oleg-deripaska-angesichts-der-wirtschaftssanktionen-uebt-der-milliardaer-kritik-am-vorgehen-des-kreml-.jpg" width="300" height="169" alt="Wladimir Putin und Oleg Deripaska: Angesichts der Wirtschaftssanktionen übt der Milliardär Kritik am Vorgehen des Kreml. " /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/93/77/06/id_91937706/300_80/tid_da/bodo-ramelow-der-ministerpraesident-kritisierte-das-neue-infektionsschutzgesetz-des-bundes-vor-der-abstimmung-scharf-.jpg" width="300" class="Tlz" alt="Bodo Ramelow: Der Ministerpräsident kritisierte das neue Infektionsschutzgesetz des Bundes vor der Abstimmung scharf. (Quelle: imago images/Jacob Schröter)" src="https://img.toi.de/t.gif" title="Bodo Ramelow: Der Ministerpräsident kritisierte das neue Infektionsschutzgesetz des Bundes vor der Abstimmung scharf. (Quelle: imago images/Jacob Schröter)" /><noscript><img src="https://bilder.t-online.de/b/91/93/77/06/id_91937706/300_80/tid_da/bodo-ramelow-der-ministerpraesident-kritisierte-das-neue-infektionsschutzgesetz-des-bundes-vor-der-abstimmung-scharf-.jpg" width="300" height="169" alt="Bodo Ramelow: Der Ministerpräsident kritisierte das neue Infektionsschutzgesetz des Bundes vor der Abstimmung scharf." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2553,53 +2521,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91745736" onfocus="A('zid=91745736;mp=0203;vn=18')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91937352" onfocus="A('zid=91937352;mp=0203;vn=4')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/id_91745736/schwesigs-klimastiftung-fuer-nord-stream-2-der-letzte-hund-auf-den-strassen-schwerins-weiss-es-.html"> Schwesigs Klimastiftung und Nord Stream 2 - "Der letzte Hund auf den Straßen Schwerins weiß es"
+<a href="https://www.t-online.de/nachrichten/ausland/id_91937352/ukraine-krieg-habeck-kuendigt-weitere-sanktionen-gegen-russland-an.html"> Treffen mit französischem Minister - Habeck kündigt weitere Russland-Sanktionen an
   </a>
 
 
- <h6>Schwesigs Klimastiftung und Nord Stream 2</h6>  <h5 data-tb-region-item-title="">&quot;Der letzte Hund auf den Stra&szlig;en Schwerins wei&szlig; es&quot;</h5>
+ <h6>Treffen mit franz&ouml;sischem Minister</h6>  <h5 data-tb-region-item-title="">Habeck k&uuml;ndigt weitere Russland-Sanktionen an</h5>
 
-<p class="Ttst">Die Ministerpräsidentin gibt die Auflösung der umstrittenen Klimastiftung bekannt. Der ukrainische Botschafter hatte zuletzt von "Heuchelei" gesprochen – und legt bei t-online nach. | Von Carl Exner und Arno Wölk
-
-
+<p class="Ttst">Wirtschaftsminister Habeck und sein französischer Kollege Le Maire haben bei einem Treffen über ein weiteres Sanktionspaket gegen Russland gesprochen. Auch der Gasstreit war Thema.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/id_91745736/schwesigs-klimastiftung-fuer-nord-stream-2-der-letzte-hund-auf-den-strassen-schwerins-weiss-es-.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91937352/ukraine-krieg-habeck-kuendigt-weitere-sanktionen-gegen-russland-an.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/74/58/30/id_91745830/300_80/tid_da/index.png" width="300" class="Tlz" alt=" (Quelle: t-online)" src="https://img.toi.de/t.gif" title=" (Quelle: t-online)" /><noscript><img src="https://bilder.t-online.de/b/91/74/58/30/id_91745830/300_80/tid_da/index.png" width="300" height="169" alt="" /></noscript>                                                              
-                                                          <div class="Ticon Tplay"><i></i></div>
-                      </a></div> </div> </div>
-
-
-
-
-
-
-
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91744998" onfocus="A('zid=91744998;mp=0203;vn=5')" >
-<div class="Ttsc Ttsh300"> 
-<div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/ausland/id_91744998/ukraine-krieg-1-800-gefluechtete-in-deutschland-angekommen.html"> Überfall auf die Ukraine - Hunderte Geflüchtete in Deutschland angekommen
-  </a>
-
-
- <h6>&Uuml;berfall auf die Ukraine</h6>  <h5 data-tb-region-item-title="">Hunderte Gefl&uuml;chtete in Deutschland angekommen</h5>
-
-<p class="Ttst">Mehr als eine halbe Million Menschen sind bereits vor dem Krieg aus der Ukraine geflohen. Auch in Deutschland sind inzwischen Flüchtende angekommen. Außenministerin Baerbock machte indes ein großes Versprechen.
-
-</p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91744998/ukraine-krieg-1-800-gefluechtete-in-deutschland-angekommen.html">
-        
-
-
-
-<img height="169" data-original="https://bilder.t-online.de/b/91/74/52/68/id_91745268/300_80/tid_da/ankunft-von-ukrainischen-fluechtlingen-an-der-polnischen-grenze-wegen-des-russischen-angriffs-auf-die-ukraine-sind-hunderttausende-menschen-auf-der-flucht-.jpg" width="300" class="Tlz" alt="Ankunft von ukrainischen Flüchtlingen an der polnischen Grenze: Wegen des russischen Angriffs auf die Ukraine sind Hunderttausende Menschen auf der Flucht. (Quelle: dpa/Nicolas Cleuet/Le Pictorium Agency via ZUMA)" src="https://img.toi.de/t.gif" title="Ankunft von ukrainischen Flüchtlingen an der polnischen Grenze: Wegen des russischen Angriffs auf die Ukraine sind Hunderttausende Menschen auf der Flucht. (Quelle: dpa/Nicolas Cleuet/Le Pictorium Agency via ZUMA)" /><noscript><img src="https://bilder.t-online.de/b/91/74/52/68/id_91745268/300_80/tid_da/ankunft-von-ukrainischen-fluechtlingen-an-der-polnischen-grenze-wegen-des-russischen-angriffs-auf-die-ukraine-sind-hunderttausende-menschen-auf-der-flucht-.jpg" width="300" height="169" alt="Ankunft von ukrainischen Flüchtlingen an der polnischen Grenze: Wegen des russischen Angriffs auf die Ukraine sind Hunderttausende Menschen auf der Flucht." /></noscript>                                                              
+<img height="168" data-original="https://bilder.t-online.de/b/91/93/75/00/id_91937500/300_80/tid_da/robert-habeck-der-deutsche-wirtschaftsminister-stellte-klar-sich-nicht-von-putin-erpressen-lassen-zu-wollen-.jpg" width="300" class="Tlz" alt="Robert Habeck: Der deutsche Wirtschaftsminister stellte klar, sich nicht von Putin erpressen lassen zu wollen. (Quelle: Reuters/Tobias Schwarz)" src="https://img.toi.de/t.gif" title="Robert Habeck: Der deutsche Wirtschaftsminister stellte klar, sich nicht von Putin erpressen lassen zu wollen. (Quelle: Reuters/Tobias Schwarz)" /><noscript><img src="https://bilder.t-online.de/b/91/93/75/00/id_91937500/300_80/tid_da/robert-habeck-der-deutsche-wirtschaftsminister-stellte-klar-sich-nicht-von-putin-erpressen-lassen-zu-wollen-.jpg" width="300" height="169" alt="Robert Habeck: Der deutsche Wirtschaftsminister stellte klar, sich nicht von Putin erpressen lassen zu wollen." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2609,24 +2548,53 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91743962" onfocus="A('zid=91743962;mp=0203;vn=11')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91936762" onfocus="A('zid=91936762;mp=0203;vn=6')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/ausland/krisen/id_91743962/experte-masala-ueber-ukraine-da-hat-putin-also-noch-etwas-in-der-hinterhand-.html"> Russlands Ukraine-Krieg - "Da hat Putin also noch etwas in der Hinterhand"
+<a href="https://www.t-online.de/nachrichten/ausland/id_91936762/toennies-stoppt-jobangebote-fuer-fluechtlinge-an-polnisch-ukrainischer-grenze.html"> "Dankbarkeit war sehr hoch" - Tönnies stoppt Jobangebote an polnisch-ukrainischer Grenze
   </a>
 
 
- <h6><span class="Tts__label Tts__label--interview">INTERVIEW</span>Russlands Ukraine-Krieg</h6>  <h5 data-tb-region-item-title="">&quot;Da hat Putin also noch etwas in der Hinterhand&quot;</h5>
+ <h6>&quot;Dankbarkeit war sehr hoch&quot;</h6>  <h5 data-tb-region-item-title="">T&ouml;nnies stoppt Jobangebote an polnisch-ukrainischer Grenze</h5>
 
-<p class="Ttst">Die Ukrainer wehren sich gegen Russland, teils mit Erfolg. Doch täuschen sollte sich der Westen nicht, warnt Experte Carlo Masala. Denn Wladimir Putins Ressourcen sind noch lange nicht erschöpft. | Von Marc von Lüpke
+<p class="Ttst">Deutschlands größter Schlachtbetrieb zog Kritik auf sich, als bekannt wurde, dass man noch direkt an der Grenze ukrainischen Flüchtlingen Jobs anbot. Nun macht das Unternehmen einen Rückzieher.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/krisen/id_91743962/experte-masala-ueber-ukraine-da-hat-putin-also-noch-etwas-in-der-hinterhand-.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91936762/toennies-stoppt-jobangebote-fuer-fluechtlinge-an-polnisch-ukrainischer-grenze.html">
         
 
 
 
-<img height="168" data-original="https://bilder.t-online.de/b/91/74/41/08/id_91744108/300_80/tid_da/wladimir-putin-der-krieg-in-der-ukraine-laeuft-fuer-russlands-praesidenten-trotz-fehlschlaegen-gut-.jpg" width="300" class="Tlz" alt="Wladimir Putin: Der Krieg in der Ukraine läuft für Russlands Präsidenten trotz Fehlschlägen gut. (Quelle: AP/dpa/Sergei Guneyev/Pool Sputnik Kremlin)" src="https://img.toi.de/t.gif" title="Wladimir Putin: Der Krieg in der Ukraine läuft für Russlands Präsidenten trotz Fehlschlägen gut. (Quelle: AP/dpa/Sergei Guneyev/Pool Sputnik Kremlin)" /><noscript><img src="https://bilder.t-online.de/b/91/74/41/08/id_91744108/300_80/tid_da/wladimir-putin-der-krieg-in-der-ukraine-laeuft-fuer-russlands-praesidenten-trotz-fehlschlaegen-gut-.jpg" width="300" height="169" alt="Wladimir Putin: Der Krieg in der Ukraine läuft für Russlands Präsidenten trotz Fehlschlägen gut." /></noscript>                                                              
+<img height="168" data-original="https://bilder.t-online.de/b/91/93/71/72/id_91937172/300_80/tid_da/toennies-fabrik-nach-eigenen-angaben-hat-das-unternehmen-fuer-die-fluechtlinge-extra-arbeitsplaetze-geschaffen-.jpg" width="300" class="Tlz" alt="Tönnies-Fabrik: Nach eigenen Angaben hat das Unternehmen für die Flüchtlinge extra Arbeitsplätze geschaffen. (Quelle: imago images/Kirchner-Media)" src="https://img.toi.de/t.gif" title="Tönnies-Fabrik: Nach eigenen Angaben hat das Unternehmen für die Flüchtlinge extra Arbeitsplätze geschaffen. (Quelle: imago images/Kirchner-Media)" /><noscript><img src="https://bilder.t-online.de/b/91/93/71/72/id_91937172/300_80/tid_da/toennies-fabrik-nach-eigenen-angaben-hat-das-unternehmen-fuer-die-fluechtlinge-extra-arbeitsplaetze-geschaffen-.jpg" width="300" height="169" alt="Tönnies-Fabrik: Nach eigenen Angaben hat das Unternehmen für die Flüchtlinge extra Arbeitsplätze geschaffen." /></noscript>                                                              
+                                                          <div class=""><i></i></div>
+                      </a></div> </div> </div>
+
+
+
+
+
+
+
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91926346" onfocus="A('zid=91926346;mp=0203;vn=38')" >
+<div class="Ttsc Ttsh300"> 
+<div class="Ttslink"> 
+<a href="https://www.t-online.de/nachrichten/deutschland/innenpolitik/id_91926346/die-deutsche-jagd-auf-die-oligarchen-wie-ein-fisch-durchs-netz.html"> Jagd auf russische Oligarchen - Wie ein Fisch durchs Netz
+  </a>
+
+
+ <h6>Jagd auf russische Oligarchen</h6>  <h5 data-tb-region-item-title="">Wie ein Fisch durchs Netz</h5>
+
+<p class="Ttst">Mehre EU-Staaten beschlagnahmen Oligarchen-Eigentum. Nur die deutsche Bundesregierung versagt dabei – und schiebt stattdessen die Verantwortung zwischen den Ministerien hin und her. | Von Tim Kummert
+
+
+
+</p>
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/innenpolitik/id_91926346/die-deutsche-jagd-auf-die-oligarchen-wie-ein-fisch-durchs-netz.html">
+        
+
+
+
+<img height="168" data-original="https://bilder.t-online.de/b/91/92/85/38/id_91928538/300_80/tid_da/im-hafen-von-gibraltar-die-72-5-meter-lange-superjacht-axioma-soll-dem-russischen-oligarchen-dmitry-pumpyansky-gehoeren-.jpg" width="300" class="Tlz" alt="Im Hafen von Gibraltar: Die 72,5 Meter lange Superjacht Axioma soll dem russischen Oligarchen Dmitry Pumpyansky gehören.  (Quelle: IMAGO / Peter Seyfferth)" src="https://img.toi.de/t.gif" title="Im Hafen von Gibraltar: Die 72,5 Meter lange Superjacht Axioma soll dem russischen Oligarchen Dmitry Pumpyansky gehören.  (Quelle: IMAGO / Peter Seyfferth)" /><noscript><img src="https://bilder.t-online.de/b/91/92/85/38/id_91928538/300_80/tid_da/im-hafen-von-gibraltar-die-72-5-meter-lange-superjacht-axioma-soll-dem-russischen-oligarchen-dmitry-pumpyansky-gehoeren-.jpg" width="300" height="169" alt="Im Hafen von Gibraltar: Die 72,5 Meter lange Superjacht Axioma soll dem russischen Oligarchen Dmitry Pumpyansky gehören. " /></noscript>                                                              
                                                                        
                                 </a></div> </div> </div>
 
@@ -2636,24 +2604,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91744172" onfocus="A('zid=91744172;mp=0203;vn=30')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91935940" onfocus="A('zid=91935940;mp=0203;vn=12')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/deutschland/innenpolitik/id_91744172/ukrainekrieg-ex-botschafter-in-moskau-gibt-russischen-orden-zurueck.html"> "Ruchloser Zerstörer" - Ex-Botschafter in Moskau schickt Putin-Orden zurück
+<a href="https://www.t-online.de/nachrichten/ausland/id_91935940/russlandsprecher-behauptet-usa-verstehen-arbeitsstil-von-putin-nicht.html"> Westliche Geheimdienste - "Sie verstehen Präsident Putin nicht"
   </a>
 
 
- <h6>&quot;Ruchloser Zerst&ouml;rer&quot;</h6>  <h5 data-tb-region-item-title="">Ex-Botschafter in Moskau schickt Putin-Orden zur&uuml;ck</h5>
+ <h6>Westliche Geheimdienste</h6>  <h5 data-tb-region-item-title="">&quot;Sie verstehen Pr&auml;sident Putin nicht&quot;</h5>
 
-<p class="Ttst">Der frühere deutsche Botschafter in Moskau hat den an ihn verliehenen russischen "Freundschaftsorden" zurückgeschickt. In einem Brief findet er drastische Worte für seinen Schritt. | Von Miriam Hollstein
+<p class="Ttst">Die Einschätzung, Putin sei über den Ukraine-Krieg unzureichend informiert, weist Peskow zurück: Die US-Behörden hätten schlicht kein Verständnis für den "Arbeitsstil" im Kreml – und das könne fatale Folgen haben.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/innenpolitik/id_91744172/ukrainekrieg-ex-botschafter-in-moskau-gibt-russischen-orden-zurueck.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91935940/russlandsprecher-behauptet-usa-verstehen-arbeitsstil-von-putin-nicht.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/74/51/12/id_91745112/300_80/tid_da/ernst-joerg-von-studnitz-der-ex-diplomat-war-sieben-jahre-lang-botschafter-in-moskau-.jpg" width="300" class="Tlz" alt="Ernst-Jörg von Studnitz: Der Ex-Diplomat war sieben Jahre lang Botschafter in Moskau. (Quelle: IMAGO/Müller-Stauffenberg)" src="https://img.toi.de/t.gif" title="Ernst-Jörg von Studnitz: Der Ex-Diplomat war sieben Jahre lang Botschafter in Moskau. (Quelle: IMAGO/Müller-Stauffenberg)" /><noscript><img src="https://bilder.t-online.de/b/91/74/51/12/id_91745112/300_80/tid_da/ernst-joerg-von-studnitz-der-ex-diplomat-war-sieben-jahre-lang-botschafter-in-moskau-.jpg" width="300" height="169" alt="Ernst-Jörg von Studnitz: Der Ex-Diplomat war sieben Jahre lang Botschafter in Moskau." /></noscript>                                                              
+<img height="168" data-original="https://bilder.t-online.de/b/91/93/62/62/id_91936262/300_80/tid_da/wladimir-putin-westliche-geheimdienste-hatten-berichtet-der-russische-praesident-werde-falsch-ueber-das-kriegsgeschehen-in-der-ukraine-informiert-.jpg" width="300" class="Tlz" alt="Wladimir Putin: Westliche Geheimdienste hatten berichtet, der russische Präsident werde falsch über das Kriegsgeschehen in der Ukraine informiert. (Quelle: Getty Images/Matthew Stockman)" src="https://img.toi.de/t.gif" title="Wladimir Putin: Westliche Geheimdienste hatten berichtet, der russische Präsident werde falsch über das Kriegsgeschehen in der Ukraine informiert. (Quelle: Getty Images/Matthew Stockman)" /><noscript><img src="https://bilder.t-online.de/b/91/93/62/62/id_91936262/300_80/tid_da/wladimir-putin-westliche-geheimdienste-hatten-berichtet-der-russische-praesident-werde-falsch-ueber-das-kriegsgeschehen-in-der-ukraine-informiert-.jpg" width="300" height="169" alt="Wladimir Putin: Westliche Geheimdienste hatten berichtet, der russische Präsident werde falsch über das Kriegsgeschehen in der Ukraine informiert." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2663,24 +2631,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91745676" onfocus="A('zid=91745676;mp=0203;vn=12')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91933960" onfocus="A('zid=91933960;mp=0203;vn=10')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/id_91745676/wladimir-putin-fordert-entmilitarisierung-der-ukraine-und-anerkennung-der-krim.html"> Ukraine-Krieg - Putin fordert Entmilitarisierung der Ukraine und Anerkennung der Krim
+<a href="https://www.t-online.de/nachrichten/ausland/id_91933960/russische-funksprueche-ihr-habt-hunde-gegessen-ja-wir-wollten-fleisch-.html"> Russische Funksprüche - "Ihr habt Hunde gegessen?" – "Ja, wir wollten ein bisschen Fleisch"
   </a>
 
 
- <h6>Ukraine-Krieg</h6>  <h5 data-tb-region-item-title="">Putin fordert Entmilitarisierung der Ukraine und Anerkennung der Krim</h5>
+ <h6>Russische Funkspr&uuml;che</h6>  <h5 data-tb-region-item-title="">&quot;Ihr habt Hunde gegessen?&quot; &ndash; &quot;Ja, wir wollten ein bisschen Fleisch&quot;</h5>
 
-<p class="Ttst">Seit Beginn des Ukraine-Kriegs wird über die Ziele des russischen Präsidenten Wladimir Putin spekuliert. Nach einem Telefonat mit Frankreichs Präsident Emmanuel Macron hat er sich nun erstmals konkret geäußert.
+<p class="Ttst">Der ukrainische Geheimdienst fängt regelmäßig Funksprüche russischer Soldaten ab. Die Dialoge dokumentieren Kriegsverbrechen, aber auch Verzweiflung unter den Angreifern.  
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/id_91745676/wladimir-putin-fordert-entmilitarisierung-der-ukraine-und-anerkennung-der-krim.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91933960/russische-funksprueche-ihr-habt-hunde-gegessen-ja-wir-wollten-fleisch-.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/74/57/72/id_91745772/300_80/tid_da/wladimir-putin-der-russische-praesident-hat-bedingungen-fuer-ein-ende-der-russischen-invasion-in-der-ukraine-genannt-.jpg" width="300" class="Tlz" alt="Wladimir Putin: Der russische Präsident hat Bedingungen für ein Ende der russischen Invasion in der Ukraine genannt. (Quelle: Reuters/Russian Pool)" src="https://img.toi.de/t.gif" title="Wladimir Putin: Der russische Präsident hat Bedingungen für ein Ende der russischen Invasion in der Ukraine genannt. (Quelle: Reuters/Russian Pool)" /><noscript><img src="https://bilder.t-online.de/b/91/74/57/72/id_91745772/300_80/tid_da/wladimir-putin-der-russische-praesident-hat-bedingungen-fuer-ein-ende-der-russischen-invasion-in-der-ukraine-genannt-.jpg" width="300" height="169" alt="Wladimir Putin: Der russische Präsident hat Bedingungen für ein Ende der russischen Invasion in der Ukraine genannt." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/93/63/96/id_91936396/300_80/tid_da/russischer-soldat-in-der-ukraine-in-abgefangenen-funkspruechen-berichten-soldaten-von-den-schrecken-des-krieges-.jpg" width="300" class="Tlz" alt="Russischer Soldat in der Ukraine: In abgefangenen Funksprüchen berichten Soldaten von den Schrecken des Krieges. (Quelle: Getty Images/Dan Kitwood)" src="https://img.toi.de/t.gif" title="Russischer Soldat in der Ukraine: In abgefangenen Funksprüchen berichten Soldaten von den Schrecken des Krieges. (Quelle: Getty Images/Dan Kitwood)" /><noscript><img src="https://bilder.t-online.de/b/91/93/63/96/id_91936396/300_80/tid_da/russischer-soldat-in-der-ukraine-in-abgefangenen-funkspruechen-berichten-soldaten-von-den-schrecken-des-krieges-.jpg" width="300" height="169" alt="Russischer Soldat in der Ukraine: In abgefangenen Funksprüchen berichten Soldaten von den Schrecken des Krieges." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2690,51 +2658,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91745248" onfocus="A('zid=91745248;mp=0203;vn=14')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91933798" onfocus="A('zid=91933798;mp=0203;vn=22')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/id_91745248/putin-vertrauter-droht-eu-mit-nuklearer-vernichtung-im-tv.html"> Drastische Worte im TV - Vertrauter Putins droht Nato mit nuklearer Vernichtung
+<a href="https://www.t-online.de/nachrichten/deutschland/gesellschaft/id_91933798/tempolimit-100-auf-autobahnen-das-ist-schon-laengst-ueberfaellig.html"> Konflikt mit Russland - Tempolimit für den Frieden? Darauf gibt es nur eine Antwort
   </a>
 
 
- <h6>Drastische Worte im TV</h6>  <h5 data-tb-region-item-title="">Vertrauter Putins droht Nato mit nuklearer Vernichtung</h5>
+ <h6><span class="Tts__label Tts__label--meinung">MEINUNG</span>Konflikt mit Russland</h6>  <h5 data-tb-region-item-title="">Tempolimit f&uuml;r den Frieden? Darauf gibt es nur eine Antwort</h5>
 
-<p class="Ttst">Wüste Warnungen im Staatsfernsehen: Ein Fernsehmoderator und Freund des russischen Präsidenten betont die Schlagkraft der russischen Nuklearwaffen – und zeigt ein düsteres Szenario für die Nato-Staaten auf.
+<p class="Ttst">In Deutschland gibt es kein Tempolimit auf Autobahnen, trotz guter Argumente dafür. Der Konflikt mit Russland erhöht die Notwendigkeit weiter. Worauf wartet die Politik jetzt noch? | Ein Kommentar von Josephin Hartwig
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/id_91745248/putin-vertrauter-droht-eu-mit-nuklearer-vernichtung-im-tv.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/gesellschaft/id_91933798/tempolimit-100-auf-autobahnen-das-ist-schon-laengst-ueberfaellig.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/74/59/48/id_91745948/300_80/tid_da/index.jpg" width="300" class="Tlz" alt=" (Quelle: Reuters)" src="https://img.toi.de/t.gif" title=" (Quelle: Reuters)" /><noscript><img src="https://bilder.t-online.de/b/91/74/59/48/id_91745948/300_80/tid_da/index.jpg" width="300" height="169" alt="" /></noscript>                                                              
-                                                          <div class="Ticon Tplay"><i></i></div>
-                      </a></div> </div> </div>
-
-
-
-
-
-
-
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91744558" onfocus="A('zid=91744558;mp=0203;vn=15')" >
-<div class="Ttsc Ttsh300"> 
-<div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/ausland/id_91744558/ukraine-krieg-schweiz-schliesst-sich-eu-sanktionen-gegen-russland-an.html"> Ukraine-Krieg - Schweiz schließt sich EU-Sanktionen gegen Russland an
-  </a>
-
-
- <h6>Ukraine-Krieg</h6>  <h5 data-tb-region-item-title="">Schweiz schlie&szlig;t sich EU-Sanktionen gegen Russland an</h5>
-
-<p class="Ttst">Nun also doch: Auch das neutrale Land übernimmt die EU-Sanktionen gegen Russland. Die Vermögen von gelisteten Personen und Unternehmen sind ab sofort gesperrt. Zuvor hatte es heftige Kritik am Schweizer Kurs gegeben.
-
-</p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91744558/ukraine-krieg-schweiz-schliesst-sich-eu-sanktionen-gegen-russland-an.html">
-        
-
-
-
-<img height="169" data-original="https://bilder.t-online.de/b/91/74/46/20/id_91744620/300_80/tid_da/ignazio-cassis-der-bundespraesident-der-schweiz-spricht-auf-einer-pressekonferenz-ueber-den-ukraine-konflikt-.jpg" width="300" class="Tlz" alt="Ignazio Cassis: Der Bundespräsident der Schweiz spricht auf einer Pressekonferenz über den Ukraine-Konflikt. (Quelle: dpa/Peter Schneider/KEYSTONE)" src="https://img.toi.de/t.gif" title="Ignazio Cassis: Der Bundespräsident der Schweiz spricht auf einer Pressekonferenz über den Ukraine-Konflikt. (Quelle: dpa/Peter Schneider/KEYSTONE)" /><noscript><img src="https://bilder.t-online.de/b/91/74/46/20/id_91744620/300_80/tid_da/ignazio-cassis-der-bundespraesident-der-schweiz-spricht-auf-einer-pressekonferenz-ueber-den-ukraine-konflikt-.jpg" width="300" height="169" alt="Ignazio Cassis: Der Bundespräsident der Schweiz spricht auf einer Pressekonferenz über den Ukraine-Konflikt." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/93/62/30/id_91936230/300_80/tid_da/autobahn-in-der-schweiz-dort-gilt-ein-allgemeines-tempolimit-von-120-km-h-an-manchen-stellen-auch-100-km-h-.jpg" width="300" class="Tlz" alt="Autobahn in der Schweiz: Dort gilt ein allgemeines Tempolimit von 120 km/h, an manchen Stellen auch 100 km/h. (Quelle: imago images/Andreas Haas)" src="https://img.toi.de/t.gif" title="Autobahn in der Schweiz: Dort gilt ein allgemeines Tempolimit von 120 km/h, an manchen Stellen auch 100 km/h. (Quelle: imago images/Andreas Haas)" /><noscript><img src="https://bilder.t-online.de/b/91/93/62/30/id_91936230/300_80/tid_da/autobahn-in-der-schweiz-dort-gilt-ein-allgemeines-tempolimit-von-120-km-h-an-manchen-stellen-auch-100-km-h-.jpg" width="300" height="169" alt="Autobahn in der Schweiz: Dort gilt ein allgemeines Tempolimit von 120 km/h, an manchen Stellen auch 100 km/h." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2744,26 +2685,80 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91744226" onfocus="A('zid=91744226;mp=0203;vn=19')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91935446" onfocus="A('zid=91935446;mp=0203;vn=5')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/ausland/id_91744226/ukraine-krieg-russland-sperrt-luftraum-fuer-deutschland-und-35-weitere-staaten.html"> Ukraine-Krieg - Russland sperrt Luftraum für Deutschland und 35 weitere Staaten
+<a href="https://www.t-online.de/nachrichten/ausland/id_91935446/usa-praesident-joe-biden-erhaelt-vierte-corona-impfung.html"> "Es hat kein bisschen weh getan" - US-Präsident Biden erhält vierte Corona-Impfung
   </a>
 
 
- <h6>Ukraine-Krieg</h6>  <h5 data-tb-region-item-title="">Russland sperrt Luftraum f&uuml;r Deutschland und 35 weitere Staaten</h5>
+ <h6>&quot;Es hat kein bisschen weh getan&quot;</h6>  <h5 data-tb-region-item-title="">US-Pr&auml;sident Biden erh&auml;lt vierte Corona-Impfung</h5>
 
-<p class="Ttst">Im Zuge des Kriegs in der Ukraine hat die EU den Luftraum für russische Maschinen gesperrt. Nun reagiert der Kreml und verhängt ein Verbot für 36 Nationen.
+<p class="Ttst">Der 79-jährige Regierungschef hat sich im Weißen Haus medienwirksam die zweite Auffrischungsimpfung verabreichen lassen. Bei einem Pressetermin sprach Joe Biden von einer "neuen Phase der Pandemie".
 
 
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91744226/ukraine-krieg-russland-sperrt-luftraum-fuer-deutschland-und-35-weitere-staaten.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91935446/usa-praesident-joe-biden-erhaelt-vierte-corona-impfung.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/74/44/38/id_91744438/300_80/tid_da/airbus-der-lufthansa-symbolbild-flugzeuge-aus-deutschland-und-35-weiteren-staaten-duerfen-nicht-mehr-ueber-russland-fliegen-.jpg" width="300" class="Tlz" alt="Airbus der Lufthansa (Symbolbild): Flugzeuge aus Deutschland und 35 weiteren Staaten dürfen nicht mehr über Russland fliegen. (Quelle: imago images/Zoonar)" src="https://img.toi.de/t.gif" title="Airbus der Lufthansa (Symbolbild): Flugzeuge aus Deutschland und 35 weiteren Staaten dürfen nicht mehr über Russland fliegen. (Quelle: imago images/Zoonar)" /><noscript><img src="https://bilder.t-online.de/b/91/74/44/38/id_91744438/300_80/tid_da/airbus-der-lufthansa-symbolbild-flugzeuge-aus-deutschland-und-35-weiteren-staaten-duerfen-nicht-mehr-ueber-russland-fliegen-.jpg" width="300" height="169" alt="Airbus der Lufthansa (Symbolbild): Flugzeuge aus Deutschland und 35 weiteren Staaten dürfen nicht mehr über Russland fliegen." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/93/56/36/id_91935636/300_80/tid_da/us-praesident-joe-biden-die-vierte-impfung-gegen-das-coronavirus-wird-von-der-us-amerikanischen-arzneimittelbehoerde-fuer-alle-menschen-ab-50-jahren-empfohlen-.jpg" width="300" class="Tlz" alt="US-Präsident Joe Biden: Die vierte Impfung gegen das Coronavirus wird von der US-amerikanischen Arzneimittelbehörde für alle Menschen ab 50 Jahren empfohlen. (Quelle: Reuters/Kevin Lamarque)" src="https://img.toi.de/t.gif" title="US-Präsident Joe Biden: Die vierte Impfung gegen das Coronavirus wird von der US-amerikanischen Arzneimittelbehörde für alle Menschen ab 50 Jahren empfohlen. (Quelle: Reuters/Kevin Lamarque)" /><noscript><img src="https://bilder.t-online.de/b/91/93/56/36/id_91935636/300_80/tid_da/us-praesident-joe-biden-die-vierte-impfung-gegen-das-coronavirus-wird-von-der-us-amerikanischen-arzneimittelbehoerde-fuer-alle-menschen-ab-50-jahren-empfohlen-.jpg" width="300" height="169" alt="US-Präsident Joe Biden: Die vierte Impfung gegen das Coronavirus wird von der US-amerikanischen Arzneimittelbehörde für alle Menschen ab 50 Jahren empfohlen." /></noscript>                                                              
+                                                          <div class=""><i></i></div>
+                      </a></div> </div> </div>
+
+
+
+
+
+
+
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91891510" onfocus="A('zid=91891510;mp=0203;vn=17')" >
+<div class="Ttsc Ttsh300"> 
+<div class="Ttslink"> 
+<a href="https://www.t-online.de/nachrichten/ausland/krisen/id_91891510/vor-ungarn-wahl-sagt-viel-ueber-putins-geistige-qualitaeten-aus-wie-auch-orbans-.html"> Ungarn vor der Wahl - "Das sagt viel über Putins geistige Qualitäten aus – wie auch Orbáns"
+  </a>
+
+
+ <h6><span class="Tts__label Tts__label--interview">INTERVIEW</span>Ungarn vor der Wahl</h6>  <h5 data-tb-region-item-title="">&quot;Das sagt viel &uuml;ber Putins geistige Qualit&auml;ten aus &ndash; wie auch Orb&aacute;ns&quot;</h5>
+
+<p class="Ttst">Putin galt als Vorbild von Ungarns Regierungschef Viktor Orbán. Was sich mit dem Ukraine-Krieg als fatal erwies, sagt György Dalos. Der Historiker schätzt die Lage in Ungarn vor der Wahl am Sonntag ein. | Von M. v. Lüpke
+
+</p>
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/krisen/id_91891510/vor-ungarn-wahl-sagt-viel-ueber-putins-geistige-qualitaeten-aus-wie-auch-orbans-.html">
+        
+
+
+
+<img height="169" data-original="https://bilder.t-online.de/b/91/92/80/58/id_91928058/300_80/tid_da/wladimir-putin-and-viktor-orban-2019-die-naehe-zu-russlands-praesidenten-koennte-orban-in-den-anstehenden-wahlen-schaden-.jpg" width="300" class="Tlz" alt="Wladimir Putin and Viktor Orbán 2019: Die Nähe zu Russlands Präsidenten könnte Orbán in den anstehenden Wahlen schaden. (Quelle: ullstein bild/Aleksey Nikolskyi / SNA)" src="https://img.toi.de/t.gif" title="Wladimir Putin and Viktor Orbán 2019: Die Nähe zu Russlands Präsidenten könnte Orbán in den anstehenden Wahlen schaden. (Quelle: ullstein bild/Aleksey Nikolskyi / SNA)" /><noscript><img src="https://bilder.t-online.de/b/91/92/80/58/id_91928058/300_80/tid_da/wladimir-putin-and-viktor-orban-2019-die-naehe-zu-russlands-praesidenten-koennte-orban-in-den-anstehenden-wahlen-schaden-.jpg" width="300" height="169" alt="Wladimir Putin and Viktor Orbán 2019: Die Nähe zu Russlands Präsidenten könnte Orbán in den anstehenden Wahlen schaden." /></noscript>                                                              
+                                                          <div class=""><i></i></div>
+                      </a></div> </div> </div>
+
+
+
+
+
+
+
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91933660" onfocus="A('zid=91933660;mp=0203;vn=4')" >
+<div class="Ttsc Ttsh300"> 
+<div class="Ttslink"> 
+<a href="https://www.t-online.de/nachrichten/ausland/id_91933660/russisches-gas-gazprom-prueft-angeblich-lieferstopp-.html"> Laut russischer Zeitung - Gazprom prüft angeblich Lieferstopp von russischem Gas
+  </a>
+
+
+ <h6>Laut russischer Zeitung</h6>  <h5 data-tb-region-item-title="">Gazprom pr&uuml;ft angeblich Lieferstopp von russischem Gas</h5>
+
+<p class="Ttst">Rubel oder Euro? Im Streit um die russischen Gaslieferungen sendet der Staatskonzern Gazprom neue Alarmsignale. Die EU-Kommission geht derweil mit einer Razzia gegen den Konzern vor.
+
+</p>
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91933660/russisches-gas-gazprom-prueft-angeblich-lieferstopp-.html">
+        
+
+
+
+<img height="168" data-original="https://bilder.t-online.de/b/91/93/44/44/id_91934444/300_80/tid_da/ein-stoppschild-vor-dem-buerogebaeude-von-gazprom-laut-medienberichten-prueft-der-gaskonzern-die-optionen-eines-lieferstopps-.jpg" width="300" class="Tlz" alt="Ein Stoppschild vor dem Bürogebäude von Gazprom: Laut Medienberichten prüft der Gaskonzern die Optionen eines Lieferstopps. (Quelle: imago images/ Alexander Shcherbak/TASS)" src="https://img.toi.de/t.gif" title="Ein Stoppschild vor dem Bürogebäude von Gazprom: Laut Medienberichten prüft der Gaskonzern die Optionen eines Lieferstopps. (Quelle: imago images/ Alexander Shcherbak/TASS)" /><noscript><img src="https://bilder.t-online.de/b/91/93/44/44/id_91934444/300_80/tid_da/ein-stoppschild-vor-dem-buerogebaeude-von-gazprom-laut-medienberichten-prueft-der-gaskonzern-die-optionen-eines-lieferstopps-.jpg" width="300" height="169" alt="Ein Stoppschild vor dem Bürogebäude von Gazprom: Laut Medienberichten prüft der Gaskonzern die Optionen eines Lieferstopps." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
  <div class="Tgbpagination Tts Tmm Tll keine" onfocus="A('mp=autolist-paginierung')">
@@ -2843,26 +2838,7 @@ Lotto </a> </div>
 
 
 <!-- MrRu RenderBlock false -->
-<div class="Tmm  Tts Tmc4 Ttshh false  Tww1 Thh1 " id="T-89943844" onfocus="A('zid=89943844;mp=0204-05;vn=8')" > <div class="Ttsc Ttsh100"> 
-<div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/specials/id_89943844/bundestagswahl-wer-darf-waehlen-und-wer-nicht-.html"> Bundestag, Landtag, Kommunalwahl - Wer darf wählen und wer nicht?
-  </a>
-
-
- <h6>Bundestag, Landtag, Kommunalwahl</h6>  <h5 data-tb-region-item-title="">Wer darf w&auml;hlen und wer nicht?</h5>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/specials/id_89943844/bundestagswahl-wer-darf-waehlen-und-wer-nicht-.html">
-        
-
-
-
-<img height="100" data-original="https://bilder.t-online.de/b/89/94/39/38/id_89943938/100_80/c_Master-1-1-Small/tid_da/bei-wahlen-entscheiden-die-buerger-ueber-die-geschicke-des-landes-doch-nicht-jeder-darf-den-gang-zur-urne-gehen-.jpg" width="100" class="Tlz" alt="Bei Wahlen entscheiden die Bürger über die Geschicke des Landes, doch nicht jeder darf den Gang zur Urne gehen. (Quelle: imago images)" src="https://img.toi.de/t.gif" title="Bei Wahlen entscheiden die Bürger über die Geschicke des Landes, doch nicht jeder darf den Gang zur Urne gehen. (Quelle: imago images)" /><noscript><img src="https://bilder.t-online.de/b/89/94/39/38/id_89943938/100_80/c_Master-1-1-Small/tid_da/bei-wahlen-entscheiden-die-buerger-ueber-die-geschicke-des-landes-doch-nicht-jeder-darf-den-gang-zur-urne-gehen-.jpg" width="100" height="100" alt="Bei Wahlen entscheiden die Bürger über die Geschicke des Landes, doch nicht jeder darf den Gang zur Urne gehen." /></noscript>                                                              
-                                                          <div class=""><i></i></div>
-                      </a></div> </div>
-</div>
-
-
-<!-- MrRu RenderBlock false -->
-<div class="Tmm  Tts Tmc4 Ttshh false  Tww1 Thh1 " id="T-90275006" onfocus="A('zid=90275006;mp=0204-06;vn=10')" > <div class="Ttsc Ttsh100"> 
+<div class="Tmm  Tts Tmc4 Ttshh false  Tww1 Thh1 " id="T-90275006" onfocus="A('zid=90275006;mp=0204-05;vn=10')" > <div class="Ttsc Ttsh100"> 
 <div class="Ttslink"> 
 <a href="https://www.t-online.de/nachrichten/specials/id_90275006/bundestagswahl-wer-waehlt-eigentlich-den-bundeskanzler-.html"> Keine Direktwahl - Wer wählt den Bundeskanzler?
   </a>
@@ -2875,6 +2851,25 @@ Lotto </a> </div>
 
 
 <img height="100" data-original="https://bilder.t-online.de/b/90/27/50/52/id_90275052/100_80/c_Master-1-1-Small/tid_da/das-bundeskanzleramt-in-berlin-wer-hier-sitzt-wird-nur-indirekt-vom-volk-ins-amt-gewaehlt-.jpg" width="100" class="Tlz" alt="Das Bundeskanzleramt in Berlin: Wer hier sitzt, wird nur indirekt vom Volk ins Amt gewählt. (Quelle: imago images)" src="https://img.toi.de/t.gif" title="Das Bundeskanzleramt in Berlin: Wer hier sitzt, wird nur indirekt vom Volk ins Amt gewählt. (Quelle: imago images)" /><noscript><img src="https://bilder.t-online.de/b/90/27/50/52/id_90275052/100_80/c_Master-1-1-Small/tid_da/das-bundeskanzleramt-in-berlin-wer-hier-sitzt-wird-nur-indirekt-vom-volk-ins-amt-gewaehlt-.jpg" width="100" height="100" alt="Das Bundeskanzleramt in Berlin: Wer hier sitzt, wird nur indirekt vom Volk ins Amt gewählt." /></noscript>                                                              
+                                                          <div class=""><i></i></div>
+                      </a></div> </div>
+</div>
+
+
+<!-- MrRu RenderBlock false -->
+<div class="Tmm  Tts Tmc4 Ttshh false  Tww1 Thh1 " id="T-89943844" onfocus="A('zid=89943844;mp=0204-06;vn=8')" > <div class="Ttsc Ttsh100"> 
+<div class="Ttslink"> 
+<a href="https://www.t-online.de/nachrichten/specials/id_89943844/bundestagswahl-wer-darf-waehlen-und-wer-nicht-.html"> Bundestag, Landtag, Kommunalwahl - Wer darf wählen und wer nicht?
+  </a>
+
+
+ <h6>Bundestag, Landtag, Kommunalwahl</h6>  <h5 data-tb-region-item-title="">Wer darf w&auml;hlen und wer nicht?</h5>
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/specials/id_89943844/bundestagswahl-wer-darf-waehlen-und-wer-nicht-.html">
+        
+
+
+
+<img height="100" data-original="https://bilder.t-online.de/b/89/94/39/38/id_89943938/100_80/c_Master-1-1-Small/tid_da/bei-wahlen-entscheiden-die-buerger-ueber-die-geschicke-des-landes-doch-nicht-jeder-darf-den-gang-zur-urne-gehen-.jpg" width="100" class="Tlz" alt="Bei Wahlen entscheiden die Bürger über die Geschicke des Landes, doch nicht jeder darf den Gang zur Urne gehen. (Quelle: imago images)" src="https://img.toi.de/t.gif" title="Bei Wahlen entscheiden die Bürger über die Geschicke des Landes, doch nicht jeder darf den Gang zur Urne gehen. (Quelle: imago images)" /><noscript><img src="https://bilder.t-online.de/b/89/94/39/38/id_89943938/100_80/c_Master-1-1-Small/tid_da/bei-wahlen-entscheiden-die-buerger-ueber-die-geschicke-des-landes-doch-nicht-jeder-darf-den-gang-zur-urne-gehen-.jpg" width="100" height="100" alt="Bei Wahlen entscheiden die Bürger über die Geschicke des Landes, doch nicht jeder darf den Gang zur Urne gehen." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div>
 </div>
@@ -2915,7 +2910,7 @@ if (typeof consentAdHandler != 'undefined') {
 
 
  <div class="Tmm Tll Tml6 Tww1 " id="T-80683636-tl-toi" onfocus="A('zid=;mp=000102;vn=11')">
-       <div class="Tllc">  <h6>meistgelesene Artikel</h6>  <ul class="Tlll Tlult">  <li  class="Tllnumme">  <div class="Tdivnummr">1</div> <a href="https://www.t-online.de/nachrichten/ausland/id_91732446/newslage-ukraine-krieg-ukraine-meldet-belarussische-truppenbewegungen-richtung-grenze.html" onclick="dataLayer.push({'event':'gtmEvent', 'eventCategory':'meist-gelesen-box','eventAction':'click','eventLabel':'link'});"><b>Newsblog zum Ukraine-Krieg:</b>  Alle Entwicklungen im &Uuml;berblick                  </a> </li>  <li  class="Tllnumme">  <div class="Tdivnummr">2</div> <a href="https://www.t-online.de/nachrichten/ausland/usa/id_91740642/wie-us-republikaner-wladimir-putin-huldigen-schreckensszenario-fuer-europa.html" onclick="dataLayer.push({'event':'gtmEvent', 'eventCategory':'meist-gelesen-box','eventAction':'click','eventLabel':'link'});"><b>US-Republikaner huldigen Putin:</b>  Ein Schreckensszenario f&uuml;r Europa                  </a> </li>  <li  class="Tllnumme">  <div class="Tdivnummr">3</div> <a href="https://www.t-online.de/nachrichten/ausland/krisen/id_91743962/experte-masala-ueber-ukraine-da-hat-putin-also-noch-etwas-in-der-hinterhand-.html" onclick="dataLayer.push({'event':'gtmEvent', 'eventCategory':'meist-gelesen-box','eventAction':'click','eventLabel':'link'});"><b>Russlands Feldzug gegen die Ukraine:</b>  &quot;Da hat Putin noch etwas in der Hinterhand&quot;                  </a> </li>  </ul> <div class="followUs-mostread">
+       <div class="Tllc">  <h6>meistgelesene Artikel</h6>  <ul class="Tlll Tlult">  <li  class="Tllnumme">  <div class="Tdivnummr">1</div> <a href="https://www.t-online.de/nachrichten/id_91924788/kurswechsel-in-deutschland-als-fuehrungsnation-ein-totalausfall.html" onclick="dataLayer.push({'event':'gtmEvent', 'eventCategory':'meist-gelesen-box','eventAction':'click','eventLabel':'link'});"><b>Tagesanbruch:</b>  Deutschland, der Totalausfall                  </a> </li>  <li  class="Tllnumme">  <div class="Tdivnummr">2</div> <a href="https://www.t-online.de/nachrichten/ausland/id_91920366/greift-belarus-in-den-ukraine-krieg-ein-wladimir-putin-bekommt-eine-ohrfeige.html" onclick="dataLayer.push({'event':'gtmEvent', 'eventCategory':'meist-gelesen-box','eventAction':'click','eventLabel':'link'});"><b>Belarus und der Ukraine-Krieg:</b>  Putin bekommt eine doppelte Ohrfeige                  </a> </li>  <li  class="Tllnumme">  <div class="Tdivnummr">3</div> <a href="https://www.t-online.de/nachrichten/ausland/id_91916294/putins-truppen-russland-beklagt-verluste-doch-ukraine-verliert-mehr-.html" onclick="dataLayer.push({'event':'gtmEvent', 'eventCategory':'meist-gelesen-box','eventAction':'click','eventLabel':'link'});"><b>Erstaunliche Zahlen :</b>  So gro&szlig; sind die russischen Verluste im Ukraine-Krieg                  </a> </li>  </ul> <div class="followUs-mostread">
   <a href="https://facebook.com/tonline" class="followUs-mostread__link followUs-mostread__link--facebook" target="_blank"
     onClick="dataLayer.push({'event':'gtmEvent', 'eventCategory':'social interaction','eventAction':'folgen box-meistgelesen box','eventLabel':'facebook'})">Fan werden</a><a href="https://twitter.com/tonline" class="followUs-mostread__link followUs-mostread__link--twitter" target="_blank"
     onClick="dataLayer.push({'event':'gtmEvent', 'eventCategory':'social interaction','eventAction':'folgen box-meistgelesen box','eventLabel':'twitter'})">Folgen</a>
@@ -2928,23 +2923,23 @@ if (typeof consentAdHandler != 'undefined') {
 
 
 
-<div class="Tmm   Tts Tmc1 Tww1 Thh3 " id="T-84140348" onfocus="A('zid=85730132;mp=000104;vn=533')" > <div class="Ttsc Ttsv169">
+<div class="Tmm   Tts Tmc1 Tww1 Thh3 " id="T-84140348" onfocus="A('zid=85730132;mp=000104;vn=552')" > <div class="Ttsc Ttsv169">
 <!-- self parsedID: 84140348 --> <a href="https://www.t-online.de/nachrichten/id_85730132/si_0/cartoons-von-mario-lars.html" onclick="ToLb('https://www.t-online.de/nachrichten/id_85730132/tid_lightbox/si_0/cartoons-von-mario-lars.html','Video','Tlbvideo',null,null,30,30,1,0); return false;" target="_blank" class="Ttslink">
 
- <h6>Politik</h6>  <h5 data-tb-region-item-title="">Die Propaganda in Russland</h5>
+ <h6>Politik</h6>  <h5 data-tb-region-item-title="">Leute gibt's &hellip;</h5>
    
      </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/id_85730132/si_0/cartoons-von-mario-lars.html" onclick="ToLb('https://www.t-online.de/nachrichten/id_85730132/tid_lightbox/si_0/cartoons-von-mario-lars.html','Video','Tlbvideo',null,null,30,30,1,0); return false;" target="_blank">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/74/68/38/id_91746838/300_80/tid_da/index.jpg" width="300" class="Tlz" alt=" (Quelle: Mario Lars)" src="https://img.toi.de/t.gif" title=" (Quelle: Mario Lars)" /><noscript><img src="https://bilder.t-online.de/b/91/74/68/38/id_91746838/300_80/tid_da/index.jpg" width="300" height="169" alt="" /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/93/90/32/id_91939032/300_80/tid_da/index.jpg" width="300" class="Tlz" alt="Leute gibt's... (Quelle: Mario Lars)" src="https://img.toi.de/t.gif" title="Leute gibt's... (Quelle: Mario Lars)" /><noscript><img src="https://bilder.t-online.de/b/91/93/90/32/id_91939032/300_80/tid_da/index.jpg" width="300" height="169" alt="" /></noscript>                                                              
                                                                       <div class="Ticon Tcamera"><i></i></div>
                                 </a></div> </div> </div>
 
 
 <!-- GA Count: falsefalse --><div class="Tmm   Tll Tml6 Tww1  " id="T-82031392" onfocus="A('mp=000105')"> <div class="Tllc"> <h6><a href="https://www.t-online.de/themen/" target="_blank"> Top-Themen
-</a></h6> <ul class="Tlll Tlult" data-numitems="3">  <li><a href="https://www.t-online.de/nachrichten/ausland/id_91726686/ukraine-krieg-alle-infos-zum-konflikt-und-der-aktuellen-lage-im-kriegsgebiet.html"><b>Krieg in der Ukraine: </b>Alle News zu den politischen Entwicklungen</a></li>  <li><a href="https://www.t-online.de/nachrichten/panorama/id_87559708/coronavirus-in-deutschland-und-der-welt-alle-news-und-informationen.html"><b>Corona-Pandemie: </b>Maßnahmen, Regeln, Zahlen, News und mehr</a></li>  <li><a href="https://www.t-online.de/themen/omikron-variante" target="_blank"><b>Omikron: </b>Alles zur Coronavirus-Variante</a></li>  <li><a href="https://www.t-online.de/sport/fussball/bundesliga/"><b>Bundesliga: </b>Alle Infos zu Deutschlands Fußball-Oberhaus</a></li>  <li><a href="https://www.t-online.de/sport/wintersport/"><b>Wintersport: </b>Alles rund um Skispringen, Biathlon, Ski-Alpin und Co.</a></li>  <li><a href="https://www.t-online.de/podcasts/"><b>Alle Podcasts: </b>"Tagesanbruch", "Zweikampf der Woche" oder "Tonspur Wissen"</a></li>  </ul>  </div>
+</a></h6> <ul class="Tlll Tlult" data-numitems="3">  <li><a href="https://www.t-online.de/nachrichten/ausland/id_91726686/ukraine-krieg-alle-infos-zum-konflikt-und-der-aktuellen-lage-im-kriegsgebiet.html"><b>Krieg in der Ukraine: </b>Alle News zu den politischen Entwicklungen</a></li>  <li><a href="https://www.t-online.de/nachrichten/panorama/id_87559708/coronavirus-in-deutschland-und-der-welt-alle-news-und-informationen.html"><b>Corona-Pandemie: </b>Maßnahmen, Regeln, Zahlen, News und mehr</a></li>  <li><a href="https://www.t-online.de/themen/omikron-variante" target="_blank"><b>Omikron: </b>Alles zur Coronavirus-Variante</a></li>  <li><a href="https://www.t-online.de/sport/fussball/bundesliga/"><b>Bundesliga: </b>Alle Infos zu Deutschlands Fußball-Oberhaus</a></li>  <li><a href="https://www.t-online.de/podcasts/"><b>Alle Podcasts: </b>"Tagesanbruch", "Zweikampf der Woche" oder "Tonspur Wissen"</a></li>  </ul>  </div>
 </div>
 
 
@@ -3015,7 +3010,7 @@ if (typeof consentAdHandler != 'undefined') {
                       </a></div> </div>
 </div>
 <div class="Tmm   Tll Tml6 Tww1 " id="T-81892198" onfocus="A('mp=000112')"> <div class="Tllc"> <h6>Aktuelle Zahlen von Statista
-</h6> <ul class="Tlll Tlult">  <li><a href="https://de.statista.com/infografik/26941/anteil-der-weltweiten-zahlungen-die-ueber-swift-abgewickelt-wurden/") rel="nofollow" target="_blank">Rubel spielt in SWIFT eine geringe Rolle</a></li>  <li><a href="https://de.statista.com/infografik/26939/anteil-der-bedeutenden-cyberangriffe-auf-deutschland-und-die-ukraine-nach-herkunft/") rel="nofollow" target="_blank">Im Visier russischer Hacker</a></li>  <li><a href="https://de.statista.com/infografik/26938/anteil-der-befragten-die-folgende-einstellung-zu-medikamenten-haben/") rel="nofollow" target="_blank">Deutsche bei Medikamenten besonders skeptisch</a></li>  <li><a href="https://de.statista.com/infografik/17429/deutsche-militaerausgaben/") rel="nofollow" target="_blank">So haben sich Deutschlands Militärausgaben entwickelt</a></li>  <li><a href="https://de.statista.com/infografik/26929/umfrage-zu-bekanntheit-und-beliebtheit-von-bundesliga-sponsoren/") rel="nofollow" target="_blank">Gazprom, bekannt aber unsympathisch</a></li>  <li><a href="https://de.statista.com/infografik/22834/tageskurs-fuer-einen-bitcoin/") rel="nofollow" target="_blank">Bitcoin bleibt in der Krise stabil</a></li>  </ul>
+</h6> <ul class="Tlll Tlult">  <li><a href="https://de.statista.com/infografik/27136/einstellung-gegenueber-kreuzfahrten/") rel="nofollow" target="_blank">Deutsche haben bei Kreuzfahrten einige Vorbehalte</a></li>  <li><a href="https://de.statista.com/infografik/27162/durchschnittlicher-einkommensanteil-privater-haushalte-fuer-energie/") rel="nofollow" target="_blank">Energiemehrkosten belasten geringe Einkommen stark</a></li>  <li><a href="https://de.statista.com/infografik/27158/ursprung-von-cyberangriffen-auf-unternehmen-in-deutschland/") rel="nofollow" target="_blank">Angriff aus dem Osten</a></li>  <li><a href="https://de.statista.com/infografik/27126/geschaetzter-anteil-der-bevoelkerung-mit-einer-aktiven-covid-19-infektion/") rel="nofollow" target="_blank">4,4 Millionen Corona-Infizierte in Deutschland</a></li>  <li><a href="https://de.statista.com/infografik/27156/geografische-verteilung-alle-milliardaerinnen-weltweit/") rel="nofollow" target="_blank">Wo die Superreichen herkommen</a></li>  <li><a href="https://de.statista.com/infografik/27155/anteil-der-befragten-die-so-haeufig-ausgehen/") rel="nofollow" target="_blank">Deutsche noch nicht wieder in Feierlaune</a></li>  </ul>
       </div>
     </div> 
 <div id="6788005sa"></div>
@@ -3056,49 +3051,49 @@ _smartWaiter('#Tfoot', function() {
 
 
 
-<div class="Tmm   Tts Tmc1 Tww1 Thh3 " id="T-91708148" onfocus="A('zid=91708150;mp=0401-01;vn=5')" > <div class="Ttsc Ttsv169">
-<!-- self parsedID: 91708148 --> 
+<div class="Tmm   Tts Tmc1 Tww1 Thh3 " id="T-91892146" onfocus="A('zid=91892148;mp=0401-01;vn=5')" > <div class="Ttsc Ttsv169">
+<!-- self parsedID: 91892146 --> 
 
-<a href="https://www.t-online.de/tv/nachrichten/id_91708150/russische-truppen-ruecken-vor-verwirrung-in-abtruennigen-gebieten.html">                   <span class="h6">Wie weit geht Russland?</span>
-         <span class="h5">Russische Truppen r&uuml;cken vor &ndash; Verwirrung in abtr&uuml;nnigen Gebieten</span>        </a>   
+<a href="https://www.t-online.de/tv/nachrichten/politik/id_91892148/merz-waehlt-abfaelliges-wort-dann-tritt-baerbock-ans-pult.html">                   <span class="h6">Reaktion sorgt f&uuml;r Aufruhr</span>
+         <span class="h5">Merz w&auml;hlt abf&auml;lliges Wort &ndash; dann tritt Baerbock ans Pult</span>        </a>   
      <div class="Ttsi"> 
-<a href="https://www.t-online.de/tv/nachrichten/id_91708150/russische-truppen-ruecken-vor-verwirrung-in-abtruennigen-gebieten.html">
+<a href="https://www.t-online.de/tv/nachrichten/politik/id_91892148/merz-waehlt-abfaelliges-wort-dann-tritt-baerbock-ans-pult.html">
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/71/59/86/id_91715986/300_80/tid_da/index.png" width="300" class="Tlz" alt=" (Quelle: Euronews)" src="https://img.toi.de/t.gif" title=" (Quelle: Euronews)" /><noscript><img src="https://bilder.t-online.de/b/91/71/59/86/id_91715986/300_80/tid_da/index.png" width="300" height="169" alt="" /></noscript>      
+<img height="169" data-original="https://bilder.t-online.de/b/91/89/21/50/id_91892150/300_80/tid_da/index.png" width="300" class="Tlz" alt=" (Quelle: t-online - Pressematerial)" src="https://img.toi.de/t.gif" title=" (Quelle: t-online - Pressematerial)" /><noscript><img src="https://bilder.t-online.de/b/91/89/21/50/id_91892150/300_80/tid_da/index.png" width="300" height="169" alt="" /></noscript>      
             <div class="Ticon Tplay"></div>
  </a>
 </div> </div> </div>
 
 
-<div class="Tmm   Tts Tmc1 Tww1 Thh3 " id="T-91711814" onfocus="A('zid=91711816;mp=0401-01;vn=20')" > <div class="Ttsc Ttsv169">
-<!-- self parsedID: 91711814 --> 
+<div class="Tmm   Tts Tmc1 Tww1 Thh3 " id="T-91880020" onfocus="A('zid=91880022;mp=0401-01;vn=5')" > <div class="Ttsc Ttsv169">
+<!-- self parsedID: 91880020 --> 
 
-<a href="https://www.t-online.de/tv/nachrichten/politik/id_91711816/koerpersprachen-experte-zu-putin-das-war-anders-und-ist-regelrecht-sensationell-.html">                   <span class="h6">Auff&auml;lliges Detail</span>
-         <span class="h5">Darum h&auml;lt sich Putin krampfhaft am Tisch fest</span>        </a>   
+<a href="https://www.t-online.de/tv/nachrichten/politik/id_91880022/witwe-schiesst-panzer-ab.html">                   <span class="h6">Russische Kolonne reagiert</span>
+         <span class="h5">Witwe schie&szlig;t auf Panzer vor Kiew &ndash; drastische Folgen</span>        </a>   
      <div class="Ttsi"> 
-<a href="https://www.t-online.de/tv/nachrichten/politik/id_91711816/koerpersprachen-experte-zu-putin-das-war-anders-und-ist-regelrecht-sensationell-.html">
+<a href="https://www.t-online.de/tv/nachrichten/politik/id_91880022/witwe-schiesst-panzer-ab.html">
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/71/19/88/id_91711988/300_80/tid_da/index.jpg" width="300" class="Tlz" alt=" (Quelle: reuters)" src="https://img.toi.de/t.gif" title=" (Quelle: reuters)" /><noscript><img src="https://bilder.t-online.de/b/91/71/19/88/id_91711988/300_80/tid_da/index.jpg" width="300" height="169" alt="" /></noscript>      
+<img height="169" data-original="https://bilder.t-online.de/b/91/88/00/24/id_91880024/300_80/tid_da/index.jpg" width="300" class="Tlz" alt=" (Quelle: t-online - Reuters - Imago)" src="https://img.toi.de/t.gif" title=" (Quelle: t-online - Reuters - Imago)" /><noscript><img src="https://bilder.t-online.de/b/91/88/00/24/id_91880024/300_80/tid_da/index.jpg" width="300" height="169" alt="" /></noscript>      
             <div class="Ticon Tplay"></div>
  </a>
 </div> </div> </div>
 
 
-<div class="Tmm   Tts Tmc1 Tww1 Thh3 " id="T-91724662" onfocus="A('zid=91724664;mp=0401-01;vn=14')" > <div class="Ttsc Ttsv169">
-<!-- self parsedID: 91724662 --> 
+<div class="Tmm   Tts Tmc1 Tww1 Thh3 " id="T-91878366" onfocus="A('zid=91878368;mp=0401-01;vn=11')" > <div class="Ttsc Ttsv169">
+<!-- self parsedID: 91878366 --> 
 
-<a href="https://www.t-online.de/tv/nachrichten/politik/id_91724664/mutige-frau-konfrontiert-russischen-soldaten.html">                   <span class="h6">Szene aus der Ukraine geht viral</span>
-         <span class="h5">Mit ihr hat der russische Soldat nicht gerechnet</span>        </a>   
+<a href="https://www.t-online.de/tv/nachrichten/politik/id_91878368/russische-fahrzeuge-muessen-umkehren.html">                   <span class="h6">In ukrainischer Gro&szlig;stadt</span>
+         <span class="h5">Russisches Milit&auml;r f&auml;hrt ein &ndash; Reaktion danach geht viral</span>        </a>   
      <div class="Ttsi"> 
-<a href="https://www.t-online.de/tv/nachrichten/politik/id_91724664/mutige-frau-konfrontiert-russischen-soldaten.html">
+<a href="https://www.t-online.de/tv/nachrichten/politik/id_91878368/russische-fahrzeuge-muessen-umkehren.html">
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/72/46/66/id_91724666/300_80/tid_da/index.png" width="300" class="Tlz" alt=" (Quelle: t-online - Social - Reuters)" src="https://img.toi.de/t.gif" title=" (Quelle: t-online - Social - Reuters)" /><noscript><img src="https://bilder.t-online.de/b/91/72/46/66/id_91724666/300_80/tid_da/index.png" width="300" height="169" alt="" /></noscript>      
+<img height="169" data-original="https://bilder.t-online.de/b/91/87/83/70/id_91878370/300_80/tid_da/index.png" width="300" class="Tlz" alt=" (Quelle: t-online - Reuters)" src="https://img.toi.de/t.gif" title=" (Quelle: t-online - Reuters)" /><noscript><img src="https://bilder.t-online.de/b/91/87/83/70/id_91878370/300_80/tid_da/index.png" width="300" height="169" alt="" /></noscript>      
             <div class="Ticon Tplay"></div>
  </a>
 </div> </div> </div> <div class="Tclr"></div>
@@ -3166,7 +3161,7 @@ _smartWaiter('#Tfoot', function() {
 <script type="text/javascript">/*<![CDATA[*/TfU();/*]]>*/</script> <script type="text/javascript">isNotificationDisabled = false;</script>
 
 </div>
-<!-- Taboola Feed in Foot Startseite Desktop Start net.toi.cms.cae.common.contentbeans.TOIClientCodeImpl@80aba8e6[content=coremedia:///cap/content/89446634] --><div class="Tgboxf"> <div id="Taboola-container"></div>
+<!-- Taboola Feed in Foot Startseite Desktop Start net.toi.cms.cae.common.contentbeans.TOIClientCodeImpl@fc1159ab[content=coremedia:///cap/content/89446634] --><div class="Tgboxf"> <div id="Taboola-container"></div>
 <style>
 @media(min-width:919px){#Taboola-container{width:920px}}
 </style>
@@ -3403,6 +3398,6 @@ T$(function(){
 
 </body>
 
-<!--generated: Tue Mar 01 02:33:57 CET 2022, host: 'cmsweb02/18', release: CM7-2013-foundation-17.2.0.4, backend: cmsweb00:21120, id.version: 12358564.37839-->
+<!--generated: Fri Apr 01 03:55:51 CEST 2022, host: 'cmsweb03/18', release: CM7-2013-foundation-17.2.0.4, backend: cmsweb01:21120, id.version: 12358564.37839-->
 
 </html>

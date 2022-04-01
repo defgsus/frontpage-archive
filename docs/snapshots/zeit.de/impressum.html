@@ -20,16 +20,16 @@
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/tabletgothic/TabletGothic-Regular.woff2?v1" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/tabletgothic/TabletGothic-Bold.woff2?v1" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/franziska/FranziskaWebPro.woff" as="font" type="font/woff" crossorigin>
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/normalize.e0da9b1352e31388502ccf5901353346.css">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/base/base.a37549d9c96ec23bd2bb2a713f7f9b24.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/normalize.b648639a8a670ac0c5193dc2aa040d9c.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/base/base.36e77e00694dac6fcc63a1332ab5881c.css">
     
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/css/web.site/standalone/footer.8e7e333df8caf4cc52cde9e8647633aa.css" as="style">
     <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/standalone/footer.8e7e333df8caf4cc52cde9e8647633aa.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/standalone/footer.8e7e333df8caf4cc52cde9e8647633aa.css"></noscript>
 
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/content/content.d6689361ad304a4beb07355e16e2fb50.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/content/content.d99e6d7aca85b6318e005af90485e3c0.css">
     
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/content/article.bf72957df46805f08dc357ba4459c72d.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/content/article.89365ecd150b657433992d4228e2b2ae.css">
 <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/base/print.1116f578d2c5f1aed6b1c97c69870d6f.css" media="print">
         
     <script id="zonConfig" type="application/json">
@@ -68,7 +68,7 @@
                 "spark_clicktracking": true,
                 "sticky_mobile_navigation": false,
                 "sticky_navigation": true,
-                "zwe_fix_viewport_height_via_js": true
+                "zwe_hijack_images_scrolling": true
                 },
             "settings": {
                 "addefend_cookie_expire": 30,
@@ -95,15 +95,17 @@
                 "sourcepoint_vendor_manager_id": "364876",
                 "sso_cookie": "zeit_sso_201501",
                 "sso_session_cookie": "zeit_sso_session_201501",
-                "tickaroo_liveblog_deep_link_limit": "",
-                "tickaroo_liveblog_limit": "",
+                "tickaroo_liveblog_deep_link_limit": 50,
+                "tickaroo_liveblog_limit": 25,
                 "sso_url": "https://meine.zeit.de"
                 },
             "view": {
                 "advertising_enabled": false,
                 "banner_channel": "zeit-verlag/article",
+                "genre": null,
                 "is_pure_page": true,
                 "ressort": "administratives",
+                "show_sticky_mobile_navigation": false,
                 "sub_ressort": "",
                 "type": "article"
                 },
@@ -148,17 +150,23 @@
                 },
                 isAdBlocker: undefined,
                 device: {
-                    hasFastConnection: (function() {
+                    hasSlowConnection: (function() {
                         if ( 'connection' in navigator ) {
                             if ( navigator.connection.type == 'cellular' ) {
-                                return false;
+                                return true;
                             }
     
-                            if ( parseInt( navigator.connection.effectiveType, 10 ) >= 4 ) {
+                            if ( parseInt( navigator.connection.effectiveType, 10 ) < 4 ) {
                                 return true;
                             }
                         }
     
+                        return false;
+                    })(),
+                    hasDataSaverEnabled: (function () {
+                        if ('connection' in navigator) {
+                            return navigator.connection.saveData;
+                        }
                         return false;
                     })()
                 },
@@ -287,27 +295,29 @@
                 require: function() {
                     this.queue.push( arguments );
                 },
-                setFontSize: function(size, updateStorage) {
-                    updateStorage = (typeof updateStorage !== 'undefined') ?  updateStorage : true;
-                    size = parseInt(size, 10);
-                    if (size >= 30 && size <= 300 && window.localStorage) {
-                        document.querySelector('html').style.fontSize = size + '%';
-                        if (updateStorage) window.localStorage.setItem( 'fontsize', size );
-                        return size;
-                    }
+                setFontSize: function( size, updateStorage ) {
+                    size = parseInt( size, 10 );
+                    try {
+                        if ( size >= 50 && size <= 200 && window.localStorage ) {
+                            document.documentElement.style.fontSize = size + '%';
+                            if ( size === 100 ) {
+                                window.localStorage.removeItem( 'fontsize' );
+                            } else if ( updateStorage !== false ) {
+                                window.localStorage.setItem( 'fontsize', size );
+                            }
+                            return size;
+                        }
+                    } catch ( e ) {}
                 },
                 getFontSize: function() {
                     try {
-                        if (window.localStorage) {
+                        if ( window.localStorage ) {
                             var size = window.localStorage.getItem( 'fontsize' );
-                            size = parseInt(size, 10);
-                            if (size >= 30 && size <= 300) {
+                            if ( size >= 50 && size !== 100 && size <= 200 ) {
                                 return size;
                             }
                         }
-                    } catch ( Exception ) {
-                        return false;
-                    }
+                    } catch ( e ) {}
                 },
                 cookieCreate: function( name, value, days, domain, secure, samesite ) {
                     var expires = '',
@@ -453,7 +463,6 @@
         window.Zeit.loadJS('https://' + ioDomain + '/iomm/latest/bootstrap/stub.js');
     </script>
 
-                
     <meta name="robots" content="index,follow,noarchive,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
@@ -469,8 +478,8 @@
     <link rel="shortcut icon" sizes="16x16" href="https://static.zeit.de/p/zeit.web/icons/favicon.ico">
     <link rel="apple-touch-icon-precomposed" href="https://img.zeit.de/static/img/ZO-ipad-114x114.png">
     
-    <meta name="last-modified" content="2022-01-06T14:03:49+01:00">
-    <meta name="date" content="2022-01-06T14:03:49+01:00">
+    <meta name="last-modified" content="2022-03-01T08:55:20+01:00">
+    <meta name="date" content="2022-03-01T08:55:20+01:00">
     <meta name="description" content="Hier finden Sie das Impressum von ZEIT ONLINE mit den Namen aller Verantwortlichen aus Hamburg und Berlin.">
     <meta name="keywords" content="Administratives, Administratives">
     <meta property="fb:app_id" content="638028906281625">
@@ -488,10 +497,10 @@
     <meta property="og:type" content="article">
     <meta property="og:title" content="Impressum">
     <meta property="og:description" content="Hier finden Sie das Impressum von ZEIT ONLINE mit den Namen aller Verantwortlichen aus Hamburg und Berlin.">
-    <meta property="og:url" content="https://www.zeit.de/impressum/index">    <link rel="canonical" href="https://www.zeit.de/impressum/index">
+    <meta property="og:url" content="https://www.zeit.de/impressum/index">
+    <link rel="canonical" href="https://www.zeit.de/impressum/index">
     <link type="application/rss+xml" rel="alternate" href="https://newsfeed.zeit.de/index">
     <meta property="article:content_tier" content="free">
-
     <meta property="outbrain:article_access_status" content="free">
     <meta property="outbrain:do_not_index" content="False">
 
@@ -560,8 +569,8 @@
                 "@type": "Person",
                 "name": "ZEIT ONLINE"
             },
-            "datePublished": "2022-01-06T14:03:49+01:00",
-            "dateModified": "2022-01-06T14:03:49+01:00",
+            "datePublished": "2022-03-01T08:55:20+01:00",
+            "dateModified": "2022-03-01T08:55:20+01:00",
             "headline": "Impressum",
             "description": "Hier finden Sie das Impressum von ZEIT ONLINE mit den Namen aller Verantwortlichen aus Hamburg und Berlin.",
             "image": {
@@ -580,14 +589,14 @@
     
     
     <script>
-        window.Zeit.user = {"ssoid": null, "state": null, "adFree": false, "paywall": null, "iqd_usergroup": null, "C1-Meter-Type": "none", "C1-Meter-Status": "open", "C1-Meter-Info": "tracking_entitlement", "C1-Meter-User-Status": "anonymous", "C1-Meter-User-Group-Action": "{\"cms_snippet\":{\"parameters\":[\"abtest_paywall_euro\",\"block\"]}}", "C1-Meter-Count": "0", "C1-Meter-Max-Count": "0", "C1-Meter-Access-Group": "free"};
+        window.Zeit.user = {"ssoid": null, "state": null, "adFree": false, "paywall": null, "iqd_usergroup": null, "C1-Meter-Access-Group": "free"};
 
         </script>
     
     
     <script class="linkpulse_meta">
         var LPMeta = {
-            "modified": "2022-01-06T14:03:49+01:00",
+            "modified": "2022-03-01T08:55:20+01:00",
             "paywalluser": window.Zeit.user && window.Zeit.user['C1-Meter-Access-Group'] === 'abo' ? '1' : '0',
             "published": "2009-09-06T11:58:34+02:00",
             "section": "administratives",
@@ -606,7 +615,7 @@
             "type": "article",
             "section": "administratives",
             "publishtime": "2009-09-06T11:58:34+02:00",
-            "modifiedtime": "2022-01-06T14:03:49+01:00",
+            "modifiedtime": "2022-03-01T08:55:20+01:00",
             "paid": 0,
             "paywall": "open",
             "subscriber": window.Zeit.user && window.Zeit.user['C1-Meter-Access-Group'] === 'abo' ? 1 : 0,
@@ -647,12 +656,16 @@
                     ( navigator.msMaxTouchPoints > 0 ) );
             }
 
-            function isMacOS1015Firefox() {
+            function hasScrollSnapBug() {
                 // Firefox froze the Mac OS Version from 10.15 upwards. this isn't
                 // good, but what can we do...
                 // this is for https://bugzil.la/1737820
+                // this bug is fixed in firefox version 99 (released april 2022)
                 const UA = navigator.userAgent;
-                return ['MAC OS X 10.15', 'Firefox/'].some(el => UA.includes(el));
+                const splittedUA = UA.split('/');
+                const isMacOSFirefox = ['MAC OS X 10.15', 'Firefox/'].some(el => UA.includes(el));
+                const isVersion99 = parseFloat(splittedUA[splittedUA.length - 1]) >= 99;
+                return isMacOSFirefox && !isVersion99;
             }
 
             // .(no-)js as basic
@@ -671,7 +684,7 @@
             }
 
             // disable scrollsnapping in firefox (https://bugzil.la/1737820)
-            if (isMacOS1015Firefox()) {
+            if (hasScrollSnapBug()) {
                 html.classList.add( 'no-scroll-snap' );
             } else {
                 html.classList.add( 'scroll-snap' );
@@ -698,11 +711,10 @@
     
     <style>
     :root {
-        --vh: 100vh;         --100vh: 100vh;
-        
+        --vh: 100vh;         
     }
     </style>
-    <script src="https://static.zeit.de/p/zeit.web/js/colorscheme.0d2d6ff8569f8039cd45.js" ></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/colorscheme.ac931398b3d53e7c5f76.js" ></script>
     <!-- zeit.web.core.template.include_in_head injection point -->
 </head>
 <body data-page-type="article" data-is-hp="false" data-unique-id="http://xml.zeit.de/impressum/index" data-overscrolling="off">
@@ -841,7 +853,7 @@
     </a>
     <noscript class="webtrekk_noscript">
     <div>
-        <img alt="" width="1" height="1" src="https://audev.zeit.de/981949533494636/wt.pl?p=453min-3,redaktion.administratives...article.zede%7Cwww.zeit.de/impressum/index,0,0,0,0,0,0,0,0&amp;cg1=redaktion&amp;cg2=article&amp;cg3=administratives&amp;cg4=zede&amp;cg5=&amp;cg6=&amp;cg7=index&amp;cg8=zeit-verlag%2Farticle&amp;cg9=2009-09-06&amp;cp1=&amp;cp2=administratives%2Fbild-text&amp;cp3=1%2F1&amp;cp4=administratives%3Badministratives&amp;cp5=2022-01-06+14%3A03%3A49.644460%2B01%3A00&amp;cp6=9345&amp;cp8=zede&amp;cp9=zeit-verlag%2Farticle&amp;cp10=no&amp;cp12=desktop.site&amp;cp13=stationaer&amp;cp15=&amp;cp25=original&amp;cp26=article.article&amp;cp27=&amp;cp28=free&amp;cp29=unfeasible&amp;cp30=open&amp;cp34=&amp;cp38=undefined&amp;cp40=undefined&amp;cp49=30ad765a-cc16-4b07-a04b-30580c0a0c09&amp;cp36=abtest_paywall_euro&amp;cp44=ungeampt&amp;cp23=nicht_angemeldet&amp;cp46=false&amp;cd=" />
+        <img alt="" width="1" height="1" src="https://audev.zeit.de/981949533494636/wt.pl?p=453min-3,redaktion.administratives...article.zede%7Cwww.zeit.de/impressum/index,0,0,0,0,0,0,0,0&amp;cg1=redaktion&amp;cg2=article&amp;cg3=administratives&amp;cg4=zede&amp;cg5=&amp;cg6=&amp;cg7=index&amp;cg8=zeit-verlag%2Farticle&amp;cg9=2009-09-06&amp;cp1=&amp;cp2=administratives%2Fbild-text&amp;cp3=1%2F1&amp;cp4=administratives%3Badministratives&amp;cp5=2022-03-01+08%3A55%3A20.906906%2B01%3A00&amp;cp6=9342&amp;cp8=zede&amp;cp9=zeit-verlag%2Farticle&amp;cp10=no&amp;cp12=desktop.site&amp;cp13=stationaer&amp;cp15=&amp;cp25=original&amp;cp26=article.article&amp;cp27=&amp;cp28=free&amp;cp29=unfeasible&amp;cp30=open&amp;cp34=&amp;cp38=undefined&amp;cp40=undefined&amp;cp49=30ad765a-cc16-4b07-a04b-30580c0a0c09&amp;cp44=ungeampt&amp;cp23=nicht_angemeldet&amp;cp46=undefined&amp;cd=" />
     </div>
 </noscript>
 
@@ -874,6 +886,10 @@
         <a href="https://www.zeit.de/kultur/musik/index" itemprop="url"><span itemprop="name">Musik</span></a></li>
     <li class="nav__dropdown-item--kunst">
         <a href="https://www.zeit.de/kultur/kunst/index" itemprop="url"><span itemprop="name">Kunst</span></a></li>
+    <li class="nav__dropdown-item--has-label" data-label="Anzeige">
+        <a href="https://www.zeit.de/angebote/buchtipp/index" itemprop="url"><span itemprop="name">Buch-Entdeckungen</span></a></li>
+    <li class="nav__dropdown-item--has-label" data-label="Anzeige">
+        <a href="https://www.zeit.de/angebote/ecsite2022/index" itemprop="url"><span itemprop="name">Wissen schafft Erleben</span></a></li>
 
 </ul></li>
     <li class="nav__ressorts-item--wissen">
@@ -933,6 +949,10 @@
     <li class="nav__ressorts-item--schlagzeilen">
         <a href="https://www.zeit.de/news/index" itemprop="url"><span itemprop="name">Schlagzeilen</span></a></li>
     <li class="nav__ressorts-item--has-label" data-label="Anzeige">
+        <a href="https://www.zeit.de/angebote/mit-karte-bitte/podcast/index" itemprop="url"><span itemprop="name">Podcast: Alles was zahlt</span></a></li>
+    <li class="nav__ressorts-item--has-label" data-label="Anzeige">
+        <a href="https://cmk.zeit.de/cms/microsite/13636/wandel-nachhaltig-digital-verantwort-ungsvoll" itemprop="url"><span itemprop="name">Accenture: Wandel gestalten</span></a></li>
+    <li class="nav__ressorts-item--has-label" data-label="Anzeige">
         <a href="https://cmk.zeit.de/cms/hub/10991/13078/anzeige/hp-deutschland-gmbh-hp-inc" itemprop="url"><span itemprop="name">Remote Coach powered by HP</span></a></li>
     <li class="nav__ressorts-item--has-label" data-label="Anzeige">
         <a href="https://www.zeit.de/angebote/digitale-pioniere/index" itemprop="url"><span itemprop="name">Deutschlands Digitale Pioniere</span></a></li>
@@ -980,15 +1000,25 @@
                         <div class="summary">
                 
             </div>            <div class="metadata">
-                    <time datetime="2022-01-06T14:03:49+01:00" class="metadata__date encoded-date" data-obfuscated="Ni4gU2VwdGVtYmVyIDIwMDksIDExOjU4IFVocg==">6. Januar 2022, 14:03 Uhr</time>
+                    <span class="metadata__date" data-ct-row="date" data-ct-column="false">
+        <time datetime="2022-03-01T08:55:20+01:00">Aktualisiert am 1. März 2022, 8:55 Uhr</time>
 
-<time datetime="2022-01-06T14:03:49+01:00" class="metadata__date">Aktualisiert am 6. Januar 2022, 14:03 Uhr</time>
+        <details class="metadata__info">
+            <summary onBlur="if (this.parentNode.open) { this.parentNode.open = false }" data-ct-label="Information"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="svg-symbol metadata__info-icon" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Information"><title>Information</title><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg></summary>
+            <div class="metadata__info-content">
+                <div class="metadata__dates">
+                    <span class="encoded-date" data-obfuscated="VmVy9mZmZW50bGljaHQgYW0gNi4gU2VwdGVtYmVyIDIwMDksIDExOjU4IFVocg=="></span><br>
+                        </div>
+            </div>
+        </details>
+    </span>
 
 <button value="30ad765a-cc16-4b07-a04b-30580c0a0c09" class="bookmark-icon" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
             </div>
             </div>
+
     
 
             </header>
@@ -1007,9 +1037,9 @@
 </p>        <p class="paragraph article__item"><strong>REDAKTION ZEIT ONLINE</strong><br>
 </p>        <p class="paragraph article__item"><em>Chefredakteur und Mitglied der Chefredaktion DIE ZEIT<br></em><a class="" href="https://www.zeit.de/autoren/W/Jochen_Wegner/index" target="_blank">Jochen Wegner</a> (verantw. gem. §18 Abs. 2 MStV)
 </p>        <p class="paragraph article__item"><em>Stellvertretende Chefredakteurinnen und Chefredakteure</em><br><a class="" href="https://www.zeit.de/autoren/H/Markus_Horeld/index.xml" target="_blank">Markus Horeld</a>, <a class="" href="https://www.zeit.de/autoren/H/Sebastian_Horn/index.xml" target="_blank">Sebastian Horn</a>,  <a class="" href="https://www.zeit.de/autoren/S/Leonie_Seifert" target="_blank">Leonie Seifert</a>
-</p>        <p class="paragraph article__item"><em>Mitglieder der Chefredaktion</em><br><a class="" href="https://www.zeit.de/autoren/D/Christoph_Dowe/index.xml" target="_blank">Christoph Dowe</a> (Geschäftsf. Redakteur), <a class="" href="https://www.zeit.de/autoren/P/Monika_Pilath/index" target="_blank">Monika Pilath</a>
+</p>        <p class="paragraph article__item"><em>Mitglied der Chefredaktion</em><br><a class="" href="https://www.zeit.de/autoren/P/Monika_Pilath/index" target="_blank">Monika Pilath</a>
 </p>        <p class="paragraph article__item"><em>Redaktionsleitung</em><br><a class="" href="https://www.zeit.de/autoren/A/Sasan_Abdi-Herrle/index" target="_blank">Dr. Sasan Abdi-Herrle</a>, <a class="" href="https://www.zeit.de/autoren/H/Rieke_Havertz/index" target="_blank">Rieke Havertz</a>, <a class="" href="https://www.zeit.de/autoren/P/Monika_Pilath/index" target="_blank">Monika Pilath</a>, <a class="" href="https://www.zeit.de/autoren/S/Till_Schwarze/index" target="_blank">Till Schwarze</a>, <a class="" href="https://www.zeit.de/autoren/S/Michael_Stuerzenhofecker/index" target="_blank">Michael Stürzenhofecker</a>
-</p>        <p class="paragraph article__item"><em>Nachrichtenredaktion<br></em> <a class="" href="https://www.zeit.de/autoren/P/Monika_Pilath/index" target="_blank">Monika Pilath</a> (Leitung),  <a class="" href="https://www.zeit.de/autoren/M/Katharina_Miklis/index" target="_blank">Katharina Benninghoff</a> (CvD), <a class="" href="https://www.zeit.de/autoren/G/Karin_Geil/index.xml" target="_blank">Karin Geil</a> (CvD), <a class="" href="https://www.zeit.de/autoren/K/Sybille_Klormann" target="_blank">Sybille Klormann</a> (CvD), <a class="" href="https://www.zeit.de/autoren/L/Rita_Lauter/index" target="_blank">Dr. Rita Lauter</a> (CvD), <a class="" href="https://www.zeit.de/autoren/S/Katrin_Scheib/index" target="_blank">Katrin Scheib</a> (CvD),  <a class="" href="https://www.zeit.de/autoren/F/Angelika_Finkenwirth/index" target="_blank">Angelika Finkenwirth</a> (CvD), <a class="" href="https://www.zeit.de/autoren/A/Fabian_Albrecht/index" target="_blank">Fabian Albrecht</a>, <a class="" href="https://www.zeit.de/autoren/B/Philipp_Blanke/index" target="_blank">Philipp Blanke</a>, <a class="" href="https://www.zeit.de/autoren/E/Lisa-Marie_Eckardt/index" target="_blank">Lisa-Marie Eckardt</a>, <a class="" href="https://www.zeit.de/autoren/E/Alexander_Eydlin/index" target="_blank">Alexander Eydlin</a>, <a class="" href="https://www.zeit.de/autoren/G/Sarah-Lena_Grahn/index" target="_blank">Sarah Grahn</a>, <a class="" href="https://www.zeit.de/autoren/S/Anna-Lena_Schlitt/index" target="_blank">Anna-Lena Schlitt</a>, <a class="" href="https://www.zeit.de/autoren/S/Jona_Spreter/index" target="_blank">Jona Spreter</a>, <a class="" href="https://www.zeit.de/autoren/S/Johannes_Suessmann/index" target="_blank">Johannes Süßmann</a>, <a class="" href="https://www.zeit.de/autoren/T/Claudia_Thaler/index" target="_blank">Claudia Thaler</a>, <a class="" href="https://www.zeit.de/autoren/T/Ulrike_Tschirner/index" target="_blank">Ulrike Tschirner</a>, <a class="" href="https://www.zeit.de/autoren/W/Jan-Frederik_Wendt/index" target="_blank">Jan-Frederik Wendt</a><br>
+</p>        <p class="paragraph article__item"><em>Nachrichtenredaktion<br></em> <a class="" href="https://www.zeit.de/autoren/P/Monika_Pilath/index" target="_blank">Monika Pilath</a> (Leitung), <a class="" href="https://www.zeit.de/autoren/A/Fabian_Albrecht/index" target="_blank">Fabian Albrecht</a> (CvD), <a class="" href="https://www.zeit.de/autoren/M/Katharina_Miklis/index" target="_blank">Katharina Benninghoff</a> (CvD),  <a class="" href="https://www.zeit.de/autoren/G/Karin_Geil/index.xml" target="_blank">Karin Geil</a> (CvD), <a class="" href="https://www.zeit.de/autoren/F/Angelika_Finkenwirth/index" target="_blank">Angelika Finkenwirth</a> (CvD), <a class="" href="https://www.zeit.de/autoren/K/Sybille_Klormann" target="_blank">Sybille Klormann</a> (CvD), <a class="" href="https://www.zeit.de/autoren/L/Rita_Lauter/index" target="_blank">Dr. Rita Lauter</a> (CvD), <a class="" href="https://www.zeit.de/autoren/S/Katrin_Scheib/index" target="_blank">Katrin Scheib</a> (CvD), <a class="" href="https://www.zeit.de/autoren/S/Johannes_Suessmann/index" target="_blank">Johannes Süßmann</a> (CvD), <a class="" href="https://www.zeit.de/autoren/T/Claudia_Thaler/index" target="_blank">Claudia Thaler</a> (CvD), <a class="" href="https://www.zeit.de/autoren/T/Ulrike_Tschirner/index" target="_blank">Ulrike Tschirner</a> (CvD), <a class="" href="https://www.zeit.de/autoren/B/Philipp_Blanke/index" target="_blank">Philipp Blanke</a>, <a class="" href="https://www.zeit.de/autoren/E/Lisa-Marie_Eckardt/index" target="_blank">Lisa-Marie Eckardt</a>, <a class="" href="https://www.zeit.de/autoren/E/Alexander_Eydlin/index" target="_blank">Alexander Eydlin</a>, <a class="" href="https://www.zeit.de/autoren/G/Sarah-Lena_Grahn/index" target="_blank">Sarah Grahn</a>, <a class="" href="https://www.zeit.de/autoren/K/Alena_Kammer/index" target="_blank">Alena Kammer,</a> <a class="" href="https://www.zeit.de/autoren/S/Anna-Lena_Schlitt/index" target="_blank">Anna-Lena Schlitt</a>, <a class="" href="https://www.zeit.de/autoren/S/Jona_Spreter/index" target="_blank">Jona Spreter</a>, <a class="" href="https://www.zeit.de/autoren/Z/Konstantin_Zimmermann/index" target="_blank">Konstantin Zimmermann</a><br>
 </p>        <p class="paragraph article__item"><em>Redakteur für besondere Aufgaben<br></em><a class="" href="https://www.zeit.de/autoren/F/Philip_Faigle/index.xml" target="_blank">Philip Faigle</a>
 </p>        <p class="paragraph article__item"><em>Textchefin<br></em><a class="" href="https://www.zeit.de/autoren/D/Meike_Duelffer/index" target="_blank">Meike Dülffer</a> 
 </p>        <p class="paragraph article__item"><em>Politik, Wirtschaft und Gesellschaft<br></em><a class="" href="https://www.zeit.de/autoren/G/Marcus_Gatzke/index.xml" target="_blank">Marcus Gatzke</a> (Leitung), <a class="" href="https://www.zeit.de/autoren/G/Ileana_Grabitz/index" target="_blank">Ileana Grabitz</a> (Leitung), <a class="" href="https://www.zeit.de/autoren/C/Lisa_Caspari/index.xml" target="_blank">Lisa Caspari</a> (stellv. Leitung), <a class="" href="https://www.zeit.de/autoren/U/Marlies_Uken/index.xml" target="_blank">Marlies Uken</a> (stellv. Leitung), <a class="" href="https://www.zeit.de/autoren/T/Frida_Thurm/index.xml" target="_blank">Frida Thurm</a> (verantw. Gesellschaft), <a class="" href="https://www.zeit.de/autoren/B/Christian_Bangel/index.xml" target="_blank">Christian Bangel</a>, <a class="" href="https://www.zeit.de/autoren/B/Manuel_Bogner/index" target="_blank">Manuel Bogner</a>, <a class="" href="https://www.zeit.de/autoren/G/Simone_Gaul/index" target="_blank">Simone Gaul</a>, <a class="" href="https://www.zeit.de/autoren/G/Soeren_Goetz/index" target="_blank">Sören Götz</a>,  <a class="" href="https://www.zeit.de/autoren/G/Tina_Groll/index.xml" target="_blank">Tina Groll</a>, <a class="" href="https://www.zeit.de/autoren/H/Rieke_Havertz/index" target="_blank">Rieke Havertz</a> (Internationale Korrespondentin), <a class="" href="https://www.zeit.de/autoren/I/Jurik-Caspar_Iser/index" target="_blank">Jurik Caspar Iser</a>, <a class="" href="https://www.zeit.de/autoren/J/Lenz_Jacobsen/index.xml" target="_blank">Lenz Jacobsen</a> (Demokratie), <a class="" href="https://www.zeit.de/autoren/K/Lena_Klimkeit/index" target="_blank">Lena Klimkeit</a>, <a class="" href="https://www.zeit.de/autoren/L/Judith_Luig/index" target="_blank">Judith Luig</a> (Schule), <a class="" href="https://www.zeit.de/autoren/L/Carsten_Luther/index" target="_blank">Carsten Luther</a>, <a class="" href="https://www.zeit.de/autoren/O/Ferdinand_Otto/index" target="_blank">Ferdinand Otto</a>, <a class="" href="https://www.zeit.de/autoren/R/Steffen_Richter/index.xml" target="_blank">Steffen Richter</a>, <a class="" href="https://www.zeit.de/autoren/R/Johanna_Roth/index" target="_blank">Johanna Roth</a>, <a class="" href="https://www.zeit.de/autoren/S/Parvin_Sadigh/index.xml" target="_blank">Parvin Sadigh</a>, <a class="" href="https://www.zeit.de/autoren/S/Michael_Schlieben/index.xml" target="_blank">Dr. Michael Schlieben</a> (Politischer Korrespondent), <a class="" href="https://www.zeit.de/autoren/S/Katharina_Schuler/index.xml" target="_blank">Katharina Schuler</a>, <a class="" href="https://www.zeit.de/autoren/S/Tilman_Steffen-2/index" target="_blank">Tilman Steffen</a>, <a class="" href="https://www.zeit.de/autoren/V/Christian_Vooren/index" target="_blank">Christian Vooren</a>, <a class="" href="https://www.zeit.de/autoren/Z/Zacharias_Zacharakis/index.xml" target="_blank">Zacharias Zacharakis</a> (Unternehmen)
@@ -1024,14 +1054,14 @@
 </p>        <p class="paragraph article__item"><em>Ressort X</em><br><a class="" href="https://www.zeit.de/autoren/F/Philip_Faigle/index.xml" target="_blank">Philip Faigle</a> (Leitung), <a class="" href="https://www.zeit.de/autoren/D/Philipp_Daum/index" target="_blank">Philipp Daum</a>, <a class="" href="https://www.zeit.de/autoren/M/Yasmine_MBarek/index" target="_blank">Yasmine M'Barek</a>, <a class="" href="https://www.zeit.de/autoren/S/Annabelle_Seubert/index" target="_blank">Annabelle Seubert</a>, <a class="" href="https://www.zeit.de/autoren/V/Vanessa_Vu/index" target="_blank">Vanessa Vu</a>
 
 </p>        <p class="paragraph article__item"><em>Podcasts</em><br><a class="" href="https://www.zeit.de/autoren/P/Ole_Pflueger/index" target="_blank">Ole Pflüger</a> (Leitung), <a class="" href="https://www.zeit.de/autoren/M/Mounia_Meiborg/Mounia_Meiborg" target="_blank">Mounia Meiborg</a> (stellv. Leitung), <a class="" href="https://www.zeit.de/autoren/C/Jannis_Carmesin" target="_blank">Jannis Carmesin</a>, <a class="" href="https://www.zeit.de/autoren/G/Simone_Gaul/index" target="_blank">Simone Gaul</a>, <a class="" href="https://www.zeit.de/autoren/L/Rita_Lauter/index" target="_blank">Dr. Rita Lauter</a>, <a class="" href="https://www.zeit.de/autoren/R/Pia_Rauschenberger/index" target="_blank">Pia Rauschenberger</a>, <a class="" href="https://www.zeit.de/autoren/S/Fabian_Scheler/index" target="_blank">Fabian Scheler</a>
-</p>        <p class="paragraph article__item"><em>ZEITmagazin ONLINE, Wochenmarkt, Entdecken, Familie, Sinn</em><br><a class="" href="https://www.zeit.de/autoren/B/Carmen_Boeker/index" target="_blank">Carmen Böker</a> (Leitung), <a class="" href="https://www.zeit.de/autoren/B/Carla_Baum/index" target="_blank">Carla Baum</a> (stellv. Leitung), <a class="" href="https://www.zeit.de/autoren/B/Katrin_Blum/index" target="_blank">Katrin Blum</a>, <a class="" href="https://www.zeit.de/autoren/E/Johannes_Ehrmann/index" target="_blank">Johannes Ehrmann</a>, <a class="" href="https://www.zeit.de/autoren/F/Juliane_Frisse/index" target="_blank">Juliane Frisse</a>, <a class="" href="https://www.zeit.de/autoren/H/Wenke_Husmann/index.xml" target="_blank">Wenke Husmann</a>, <a class="" href="https://www.zeit.de/autoren/J/Laura-Sophie_Jung/index" target="_blank">Laura Sophie Jung</a>, <a class="" href="https://www.zeit.de/autoren/K/Matthias_Kirsch/index" target="_blank">Matthias Kirsch</a>, <a class="" href="https://www.zeit.de/autoren/K/Wlada_Kolosowa/index.xml" target="_blank">Wlada Kolosowa</a>, <a class="" href="https://www.zeit.de/autoren/K/Alexander_Krex" target="_blank">Alexander Krex</a>, <a class="" href="https://www.zeit.de/autoren/L/Hannes_Leitlein/index" target="_blank">Hannes Leitlein</a>,  <a class="" href="https://www.zeit.de/autoren/P/Jakob_Pontius/index" target="_blank">Jakob Pontius</a>, <a class="" href="https://www.zeit.de/autoren/R/Caroline_Rosales/index" target="_blank">Caroline Rosales</a>, <a class="" href="https://www.zeit.de/autoren/T/Sara_Tomsic/index" target="_blank">Sara Tomšić</a>, <a class="" href="https://www.zeit.de/autoren/W/Fiona_Weber-Steinhaus/index" target="_blank">Fiona Weber-Steinhaus</a>, <a class="" href="https://www.zeit.de/autoren/Z/Milena_Zwerenz/index" target="_blank">Milena Zwerenz</a>  <br>
+</p>        <p class="paragraph article__item"><em>ZEITmagazin ONLINE, Wochenmarkt, Entdecken, Familie, Sinn</em><br><a class="" href="https://www.zeit.de/autoren/B/Carmen_Boeker/index" target="_blank">Carmen Böker</a> (Leitung), <a class="" href="https://www.zeit.de/autoren/B/Carla_Baum/index" target="_blank">Carla Baum</a> (stellv. Leitung), <a class="" href="https://www.zeit.de/autoren/B/Katrin_Blum/index" target="_blank">Katrin Blum</a>, <a class="" href="https://www.zeit.de/autoren/E/Johannes_Ehrmann/index" target="_blank">Johannes Ehrmann</a>, <a class="" href="https://www.zeit.de/autoren/F/Juliane_Frisse/index" target="_blank">Juliane Frisse</a>, <a class="" href="https://www.zeit.de/autoren/H/Wenke_Husmann/index.xml" target="_blank">Wenke Husmann</a>, <a class="" href="https://www.zeit.de/autoren/J/Laura-Sophie_Jung/index" target="_blank">Laura Sophie Jung</a>, <a class="" href="https://www.zeit.de/autoren/K/Matthias_Kirsch/index" target="_blank">Matthias Kirsch</a>, <a class="" href="https://www.zeit.de/autoren/K/Wlada_Kolosowa/index.xml" target="_blank">Wlada Kolosowa</a>, <a class="" href="https://www.zeit.de/autoren/K/Alexander_Krex" target="_blank">Alexander Krex</a>, <a class="" href="https://www.zeit.de/autoren/L/Hannes_Leitlein/index" target="_blank">Hannes Leitlein</a>, Celina Plag,  <a class="" href="https://www.zeit.de/autoren/P/Jakob_Pontius/index" target="_blank">Jakob Pontius</a>, <a class="" href="https://www.zeit.de/autoren/R/Caroline_Rosales/index" target="_blank">Caroline Rosales</a>, <a class="" href="https://www.zeit.de/autoren/T/Sara_Tomsic/index" target="_blank">Sara Tomšić</a>, <a class="" href="https://www.zeit.de/autoren/W/Fiona_Weber-Steinhaus/index" target="_blank">Fiona Weber-Steinhaus</a>, <a class="" href="https://www.zeit.de/autoren/Z/Milena_Zwerenz/index" target="_blank">Milena Zwerenz</a>  <br>
 </p>        <p class="paragraph article__item"><em>Arbeit </em><br><a class="" href="https://www.zeit.de/autoren/S/Anne-Katrin_Schade/index" target="_blank">Anne-Katrin Schade </a>(Leitung), <a class="" href="https://www.zeit.de/autoren/B/Jana-Gioia_Baurmann/index" target="_blank">Jana Baurmann</a>, <a class="" href="https://www.zeit.de/autoren/G/David_Gutensohn/index" target="_blank">David Gutensohn</a>, <a class="" href="https://www.zeit.de/autoren/H/Christine_Haas/index" target="_blank">Christine Haas</a>, <a class="" href="https://www.zeit.de/autoren/S/Hannah_Scherkamp/index" target="_blank">Hannah Scherkamp</a>, <a class="" href="https://www.zeit.de/autoren/S/Daniel_Sander/index" target="_blank">Daniel Sander</a>
 </p>        <p class="paragraph article__item"><em>Wochenende</em><br><a class="" href="https://www.zeit.de/autoren/H/Maris_Hubschmid" target="_blank">Maris Hubschmid</a> (Leitung), <a class="" href="https://www.zeit.de/autoren/M/Viktoria_Morasch/index" target="_blank">Viktoria Morasch</a>, <a class="" href="https://www.zeit.de/autoren/O/Friederike_Oertel/index" target="_blank">Friederike Oertel</a>, <a class="" href="https://www.zeit.de/autoren/S/Michael_Schock/index" target="_blank">Michael Schock</a>
 </p>        <p class="paragraph article__item"><em>ZEIT Campus ONLINE</em><br><a class="" href="https://www.zeit.de/autoren/F/Amna_Franzke/index" target="_blank">Amna Franzke</a> (verantw.), <a class="" href="https://www.zeit.de/autoren/K/Martina_Kix" target="_blank">Martina Kix</a> (verantw.) (P), <a class="" href="https://www.zeit.de/autoren/D/Berit_Diesselkaemper/index" target="_blank">Berit Dießelkämper</a>, <a class="" href="https://www.zeit.de/autoren/F/Christoph_Farkas/index" target="_blank">Christoph Farkas</a> (P), <a class="" href="https://www.zeit.de/autoren/M/Katharina_Meyer-zu-Eppendorf/index" target="_blank">Katharina Meyer zu Eppendorf </a>(P), <a class="" href="https://www.zeit.de/autoren/P/Nina_Piatscheck/index" target="_blank">Nina Piatscheck </a>(P), <a class="" href="https://www.zeit.de/autoren/S/Cathrin_Schmiegel/index" target="_blank">Cathrin Schmiegel</a> (P), <a class="" href="https://www.zeit.de/autoren/T/Theresa_Troendle/index" target="_blank">Theresa Tröndle</a> (P) <br>
 </p>        <p class="paragraph article__item"><em>ze.tt</em><br><a class="" href="https://www.zeit.de/autoren/H/Tessa_Hoegele/index" target="_blank">Tessa Högele</a> (verantw.), <a class="" href="https://www.zeit.de/autoren/K/Philipp_Kienzl/index" target="_blank">Philipp Kienzl</a>, <a class="" href="https://www.zeit.de/autoren/K/Elif_Kuecuek/index" target="_blank">Elif Kücük</a> (Editorial Design), <a class="" href="https://www.zeit.de/autoren/M/Nina_Monecke/index" target="_blank">Nina Monecke</a>, <a class="" href="https://www.zeit.de/autoren/P/Celia_Parbey/index" target="_blank">Celia Parbey</a> <br>
 </p>        <p class="paragraph article__item"><em>Green</em><br><a class="" href="https://www.zeit.de/autoren/J/Luisa_Jacobs/index" target="_blank">Luisa Jacobs</a> (verantw.), <a class="" href="https://www.zeit.de/autoren/F/Ruth_Fend/index.xml" target="_blank">Ruth Fend</a>, <a class="" href="https://www.zeit.de/autoren/S/Manuel_Stark/index" target="_blank">Manuel Stark</a>    <br>
 </p>        <p class="paragraph article__item"><em>Sport<br></em><a class="" href="https://www.zeit.de/autoren/S/Christian_Spiller/index.xml" target="_blank">Christian Spiller</a> (Leitung), <a class="" href="https://www.zeit.de/autoren/D/Steffen_Dobbert/index.xml" target="_blank">Steffen Dobbert</a>, <a class="" href="https://www.zeit.de/autoren/F/Oliver_Fritsch/index.xml" target="_blank">Oliver Fritsch</a>, <a class="" href="https://www.zeit.de/autoren/H/Nico_Horn/index" target="_blank">Nico Horn</a>, <a class="" href="https://www.zeit.de/autoren/S/Fabian_Scheler/index" target="_blank">Fabian Scheler</a>
-</p>        <p class="paragraph article__item"><em>Video</em><br>Max Boenke (Leitung), <a class="" href="https://www.zeit.de/autoren/G/Dilan_Gropengiesser/index" target="_blank">Dilan Gropengiesser</a> (stellv. Leitung), <a class="" href="https://www.zeit.de/autoren/B/Poliana_Baumgarten/index" target="_blank">Poliana Baumgarten</a>, <a class="" href="https://www.zeit.de/autoren/B/Claudia_Bracholdt/index" target="_blank">Claudia Bracholdt</a>, Nicolas Grone, <a class="" href="https://www.zeit.de/autoren/P/Adrian_Pohr/index.xml" target="_blank">Adrian Pohr</a>, <a class="" href="https://www.zeit.de/autoren/W/Ren_Wiesenthal/index" target="_blank">René Wiesenthal</a>, <a class="" href="https://www.zeit.de/autoren/W/Sven_Wolters/index" target="_blank">Sven Wolters</a>
+</p>        <p class="paragraph article__item"><em>Video</em><br>Max Boenke (Leitung), <a class="" href="https://www.zeit.de/autoren/G/Dilan_Gropengiesser/index" target="_blank">Dilan Gropengiesser</a> (stellv. Leitung), <a class="" href="https://www.zeit.de/autoren/B/Poliana_Baumgarten/index" target="_blank">Poliana Baumgarten</a>, <a class="" href="https://www.zeit.de/autoren/B/Claudia_Bracholdt/index" target="_blank">Claudia Bracholdt</a>, <a class="" href="https://www.zeit.de/autoren/G/Nicols-Pablo_Grone/index" target="_blank">Nicolas Grone</a>, <a class="" href="https://www.zeit.de/autoren/P/Adrian_Pohr/index.xml" target="_blank">Adrian Pohr</a>, <a class="" href="https://www.zeit.de/autoren/W/Ren_Wiesenthal/index" target="_blank">René Wiesenthal</a>, <a class="" href="https://www.zeit.de/autoren/W/Sven_Wolters/index" target="_blank">Sven Wolters</a>
 </p>        <p class="paragraph article__item"><em>Autorinnen und Autoren</em><br><a class="" href="https://www.zeit.de/autoren/H/Christiane-von_Hardenberg/index" target="_blank">Christiane von Hardenberg</a>, <a class="" href="https://www.zeit.de/autoren/H/Jana_Hensel/index.xml" target="_blank">Jana Hensel</a>, <a class="" href="https://www.zeit.de/autoren/K/Hasnain_Kazim/index" target="_blank">Hasnain Kazim</a>, <a class="" href="https://www.zeit.de/autoren/K/Mely_Kiyak/index.xml" target="_blank">Mely Kiyak</a>, <a class="" href="https://www.zeit.de/autoren/P/Alan_Posener/index" target="_blank">Alan Posener</a>, <a class="" href="https://www.zeit.de/autoren/R/Doreen_Reinhard/index" target="_blank">Doreen Reinhard</a>, <a class="" href="https://www.zeit.de/autoren/R/Rezo/index" target="_blank">Rezo</a>
 </p>        <p class="paragraph article__item"><em>Daten und Visualisierung<br></em><a class="" href="https://www.zeit.de/autoren/T/Julius_Troeger/index" target="_blank">Julius Tröger</a> (Leitung), <a class="" href="https://www.zeit.de/autoren/B/Paul_Blickle" target="_blank">Paul Blickle</a>, <a class="" href="https://www.zeit.de/autoren/E/Annick_Ehmann/index" target="_blank">Annick Ehmann</a>, <a class="" href="https://www.zeit.de/autoren/E/Christian_Endt/index" target="_blank">Christian Endt </a>(Senior Data Journalist), <a class="" href="https://www.zeit.de/impressum/index" target="_blank">Julian Stahnke</a>
 </p>        <p class="paragraph article__item"><em>Design<br></em>Christian Bart (Lead Designer), Adele Ogiermann<br>
@@ -1062,7 +1092,7 @@
 </p>        <p class="paragraph article__item"><em>Engineering<br></em><a class="" href="https://www.zeit.de/autoren/D/ron-drongowski" target="_blank">Ron Drongowski (Director)</a>, Nico Brünjes (Head of), Tom Lazar (Head of), Thomas Puppe (Head of), <a class="" href="https://www.zeit.de/autoren/S/stephan-scheying" target="_blank">Stephan Scheying</a> (Head of), Jan-Paul Bauer, Thomas Baumann, Luis Becker, Daniel Boggasch, Louisa von Hülsen, Dominik Hoppe, Tobias Kabbeck, Daniel Kreitschmann, Niels Oehlenschläger, Hennes Römmer, Wolfgang Schnerring, Norman Stetter, Moritz Stoltenburg, Andreas Wieczorreck, Andreas Zeidler
 </p>        <p class="paragraph article__item"><em>Paid Content<br></em>Mareike Birkhahn (Director), Sascha Bossen (Head of), Malte Hennemann (Head of), Claudia Kochanek, Katharina Krieger, Deniz Özdemir, Philipp Rapp, Julia Schmiedeberg, Ulrike Wickert
 </p>        <p class="paragraph article__item"><em>Producing<br></em>
-Julia Cruz (Director), Lena Bischoff (Head of), Juan Alvarez Moreno, Mehrnaz Aref,  Julia Braune, Jeanette Dalkmann, Matthias Elze, Eva Hoerpel, Valerie Kaiser, Julia Schmiedeberg, Lisa Valentin
+Julia Cruz (Director), Lena Bischoff (Head of), Juan Alvarez Moreno, Mehrnaz Aref, Julia Braune, Jeanette Dalkmann, Matthias Elze, Stefan Grüll, Eva Hoerpel, Valerie Kaiser, Julia Schmiedeberg, Lisa Valentin
 </p>        <p class="paragraph article__item"><em>Product Development<br></em>Thorsten Pannen (Director), Svenja Rateike (Head of), Imke Weerts (Head of), Anna Feuchtinger, Jannik Golek, Pia Köster<br>
 </p>        <p class="paragraph article__item"><em>Recruiting &amp; Talent Solutions<br></em>Dirk Mussenbrock (Director), Mathilde Cabenda (Head of), Svea Dethloff, Sina Mötzing, Jill Nachtigall, Saskia Weiß, Sophie Ebert, Sophie Hoffmann<br>
 </p>        <p class="paragraph article__item"><em>Technical Project Management<br></em>Stefan Ehlers, Sonja Weigold
@@ -1084,15 +1114,15 @@ verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.
 Streitschlichtungsverfahren vor einer Verbraucherschlichtungsstelle 
 nicht verpflichtet sind und an einem Streitbeilegungsverfahren vor einer
  Verbraucherschlichtungsstelle nicht teilnehmen.
-</p>
-</div>
+</p></div>
                                     <nav class="article-pagination article__item" aria-labelledby="article-pagination-title" data-ct-area="article-pager" data-ct-row="page_1_of_1" data-ct-column="false">
     <h3 class="visually-hidden" id="article-pagination-title">Seitennavigation</h3>
 
-                <a class="article-pagination__link" href="https://www.zeit.de/index" data-ct-label="Startseite">
+            <a class="article-pagination__link" href="https://www.zeit.de/index" data-ct-label="Startseite">
             <span class="article-pagination__button article-pagination__button--next">Startseite</span>
-        </a>    
+        </a>
     </nav>
+<div data-vt-parameter="article.end...view" data-vt-link-id="#article-end"></div>
 
                 
         </div>
@@ -1417,11 +1447,11 @@ nicht verpflichtet sind und an einem Streitbeilegungsverfahren vor einer
     
     <!-- popover -->
     
-    <script src="https://static.zeit.de/p/zeit.web/js/mausabhaengigeszaehlinstrument.874ac05ef198cd09e8cb.js" async></script>
-    <script src="https://static.zeit.de/p/zeit.web/js/images.71dcbd5609a06533a96d.js" async></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/mausabhaengigeszaehlinstrument.e0d2464c275212f2acb6.js" async></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/images.94e661e927624d4ca428.js" async></script>
 
-    <script src="https://static.zeit.de/p/zeit.web/js/promise.9472eaf6a943f5f06679.js" nomodule defer></script>
-    <script src="https://static.zeit.de/p/zeit.web/js/site.fddfa9c3565b327bc6e6.js" defer></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/promise.d3aeb3fa22c2d515fcca.js" nomodule defer></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/site.d37687e24a5cde4b8650.js" defer></script>
 
     <script>
     if ( 'serviceWorker' in window.navigator ) {
@@ -1482,8 +1512,8 @@ window.Zeit.loadJS( 'https://scripts.zeit.de/static/js/webtrekk/webtrekk_v4.5.3.
             2: "administratives/bild-text",
             3: "1/1",
             4: "administratives;administratives",
-            5: "2022-01-06 14:03:49.644460+01:00",
-            6: "9345",
+            5: "2022-03-01 08:55:20.906906+01:00",
+            6: "9342",
             8: "zede",
             9: "zeit-verlag/article",
             10: "no",
@@ -1500,7 +1530,6 @@ window.Zeit.loadJS( 'https://scripts.zeit.de/static/js/webtrekk/webtrekk_v4.5.3.
             38: "undefined",
             40: "undefined",
             49: "30ad765a-cc16-4b07-a04b-30580c0a0c09",
-            36: "abtest_paywall_euro",
             44: "ungeampt"
             };
 
@@ -1518,7 +1547,7 @@ window.Zeit.loadJS( 'https://scripts.zeit.de/static/js/webtrekk/webtrekk_v4.5.3.
 
         
         wt.customParameter[23] = 'nicht_angemeldet';
-        wt.customParameter[46] = 'false';
+        wt.customParameter[46] = window.Zeit.cookieRead('zonconsent') ? 'false' : 'undefined';
 
         if ( window.Zeit.user ) {
             if ( window.Zeit.user.ssoid ) {

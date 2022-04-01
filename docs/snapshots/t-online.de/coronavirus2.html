@@ -40,7 +40,7 @@
 <meta http-equiv="content-script-type" content="text/javascript" />
 <title>Coronavirus in Deutschland und der Welt: Alle News und Informationen</title>
 <script type="text/javascript">/*<![CDATA[*/
-var T = {T0:(new Date()).getTime(), EGO:'toi', MP:2, SN:2, ID:87559708, EWA:false, AJ:false, TI:87624304, SLIN:1, STH:1, disableAdblockLayer:0, PN:'Corona-Krise', PORT:1, GAME:0, ART:0, ASTCK:0, SCRIBBLE:0, MZT:0, VIDEO:0, AS:0, GL:0, RECIPE:0, PRE:0, KG:'11060000', DMN:'.t-online.de', DCL:1, R0:'https://www.t-online.de/nachrichten/id_12358564/tid_ajax_empty/politik-aktuell-nachrichten-aus-deutschland-europa-und-der-welt.html', STATION_ID: "K11000000", SVO: false,  PA:'/nachrichten/panorama/coronavirus/00-startseite/fp-politik-panorama-coronavirus', TPD:'https://www.t-online.de', TS:1646097989}, TMS = {IVW:['https://','toi.ivwbox.de/cgi-bin/ivw/','CP']};
+var T = {T0:(new Date()).getTime(), EGO:'toi', MP:2, SN:2, ID:87559708, EWA:false, AJ:false, TI:87624304, SLIN:1, STH:1, disableAdblockLayer:0, PN:'Corona-Krise', PORT:1, GAME:0, ART:0, ASTCK:0, SCRIBBLE:0, MZT:0, VIDEO:0, AS:0, GL:0, RECIPE:0, PRE:0, KG:'11060000', DMN:'.t-online.de', DCL:1, R0:'https://www.t-online.de/nachrichten/id_12358564/tid_ajax_empty/politik-aktuell-nachrichten-aus-deutschland-europa-und-der-welt.html', STATION_ID: "K11000000", SVO: false,  PA:'/nachrichten/panorama/coronavirus/00-startseite/fp-politik-panorama-coronavirus', TPD:'https://www.t-online.de', TS:1648778063}, TMS = {IVW:['https://','toi.ivwbox.de/cgi-bin/ivw/','CP']};
 /*]]>*/</script>
 
 
@@ -162,9 +162,7 @@ function setTestVariation(testVariation, cKey, days) {
       var testvariation = getTestVariation('consent');
       if(!testvariation) {
          var cases = {
-            "2021-12-13-cmp-test-pur-4-C" : 20,
-            "2021-12-13-cmp-test-pur-4-B" : 20,
-            "2021-12-13-cmp-test-pur-4-A" : 60
+            "2022-03-21-cmp-pur-5-A" : 100
          }
          testvariation = weightedRandom(cases);
       }
@@ -1062,18 +1060,6 @@ if(typeof consentManager === 'undefined') {
     'placehtext': '<p class="TConsentEmbed-Text">Wir benötigen Ihre Zustimmung, um den von unserer Redaktion eingebundenen externen Inhalt unseres Dienstleisters Famobi GmbH anzuzeigen. Sie können diesen (und damit auch alle weiteren externen Inhalte von Famobi GmbH auf t-online) mit einem Klick anzeigen lassen und auch wieder deaktivieren.</p>  <div class="TConsentEmbedSwitchToggle">   <div class="TConsentEmbedSwitchToggleContainer">      <label class="switch">        <input type="checkbox">        <span class="slider"></span>      </label>    </div>    <p>Famobi Inhalte immer anzeigen</p> ',
     'providers': ['Famobi GmbH', 'famobi gmbh']
   },
-  'wordle': {
-    'extraConsent': true,
-    'vendor': 'wordleat',
-    'label': 'WORDLE',
-    'providers': ['Wordle.at', 'wordleat']
-  },
-  'teamdeuschland': {
-    'extraConsent': true,
-    'vendor': 'teamdeuschland',
-    'label': 'Olympia Team Deutschland',
-    'providers': ['teamdeutschland']
-  },
   'glomex': {
     'vendor': '5eb9779c2a005a254474efde',
     'label': 'Glomex Videoplayer',
@@ -1421,12 +1407,44 @@ if ( typeof consentManager === 'undefined' ) {
 
 <script>
   var googleConsentCookie = typeof TgC == 'function' ? TgC('TconsentStateV755') : 'no-consent-state';
+  // Loginbox message handler (ENGAGE-362)
+  var mailloginstate = 'no mail-login-state';
+  if ( localStorage.getItem( 'nonolobostat' ) ) mailloginstate = localStorage.getItem( 'nonolobostat' );
+
+  window.addEventListener("message", function(ev) {
+    // Do we trust the sender of this message?
+    if (ev.origin !== "https://www.t-online.de" || typeof ev.data != 'string')
+      return;
+
+    // ev.source is window.opener
+    // ev.data is "Loginbox:Status:[not-logged-in|loggedin|loggedin-firstview]"
+    if ( loginstate=ev.data.match(/Loginbox:Status:(.*)/) ) {
+      switch( loginstate[1] ) {
+        case 'not-logged-in':
+          dataLayer.push({'mailLoginState' : 'logged-out'});
+          break;
+        case 'loggedin':
+          dataLayer.push({'mailLoginState' : 'logged-in'});
+          break;
+        case 'loggedin-firstview':
+          dataLayer.push({'mailLoginState' : 'logged-in_first_view'});
+          break;
+        default:
+          break;
+      }
+    }
+  });
 </script>
 <script>
-var obVariation = null
+var obVariation = null;
+var betaBlacklisted = null;
 if (typeof TgC !== 'function' ||  !TgC('tbremmxxi')); 
-else if (TgC('tbremmxxi') == 'rd' ) obVariation = "beta";
-else if (TgC('tbremmxxi').substr(0,2) == 'bl' ) obVariation = "live"; ; 
+else if (TgC('tbremmxxi').substr(0,2) == 'rd' ) obVariation = "beta";
+else if (TgC('tbremmxxi').substr(0,2) == 'bl' ) obVariation = "live";
+else if (TgC('tbremmxxi').substr(0,2) == 'bk' ) {
+  obVariation = "live";
+  betaBlacklisted = 1;
+};
 </script>
 <script>
   if ( ! googleConsentCookie ) googleConsentCookie = 'no-consent-state';
@@ -1473,8 +1491,10 @@ dataLayer = [{
 'testVariation':    getTestVariation(),
 'testVariationCMS': getTestVariation(true),
 'consentStateV755': googleConsentCookie,
-'consentVariant':   getTestVariation('consent'), 
-'obVariation' : obVariation
+'consentVariant':   getTestVariation('consent'),
+'betaBlacklisted' : betaBlacklisted,
+'obVariation' : obVariation,
+'mailLoginState' : mailloginstate
 
 }];
 
@@ -1623,7 +1643,7 @@ IM.GlobalAdTag.register = function (){
  <meta name="scc_messung" content="true" />
 <meta name="referrer" content="unsafe-url">
 
-<link rel="stylesheet" type="text/css" href="https://stats.t-online.de/rl13-726-css/id_63141836/tid_css/index_ts37963834090.css" />
+<link rel="stylesheet" type="text/css" href="https://stats.t-online.de/rl13-726-css/id_63141836/tid_css/index_ts78763141836.css" />
 <script>
   var _smartWaiter = function (selector, callback) {
   function _requestFunction() {
@@ -1689,7 +1709,7 @@ perfMarksDealer.start();
 
 
 </script>
-<script type="text/javascript" src="https://stats.t-online.de/rl13-js-537/id_63608454/tid_js/index_ts686360170.js"></script>
+<script type="text/javascript" src="https://stats.t-online.de/rl13-js-537/id_63608454/tid_js/index_ts6764609914.js"></script>
 <!--<script>!function(){var e;try{e=top.location.href}catch(t){e=document.referrer||location.href}var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.setAttribute("rel","preload"),t.setAttribute("as","script"),t.src="//d.nativendo.de/cds/delivery/init?url="+e;var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r)
 var t1=document.createElement("script");t1.type="text/javascript",t1.async=!0,t1.setAttribute("rel","preconnect"),t1.setAttribute("as","script"),t1.src="//d.nativendo.de/cds/delivery/init?url="+e;var r1=document.getElementsByTagName("script")[1];r1.parentNode.insertBefore(t1,r1)
 }();console.log("PER");
@@ -1818,7 +1838,7 @@ if(typeof consentManager !== 'undefined') {
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P9FVTRJ"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) --><div id="Tstart"><a id="top" name="top"></a></div>
-<script type="text/javascript">/*<![CDATA[*/TfA();/*]]>*/</script><div id="Tstat"><script type="text/javascript">/*<![CDATA[*/ var par=T.PA.split(/\//);
+<script type="text/javascript">/*<![CDATA[*/TfA();/*]]>*/</script><div id="Tstat"><script type="text/javascript">/*<![CDATA[*/  var par=T.PA.split(/\//);
     if (typeof T.MP == U) T.MP=3;
     var KGnG="",pls=0;
     var trsl8m = { 
@@ -1829,8 +1849,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
        'Ä' : 'Ae', 
        'Ü' : 'Ue', 
        'ß' : 'ss' 
-     };
-    var st='toi';  var sv = (T.ID==46 || T.ID==71040302) ? 'ke' : 'in';  for(i=0; i < par.length && pls < T.MP; i++){
+     }; 
+for(i=0; i < par.length && pls < T.MP; i++){
       if(par[i] && par[i] != '' && par[i].indexOf('ar-') < 0 && par[i].indexOf('fp-') < 0 && par[i].indexOf('p_') < 0) { 
         KGnG+='/'+TTrsl8Char( par[i], trsl8m ); 
         pls++; 
@@ -1842,10 +1862,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       else if (xtcustom.cms_doc_types.indexOf('Fotoshow_spiele')>-1) KGnG+='/fs';
       else if (xtcustom.cms_doc_types.indexOf('Artikelshow')>-1) KGnG+='/as';
       else if (T.DCL == 0 && xtcustom.cms_doc_types.indexOf('Video')>-1) KGnG+='/vd';
-    }
-
-    var iam_data = {st:st, sv:sv, co:"kommentar", sc:"yes"}; 
-    iam_data[ T.PRE ? 'xp' : 'cp' ] = KGnG;  iom.c(iam_data); /*]]>*/</script>
+    } 
+/*]]>*/</script>
 
 <!-- Script Konfiguration Measurement Manager -->
 <script type='text/javascript'>
@@ -1853,13 +1871,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
      IOMm('configure',
       { 
        st: 'mobtoi',
-       dn: 'data-1df8532686.t-online.de'
+       dn: 'data-1df8532686.t-online.de',
+       mh:5
       });
     } else {
     IOMm('configure',
       { 
        st: 'toi',
-       dn: 'data-501446ac98.t-online.de'
+       dn: 'data-501446ac98.t-online.de',
+       mh:5
       });
     }
  </script>
@@ -1867,11 +1887,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
  <!-- Anfang Pageview -->
 <script type='text/javascript'>
-  IOMm('pageview',
-  { 
-   cp: KGnG,
-   co: 'kommentar'
-  });
+  var ptca = '';
+  if(T.PRE){ ptca = 'xp';} else { ptca = 'cp'; }
+    IOMm('pageview',
+    { 
+      pt: ptca,
+      cp: KGnG,
+      co: 'kommentar'
+    });
 </script>
  <!-- Ende Pageview -->
 
@@ -2058,7 +2081,7 @@ Lotto </a> </div>
   <ul class="Tnextnav1">  <li><a href="https://www.t-online.de">Home</a></li>  <li  class="Tnnak "> <a href="https://www.t-online.de/nachrichten/">Politik</a> </li>  <li > <a href="https://www.t-online.de/nachrichten/ausland/id_91726686/ukraine-krieg-alle-infos-zum-konflikt-und-der-aktuellen-lage-im-kriegsgebiet.html">Ukraine</a> </li>  <li > <a href="https://www.t-online.de/coronavirus-news-ratgeber-und-alle-informationen-zur-erkrankung/id_87248472/index">Coronavirus</a> </li>  <li > <a href="https://www.t-online.de/nachrichten/panorama/">Panorama</a> </li>  <li > <a href="https://www.t-online.de/sport/">Sport</a> </li>  <li > <a href="https://www.t-online.de/unterhaltung/">Unterhaltung</a> </li>  <li > <a href="https://www.t-online.de/digital/">Digital</a> </li>  <li > <a href="https://www.t-online.de/finanzen/">Wirtschaft &amp; Finanzen</a> </li>  <li > <a href="https://www.t-online.de/auto/">Auto</a> </li>  <li > <a href="https://www.t-online.de/gesundheit/">Gesundheit</a> </li>  <li > <a href="https://www.t-online.de/leben/">Leben</a> </li>  <li > <a href="https://www.t-online.de/spiele/">Spiele</a> </li>  <li > <a href="https://www.t-online.de/region/">Regional</a> </li>  <li > <a href="https://www.t-online.de/heim-garten/">Heim &amp; Garten</a> </li>  <li > <a href="https://www.t-online.de/tv/">Video</a> </li>  <li > <a href="https://www.t-online.de/ratgeber/">Kaufberatung</a> </li>  <li > <a href="https://www.t-online.de/nachhaltigkeit/">Nachhaltigkeit</a> </li>  <li > <a href="https://www.t-online.de/spenden">Spenden</a> </li>  </ul>
  <div class="TslideTo" title="mehr"></div>
 </div>
-<ul class="Tnextnav2">  <li class=" Thst Tnnaa"> <a href="https://www.t-online.de/nachrichten/deutschland/">Deutschland</a> <dl>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/gesellschaft/">Gesellschaft</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/innenpolitik/">Innenpolitik</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/aussenpolitik/">Au&szlig;enpolitik</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/parteien/">Parteien</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/militaer-verteidigung/">Milit&auml;r &amp; Verteidigung</a> </dt>  </dl>  </li>  <li > <a href="https://www.t-online.de/nachrichten/ausland/id_91726686/ukraine-krieg-alle-infos-zum-konflikt-und-der-aktuellen-lage-im-kriegsgebiet.html">Ukraine</a> </li>  <li > <a href="https://www.t-online.de/nachrichten/deutschland/id_91622410/landtagswahl-saarland-kandidaten-umfragen-prognosen-parteien.html">Landtagswahl Saarland</a> </li>  <li class=" Thst"> <a href="https://www.t-online.de/nachrichten/ausland/">Ausland</a> <dl>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/id_90673670/konflikt-in-afghanistan-alle-infos-und-news-zum-einzug-der-taliban-in-kabul.html">Afghanistan-Konflikt</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/krisen/">Krisen &amp; Konflikte</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/terrorismus/">Terrorismus</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/internationale-politik/">Internationale Politik</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/eu/">Europ&auml;ische Union</a> </dt>  </dl>  </li>  <li class=" Tnnak"> <a href="https://www.t-online.de/nachrichten/panorama/id_87559708/coronavirus-in-deutschland-und-der-welt-alle-news-und-informationen.html">Corona-Krise</a> </li>  <li class=" Thst"> <a href="https://www.t-online.de/nachrichten/id_82378816/kolumnen-bei-t-online-experten-analysieren-die-aktuellen-themen.html">Kolumnen</a> <dl>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/usa/id_82378160/gerhard-spoerl-kolumnen-zur-innen-und-weltpolitik-bei-t-online-de.html">Gerhard Sp&ouml;rl</a> </dt>  <dt > <a href="https://www.t-online.de/finanzen/id_82381564/wirtschafts-kolumnen-ursula-weidenfeld-schreibt-fuer-t-online-de.html">Ursula Weidenfeld</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/id_90196594/kolumne-einspruch-christoph-schwennicke-schreibt-fuer-t-online.html">Christoph Schwennicke</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/tagesanbruch/">Florian Harms</a> </dt>  <dt > <a href="https://www.t-online.de/sport/fussball/bundesliga/id_82381568/kolumnen-von-stefan-effenberg-bei-t-online-de.html">Stefan Effenberg</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/id_89894550/kolumne-klartext-vom-altkanzler-gerhard-schroeder-schreibt-fuer-t-online.html">Gerhard Schr&ouml;der</a> </dt>  <dt > <a href="https://www.t-online.de/digital/id_87318860/digital-kolumne-nicole-diekmann-filetiert-aufreger-rund-ums-internet.html">Nicole Diekmann</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/panorama/id_86214984/wetter-kolumne-von-michaela-koschak-ist-das-noch-wetter-oder-schon-klima-.html">Michaela Koschak</a> </dt>  <dt > <a href="https://www.t-online.de/sport/fussball/bundesliga/id_82381572/kolumnen-von-berti-vogts-bei-t-online-de.html">Berti Vogts</a> </dt>  <dt > <a href="https://www.t-online.de/gesundheit/id_87290174/-die-psychologin-hilft-kolumnen-von-ulrike-scheuermann.html">Ulrike Scheuermann</a> </dt>  <dt > <a href="https://www.t-online.de/leben/liebe/id_82381574/-lust-laster-und-liebe-kolumnen-von-jennifer-buchholz.html">Jennifer Buchholz</a> </dt>  <dt > <a href="https://www.t-online.de/unterhaltung/tv/id_84450690/janna-halbroth-kolumnen-zu-den-hoehe-und-tiefpunkten-im-tv.html">Janna Halbroth</a> </dt>  </dl>  </li>  <li class=" Thst"> <a href="https://www.t-online.de/nachrichten/tagesanbruch/">Tagesanbruch</a> <dl>  <dt > <a href="https://www.t-online.de/podcasts/tagesanbruch/" target="_blank">Podcast zum Tagesanbruch</a> </dt>  </dl>  </li>  <li > <a href="https://www.t-online.de/nachrichten/specials/id_90759258/politik-kompass-zur-btw-2021-die-wichtigsten-fragen-zur-wahl.html">Politik-Kompass</a> </li>  <li > <a href="https://www.t-online.de/region/">Regional</a> </li> </ul></div> <script>Tnnav.ini();</script>
+<ul class="Tnextnav2">  <li class=" Thst Tnnaa"> <a href="https://www.t-online.de/nachrichten/deutschland/">Deutschland</a> <dl>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/gesellschaft/">Gesellschaft</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/innenpolitik/">Innenpolitik</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/aussenpolitik/">Au&szlig;enpolitik</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/parteien/">Parteien</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/militaer-verteidigung/">Milit&auml;r &amp; Verteidigung</a> </dt>  </dl>  </li>  <li > <a href="https://www.t-online.de/nachrichten/ausland/id_91726686/ukraine-krieg-alle-infos-zum-konflikt-und-der-aktuellen-lage-im-kriegsgebiet.html">Ukraine</a> </li>  <li > <a href="https://www.t-online.de/nachrichten/deutschland/id_91622410/landtagswahl-saarland-news-hintergruende-umfragen.html">Landtagswahl Saarland</a> </li>  <li class=" Thst"> <a href="https://www.t-online.de/nachrichten/ausland/">Ausland</a> <dl>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/id_90673670/konflikt-in-afghanistan-alle-infos-und-news-zum-einzug-der-taliban-in-kabul.html">Afghanistan-Konflikt</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/krisen/">Krisen &amp; Konflikte</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/terrorismus/">Terrorismus</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/internationale-politik/">Internationale Politik</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/eu/">Europ&auml;ische Union</a> </dt>  </dl>  </li>  <li class=" Tnnak"> <a href="https://www.t-online.de/nachrichten/panorama/id_87559708/coronavirus-in-deutschland-und-der-welt-alle-news-und-informationen.html">Corona-Krise</a> </li>  <li class=" Thst"> <a href="https://www.t-online.de/nachrichten/id_82378816/kolumnen-bei-t-online-experten-analysieren-die-aktuellen-themen.html">Kolumnen</a> <dl>  <dt > <a href="https://www.t-online.de/nachrichten/ausland/usa/id_82378160/gerhard-spoerl-kolumnen-zur-innen-und-weltpolitik-bei-t-online-de.html">Gerhard Sp&ouml;rl</a> </dt>  <dt > <a href="https://www.t-online.de/finanzen/id_82381564/wirtschafts-kolumnen-ursula-weidenfeld-schreibt-fuer-t-online-de.html">Ursula Weidenfeld</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/deutschland/id_90196594/kolumne-einspruch-christoph-schwennicke-schreibt-fuer-t-online.html">Christoph Schwennicke</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/tagesanbruch/">Florian Harms</a> </dt>  <dt > <a href="https://www.t-online.de/sport/fussball/bundesliga/id_82381568/kolumnen-von-stefan-effenberg-bei-t-online-de.html">Stefan Effenberg</a> </dt>  <dt > <a href="https://www.t-online.de/digital/id_87318860/digital-kolumne-nicole-diekmann-filetiert-aufreger-rund-ums-internet.html">Nicole Diekmann</a> </dt>  <dt > <a href="https://www.t-online.de/nachrichten/panorama/id_86214984/wetter-kolumne-von-michaela-koschak-ist-das-noch-wetter-oder-schon-klima-.html">Michaela Koschak</a> </dt>  <dt > <a href="https://www.t-online.de/sport/fussball/bundesliga/id_82381572/kolumnen-von-berti-vogts-bei-t-online-de.html">Berti Vogts</a> </dt>  <dt > <a href="https://www.t-online.de/gesundheit/id_87290174/-die-psychologin-hilft-kolumnen-von-ulrike-scheuermann.html">Ulrike Scheuermann</a> </dt>  <dt > <a href="https://www.t-online.de/leben/liebe/id_82381574/-lust-laster-und-liebe-kolumnen-von-jennifer-buchholz.html">Jennifer Buchholz</a> </dt>  <dt > <a href="https://www.t-online.de/unterhaltung/tv/id_84450690/janna-halbroth-kolumnen-zu-den-hoehe-und-tiefpunkten-im-tv.html">Janna Halbroth</a> </dt>  </dl>  </li>  <li class=" Thst"> <a href="https://www.t-online.de/nachrichten/tagesanbruch/">Tagesanbruch</a> <dl>  <dt > <a href="https://www.t-online.de/podcasts/tagesanbruch/" target="_blank">Podcast zum Tagesanbruch</a> </dt>  </dl>  </li>  <li > <a href="https://www.t-online.de/nachrichten/specials/id_90759258/politik-kompass-zur-btw-2021-die-wichtigsten-fragen-zur-wahl.html">Politik-Kompass</a> </li>  <li > <a href="https://www.t-online.de/region/">Regional</a> </li> </ul></div> <script>Tnnav.ini();</script>
 
 <div id="Tcb" ><!--noindex:-->
         <script type="text/javascript">/*<![CDATA[*/if (typeof consentAdHandler != 'undefined') {
@@ -2122,60 +2145,60 @@ Lotto </a> </div>
 
 
 <!-- MrRu RenderBlock false -->
-<div class="Tmm  Tts Tww2 Thh4 Tmc2xl Tafm  " id="T-91740470" onfocus="A('zid=91740470;mp=0101-01;vn=8')" > <div class='Tstage-text'> 
+<div class="Tmm  Tts Tww2 Thh4 Tmc2xl Tafm  " id="T-91939124" onfocus="A('zid=91939124;mp=0101-01;vn=3')" > <div class='Tstage-text'> 
 
 
-<a href="https://www.t-online.de/nachrichten/panorama/id_91740470/rki-meldet-weiter-sinkende-inzidenz-62-349-neuinfektionen-.html">                   <h6><span>62.349 Neuinfektionen</span></h6>
-                   <h5 data-tb-region-item-title="RKI meldet weiter sinkenden Inzidenzwert"><span>RKI</span><span>meldet</span><span>weiter</span><span>sinkenden</span><span>Inzidenzwert</span></h5>        </a> </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91740470/rki-meldet-weiter-sinkende-inzidenz-62-349-neuinfektionen-.html">
+<a href="https://www.t-online.de/nachrichten/panorama/id_91939124/letzte-corona-massnahmen-fallen-in-der-schweiz.html">                   <h6><span>Inzidenz gesunken</span></h6>
+                   <h5 data-tb-region-item-title="Letzte Corona-Ma&szlig;nahmen fallen in der Schweiz"><span>Letzte</span><span>Corona-Ma&szlig;nahmen</span><span>fallen</span><span>in</span><span>der</span><span>Schweiz</span></h5>        </a> </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91939124/letzte-corona-massnahmen-fallen-in-der-schweiz.html">
         
 
 
 
-<img height="343" width="610" alt="Eine Frau hält ein Fläschchen mit dem Impfstoff Nuvaxovid in der Hand (Symbolbild): Die Inzidenz in Deutschland sinkt wieder.  (Quelle: dpa/Guido Kirchner)" src="https://bilder.t-online.de/b/91/74/04/72/id_91740472/610_80/tid_da/eine-frau-haelt-ein-flaeschchen-mit-dem-impfstoff-nuvaxovid-in-der-hand-symbolbild-die-inzidenz-in-deutschland-sinkt-wieder-.jpg" title="Eine Frau hält ein Fläschchen mit dem Impfstoff Nuvaxovid in der Hand (Symbolbild): Die Inzidenz in Deutschland sinkt wieder.  (Quelle: dpa/Guido Kirchner)" />                                                              
+<img height="343" width="610" alt="Eine Frau kauft mit Maske in einem Schweizer Geschäft ein (Symbolbild); Seit heute fallen die Corona-Vorschriften. (Quelle: imago images/Geisser)" src="https://bilder.t-online.de/b/91/93/91/26/id_91939126/610_80/tid_da/eine-frau-kauft-mit-maske-in-einem-schweizer-geschaeft-ein-symbolbild-seit-heute-fallen-die-corona-vorschriften-.jpg" title="Eine Frau kauft mit Maske in einem Schweizer Geschäft ein (Symbolbild); Seit heute fallen die Corona-Vorschriften. (Quelle: imago images/Geisser)" />                                                              
                                                           <div class=""><i></i></div>
                       </a></div></div>
 
 
-<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-91726274" onfocus="A('zid=91726274;mp=0101-02;vn=9')" > <div class="Ttsc Ttsh100"> 
+<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-91938892" onfocus="A('zid=91938892;mp=0101-02;vn=3')" > <div class="Ttsc Ttsh100"> 
 
 
-<a href="https://www.t-online.de/nachrichten/deutschland/id_91726274/karl-lauterbach-corona-zahlen-werden-unterschaetzt-kritik-an-freedom-day-.html">                   <h6>Neue Omikron-Variante</h6>
-                   <h5 data-tb-region-item-title="">Lauterbach: Corona-Fallzahlen werden untersch&auml;tzt</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91726274/karl-lauterbach-corona-zahlen-werden-unterschaetzt-kritik-an-freedom-day-.html">
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91938892/rki-gipfel-der-corona-welle-wahrscheinlich-erreicht-.html">                   <h6>Risiko bleibt dennoch hoch</h6>
+                   <h5 data-tb-region-item-title="">RKI: Gipfel der Corona-Welle &quot;wahrscheinlich erreicht&quot;</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91938892/rki-gipfel-der-corona-welle-wahrscheinlich-erreicht-.html">
         
 
 
 
-<img height="100" width="100" alt="Karl Lauterbach: &apos;Für eine beschleunigte Öffnung haben wir überhaupt keine Spielräume.&apos;a news conference, in Berlin (Quelle: Reuters/Michele Tantussi)" src="https://bilder.t-online.de/b/91/72/69/76/id_91726976/100_95/c_Master-1-1-Small/tid_da/karl-lauterbach-fuer-eine-beschleunigte-oeffnung-haben-wir-ueberhaupt-keine-spielraeume-a-news-conference-in-berlin.jpg" title="Karl Lauterbach: &apos;Für eine beschleunigte Öffnung haben wir überhaupt keine Spielräume.&apos;a news conference, in Berlin (Quelle: Reuters/Michele Tantussi)" />                                                              
+<img height="100" width="100" alt="Die aktuelle Coronawelle könnte laut dem RKI nun ihren Höhepunkt erreicht haben. (Symbolfoto) (Quelle: dpa/ Annette Riedl)" src="https://bilder.t-online.de/b/91/93/89/14/id_91938914/100_95/c_Master-1-1-Small/tid_da/die-aktuelle-coronawelle-koennte-laut-dem-rki-nun-ihren-hoehepunkt-erreicht-haben-symbolfoto-.jpg" title="Die aktuelle Coronawelle könnte laut dem RKI nun ihren Höhepunkt erreicht haben. (Symbolfoto) (Quelle: dpa/ Annette Riedl)" />                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div>
 </div>
 
 
-<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-91722216" onfocus="A('zid=91722216;mp=0101-03;vn=6')" > <div class="Ttsc Ttsh100"> 
+<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-91936632" onfocus="A('zid=91936632;mp=0101-03;vn=21')" > <div class="Ttsc Ttsh100"> 
 
 
-<a href="https://www.t-online.de/nachrichten/deutschland/id_91722216/lauterbach-erhielt-mit-13-krebsdiagnose-er-litt-viele-jahre-unter-dem-eingriff.html">                   <h6>Er sollte sein Bein verlieren</h6>
-                   <h5 data-tb-region-item-title="">Lauterbach erhielt mit 13 Krebsdiagnose</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91722216/lauterbach-erhielt-mit-13-krebsdiagnose-er-litt-viele-jahre-unter-dem-eingriff.html">
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91936632/corona-impfpflicht-neuer-kompromiss-stoesst-auf-skepsis.html">                   <h6>Corona-Pandemie</h6>
+                   <h5 data-tb-region-item-title="">&Uuml;ber diesen Impfpflicht-Kompromiss wird jetzt verhandelt</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91936632/corona-impfpflicht-neuer-kompromiss-stoesst-auf-skepsis.html">
         
 
 
 
-<img height="100" width="100" alt="Karl Lauterbach während einer Pressekonferenz zur aktuellen Corona Situation in Deutschland (Archivbild): In seinem neuen Buch erzählt er auch von persönlichen Erfahrungen. (Quelle: Reuters/Hannibal Hanschke)" src="https://bilder.t-online.de/b/91/72/22/56/id_91722256/100_95/c_Master-1-1-Small/tid_da/karl-lauterbach-waehrend-einer-pressekonferenz-zur-aktuellen-corona-situation-in-deutschland-archivbild-in-seinem-neuen-buch-erzaehlt-er-auch-von-persoenlichen-erfahrungen-.jpg" title="Karl Lauterbach während einer Pressekonferenz zur aktuellen Corona Situation in Deutschland (Archivbild): In seinem neuen Buch erzählt er auch von persönlichen Erfahrungen. (Quelle: Reuters/Hannibal Hanschke)" />                                                              
+<img height="100" width="100" alt="Karl Lauterbach: Kommt noch eine Impfpflicht? (Quelle: dpa/Bernd von Jutrczenka)" src="https://bilder.t-online.de/b/91/93/71/18/id_91937118/100_95/c_Master-1-1-Small/tid_da/karl-lauterbach-kommt-noch-eine-impfpflicht-.jpg" title="Karl Lauterbach: Kommt noch eine Impfpflicht? (Quelle: dpa/Bernd von Jutrczenka)" />                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div>
 </div>
 
 
-<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-91719562" onfocus="A('zid=91719562;mp=0101-04;vn=11')" > <div class="Ttsc Ttsh100"> 
+<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-91937576" onfocus="A('zid=91937576;mp=0101-04;vn=4')" > <div class="Ttsc Ttsh100"> 
 
 
-<a href="https://www.t-online.de/nachrichten/panorama/id_91719562/corona-pandemie-robert-koch-institut-mehr-neuinfektionen-inzidenz-sinkt.html">                   <h6>Inzidenzwert sinkt</h6>
-                   <h5 data-tb-region-item-title="">RKI meldet 216.322 neue Corona-Infektionen</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91719562/corona-pandemie-robert-koch-institut-mehr-neuinfektionen-inzidenz-sinkt.html">
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91937576/thueringen-koalition-scheitert-mit-verlaengerung-der-corona-regeln.html">                   <h6>Keine Hotspot-Ma&szlig;nahmen</h6>
+                   <h5 data-tb-region-item-title="">Th&uuml;ringer Koalition scheitert mit Verl&auml;ngerung der Corona-Regeln</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91937576/thueringen-koalition-scheitert-mit-verlaengerung-der-corona-regeln.html">
         
 
 
 
-<img height="100" width="100" alt="Ärzte und Pfleger untersuchen einen Patienten auf der Covid-19-Intensivstation: Die Infektionszahlen sind gegenüber dem Vortag leicht gestiegen. (Quelle: dpa/Bodo Schackow)" src="https://bilder.t-online.de/b/91/71/95/64/id_91719564/100_95/c_Master-1-1-Small/tid_da/aerzte-und-pfleger-untersuchen-einen-patienten-auf-der-covid-19-intensivstation-die-infektionszahlen-sind-gegenueber-dem-vortag-leicht-gestiegen-.jpg" title="Ärzte und Pfleger untersuchen einen Patienten auf der Covid-19-Intensivstation: Die Infektionszahlen sind gegenüber dem Vortag leicht gestiegen. (Quelle: dpa/Bodo Schackow)" />                                                              
+<img height="100" width="100" alt="Bodo Ramelow: Der Ministerpräsident kritisierte das neue Infektionsschutzgesetz des Bundes vor der Abstimmung scharf. (Quelle: imago images/Jacob Schröter)" src="https://bilder.t-online.de/b/91/93/77/06/id_91937706/100_95/c_Master-1-1-Small/tid_da/bodo-ramelow-der-ministerpraesident-kritisierte-das-neue-infektionsschutzgesetz-des-bundes-vor-der-abstimmung-scharf-.jpg" title="Bodo Ramelow: Der Ministerpräsident kritisierte das neue Infektionsschutzgesetz des Bundes vor der Abstimmung scharf. (Quelle: imago images/Jacob Schröter)" />                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div>
 </div>
@@ -2195,24 +2218,26 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91718548" onfocus="A('zid=91718548;mp=0201;vn=7')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91933332" onfocus="A('zid=91933332;mp=0201;vn=13')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/panorama/id_91718548/corona-tests-millionen-betrug-mit-schnellteststationen-in-baden-wuerttemberg.html"> Polizei ermittelt - Millionen-Betrug mit Corona-Teststationen
+<a href="https://www.t-online.de/nachrichten/ausland/id_91933332/shanghai-kaempft-gegen-corona-stadt-raeumt-fehler-ein.html"> Null-Covid-Strategie am Limit - Shanghai kämpft gegen Corona – Stadt räumt Fehler ein
   </a>
 
 
- <h6>Polizei ermittelt</h6>  <h5 data-tb-region-item-title="">Millionen-Betrug mit Corona-Teststationen</h5>
+ <h6>Null-Covid-Strategie am Limit</h6>  <h5 data-tb-region-item-title="">Shanghai k&auml;mpft gegen Corona &ndash; Stadt r&auml;umt Fehler ein</h5>
 
-<p class="Ttst">Die Polizei hat im Raum Karlsruhe sechs mutmaßliche Betrüger festgenommen. Sie sollen über eine Million Euro mit falschen Abrechnungen bei Schnelltests verdient haben. Mehr als 50 Stationen wurden geschlossen.
+<p class="Ttst">Die Corona-Infektionen in der chinesischen Metropole steigen – und die Kliniken ächzen offenbar zunehmend unter der Belastung. Die Stadtverwaltung Shanghais gesteht nun überraschend eigene Fehler ein.
+
+
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91718548/corona-tests-millionen-betrug-mit-schnellteststationen-in-baden-wuerttemberg.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91933332/shanghai-kaempft-gegen-corona-stadt-raeumt-fehler-ein.html">
         
 
 
 
-<img height="168" data-original="https://bilder.t-online.de/b/91/71/85/60/id_91718560/300_80/tid_da/eine-frau-fuehrt-einen-corona-schnelltest-durch-symbolbild-die-polizei-in-baden-wuerttemberg-ermittelt-in-dutzenden-faellen-wegen-moeglichem-abrechnungsbetrug-in-corona-testzentren-.jpg" width="300" class="Tlz" alt="Eine Frau führt einen Corona-Schnelltest durch (Symbolbild): Die Polizei in Baden-Württemberg ermittelt in dutzenden Fällen wegen möglichem Abrechnungsbetrug in Corona-Testzentren. (Quelle: dpa/Marijan Murat)" src="https://img.toi.de/t.gif" title="Eine Frau führt einen Corona-Schnelltest durch (Symbolbild): Die Polizei in Baden-Württemberg ermittelt in dutzenden Fällen wegen möglichem Abrechnungsbetrug in Corona-Testzentren. (Quelle: dpa/Marijan Murat)" /><noscript><img src="https://bilder.t-online.de/b/91/71/85/60/id_91718560/300_80/tid_da/eine-frau-fuehrt-einen-corona-schnelltest-durch-symbolbild-die-polizei-in-baden-wuerttemberg-ermittelt-in-dutzenden-faellen-wegen-moeglichem-abrechnungsbetrug-in-corona-testzentren-.jpg" width="300" height="169" alt="Eine Frau führt einen Corona-Schnelltest durch (Symbolbild): Die Polizei in Baden-Württemberg ermittelt in dutzenden Fällen wegen möglichem Abrechnungsbetrug in Corona-Testzentren." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/93/36/06/id_91933606/300_80/tid_da/krankenhaus-personal-bei-der-arbeit-archivbild-die-einrichtungen-sind-berichten-zufolge-ueberlastet-.jpg" width="300" class="Tlz" alt="Krankenhaus-Personal bei der Arbeit (Archivbild): Die Einrichtungen sind Berichten zufolge überlastet.  (Quelle: imago images/Xinhua)" src="https://img.toi.de/t.gif" title="Krankenhaus-Personal bei der Arbeit (Archivbild): Die Einrichtungen sind Berichten zufolge überlastet.  (Quelle: imago images/Xinhua)" /><noscript><img src="https://bilder.t-online.de/b/91/93/36/06/id_91933606/300_80/tid_da/krankenhaus-personal-bei-der-arbeit-archivbild-die-einrichtungen-sind-berichten-zufolge-ueberlastet-.jpg" width="300" height="169" alt="Krankenhaus-Personal bei der Arbeit (Archivbild): Die Einrichtungen sind Berichten zufolge überlastet. " /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2222,24 +2247,26 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91633982" onfocus="A('zid=91633982;mp=0201;vn=256')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91935446" onfocus="A('zid=91935446;mp=0201;vn=5')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/deutschland/id_91633982/corona-news-ministerpraesident-weil-warnt-vor-anhaltenden-corona-gefahren.html"> Newsblog Covid-19 - Ministerpräsident warnt vor anhaltenden Corona-Gefahren
+<a href="https://www.t-online.de/nachrichten/ausland/id_91935446/usa-praesident-joe-biden-erhaelt-vierte-corona-impfung.html"> "Es hat kein bisschen weh getan" - US-Präsident Biden erhält vierte Corona-Impfung
   </a>
 
 
- <h6>Newsblog Covid-19</h6>  <h5 data-tb-region-item-title="">Ministerpr&auml;sident warnt vor anhaltenden Corona-Gefahren</h5>
+ <h6>&quot;Es hat kein bisschen weh getan&quot;</h6>  <h5 data-tb-region-item-title="">US-Pr&auml;sident Biden erh&auml;lt vierte Corona-Impfung</h5>
 
-<p class="Ttst">Niedersachsens Ministerpräsident Weil hat einen Ausblick auf das weitere Vorgehen in der Pandemie gegeben. Die geplanten Lockerungen hält er für vertretbar und spricht dennoch eine Warnung aus. Alle Infos im Newsblog.
+<p class="Ttst">Der 79-jährige Regierungschef hat sich im Weißen Haus medienwirksam die zweite Auffrischungsimpfung verabreichen lassen. Bei einem Pressetermin sprach Joe Biden von einer "neuen Phase der Pandemie".
+
+
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91633982/corona-news-ministerpraesident-weil-warnt-vor-anhaltenden-corona-gefahren.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91935446/usa-praesident-joe-biden-erhaelt-vierte-corona-impfung.html">
         
 
 
 
-<img height="168" data-original="https://bilder.t-online.de/b/91/71/62/82/id_91716282/300_80/tid_da/stephan-weil-spd-haelt-eine-regierungserklaerung-zur-pandemie-der-ministerpraesident-von-niedersachsen-warnt-vor-den-anhaltenden-gefahren-des-coronavirus-.jpg" width="300" class="Tlz" alt="Stephan Weil (SPD) hält eine Regierungserklärung zur Pandemie: Der Ministerpräsident von Niedersachsen warnt vor den anhaltenden Gefahren des Coronavirus. (Quelle: dpa/Julian Stratenschulte)" src="https://img.toi.de/t.gif" title="Stephan Weil (SPD) hält eine Regierungserklärung zur Pandemie: Der Ministerpräsident von Niedersachsen warnt vor den anhaltenden Gefahren des Coronavirus. (Quelle: dpa/Julian Stratenschulte)" /><noscript><img src="https://bilder.t-online.de/b/91/71/62/82/id_91716282/300_80/tid_da/stephan-weil-spd-haelt-eine-regierungserklaerung-zur-pandemie-der-ministerpraesident-von-niedersachsen-warnt-vor-den-anhaltenden-gefahren-des-coronavirus-.jpg" width="300" height="169" alt="Stephan Weil (SPD) hält eine Regierungserklärung zur Pandemie: Der Ministerpräsident von Niedersachsen warnt vor den anhaltenden Gefahren des Coronavirus." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/93/56/36/id_91935636/300_80/tid_da/us-praesident-joe-biden-die-vierte-impfung-gegen-das-coronavirus-wird-von-der-us-amerikanischen-arzneimittelbehoerde-fuer-alle-menschen-ab-50-jahren-empfohlen-.jpg" width="300" class="Tlz" alt="US-Präsident Joe Biden: Die vierte Impfung gegen das Coronavirus wird von der US-amerikanischen Arzneimittelbehörde für alle Menschen ab 50 Jahren empfohlen. (Quelle: Reuters/Kevin Lamarque)" src="https://img.toi.de/t.gif" title="US-Präsident Joe Biden: Die vierte Impfung gegen das Coronavirus wird von der US-amerikanischen Arzneimittelbehörde für alle Menschen ab 50 Jahren empfohlen. (Quelle: Reuters/Kevin Lamarque)" /><noscript><img src="https://bilder.t-online.de/b/91/93/56/36/id_91935636/300_80/tid_da/us-praesident-joe-biden-die-vierte-impfung-gegen-das-coronavirus-wird-von-der-us-amerikanischen-arzneimittelbehoerde-fuer-alle-menschen-ab-50-jahren-empfohlen-.jpg" width="300" height="169" alt="US-Präsident Joe Biden: Die vierte Impfung gegen das Coronavirus wird von der US-amerikanischen Arzneimittelbehörde für alle Menschen ab 50 Jahren empfohlen." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2249,24 +2276,26 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91713040" onfocus="A('zid=91713040;mp=0201;vn=5')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91931306" onfocus="A('zid=91931306;mp=0201;vn=3')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/panorama/id_91713040/rki-bundesweite-corona-inzidenz-sinkt-auf-1-278-9.html"> Daten des RKI - Bundesweite Corona-Inzidenz sinkt auf 1.278,9
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91931306/rki-schlaegt-quarantaene-von-fuenf-tagen-vor.html"> "Keine strenge Isolierung" - RKI schlägt verkürzte Quarantäne vor
   </a>
 
 
- <h6>Daten des RKI</h6>  <h5 data-tb-region-item-title="">Bundesweite Corona-Inzidenz sinkt auf 1.278,9</h5>
+ <h6>&quot;Keine strenge Isolierung&quot;</h6>  <h5 data-tb-region-item-title="">RKI schl&auml;gt verk&uuml;rzte Quarant&auml;ne vor</h5>
 
-<p class="Ttst">Dem Robert Koch-Institut sind mehr als 200.000 neue Positiv-Tests gemeldet worden. Die bundesweite Sieben-Tage-Inzidenz sinkt jedoch Vergleich zum Vortag weiter. 
+<p class="Ttst">Gemeinsam mit dem Gesundheitsministerium schlägt das Institut vor, dass Infizierte sich künftig nur noch halb so lange isolieren müssen. Gleiches soll für Kontaktpersonen gelten. Doch beschlossen ist das Vorhaben noch nicht.
+
+
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91713040/rki-bundesweite-corona-inzidenz-sinkt-auf-1-278-9.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91931306/rki-schlaegt-quarantaene-von-fuenf-tagen-vor.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/71/30/42/id_91713042/300_80/tid_da/impfung-in-rostock-der-inzidenzwert-in-deutschland-sinkt-weiter-.jpg" width="300" class="Tlz" alt="Impfung in Rostock: Der Inzidenzwert in Deutschland sinkt weiter. (Quelle: dpa/Bernd Wüstneck)" src="https://img.toi.de/t.gif" title="Impfung in Rostock: Der Inzidenzwert in Deutschland sinkt weiter. (Quelle: dpa/Bernd Wüstneck)" /><noscript><img src="https://bilder.t-online.de/b/91/71/30/42/id_91713042/300_80/tid_da/impfung-in-rostock-der-inzidenzwert-in-deutschland-sinkt-weiter-.jpg" width="300" height="169" alt="Impfung in Rostock: Der Inzidenzwert in Deutschland sinkt weiter." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/93/13/54/id_91931354/300_80/tid_da/rki-und-gesundheitsministerium-schlagen-vor-isolation-und-quarantaene-kuenftig-auf-fuenf-tage-zu-reduzieren-symbolfoto-.jpg" width="300" class="Tlz" alt="RKI und Gesundheitsministerium schlagen vor, Isolation und Quarantäne künftig auf fünf Tage zu reduzieren. (Symbolfoto) (Quelle: dpa/Jens Kalaene)" src="https://img.toi.de/t.gif" title="RKI und Gesundheitsministerium schlagen vor, Isolation und Quarantäne künftig auf fünf Tage zu reduzieren. (Symbolfoto) (Quelle: dpa/Jens Kalaene)" /><noscript><img src="https://bilder.t-online.de/b/91/93/13/54/id_91931354/300_80/tid_da/rki-und-gesundheitsministerium-schlagen-vor-isolation-und-quarantaene-kuenftig-auf-fuenf-tage-zu-reduzieren-symbolfoto-.jpg" width="300" height="169" alt="RKI und Gesundheitsministerium schlagen vor, Isolation und Quarantäne künftig auf fünf Tage zu reduzieren. (Symbolfoto)" /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2276,26 +2305,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91710814" onfocus="A('zid=91710814;mp=0201;vn=4')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91931668" onfocus="A('zid=91931668;mp=0201;vn=5')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/panorama/id_91710814/eu-weite-regelung-schnelltest-soll-fuer-genesenenstatus-reichen.html"> EU-weite Regelung - Genesenennachweis künftig leichter erhältlich
+<a href="https://www.t-online.de/nachrichten/panorama/id_91931668/rki-fallzahlen-corona-inzidenz-sinkt-auf-1-625-1.html"> RKI meldet 274.900 Neuinfektionen - Bundesweite Corona-Inzidenz sinkt auf 1.625,1
   </a>
 
 
- <h6>EU-weite Regelung</h6>  <h5 data-tb-region-item-title="">Genesenennachweis k&uuml;nftig leichter erh&auml;ltlich</h5>
+ <h6>RKI meldet 274.900 Neuinfektionen</h6>  <h5 data-tb-region-item-title="">Bundesweite Corona-Inzidenz sinkt auf 1.625,1</h5>
 
-<p class="Ttst">Bislang konnte ein Genesenenzertifikat nur auf Grundlage eines PCR-Tests ausgestellt werden. Das will die Europäische Union künftig ändern. Die Schnelltests müssen dabei allerdings bestimmte Kriterien erfüllen.
-
-
+<p class="Ttst">Die Zahl der Neuansteckungen in Deutschland liegt weiterhin auf hohem Niveau. Die Sieben-Tage-Inzidenz ist jedoch erneut gesunken, gestern wurde sie noch mit 1.663,0 angegeben. 
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91710814/eu-weite-regelung-schnelltest-soll-fuer-genesenenstatus-reichen.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91931668/rki-fallzahlen-corona-inzidenz-sinkt-auf-1-625-1.html">
         
 
 
 
-<img height="168" data-original="https://bilder.t-online.de/b/91/71/09/70/id_91710970/300_80/tid_da/abstrich-fuer-corona-test-kuenftig-soll-ein-schnelltest-fuer-den-genesenenstatus-reichen-.jpg" width="300" class="Tlz" alt="Abstrich für Corona-Test: Künftig soll ein Schnelltest für den Genesenenstatus reichen. (Quelle: imago images/Sven Simon)" src="https://img.toi.de/t.gif" title="Abstrich für Corona-Test: Künftig soll ein Schnelltest für den Genesenenstatus reichen. (Quelle: imago images/Sven Simon)" /><noscript><img src="https://bilder.t-online.de/b/91/71/09/70/id_91710970/300_80/tid_da/abstrich-fuer-corona-test-kuenftig-soll-ein-schnelltest-fuer-den-genesenenstatus-reichen-.jpg" width="300" height="169" alt="Abstrich für Corona-Test: Künftig soll ein Schnelltest für den Genesenenstatus reichen." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/93/16/84/id_91931684/300_80/tid_da/coronavirus-teststation-in-mainz-das-rki-meldet-derzeit-wieder-einen-sinkenden-inzidenzwert-.jpg" width="300" class="Tlz" alt="Coronavirus-Teststation in Mainz: Das RKI meldet derzeit wieder einen sinkenden Inzidenzwert. (Quelle: dpa/Sebastian Gollnow)" src="https://img.toi.de/t.gif" title="Coronavirus-Teststation in Mainz: Das RKI meldet derzeit wieder einen sinkenden Inzidenzwert. (Quelle: dpa/Sebastian Gollnow)" /><noscript><img src="https://bilder.t-online.de/b/91/93/16/84/id_91931684/300_80/tid_da/coronavirus-teststation-in-mainz-das-rki-meldet-derzeit-wieder-einen-sinkenden-inzidenzwert-.jpg" width="300" height="169" alt="Coronavirus-Teststation in Mainz: Das RKI meldet derzeit wieder einen sinkenden Inzidenzwert." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2305,24 +2332,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91709770" onfocus="A('zid=91709770;mp=0201;vn=3')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91922244" onfocus="A('zid=91922244;mp=0201;vn=4')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/region/hamburg/news/id_91709770/hamburg-corona-neuinfektionen-wieder-unter-1-000.html"> Zweitniedrigste Inzidenz in Deutschland - Corona-Neuinfektionen in Hamburg wieder unter 1.000
+<a href="https://www.t-online.de/region/berlin/news/id_91922244/berlin-fast-alle-corona-massnahmen-fallen-am-freitag.html"> Maskenpflicht bleibt - Fast alle Corona-Maßnahmen enden in Berlin ab Freitag
   </a>
 
 
- <h6>Zweitniedrigste Inzidenz in Deutschland</h6>  <h5 data-tb-region-item-title="">Corona-Neuinfektionen in Hamburg wieder unter 1.000</h5>
+ <h6>Maskenpflicht bleibt</h6>  <h5 data-tb-region-item-title="">Fast alle Corona-Ma&szlig;nahmen enden in Berlin ab Freitag</h5>
 
-<p class="Ttst">In Hamburg ist die Zahl der Corona-Neuinfektionen wieder unter 1.000 gesunken. In Deutschland hat laut RKI nur Schleswig-Holstein eine noch niedrigere Inzidenz. Auch in den Krankenhäusern sinken die Zahlen.
+<p class="Ttst">In Berlin fallen am Freitag fast alle Corona-Regeln weg. Ab dann soll nur noch ein Basisschutz gelten. Dazu zählt etwa die Maskenpflicht in öffentlichen Einrichtungen.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/region/hamburg/news/id_91709770/hamburg-corona-neuinfektionen-wieder-unter-1-000.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/region/berlin/news/id_91922244/berlin-fast-alle-corona-massnahmen-fallen-am-freitag.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/71/02/38/id_91710238/300_80/tid_da/covid-19-dashboard-des-robert-koch-instituts-symbolbild-in-hamburg-sinkt-die-7-tage-inzidenz-unter-1-000-.jpg" width="300" class="Tlz" alt="Covid-19-Dashboard des Robert Koch-Instituts (Symbolbild): In Hamburg sinkt die 7-Tage-Inzidenz unter 1.000.   (Quelle: imago images/Rüdiger Wölk)" src="https://img.toi.de/t.gif" title="Covid-19-Dashboard des Robert Koch-Instituts (Symbolbild): In Hamburg sinkt die 7-Tage-Inzidenz unter 1.000.   (Quelle: imago images/Rüdiger Wölk)" /><noscript><img src="https://bilder.t-online.de/b/91/71/02/38/id_91710238/300_80/tid_da/covid-19-dashboard-des-robert-koch-instituts-symbolbild-in-hamburg-sinkt-die-7-tage-inzidenz-unter-1-000-.jpg" width="300" height="169" alt="Covid-19-Dashboard des Robert Koch-Instituts (Symbolbild): In Hamburg sinkt die 7-Tage-Inzidenz unter 1.000.  " /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/92/32/58/id_91923258/300_80/tid_da/person-haelt-ffp2-maske-in-der-hand-symbolbild-die-maskenpflicht-in-oeffentlichen-einrichtungen-zaehlt-zum-basisschutz-.jpg" width="300" class="Tlz" alt="Person hält FFP2-Maske in der Hand (Symbolbild): Die Maskenpflicht in öffentlichen Einrichtungen zählt zum Basisschutz.  (Quelle: imago images/Michael Gstettenbauer)" src="https://img.toi.de/t.gif" title="Person hält FFP2-Maske in der Hand (Symbolbild): Die Maskenpflicht in öffentlichen Einrichtungen zählt zum Basisschutz.  (Quelle: imago images/Michael Gstettenbauer)" /><noscript><img src="https://bilder.t-online.de/b/91/92/32/58/id_91923258/300_80/tid_da/person-haelt-ffp2-maske-in-der-hand-symbolbild-die-maskenpflicht-in-oeffentlichen-einrichtungen-zaehlt-zum-basisschutz-.jpg" width="300" height="169" alt="Person hält FFP2-Maske in der Hand (Symbolbild): Die Maskenpflicht in öffentlichen Einrichtungen zählt zum Basisschutz. " /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2332,26 +2359,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91708310" onfocus="A('zid=91708310;mp=0201;vn=3')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91920484" onfocus="A('zid=91920484;mp=0201;vn=72')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/region/duesseldorf/news/id_91708310/duesseldorf-corona-zahlen-in-nrw-sinken-weiter.html"> Bundesweite Inzidenz höher - Corona-Zahlen in NRW sinken weiter
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91920484/corona-absurdistan-thueringen-es-kann-niemand-mehr-kontrollieren.html"> Corona-Absurdistan Thüringen - Und plötzlich kann es niemand mehr kontrollieren
   </a>
 
 
- <h6>Bundesweite Inzidenz h&ouml;her</h6>  <h5 data-tb-region-item-title="">Corona-Zahlen in NRW sinken weiter</h5>
+ <h6>Corona-Absurdistan Th&uuml;ringen</h6>  <h5 data-tb-region-item-title="">Und pl&ouml;tzlich kann es niemand mehr kontrollieren</h5>
 
-<p class="Ttst">Langsames Aufatmen in Nordrhein-Westfalen: Die Corona-Inzidenz ist zwar immer noch hoch, geht aber seit mehreren Tagen zurück. Dass immer mehr Menschen ins Krankenhaus kommen, liege nicht nur an Corona.
-
-
+<p class="Ttst">Die Bundesregierung hat die Verantwortung für die Corona-Politik auf die Länder abgeschoben. So richtig zufrieden ist damit gerade niemand. Doch nirgends ist die Situation so prekär wie in Thüringen. | Von J. Bebermeier
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/region/duesseldorf/news/id_91708310/duesseldorf-corona-zahlen-in-nrw-sinken-weiter.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91920484/corona-absurdistan-thueringen-es-kann-niemand-mehr-kontrollieren.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/70/92/30/id_91709230/300_80/tid_da/bundesweite-7-tage-inzidenz-des-robert-koch-institut-22-02-2022-symbolbild-in-nrw-sinken-die-zahlen-weiter-und-liegen-unter-der-bundesweiten-inzidenz-.jpg" width="300" class="Tlz" alt="Bundesweite 7-Tage-Inzidenz des Robert Koch-Institut 22.02.2022 (Symbolbild): In NRW sinken die Zahlen weiter und liegen unter der bundesweiten Inzidenz.  (Quelle: imago images/Rüdiger Wölk)" src="https://img.toi.de/t.gif" title="Bundesweite 7-Tage-Inzidenz des Robert Koch-Institut 22.02.2022 (Symbolbild): In NRW sinken die Zahlen weiter und liegen unter der bundesweiten Inzidenz.  (Quelle: imago images/Rüdiger Wölk)" /><noscript><img src="https://bilder.t-online.de/b/91/70/92/30/id_91709230/300_80/tid_da/bundesweite-7-tage-inzidenz-des-robert-koch-institut-22-02-2022-symbolbild-in-nrw-sinken-die-zahlen-weiter-und-liegen-unter-der-bundesweiten-inzidenz-.jpg" width="300" height="169" alt="Bundesweite 7-Tage-Inzidenz des Robert Koch-Institut 22.02.2022 (Symbolbild): In NRW sinken die Zahlen weiter und liegen unter der bundesweiten Inzidenz. " /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/92/15/98/id_91921598/300_80/tid_da/karl-lauterbach-ich-hoffe-dass-die-laender-jetzt-aus-der-schmollecke-herauskommen-.jpg" width="300" class="Tlz" alt="Karl Lauterbach: 'Ich hoffe, dass die Länder jetzt aus der Schmollecke herauskommen.'  (Quelle: dpa/Christoph Soeder)" src="https://img.toi.de/t.gif" title="Karl Lauterbach: 'Ich hoffe, dass die Länder jetzt aus der Schmollecke herauskommen.'  (Quelle: dpa/Christoph Soeder)" /><noscript><img src="https://bilder.t-online.de/b/91/92/15/98/id_91921598/300_80/tid_da/karl-lauterbach-ich-hoffe-dass-die-laender-jetzt-aus-der-schmollecke-herauskommen-.jpg" width="300" height="169" alt="Karl Lauterbach: 'Ich hoffe, dass die Länder jetzt aus der Schmollecke herauskommen.' " /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2361,24 +2386,26 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91707360" onfocus="A('zid=91707360;mp=0201;vn=3')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91928510" onfocus="A('zid=91928510;mp=0201;vn=4')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/panorama/id_91707360/rki-meldet-mehr-als-125-000-neuinfektionen-inzidenz-sinkt-auf-1-306-8-.html"> Inzidenz sinkt auf 1.306,8 - RKI meldet mehr als 125.000 Neuinfektionen
+<a href="https://www.t-online.de/region/hamburg/news/id_91928510/hamburg-staatsanwaltschaft-klagt-corona-betrueger-an.html"> Schaden in Millionenhöhe - Staatsanwaltschaft klagt mutmaßliche Corona-Betrüger an
   </a>
 
 
- <h6>Inzidenz sinkt auf 1.306,8</h6>  <h5 data-tb-region-item-title="">RKI meldet mehr als 125.000 Neuinfektionen</h5>
+ <h6>Schaden in Millionenh&ouml;he</h6>  <h5 data-tb-region-item-title="">Staatsanwaltschaft klagt mutma&szlig;liche Corona-Betr&uuml;ger an</h5>
 
-<p class="Ttst">Dem Robert Koch-Institut sind binnen 24 Stunden erneut mehr als 125.000 Neuinfektionen gemeldet worden. Auch 306 neue Todesfälle sind an einem Tag verzeichnet worden.
+<p class="Ttst">Fünf Beschuldigte sollen in Hamburg mehrere Millionen Euro beim Betrug mit Corona-Hilfen erbeutet haben. Bei einer Razzia wurden sie gefasst. Nun müssen sie sich vor Gericht verantworten.
+
+
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91707360/rki-meldet-mehr-als-125-000-neuinfektionen-inzidenz-sinkt-auf-1-306-8-.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/region/hamburg/news/id_91928510/hamburg-staatsanwaltschaft-klagt-corona-betrueger-an.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/70/73/82/id_91707382/300_80/tid_da/positiver-test-in-deutschland-wurden-binnen-eines-tages-erneut-306-neue-todesfaelle-gemeldet-.jpg" width="300" class="Tlz" alt="Positiver Test: In Deutschland wurden binnen eines Tages erneut 306 neue Todesfälle gemeldet. (Quelle: imago images/photothek)" src="https://img.toi.de/t.gif" title="Positiver Test: In Deutschland wurden binnen eines Tages erneut 306 neue Todesfälle gemeldet. (Quelle: imago images/photothek)" /><noscript><img src="https://bilder.t-online.de/b/91/70/73/82/id_91707382/300_80/tid_da/positiver-test-in-deutschland-wurden-binnen-eines-tages-erneut-306-neue-todesfaelle-gemeldet-.jpg" width="300" height="169" alt="Positiver Test: In Deutschland wurden binnen eines Tages erneut 306 neue Todesfälle gemeldet." /></noscript>                                                              
+<img height="168" data-original="https://bilder.t-online.de/b/91/92/86/42/id_91928642/300_80/tid_da/der-eingang-zu-oberlandesgericht-hamburg-symbolbild-die-fuenf-beschuldigten-befinden-sich-seit-november-in-untersuchungshaft-.jpg" width="300" class="Tlz" alt="Der Eingang zu Oberlandesgericht Hamburg (Symbolbild): Die fünf Beschuldigten befinden sich seit November in Untersuchungshaft. (Quelle: imago images/Westend61)" src="https://img.toi.de/t.gif" title="Der Eingang zu Oberlandesgericht Hamburg (Symbolbild): Die fünf Beschuldigten befinden sich seit November in Untersuchungshaft. (Quelle: imago images/Westend61)" /><noscript><img src="https://bilder.t-online.de/b/91/92/86/42/id_91928642/300_80/tid_da/der-eingang-zu-oberlandesgericht-hamburg-symbolbild-die-fuenf-beschuldigten-befinden-sich-seit-november-in-untersuchungshaft-.jpg" width="300" height="169" alt="Der Eingang zu Oberlandesgericht Hamburg (Symbolbild): Die fünf Beschuldigten befinden sich seit November in Untersuchungshaft." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2388,26 +2415,26 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91704238" onfocus="A('zid=91704238;mp=0201;vn=4')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91927838" onfocus="A('zid=91927838;mp=0201;vn=2')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/region/hamburg/news/id_91704238/kontaktnachverfolgung-in-hamburg-bundeswehr-beendet-einsatz-in-gesundheitsaemtern.html"> Nach sieben Wochen - Bundeswehr beendet Einsatz in Gesundheitsämtern
+<a href="https://www.t-online.de/region/hamburg/news/id_91927838/hamburg-stadt-meldet-sechs-corona-tote-in-24-stunden.html"> Tausende Neuinfektionen - Hamburg meldet sechs Corona-Tote in 24 Stunden
   </a>
 
 
- <h6>Nach sieben Wochen</h6>  <h5 data-tb-region-item-title="">Bundeswehr beendet Einsatz in Gesundheits&auml;mtern</h5>
+ <h6>Tausende Neuinfektionen</h6>  <h5 data-tb-region-item-title="">Hamburg meldet sechs Corona-Tote in 24 Stunden</h5>
 
-<p class="Ttst">Im Kampf gegen das Coronavirus war in Hamburg auch die Bundeswehr im Einsatz. Mehrere Wochen lang haben Kräfte dabei geholfen, die Corona-Kontakte nachzuverfolgen. 
+<p class="Ttst">Das Coronavirus hat die Hansestadt Hamburg seit nunmehr zwei Jahren fest im Griff. Täglich werden Tausende Neuinfektionen gemeldet. Die Inzidenz liegt nur noch knapp unter dem Wert von 1.500. 
 
 
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/region/hamburg/news/id_91704238/kontaktnachverfolgung-in-hamburg-bundeswehr-beendet-einsatz-in-gesundheitsaemtern.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/region/hamburg/news/id_91927838/hamburg-stadt-meldet-sechs-corona-tote-in-24-stunden.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/70/46/76/id_91704676/300_80/tid_da/ein-soldat-der-bundeswehr-sitzt-am-schreibtisch-archivbild-sieben-wochen-haben-die-einsatzkraefte-in-hamburg-ausgeholfen-.jpg" width="300" class="Tlz" alt="Ein Soldat der Bundeswehr sitzt am Schreibtisch (Archivbild): Sieben Wochen haben die Einsatzkräfte in Hamburg ausgeholfen. (Quelle: imago images/Chris Emil Janßen)" src="https://img.toi.de/t.gif" title="Ein Soldat der Bundeswehr sitzt am Schreibtisch (Archivbild): Sieben Wochen haben die Einsatzkräfte in Hamburg ausgeholfen. (Quelle: imago images/Chris Emil Janßen)" /><noscript><img src="https://bilder.t-online.de/b/91/70/46/76/id_91704676/300_80/tid_da/ein-soldat-der-bundeswehr-sitzt-am-schreibtisch-archivbild-sieben-wochen-haben-die-einsatzkraefte-in-hamburg-ausgeholfen-.jpg" width="300" height="169" alt="Ein Soldat der Bundeswehr sitzt am Schreibtisch (Archivbild): Sieben Wochen haben die Einsatzkräfte in Hamburg ausgeholfen." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/89/68/69/46/id_89686946/300_80/tid_da/illustration-des-coronavirus-symbolbild-erneut-wurden-tausende-infektionen-mit-dem-coronavirus-gemeldet-.jpg" width="300" class="Tlz" alt="Illustration des Coronavirus (Symbolbild): Erneut wurden Tausende Infektionen mit dem Coronavirus gemeldet. (Quelle: imago images/Science Photo Library)" src="https://img.toi.de/t.gif" title="Illustration des Coronavirus (Symbolbild): Erneut wurden Tausende Infektionen mit dem Coronavirus gemeldet. (Quelle: imago images/Science Photo Library)" /><noscript><img src="https://bilder.t-online.de/b/89/68/69/46/id_89686946/300_80/tid_da/illustration-des-coronavirus-symbolbild-erneut-wurden-tausende-infektionen-mit-dem-coronavirus-gemeldet-.jpg" width="300" height="169" alt="Illustration des Coronavirus (Symbolbild): Erneut wurden Tausende Infektionen mit dem Coronavirus gemeldet." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2417,26 +2444,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91701304" onfocus="A('zid=91701304;mp=0201;vn=8')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91924978" onfocus="A('zid=91924978;mp=0201;vn=9')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/region/hamburg/news/id_91701304/hamburg-corona-regeln-an-schulen-gelockert.html"> Bundesweite Regeln - Corona-Maßnahmen an Hamburger Schulen gelockert
+<a href="https://www.t-online.de/region/hamburg/news/id_91924978/buergerschaft-soll-hamburg-zum-corona-hotspot-erklaeren.html"> Coronalage in Hamburg - Bürgerschaft entscheidet über Hotspot-Regelung
   </a>
 
 
- <h6>Bundesweite Regeln</h6>  <h5 data-tb-region-item-title="">Corona-Ma&szlig;nahmen an Hamburger Schulen gelockert</h5>
+ <h6>Coronalage in Hamburg</h6>  <h5 data-tb-region-item-title="">B&uuml;rgerschaft entscheidet &uuml;ber Hotspot-Regelung</h5>
 
-<p class="Ttst">Die Infektionszahlen in Hamburg sinken. Das hat auch Auswirkungen auf die Corona-Maßnahmen: Schon am Wochenende wurde die Sperrstunde aufgehoben. Nun gibt es Lockerungen an den Schulen.
-
-
+<p class="Ttst">In Hamburg will der Senat das Ende der Maskenpflicht mit allen Mitteln verhindern. Aus diesem Grund soll das Land zum Corona-Hotspot erklärt werden – obwohl die Inzidenz bundesweit zu den niedrigsten gehört.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/region/hamburg/news/id_91701304/hamburg-corona-regeln-an-schulen-gelockert.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/region/hamburg/news/id_91924978/buergerschaft-soll-hamburg-zum-corona-hotspot-erklaeren.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/70/13/08/id_91701308/300_80/tid_da/ein-mund-nasen-schutz-liegt-auf-unterlagen-symbolbild-im-unterricht-muessen-schueler-keine-masken-mehr-tragen-.jpg" width="300" class="Tlz" alt="Ein Mund-Nasen-Schutz liegt auf Unterlagen (Symbolbild): Im Unterricht müssen Schüler keine Masken mehr tragen. (Quelle: dpa/Matthias Balk)" src="https://img.toi.de/t.gif" title="Ein Mund-Nasen-Schutz liegt auf Unterlagen (Symbolbild): Im Unterricht müssen Schüler keine Masken mehr tragen. (Quelle: dpa/Matthias Balk)" /><noscript><img src="https://bilder.t-online.de/b/91/70/13/08/id_91701308/300_80/tid_da/ein-mund-nasen-schutz-liegt-auf-unterlagen-symbolbild-im-unterricht-muessen-schueler-keine-masken-mehr-tragen-.jpg" width="300" height="169" alt="Ein Mund-Nasen-Schutz liegt auf Unterlagen (Symbolbild): Im Unterricht müssen Schüler keine Masken mehr tragen." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/92/49/82/id_91924982/300_80/tid_da/die-mitglieder-der-hamburgischen-buergerschaft-sitzen-waehrend-einer-sitzung-im-saal-archivbild-waehrend-die-afd-und-die-fdp-gegen-die-hotspot-regelung-klagen-wollen-will-die-linke-zustimmen-.jpg" width="300" class="Tlz" alt="Die Mitglieder der Hamburgischen Bürgerschaft sitzen während einer Sitzung im Saal (Archivbild): Während die AfD und die FDP gegen die Hotspot-Regelung klagen wollen, will Die Linke zustimmen. (Quelle: dpa/Daniel Bockwoldt)" src="https://img.toi.de/t.gif" title="Die Mitglieder der Hamburgischen Bürgerschaft sitzen während einer Sitzung im Saal (Archivbild): Während die AfD und die FDP gegen die Hotspot-Regelung klagen wollen, will Die Linke zustimmen. (Quelle: dpa/Daniel Bockwoldt)" /><noscript><img src="https://bilder.t-online.de/b/91/92/49/82/id_91924982/300_80/tid_da/die-mitglieder-der-hamburgischen-buergerschaft-sitzen-waehrend-einer-sitzung-im-saal-archivbild-waehrend-die-afd-und-die-fdp-gegen-die-hotspot-regelung-klagen-wollen-will-die-linke-zustimmen-.jpg" width="300" height="169" alt="Die Mitglieder der Hamburgischen Bürgerschaft sitzen während einer Sitzung im Saal (Archivbild): Während die AfD und die FDP gegen die Hotspot-Regelung klagen wollen, will Die Linke zustimmen." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2446,24 +2471,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91703160" onfocus="A('zid=91703160;mp=0201;vn=5')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91924942" onfocus="A('zid=91924942;mp=0201;vn=8')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/ausland/id_91703160/grossbritannien-boris-johnson-will-letzte-corona-regeln-aufheben.html"> Briten beenden Corona-Regeln - Johnson: "Wir geben den Menschen endlich ihre Freiheit zurück"
+<a href="https://www.t-online.de/nachrichten/panorama/id_91924942/letzter-corona-podcast-mit-christian-drosten-das-verblueffte-ihn-am-meisten.html"> Letzte Episode des Corona-Podcasts - Das verblüffte Virologen Drosten am meisten
   </a>
 
 
- <h6>Briten beenden Corona-Regeln</h6>  <h5 data-tb-region-item-title="">Johnson: &quot;Wir geben den Menschen endlich ihre Freiheit zur&uuml;ck&quot;</h5>
+ <h6>Letzte Episode des Corona-Podcasts</h6>  <h5 data-tb-region-item-title="">Das verbl&uuml;ffte Virologen Drosten am meisten</h5>
 
-<p class="Ttst">Bereits im Januar hob Großbritannien viele Corona-Maßnahmen wie die Maskenpflicht auf. Nun sollen auch die letzten Einschränkungen fallen. Speziell an einem Vorhaben der Regierung gibt es jedoch scharfe Kritik.
+<p class="Ttst">Der Virologe Christian Drosten galt durch den Corona-Podcast als die Stimme der Wissenschaft in der Pandemie. Jetzt hört er in der Sendung auf – und blickte mit seiner Kollegin Sandra Ciesek zurück.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91703160/grossbritannien-boris-johnson-will-letzte-corona-regeln-aufheben.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91924942/letzter-corona-podcast-mit-christian-drosten-das-verblueffte-ihn-am-meisten.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/70/32/92/id_91703292/300_80/tid_da/boris-johnson-der-britische-premierminister-will-auch-die-letzten-corona-massnahmen-fallen-lassen-.jpg" width="300" class="Tlz" alt="Boris Johnson: Der britische Premierminister will auch die letzten Corona-Maßnahmen fallen lassen. (Quelle: imago images/Tayfun Salci)" src="https://img.toi.de/t.gif" title="Boris Johnson: Der britische Premierminister will auch die letzten Corona-Maßnahmen fallen lassen. (Quelle: imago images/Tayfun Salci)" /><noscript><img src="https://bilder.t-online.de/b/91/70/32/92/id_91703292/300_80/tid_da/boris-johnson-der-britische-premierminister-will-auch-die-letzten-corona-massnahmen-fallen-lassen-.jpg" width="300" height="169" alt="Boris Johnson: Der britische Premierminister will auch die letzten Corona-Maßnahmen fallen lassen." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/92/49/88/id_91924988/300_80/tid_da/christian-drosten-bei-einer-pressekonferenz-archivbild-der-virologe-hoert-beim-podcast-auf-und-gab-zum-letzten-mal-einen-ausblick-.jpg" width="300" class="Tlz" alt="Christian Drosten bei einer Pressekonferenz (Archivbild): Der Virologe hört beim Podcast auf – und gab zum letzten Mal einen Ausblick. (Quelle: imago images/ IPON)" src="https://img.toi.de/t.gif" title="Christian Drosten bei einer Pressekonferenz (Archivbild): Der Virologe hört beim Podcast auf – und gab zum letzten Mal einen Ausblick. (Quelle: imago images/ IPON)" /><noscript><img src="https://bilder.t-online.de/b/91/92/49/88/id_91924988/300_80/tid_da/christian-drosten-bei-einer-pressekonferenz-archivbild-der-virologe-hoert-beim-podcast-auf-und-gab-zum-letzten-mal-einen-ausblick-.jpg" width="300" height="169" alt="Christian Drosten bei einer Pressekonferenz (Archivbild): Der Virologe hört beim Podcast auf – und gab zum letzten Mal einen Ausblick." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2473,24 +2498,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91701206" onfocus="A('zid=91701206;mp=0201;vn=8')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91925248" onfocus="A('zid=91925248;mp=0201;vn=3')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/panorama/id_91701206/corona-zahlen-aktuell-rki-meldet-73-867-neuinfektionen-inzidenz-steigt.html"> Corona-Lage in Deutschland - RKI meldet 73.867 Neuinfektionen – Inzidenz steigt leicht
+<a href="https://www.t-online.de/nachrichten/panorama/id_91925248/corona-zahlen-in-deutschland-rki-meldet-sieben-tage-inzidenz-von-1-663.html"> Mehr als 260.000 Neuansteckungen - Bundesweite Corona-Inzidenz sinkt auf 1.663
   </a>
 
 
- <h6>Corona-Lage in Deutschland</h6>  <h5 data-tb-region-item-title="">RKI meldet 73.867 Neuinfektionen &ndash; Inzidenz steigt leicht</h5>
+ <h6>Mehr als 260.000 Neuansteckungen</h6>  <h5 data-tb-region-item-title="">Bundesweite Corona-Inzidenz sinkt auf 1.663</h5>
 
-<p class="Ttst">Dem Robert Koch-Institut sind bis zum Montagmorgen knapp 74.000 Positiv-Tests gemeldet worden. Die bundesweite Sieben-Tage-Inzidenz steigt leicht im Vergleich zum Vortag und liegt nun bei 1.346,8.
+<p class="Ttst">Die Zahl der Neuansteckungen in Deutschland liegt weiterhin auf hohem Niveau. Die Sieben-Tage-Inzidenz ist aber gesunken, gestern wurde sie noch mit 1.703,3 angegeben. 
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91701206/corona-zahlen-aktuell-rki-meldet-73-867-neuinfektionen-inzidenz-steigt.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91925248/corona-zahlen-in-deutschland-rki-meldet-sieben-tage-inzidenz-von-1-663.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/70/12/44/id_91701244/300_80/tid_da/corona-intensivstation-fulda-der-inzidenzwert-bei-den-neuansteckungen-in-deutschland-hat-sich-kaum-bewegt-.jpg" width="300" class="Tlz" alt="Corona-Intensivstation Fulda: Der Inzidenzwert bei den Neuansteckungen in Deutschland hat sich kaum bewegt. (Quelle: dpa/Boris Roessler)" src="https://img.toi.de/t.gif" title="Corona-Intensivstation Fulda: Der Inzidenzwert bei den Neuansteckungen in Deutschland hat sich kaum bewegt. (Quelle: dpa/Boris Roessler)" /><noscript><img src="https://bilder.t-online.de/b/91/70/12/44/id_91701244/300_80/tid_da/corona-intensivstation-fulda-der-inzidenzwert-bei-den-neuansteckungen-in-deutschland-hat-sich-kaum-bewegt-.jpg" width="300" height="169" alt="Corona-Intensivstation Fulda: Der Inzidenzwert bei den Neuansteckungen in Deutschland hat sich kaum bewegt." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/92/52/50/id_91925250/300_80/tid_da/ein-antigen-schnelltest-das-rki-meldete-am-mittwochmorgen-mehr-als-260-000-neuansteckungen-mit-dem-coronavirus-.jpg" width="300" class="Tlz" alt="Ein Antigen-Schnelltest: Das RKI meldete am Mittwochmorgen mehr als 260.000 Neuansteckungen mit dem Coronavirus. (Quelle: dpa/Fernando Gutierrez-Juarez)" src="https://img.toi.de/t.gif" title="Ein Antigen-Schnelltest: Das RKI meldete am Mittwochmorgen mehr als 260.000 Neuansteckungen mit dem Coronavirus. (Quelle: dpa/Fernando Gutierrez-Juarez)" /><noscript><img src="https://bilder.t-online.de/b/91/92/52/50/id_91925250/300_80/tid_da/ein-antigen-schnelltest-das-rki-meldete-am-mittwochmorgen-mehr-als-260-000-neuansteckungen-mit-dem-coronavirus-.jpg" width="300" height="169" alt="Ein Antigen-Schnelltest: Das RKI meldete am Mittwochmorgen mehr als 260.000 Neuansteckungen mit dem Coronavirus." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2500,24 +2525,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91697464" onfocus="A('zid=91697464;mp=0201;vn=3')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91923576" onfocus="A('zid=91923576;mp=0201;vn=6')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/deutschland/id_91697464/rki-meldet-118-032-neuinfektionen.html"> Inzidenz sinkt leicht - RKI meldet 118.032 Neuinfektionen
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91923576/viele-bundeslaender-wollen-auf-maskenpflicht-verzichten-fehlende-rechtssicherheit.html"> Fehlende Rechtssicherheit - Viele Bundesländer wollen auf Maskenpflicht verzichten
   </a>
 
 
- <h6>Inzidenz sinkt leicht</h6>  <h5 data-tb-region-item-title="">RKI meldet 118.032 Neuinfektionen</h5>
+ <h6>Fehlende Rechtssicherheit</h6>  <h5 data-tb-region-item-title="">Viele Bundesl&auml;nder wollen auf Maskenpflicht verzichten</h5>
 
-<p class="Ttst">Dem Robert Koch-Institut sind bis zum Sonntagmorgen unter 120.000 Neuinfektionen gemeldet worden. Der Wert der bundesweiten Inzidenz ist erneut gesunken und liegt bei 1.346,3.
+<p class="Ttst">Masken in Supermärkten, Schulen, 3G- oder 2G-Regeln: Am Wochenende läuft die Grundlage für diese Corona-Maßnahmen aus. Bundesländer können zwar Hotspot-Regionen ausrufen – doch die meisten planen das nicht.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91697464/rki-meldet-118-032-neuinfektionen.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91923576/viele-bundeslaender-wollen-auf-maskenpflicht-verzichten-fehlende-rechtssicherheit.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/69/74/78/id_91697478/300_80/tid_da/eine-probe-wird-in-ein-roehrchen-mit-einer-testloesung-getaucht-symbolbild-die-infektionszahlen-in-deutschland-gehen-langsam-zurueck-.jpg" width="300" class="Tlz" alt="Eine Probe wird  in ein Röhrchen mit einer Testlösung getaucht (Symbolbild): Die Infektionszahlen in Deutschland gehen langsam zurück. (Quelle: imago images/Sven Simon)" src="https://img.toi.de/t.gif" title="Eine Probe wird  in ein Röhrchen mit einer Testlösung getaucht (Symbolbild): Die Infektionszahlen in Deutschland gehen langsam zurück. (Quelle: imago images/Sven Simon)" /><noscript><img src="https://bilder.t-online.de/b/91/69/74/78/id_91697478/300_80/tid_da/eine-probe-wird-in-ein-roehrchen-mit-einer-testloesung-getaucht-symbolbild-die-infektionszahlen-in-deutschland-gehen-langsam-zurueck-.jpg" width="300" height="169" alt="Eine Probe wird  in ein Röhrchen mit einer Testlösung getaucht (Symbolbild): Die Infektionszahlen in Deutschland gehen langsam zurück." /></noscript>                                                              
+<img height="168" data-original="https://bilder.t-online.de/b/91/92/37/14/id_91923714/300_80/tid_da/einkaufsszene-in-berlin-immer-mehr-bundeslaender-entscheiden-sich-dagegen-die-corona-massnahmen-zu-verlaengern-.jpg" width="300" class="Tlz" alt="Einkaufsszene in Berlin: Immer mehr Bundesländer entscheiden sich dagegen, die Corona-Maßnahmen zu verlängern. (Quelle: dpa/Monika Skolimowska)" src="https://img.toi.de/t.gif" title="Einkaufsszene in Berlin: Immer mehr Bundesländer entscheiden sich dagegen, die Corona-Maßnahmen zu verlängern. (Quelle: dpa/Monika Skolimowska)" /><noscript><img src="https://bilder.t-online.de/b/91/92/37/14/id_91923714/300_80/tid_da/einkaufsszene-in-berlin-immer-mehr-bundeslaender-entscheiden-sich-dagegen-die-corona-massnahmen-zu-verlaengern-.jpg" width="300" height="169" alt="Einkaufsszene in Berlin: Immer mehr Bundesländer entscheiden sich dagegen, die Corona-Maßnahmen zu verlängern." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2527,24 +2552,26 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91697418" onfocus="A('zid=91697418;mp=0201;vn=5')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91919644" onfocus="A('zid=91919644;mp=0201;vn=6')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/deutschland/id_91697418/spd-fraktionschef-muetznich-aeusserst-sich-zu-rki-praesident-lothar-wieler.html"> Nach Kritik an Wieler - SPD-Fraktionschef äußert sich zu RKI-Präsident
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91919644/corona-karl-lauterbach-fordert-vierte-impfung-fuer-alle-ueber-dringend-.html"> "Dringend nötig" - Lauterbach: Umgang mit vierter Impfung wird EU-weit angeglichen
   </a>
 
 
- <h6>Nach Kritik an Wieler</h6>  <h5 data-tb-region-item-title="">SPD-Fraktionschef &auml;u&szlig;ert sich zu RKI-Pr&auml;sident</h5>
+ <h6>&quot;Dringend n&ouml;tig&quot;</h6>  <h5 data-tb-region-item-title="">Lauterbach: Umgang mit vierter Impfung wird EU-weit angeglichen</h5>
 
-<p class="Ttst">Der RKI-Chef Lothar Wieler hat mit seinem Alleingang beim Genesenenstatus bei einigen Politikern für Verwunderung gesorgt.  Nach dem Kanzler stellt sich jetzt der Fraktionschef der Sozialdemokraten hinter ihn.
+<p class="Ttst">Bislang wird die vierte Corona-Impfung in Deutschland über 70-Jährigen und Risikopatienten empfohlen. Das soll sich nach einer Forderung von Gesundheitsminister Lauterbach EU-weit ändern.  
+
+
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91697418/spd-fraktionschef-muetznich-aeusserst-sich-zu-rki-praesident-lothar-wieler.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91919644/corona-karl-lauterbach-fordert-vierte-impfung-fuer-alle-ueber-dringend-.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/69/74/30/id_91697430/300_80/tid_da/lothar-wieler-bei-der-bundespressekonferenz-archivbild-der-rki-chef-ist-in-die-kritik-geraten.jpg" width="300" class="Tlz" alt="Lothar Wieler bei der Bundespressekonferenz (Archivbild): Der RKI-Chef ist in die Kritik geraten (Quelle: imago images/Jens Schicke)" src="https://img.toi.de/t.gif" title="Lothar Wieler bei der Bundespressekonferenz (Archivbild): Der RKI-Chef ist in die Kritik geraten (Quelle: imago images/Jens Schicke)" /><noscript><img src="https://bilder.t-online.de/b/91/69/74/30/id_91697430/300_80/tid_da/lothar-wieler-bei-der-bundespressekonferenz-archivbild-der-rki-chef-ist-in-die-kritik-geraten.jpg" width="300" height="169" alt="Lothar Wieler bei der Bundespressekonferenz (Archivbild): Der RKI-Chef ist in die Kritik geraten" /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/96/76/id_91919676/300_80/tid_da/karl-lauterbach-der-gesundheitsminister-beurteilt-eine-vierte-impfung-fuer-ueber-60-jaehrige-als-dringend-noetig-.jpg" width="300" class="Tlz" alt="Karl Lauterbach: Der Gesundheitsminister beurteilt eine vierte Impfung für über 60-Jährige als 'dringend nötig'. (Quelle: imago images/Chris Emil Janßen)" src="https://img.toi.de/t.gif" title="Karl Lauterbach: Der Gesundheitsminister beurteilt eine vierte Impfung für über 60-Jährige als 'dringend nötig'. (Quelle: imago images/Chris Emil Janßen)" /><noscript><img src="https://bilder.t-online.de/b/91/91/96/76/id_91919676/300_80/tid_da/karl-lauterbach-der-gesundheitsminister-beurteilt-eine-vierte-impfung-fuer-ueber-60-jaehrige-als-dringend-noetig-.jpg" width="300" height="169" alt="Karl Lauterbach: Der Gesundheitsminister beurteilt eine vierte Impfung für über 60-Jährige als 'dringend nötig'." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2554,27 +2581,26 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91693188" onfocus="A('zid=91693188;mp=0201;vn=2')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91920444" onfocus="A('zid=91920444;mp=0201;vn=7')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/deutschland/id_91693188/rki-meldet-weiter-sinkenden-inzidenzwert.html"> 189.105 Neufektionen - RKI meldet weiter sinkenden Inzidenzwert
+<a href="https://www.t-online.de/region/hamburg/news/id_91920444/hamburg-afd-kuendigt-klage-gegen-hotspot-regelung-an.html"> Nach FDP -  AfD kündigt Klage gegen Hotspot-Regelung an
   </a>
 
 
- <h6>189.105 Neufektionen</h6>  <h5 data-tb-region-item-title="">RKI meldet weiter sinkenden Inzidenzwert</h5>
+ <h6>Nach FDP</h6>  <h5 data-tb-region-item-title="">AfD k&uuml;ndigt Klage gegen Hotspot-Regelung an</h5>
 
-<p class="Ttst">Die Corona-Infektionszahlen und der Inzidenzwert in Deutschland sinken weiter. Das Robert Koch-Institut (RKI) gibt den aktuellen Sieben-Tage-Wert mit 1.350,4 an.
-
+<p class="Ttst">Die geplante Hotspot-Regelung sorgt in Hamburg für Diskussionen. Während der rot-grüne Senat die Maskenpflicht erhalten will, hat die FDP eine Klage angekündigt. Auch die AfD will rechtliche Schritte einleiten.
 
 
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91693188/rki-meldet-weiter-sinkenden-inzidenzwert.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/region/hamburg/news/id_91920444/hamburg-afd-kuendigt-klage-gegen-hotspot-regelung-an.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/69/31/90/id_91693190/300_80/tid_da/menschen-kaufen-auf-dem-mainzer-wochenmarkt-ein-in-der-corona-pandemie-gibt-es-immer-mehr-lockerungen-.jpg" width="300" class="Tlz" alt="Menschen kaufen auf dem Mainzer Wochenmarkt ein: In der Corona-Pandemie gibt es immer mehr Lockerungen. (Quelle: dpa/Arne Dedert)" src="https://img.toi.de/t.gif" title="Menschen kaufen auf dem Mainzer Wochenmarkt ein: In der Corona-Pandemie gibt es immer mehr Lockerungen. (Quelle: dpa/Arne Dedert)" /><noscript><img src="https://bilder.t-online.de/b/91/69/31/90/id_91693190/300_80/tid_da/menschen-kaufen-auf-dem-mainzer-wochenmarkt-ein-in-der-corona-pandemie-gibt-es-immer-mehr-lockerungen-.jpg" width="300" height="169" alt="Menschen kaufen auf dem Mainzer Wochenmarkt ein: In der Corona-Pandemie gibt es immer mehr Lockerungen." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/92/04/48/id_91920448/300_80/tid_da/ein-aufkleber-an-einer-glastuer-weist-auf-das-tragen-einer-maske-hin-symbolbild-in-hamburg-will-der-senat-beschliessen-dass-die-maskenpflicht-in-innenraeumen-weiterhin-bestehen-bleibt-.jpg" width="300" class="Tlz" alt="Ein Aufkleber an einer Glastür weist auf das Tragen einer Maske hin (Symbolbild): In Hamburg will der Senat beschließen, dass die Maskenpflicht in Innenräumen weiterhin bestehen bleibt. (Quelle: dpa/Felix Kästle)" src="https://img.toi.de/t.gif" title="Ein Aufkleber an einer Glastür weist auf das Tragen einer Maske hin (Symbolbild): In Hamburg will der Senat beschließen, dass die Maskenpflicht in Innenräumen weiterhin bestehen bleibt. (Quelle: dpa/Felix Kästle)" /><noscript><img src="https://bilder.t-online.de/b/91/92/04/48/id_91920448/300_80/tid_da/ein-aufkleber-an-einer-glastuer-weist-auf-das-tragen-einer-maske-hin-symbolbild-in-hamburg-will-der-senat-beschliessen-dass-die-maskenpflicht-in-innenraeumen-weiterhin-bestehen-bleibt-.jpg" width="300" height="169" alt="Ein Aufkleber an einer Glastür weist auf das Tragen einer Maske hin (Symbolbild): In Hamburg will der Senat beschließen, dass die Maskenpflicht in Innenräumen weiterhin bestehen bleibt." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2584,24 +2610,26 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91685618" onfocus="A('zid=91685618;mp=0201;vn=36')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91920622" onfocus="A('zid=91920622;mp=0201;vn=5')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/deutschland/id_91685618/olaf-scholz-und-die-impfpflicht-scheitert-sie-dann-scheitert-er-mit.html"> Olaf Scholz - Scheitert sie, dann scheitert er mit
+<a href="https://www.t-online.de/region/hamburg/news/id_91920622/corona-inzidenz-in-hamburg-steigt-auf-1-483-2.html"> 4.424 Neuinfektionen - Corona-Inzidenz in Hamburg erneut gestiegen
   </a>
 
 
- <h6>Olaf Scholz</h6>  <h5 data-tb-region-item-title="">Scheitert sie, dann scheitert er mit</h5>
+ <h6>4.424 Neuinfektionen</h6>  <h5 data-tb-region-item-title="">Corona-Inzidenz in Hamburg erneut gestiegen</h5>
 
-<p class="Ttst">Der Bundeskanzler will die Impfpflicht unbedingt. Doch weil Olaf Scholz keine Mehrheit für sie hat, zerfasert das Projekt gerade im Bundestag. Wird es sie überhaupt noch geben? | Von Johannes Bebermeier
+<p class="Ttst">Seit mehreren Tagen liegt die Corona-Inzidenz in Hamburg knapp unter dem Wert von 1.500. Auch am Dienstag ist sie erneut leicht angestiegen. Auch zwei Todesfälle wurden gemeldet.
+
+
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91685618/olaf-scholz-und-die-impfpflicht-scheitert-sie-dann-scheitert-er-mit.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/region/hamburg/news/id_91920622/corona-inzidenz-in-hamburg-steigt-auf-1-483-2.html">
         
 
 
 
-<img height="168" data-original="https://bilder.t-online.de/b/91/69/16/62/id_91691662/300_80/tid_da/olaf-scholz-der-bundeskanzler-hat-sich-schon-im-dezember-fuer-eine-allgemeine-impfpflicht-ausgesprochen-doch-wird-sie-realitaet-.jpg" width="300" class="Tlz" alt="Olaf Scholz: Der Bundeskanzler hat sich schon im Dezember für eine allgemeine Impfpflicht ausgesprochen. Doch wird sie Realität? (Quelle: imago images/Florian Gärtner)" src="https://img.toi.de/t.gif" title="Olaf Scholz: Der Bundeskanzler hat sich schon im Dezember für eine allgemeine Impfpflicht ausgesprochen. Doch wird sie Realität? (Quelle: imago images/Florian Gärtner)" /><noscript><img src="https://bilder.t-online.de/b/91/69/16/62/id_91691662/300_80/tid_da/olaf-scholz-der-bundeskanzler-hat-sich-schon-im-dezember-fuer-eine-allgemeine-impfpflicht-ausgesprochen-doch-wird-sie-realitaet-.jpg" width="300" height="169" alt="Olaf Scholz: Der Bundeskanzler hat sich schon im Dezember für eine allgemeine Impfpflicht ausgesprochen. Doch wird sie Realität?" /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/89/68/69/46/id_89686946/300_80/tid_da/illustration-des-coronavirus-symbolbild-erneut-wurden-tausende-infektionen-mit-dem-coronavirus-gemeldet-.jpg" width="300" class="Tlz" alt="Illustration des Coronavirus (Symbolbild): Erneut wurden Tausende Infektionen mit dem Coronavirus gemeldet. (Quelle: imago images/Science Photo Library)" src="https://img.toi.de/t.gif" title="Illustration des Coronavirus (Symbolbild): Erneut wurden Tausende Infektionen mit dem Coronavirus gemeldet. (Quelle: imago images/Science Photo Library)" /><noscript><img src="https://bilder.t-online.de/b/89/68/69/46/id_89686946/300_80/tid_da/illustration-des-coronavirus-symbolbild-erneut-wurden-tausende-infektionen-mit-dem-coronavirus-gemeldet-.jpg" width="300" height="169" alt="Illustration des Coronavirus (Symbolbild): Erneut wurden Tausende Infektionen mit dem Coronavirus gemeldet." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2611,24 +2639,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91688808" onfocus="A('zid=91688808;mp=0201;vn=9')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91917996" onfocus="A('zid=91917996;mp=0201;vn=7')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/deutschland/id_91688808/corona-lauterbach-warnt-minister-vor-wettlauf-bei-lockerungen.html"> Geplante Öffnungsschritte - Lauterbach warnt: "Alles auf Kante genäht"
+<a href="https://www.t-online.de/nachrichten/panorama/id_91917996/rki-mehr-als-230-000-neue-corona-faelle-inzidenzwert-steigt.html"> Inzidenzwert wieder leicht gestiegen - RKI meldet mehr als 230.000 neue Corona-Fälle
   </a>
 
 
- <h6>Geplante &Ouml;ffnungsschritte</h6>  <h5 data-tb-region-item-title="">Lauterbach warnt: &quot;Alles auf Kante gen&auml;ht&quot;</h5>
+ <h6>Inzidenzwert wieder leicht gestiegen</h6>  <h5 data-tb-region-item-title="">RKI meldet mehr als 230.000 neue Corona-F&auml;lle</h5>
 
-<p class="Ttst">Die Entwicklung sei noch nicht "in sicheren Gewässern": Gesundheitsminister Lauterbach mahnt weiterhin zu nötiger Vorsicht in der Pandemie. Sein Appell richtet sich auch an die Ministerpräsidenten.
+<p class="Ttst">Der bundesweite Inzidenzwert liegt nun bei 1.703,3. Am Vortag hatte er bei 1.700,6 gelegen. Binnen 24 Stunden wurden 307 Todesfälle im Zusammenhang mit dem Coronavirus gemeldet. 
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91688808/corona-lauterbach-warnt-minister-vor-wettlauf-bei-lockerungen.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91917996/rki-mehr-als-230-000-neue-corona-faelle-inzidenzwert-steigt.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/68/89/98/id_91688998/300_80/tid_da/karl-lauterbach-bei-der-pressekonferenz-fuer-den-herbst-sei-mit-moeglichen-weiteren-corona-wellen-zu-rechnen-so-der-minister-.jpg" width="300" class="Tlz" alt="Karl Lauterbach bei der Pressekonferenz: Für den Herbst sei mit möglichen weiteren Corona-Wellen zu rechnen, so der Minister. (Quelle: Chris Emil Janßen)" src="https://img.toi.de/t.gif" title="Karl Lauterbach bei der Pressekonferenz: Für den Herbst sei mit möglichen weiteren Corona-Wellen zu rechnen, so der Minister. (Quelle: Chris Emil Janßen)" /><noscript><img src="https://bilder.t-online.de/b/91/68/89/98/id_91688998/300_80/tid_da/karl-lauterbach-bei-der-pressekonferenz-fuer-den-herbst-sei-mit-moeglichen-weiteren-corona-wellen-zu-rechnen-so-der-minister-.jpg" width="300" height="169" alt="Karl Lauterbach bei der Pressekonferenz: Für den Herbst sei mit möglichen weiteren Corona-Wellen zu rechnen, so der Minister." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/79/98/id_91917998/300_80/tid_da/ein-intensivpatient-im-krankenhaus-die-zahl-der-neuansteckungen-mit-dem-coronavirus-in-deutschland-liegt-weiter-auf-hohem-niveau-.jpg" width="300" class="Tlz" alt="Ein Intensivpatient im Krankenhaus: Die Zahl der Neuansteckungen mit dem Coronavirus in Deutschland liegt weiter auf hohem Niveau. (Quelle: dpa/Friso Gentsch)" src="https://img.toi.de/t.gif" title="Ein Intensivpatient im Krankenhaus: Die Zahl der Neuansteckungen mit dem Coronavirus in Deutschland liegt weiter auf hohem Niveau. (Quelle: dpa/Friso Gentsch)" /><noscript><img src="https://bilder.t-online.de/b/91/91/79/98/id_91917998/300_80/tid_da/ein-intensivpatient-im-krankenhaus-die-zahl-der-neuansteckungen-mit-dem-coronavirus-in-deutschland-liegt-weiter-auf-hohem-niveau-.jpg" width="300" height="169" alt="Ein Intensivpatient im Krankenhaus: Die Zahl der Neuansteckungen mit dem Coronavirus in Deutschland liegt weiter auf hohem Niveau." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2638,24 +2666,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91689678" onfocus="A('zid=91689678;mp=0201;vn=8')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91917872" onfocus="A('zid=91917872;mp=0201;vn=8')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/deutschland/id_91689678/umfrage-sind-die-lockerungen-zu-voreilig-das-sagen-die-deutschen.html"> Exklusive Umfrage - Sind die Lockerungen zu voreilig? Das sagen die Deutschen
+<a href="https://www.t-online.de/nachrichten/panorama/id_91917872/-coronavirus-update-virologen-drosten-und-ciesek-hoeren-mit-podcast-auf-.html"> Letzte Ausgabe des "Coronavirus-Update" - Virologen Drosten und Ciesek hören mit Podcast auf 
   </a>
 
 
- <h6>Exklusive Umfrage</h6>  <h5 data-tb-region-item-title="">Sind die Lockerungen zu voreilig? Das sagen die Deutschen</h5>
+ <h6>Letzte Ausgabe des &quot;Coronavirus-Update&quot;</h6>  <h5 data-tb-region-item-title="">Virologen Drosten und Ciesek h&ouml;ren mit Podcast auf</h5>
 
-<p class="Ttst">Kanzler Scholz hat Lockerungen der Corona-Maßnahmen verkündet. Für viele ein Lichtblick in der Pandemie – doch andere mahnen weiterhin zur Vorsicht. Wie stehen die Deutschen zu den Plänen?
+<p class="Ttst">Ein Podcast als Maßnahme zur Pandemiebekämpfung: Auch damit ist der Virologe Christian Drosten in den vergangenen zwei Jahren bundesweit bekannt geworden. Jetzt ist Schluss, zumindest vorerst.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91689678/umfrage-sind-die-lockerungen-zu-voreilig-das-sagen-die-deutschen.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91917872/-coronavirus-update-virologen-drosten-und-ciesek-hoeren-mit-podcast-auf-.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/69/25/28/id_91692528/300_80/tid_da/konzert-im-fruehjahr-symbolbild-den-menschen-in-deutschland-steht-ein-fruehling-ohne-tiefgreifende-corona-beschraenkungen-bevor-.jpg" width="300" class="Tlz" alt="Konzert im Frühjahr (Symbolbild): Den Menschen in Deutschland steht ein Frühling ohne tiefgreifende Corona-Beschränkungen bevor. (Quelle: imago images/Maskot)" src="https://img.toi.de/t.gif" title="Konzert im Frühjahr (Symbolbild): Den Menschen in Deutschland steht ein Frühling ohne tiefgreifende Corona-Beschränkungen bevor. (Quelle: imago images/Maskot)" /><noscript><img src="https://bilder.t-online.de/b/91/69/25/28/id_91692528/300_80/tid_da/konzert-im-fruehjahr-symbolbild-den-menschen-in-deutschland-steht-ein-fruehling-ohne-tiefgreifende-corona-beschraenkungen-bevor-.jpg" width="300" height="169" alt="Konzert im Frühjahr (Symbolbild): Den Menschen in Deutschland steht ein Frühling ohne tiefgreifende Corona-Beschränkungen bevor." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/79/94/id_91917994/300_80/tid_da/virologen-ciesek-und-drosten-die-virologen-wurden-auch-durch-ihren-ndr-podcast-bekannt-.jpg" width="300" class="Tlz" alt="Virologen Ciesek und Drosten: Die Virologen wurden auch durch ihren NDR-Podcast bekannt. (Quelle: dpa/Frank Rumpenhorst)" src="https://img.toi.de/t.gif" title="Virologen Ciesek und Drosten: Die Virologen wurden auch durch ihren NDR-Podcast bekannt. (Quelle: dpa/Frank Rumpenhorst)" /><noscript><img src="https://bilder.t-online.de/b/91/91/79/94/id_91917994/300_80/tid_da/virologen-ciesek-und-drosten-die-virologen-wurden-auch-durch-ihren-ndr-podcast-bekannt-.jpg" width="300" height="169" alt="Virologen Ciesek und Drosten: Die Virologen wurden auch durch ihren NDR-Podcast bekannt." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2665,26 +2693,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91687310" onfocus="A('zid=91687310;mp=0201;vn=7')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91915108" onfocus="A('zid=91915108;mp=0201;vn=5')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/region/berlin/news/id_91687310/shoppen-ohne-nachweis-berlin-streicht-2g-regel-in-vielen-bereichen-.html"> Neue Corona-Regeln - Berlin streicht 2G-Regel in vielen Bereichen 
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91915108/corona-regeln-karl-lauterbach-blockt-laender-aufstand-ab-und-aergert-sich.html"> Streit um Corona-Maßnahmen - Lauterbach blockt Länder-Aufstand ab – und ärgert sich
   </a>
 
 
- <h6>Neue Corona-Regeln</h6>  <h5 data-tb-region-item-title="">Berlin streicht 2G-Regel in vielen Bereichen</h5>
+ <h6>Streit um Corona-Ma&szlig;nahmen</h6>  <h5 data-tb-region-item-title="">Lauterbach blockt L&auml;nder-Aufstand ab &ndash; und &auml;rgert sich</h5>
 
-<p class="Ttst">Berlin macht sich locker: Im Einzelhandel, im Kulturbereich und bei touristischen Angeboten fällt die umstrittene 2G-Regel künftig weg. Dafür greift jedoch die Pflicht zum Tragen einer FFP2-Maske.
-
-
+<p class="Ttst">Die Corona-Infektionszahlen sind hoch, dennoch stehen Lockerungen kurz bevor. Einige Bundesländer sind mit der künftigen Rechtslage unzufrieden – doch ihr Vorstoß ist gescheitert. Minister Lauterbach fordert mehr Tempo.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/region/berlin/news/id_91687310/shoppen-ohne-nachweis-berlin-streicht-2g-regel-in-vielen-bereichen-.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91915108/corona-regeln-karl-lauterbach-blockt-laender-aufstand-ab-und-aergert-sich.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/68/88/32/id_91688832/300_80/tid_da/das-alexa-einkaufszentrum-am-berliner-alexanderplatz-symbolbild-ohne-nachweis-koennen-menschen-in-der-hauptstadt-wieder-shoppen-gehen-.jpg" width="300" class="Tlz" alt="Das Alexa-Einkaufszentrum am Berliner Alexanderplatz (Symbolbild): Ohne Nachweis können Menschen in der Hauptstadt wieder shoppen gehen.  (Quelle: imago images/Dirk Sattler)" src="https://img.toi.de/t.gif" title="Das Alexa-Einkaufszentrum am Berliner Alexanderplatz (Symbolbild): Ohne Nachweis können Menschen in der Hauptstadt wieder shoppen gehen.  (Quelle: imago images/Dirk Sattler)" /><noscript><img src="https://bilder.t-online.de/b/91/68/88/32/id_91688832/300_80/tid_da/das-alexa-einkaufszentrum-am-berliner-alexanderplatz-symbolbild-ohne-nachweis-koennen-menschen-in-der-hauptstadt-wieder-shoppen-gehen-.jpg" width="300" height="169" alt="Das Alexa-Einkaufszentrum am Berliner Alexanderplatz (Symbolbild): Ohne Nachweis können Menschen in der Hauptstadt wieder shoppen gehen. " /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/52/12/id_91915212/300_80/tid_da/karl-lauterbach-die-laender-gehen-mit-klaren-forderungen-an-ihn-in-die-gesundheitsministerkonferenz-.jpg" width="300" class="Tlz" alt="Karl Lauterbach: Die Länder gehen mit klaren Forderungen an ihn in die Gesundheitsministerkonferenz. (Quelle: dpa/Kay Nietfeld)" src="https://img.toi.de/t.gif" title="Karl Lauterbach: Die Länder gehen mit klaren Forderungen an ihn in die Gesundheitsministerkonferenz. (Quelle: dpa/Kay Nietfeld)" /><noscript><img src="https://bilder.t-online.de/b/91/91/52/12/id_91915212/300_80/tid_da/karl-lauterbach-die-laender-gehen-mit-klaren-forderungen-an-ihn-in-die-gesundheitsministerkonferenz-.jpg" width="300" height="169" alt="Karl Lauterbach: Die Länder gehen mit klaren Forderungen an ihn in die Gesundheitsministerkonferenz." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2694,26 +2720,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91688310" onfocus="A('zid=91688310;mp=0201;vn=2')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91915064" onfocus="A('zid=91915064;mp=0201;vn=4')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/ausland/id_91688310/kanada-polizei-nimmt-anfuehrer-der-corona-blockaden-fest.html"> Trucker-Proteste in Kanada - Polizei nimmt Anführer der Corona-Blockaden fest
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91915064/corona-fdp-will-bei-bayernweiter-hotspot-regelung-klagen.html"> Nach Ende bundesweiter Maßnahmen - FDP will bei bayernweiter Hotspot-Regelung klagen
   </a>
 
 
- <h6>Trucker-Proteste in Kanada</h6>  <h5 data-tb-region-item-title="">Polizei nimmt Anf&uuml;hrer der Corona-Blockaden fest</h5>
+ <h6>Nach Ende bundesweiter Ma&szlig;nahmen</h6>  <h5 data-tb-region-item-title="">FDP will bei bayernweiter Hotspot-Regelung klagen</h5>
 
-<p class="Ttst">Die Protestierenden hatten das Ultimatum ignoriert, das Stadtzentrum zu räumen. Nun griff die Polizei in der kanadischen Hauptstadt Ottawa durch – und nahm die zwei Organisatoren der Proteste fest.
-
-
+<p class="Ttst">Bayerns FDP hat eine Klage angekündigt, sollte der ganze Freistaat zum Corona-Hotspot erklärt werden. Gesundheitsminister Holetschek will mit dem Kabinett am Dienstag darüber entscheiden.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91688310/kanada-polizei-nimmt-anfuehrer-der-corona-blockaden-fest.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91915064/corona-fdp-will-bei-bayernweiter-hotspot-regelung-klagen.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/68/83/82/id_91688382/300_80/tid_da/polizei-bei-den-protesten-in-ottawa-trudeau-hatte-sich-am-montag-auf-notstandsbefugnisse-berufen-um-gegen-die-protestkonvois-vorzugehen-.jpg" width="300" class="Tlz" alt="Polizei bei den Protesten in Ottawa: Trudeau hatte sich am Montag auf Notstandsbefugnisse berufen, um gegen die Protestkonvois vorzugehen. (Quelle: Reuters/Lars Hagberg)" src="https://img.toi.de/t.gif" title="Polizei bei den Protesten in Ottawa: Trudeau hatte sich am Montag auf Notstandsbefugnisse berufen, um gegen die Protestkonvois vorzugehen. (Quelle: Reuters/Lars Hagberg)" /><noscript><img src="https://bilder.t-online.de/b/91/68/83/82/id_91688382/300_80/tid_da/polizei-bei-den-protesten-in-ottawa-trudeau-hatte-sich-am-montag-auf-notstandsbefugnisse-berufen-um-gegen-die-protestkonvois-vorzugehen-.jpg" width="300" height="169" alt="Polizei bei den Protesten in Ottawa: Trudeau hatte sich am Montag auf Notstandsbefugnisse berufen, um gegen die Protestkonvois vorzugehen." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/65/42/id_91916542/300_80/tid_da/martin-hagen-vorsitzender-der-fdp-landtagsfraktion-am-dienstag-wird-ueber-die-weiteren-corona-massnahmen-in-bayern-entschieden-.jpg" width="300" class="Tlz" alt="Martin Hagen, Vorsitzender der FDP-Landtagsfraktion: Am Dienstag wird über die weiteren Corona-Maßnahmen in Bayern entschieden. (Quelle: imago images/Rolf Poss)" src="https://img.toi.de/t.gif" title="Martin Hagen, Vorsitzender der FDP-Landtagsfraktion: Am Dienstag wird über die weiteren Corona-Maßnahmen in Bayern entschieden. (Quelle: imago images/Rolf Poss)" /><noscript><img src="https://bilder.t-online.de/b/91/91/65/42/id_91916542/300_80/tid_da/martin-hagen-vorsitzender-der-fdp-landtagsfraktion-am-dienstag-wird-ueber-die-weiteren-corona-massnahmen-in-bayern-entschieden-.jpg" width="300" height="169" alt="Martin Hagen, Vorsitzender der FDP-Landtagsfraktion: Am Dienstag wird über die weiteren Corona-Maßnahmen in Bayern entschieden." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2723,24 +2747,26 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91687158" onfocus="A('zid=91687158;mp=0201;vn=9')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91913842" onfocus="A('zid=91913842;mp=0201;vn=25')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/deutschland/id_91687158/rki-omikron-subtyp-ba-2-legt-laut-rki-weiter-zu-inzidenzwert-bei-1-371-7.html"> Mehr als 220.000 Corona-Neuinfektionen - RKI-Bericht: Omikron-Subtyp BA.2 legt weiter zu
+<a href="https://www.t-online.de/region/hamburg/news/id_91913842/hamburg-herbe-kritik-an-tschentschers-hotspot-plaenen-fdp-will-klagen.html"> "Nicht durchgehen lassen" - FDP droht mit Klage gegen Hotspot-Strategie
   </a>
 
 
- <h6>Mehr als 220.000 Corona-Neuinfektionen</h6>  <h5 data-tb-region-item-title="">RKI-Bericht: Omikron-Subtyp BA.2 legt weiter zu</h5>
+ <h6>&quot;Nicht durchgehen lassen&quot;</h6>  <h5 data-tb-region-item-title="">FDP droht mit Klage gegen Hotspot-Strategie</h5>
 
-<p class="Ttst">Ein Omikron-Subtyp verunsichert viele: Ist BA.2 neuer Treibstoff für die Pandemie? Das RKI nimmt die Entwicklung in den Blick – und mahnt weiter zum Schutz gefährdeter Gruppen.
+<p class="Ttst">In Hamburg soll die Maskenpflicht in Innenräumen weiterhin bestehen bleiben. Dafür setzt sich der rot-grüne Senat ein. Auch ohne bundesweite Regelung will Hamburg diese Maßnahme durchsetzen. Daran gibt es herbe Kritik.
+
+
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91687158/rki-omikron-subtyp-ba-2-legt-laut-rki-weiter-zu-inzidenzwert-bei-1-371-7.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/region/hamburg/news/id_91913842/hamburg-herbe-kritik-an-tschentschers-hotspot-plaenen-fdp-will-klagen.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/68/71/60/id_91687160/300_80/tid_da/impfen-in-einem-pflegeheim-das-rki-ruft-dazu-auf-achtsam-im-umgang-auch-mit-aelteren-menschen-zu-sein-.jpg" width="300" class="Tlz" alt="Impfen in einem Pflegeheim: Das RKI ruft dazu auf, achtsam im Umgang auch mit älteren Menschen zu sein. (Quelle: imago images)" src="https://img.toi.de/t.gif" title="Impfen in einem Pflegeheim: Das RKI ruft dazu auf, achtsam im Umgang auch mit älteren Menschen zu sein. (Quelle: imago images)" /><noscript><img src="https://bilder.t-online.de/b/91/68/71/60/id_91687160/300_80/tid_da/impfen-in-einem-pflegeheim-das-rki-ruft-dazu-auf-achtsam-im-umgang-auch-mit-aelteren-menschen-zu-sein-.jpg" width="300" height="169" alt="Impfen in einem Pflegeheim: Das RKI ruft dazu auf, achtsam im Umgang auch mit älteren Menschen zu sein." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/51/06/id_91915106/300_80/tid_da/michael-kruse-landesvorsitzender-der-fdp-hamburg-archivbild-er-droht-sogar-mit-einer-klage-gegen-die-hotspot-massnahme-.jpg" width="300" class="Tlz" alt="Michael Kruse, Landesvorsitzender der FDP Hamburg (Archivbild): Er droht sogar mit einer Klage gegen die Hotspot-Maßnahme. (Quelle: imago images/Hanno Bode)" src="https://img.toi.de/t.gif" title="Michael Kruse, Landesvorsitzender der FDP Hamburg (Archivbild): Er droht sogar mit einer Klage gegen die Hotspot-Maßnahme. (Quelle: imago images/Hanno Bode)" /><noscript><img src="https://bilder.t-online.de/b/91/91/51/06/id_91915106/300_80/tid_da/michael-kruse-landesvorsitzender-der-fdp-hamburg-archivbild-er-droht-sogar-mit-einer-klage-gegen-die-hotspot-massnahme-.jpg" width="300" height="169" alt="Michael Kruse, Landesvorsitzender der FDP Hamburg (Archivbild): Er droht sogar mit einer Klage gegen die Hotspot-Maßnahme." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2750,24 +2776,26 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91686482" onfocus="A('zid=91686482;mp=0201;vn=5')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91916036" onfocus="A('zid=91916036;mp=0201;vn=5')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/ausland/id_91686482/corona-gegner-kanadische-polizei-will-trucker-proteste-mit-aller-haerte-aufloesen.html"> Trudeau: "Sie müssen aufhören" - Polizei will Trucker-Proteste mit aller Härte beenden
+<a href="https://www.t-online.de/nachrichten/ausland/id_91916036/corona-spanien-schafft-quarantaene-weitestgehend-ab.html"> Strategiewechsel in der Corona-Pandemie - Spanien schafft Quarantäne weitestgehend ab
   </a>
 
 
- <h6>Trudeau: &quot;Sie m&uuml;ssen aufh&ouml;ren&quot;</h6>  <h5 data-tb-region-item-title="">Polizei will Trucker-Proteste mit aller H&auml;rte beenden</h5>
+ <h6>Strategiewechsel in der Corona-Pandemie</h6>  <h5 data-tb-region-item-title="">Spanien schafft Quarant&auml;ne weitestgehend ab</h5>
 
-<p class="Ttst">Seit rund drei Wochen protestieren im kanadischen Ottawa Lkw-Fahrer gegen die Corona-Regeln. Nun bereitet sich die Polizei darauf vor, die Blockaden zu räumen. Dabei würden härtere Methoden als sonst zum Einsatz kommen. 
+<p class="Ttst">Schon im Januar hatte die spanische Regierung angekündigt, Corona künftig nur noch wie eine Grippe behandeln zu wollen. Nun hat sie die Schutzmaßnahmen drastisch gelockert.
+
+
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91686482/corona-gegner-kanadische-polizei-will-trucker-proteste-mit-aller-haerte-aufloesen.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91916036/corona-spanien-schafft-quarantaene-weitestgehend-ab.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/68/67/30/id_91686730/300_80/tid_da/proteste-gegen-die-corona-politik-im-kanadischen-ottawa-seit-rund-drei-wochen-blockieren-lkw-fahrer-die-strassen-.jpg" width="300" class="Tlz" alt="Proteste gegen die Corona-Politik im kanadischen Ottawa: Seit rund drei Wochen blockieren LKW-Fahrer die Straßen.  (Quelle: imago images/Zuma Press)" src="https://img.toi.de/t.gif" title="Proteste gegen die Corona-Politik im kanadischen Ottawa: Seit rund drei Wochen blockieren LKW-Fahrer die Straßen.  (Quelle: imago images/Zuma Press)" /><noscript><img src="https://bilder.t-online.de/b/91/68/67/30/id_91686730/300_80/tid_da/proteste-gegen-die-corona-politik-im-kanadischen-ottawa-seit-rund-drei-wochen-blockieren-lkw-fahrer-die-strassen-.jpg" width="300" height="169" alt="Proteste gegen die Corona-Politik im kanadischen Ottawa: Seit rund drei Wochen blockieren LKW-Fahrer die Straßen. " /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/61/46/id_91916146/300_80/tid_da/vollbesetzte-restaurants-und-bars-auf-dem-platz-plaza-de-san-francisco-in-spanien-die-regierung-hat-ihre-corona-massnahmen-gelockert-.jpg" width="300" class="Tlz" alt="Vollbesetzte Restaurants und Bars auf dem Platz Plaza de San Francisco in Spanien: Die Regierung hat ihre Corona-Maßnahmen gelockert. (Quelle: imago images/Peter Schickert)" src="https://img.toi.de/t.gif" title="Vollbesetzte Restaurants und Bars auf dem Platz Plaza de San Francisco in Spanien: Die Regierung hat ihre Corona-Maßnahmen gelockert. (Quelle: imago images/Peter Schickert)" /><noscript><img src="https://bilder.t-online.de/b/91/91/61/46/id_91916146/300_80/tid_da/vollbesetzte-restaurants-und-bars-auf-dem-platz-plaza-de-san-francisco-in-spanien-die-regierung-hat-ihre-corona-massnahmen-gelockert-.jpg" width="300" height="169" alt="Vollbesetzte Restaurants und Bars auf dem Platz Plaza de San Francisco in Spanien: Die Regierung hat ihre Corona-Maßnahmen gelockert." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2777,24 +2805,26 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91683866" onfocus="A('zid=91683866;mp=0201;vn=14')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91914304" onfocus="A('zid=91914304;mp=0201;vn=5')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/deutschland/id_91683866/bundespraesident-steinmeier-zu-wenig-impfstoff-erreicht-afrikanische-staaten.html"> Leere Versprechen der EU - Steinmeier kritisiert ungleiche Impfstoffverteilung
+<a href="https://www.t-online.de/region/hamburg/news/id_91914304/hamburg-inzidenz-nur-noch-knapp-unter-1-500.html"> Keine Todesfälle - Inzidenz in Hamburg nur noch knapp unter 1.500
   </a>
 
 
- <h6>Leere Versprechen der EU</h6>  <h5 data-tb-region-item-title="">Steinmeier kritisiert ungleiche Impfstoffverteilung</h5>
+ <h6>Keine Todesf&auml;lle</h6>  <h5 data-tb-region-item-title="">Inzidenz in Hamburg nur noch knapp unter 1.500</h5>
 
-<p class="Ttst">Der Bundespräsident kritisiert die schleppenden Impfstofflieferungen an afrikanische Staaten aus der EU. Eine globale Krise könne nur gemeinschaftlich überwunden werden, so Steinmeier.
+<p class="Ttst">Die Corona-Pandemie hat die Hansestadt Hamburg seit mehr als zwei Jahren fest im Griff. Täglich meldet die Stadt Tausende Neuinfektionen. Auch die Inzidenz steigt weiter an und nähert sich einem neuen Schwellenwert.
+
+
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91683866/bundespraesident-steinmeier-zu-wenig-impfstoff-erreicht-afrikanische-staaten.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/region/hamburg/news/id_91914304/hamburg-inzidenz-nur-noch-knapp-unter-1-500.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/68/41/22/id_91684122/300_80/tid_da/bundespraesident-frank-walter-steinmeier-das-virus-wird-erst-besiegt-sein-wenn-es-ueberall-auf-der-welt-besiegt-ist-.jpg" width="300" class="Tlz" alt="Bundespräsident Frank-Walter Steinmeier: 'Das Virus wird erst besiegt sein, wenn es überall auf der Welt besiegt ist.' (Quelle: Reuters/Ints Kalnins)" src="https://img.toi.de/t.gif" title="Bundespräsident Frank-Walter Steinmeier: 'Das Virus wird erst besiegt sein, wenn es überall auf der Welt besiegt ist.' (Quelle: Reuters/Ints Kalnins)" /><noscript><img src="https://bilder.t-online.de/b/91/68/41/22/id_91684122/300_80/tid_da/bundespraesident-frank-walter-steinmeier-das-virus-wird-erst-besiegt-sein-wenn-es-ueberall-auf-der-welt-besiegt-ist-.jpg" width="300" height="169" alt="Bundespräsident Frank-Walter Steinmeier: 'Das Virus wird erst besiegt sein, wenn es überall auf der Welt besiegt ist.'" /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/89/68/69/46/id_89686946/300_80/tid_da/illustration-des-coronavirus-symbolbild-erneut-wurden-tausende-infektionen-mit-dem-coronavirus-gemeldet-.jpg" width="300" class="Tlz" alt="Illustration des Coronavirus (Symbolbild): Erneut wurden Tausende Infektionen mit dem Coronavirus gemeldet. (Quelle: imago images/Science Photo Library)" src="https://img.toi.de/t.gif" title="Illustration des Coronavirus (Symbolbild): Erneut wurden Tausende Infektionen mit dem Coronavirus gemeldet. (Quelle: imago images/Science Photo Library)" /><noscript><img src="https://bilder.t-online.de/b/89/68/69/46/id_89686946/300_80/tid_da/illustration-des-coronavirus-symbolbild-erneut-wurden-tausende-infektionen-mit-dem-coronavirus-gemeldet-.jpg" width="300" height="169" alt="Illustration des Coronavirus (Symbolbild): Erneut wurden Tausende Infektionen mit dem Coronavirus gemeldet." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2804,59 +2834,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh0   " id="T-91676780" onfocus="A('zid=91676780;mp=0201;vn=68')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91911758" onfocus="A('zid=91911758;mp=0201;vn=9')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/deutschland/id_91676780/corona-gipfel-kanzler-olaf-scholz-zu-impfpflicht-bekommen-mehrheit-.html"> Corona-Gipfel - Scholz: "Das will mir nicht in den Kopf"
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91911758/corona-massnahmen-karl-lauterbach-will-vier-kriterien-fuer-hotspots-vorschlagen.html"> Debatte über Corona-Lockerungen - Lauterbach will vier Kriterien für Hotspots vorschlagen
   </a>
 
 
- <h6>Corona-Gipfel</h6>  <h5 data-tb-region-item-title="">Scholz: &quot;Das will mir nicht in den Kopf&quot;</h5>
+ <h6>Debatte &uuml;ber Corona-Lockerungen</h6>  <h5 data-tb-region-item-title="">Lauterbach will vier Kriterien f&uuml;r Hotspots vorschlagen</h5>
 
-<p class="Ttst">Bund und Länder haben eine Lockerung der Corona-Maßnahmen beschlossen. Im Anschluss äußerte sich Kanzler Scholz ungewöhnlich deutlich zur aktuellen Situation. Vor allem eine Gruppe kam nicht gut weg. 
+<p class="Ttst">Die Hotspot-Regel für schärfere Corona-Regeln sorgt für Diskussionen in den Bundesländern. Für die Konferenz der Gesundheitsminister hat sich Karl Lauterbach mit einem Vorschlag gewappnet.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91676780/corona-gipfel-kanzler-olaf-scholz-zu-impfpflicht-bekommen-mehrheit-.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91911758/corona-massnahmen-karl-lauterbach-will-vier-kriterien-fuer-hotspots-vorschlagen.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/67/91/14/id_91679114/300_80/tid_da/olaf-scholz-der-bundeskanzler-informiert-ueber-die-beschluesse-des-bund-laender-treffens-.jpg" width="300" class="Tlz" alt="Olaf Scholz: Der Bundeskanzler informiert über die Beschlüsse des Bund-Länder-Treffens. (Quelle: imago images/Metodi Popow)" src="https://img.toi.de/t.gif" title="Olaf Scholz: Der Bundeskanzler informiert über die Beschlüsse des Bund-Länder-Treffens. (Quelle: imago images/Metodi Popow)" /><noscript><img src="https://bilder.t-online.de/b/91/67/91/14/id_91679114/300_80/tid_da/olaf-scholz-der-bundeskanzler-informiert-ueber-die-beschluesse-des-bund-laender-treffens-.jpg" width="300" height="169" alt="Olaf Scholz: Der Bundeskanzler informiert über die Beschlüsse des Bund-Länder-Treffens." /></noscript>                                                              
-                                                          <div class="Ticon Tplay"><i></i></div>
-                      </a></div> </div> <ul class="Tlll"> 
-
-
-
-
-
-<li><a href="https://www.t-online.de/nachrichten/deutschland/id_91677326/corona-bei-niedriger-hospitalisierung-maske-bald-nur-noch-in-bus-und-bahn-pflicht.html"><b>Bund-Länder-Runde: </b>Das sind die Corona-Beschlüsse</a></li></ul></div>
-
-
-
-
-
-
-
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-89679006" onfocus="A('zid=89679006;mp=0201;vn=924')" >
-<div class="Ttsc Ttsh300"> 
-<div class="Ttslink"> 
-<a href="https://www.t-online.de/region/hamburg/news/id_89679006/corona-in-hamburg-inzidenz-sinkt-weiter-16-todesfaelle.html"> Corona-Lage in Hamburg - Inzidenz sinkt weiter – 16 Todesfälle
-  </a>
-
-
- <h6>Corona-Lage in Hamburg</h6>  <h5 data-tb-region-item-title="">Inzidenz sinkt weiter &ndash; 16 Todesf&auml;lle</h5>
-
-<p class="Ttst">Die Corona-Pandemie hat Hamburg seit zwei Jahren fest im Griff. Nun sinken Inzidenz und Infektionszahlen endlich wieder. Dennoch werden Tausende Neuinfektionen und viele Tote gemeldet.
-
-
-
-</p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/region/hamburg/news/id_89679006/corona-in-hamburg-inzidenz-sinkt-weiter-16-todesfaelle.html">
-        
-
-
-
-<img height="169" data-original="https://bilder.t-online.de/b/89/68/69/46/id_89686946/300_80/tid_da/illustration-des-coronavirus-symbolbild-die-inzidenz-zeigt-seit-fast-drei-wochen-einen-sinkenden-trend-.jpg" width="300" class="Tlz" alt="Illustration des Coronavirus (Symbolbild): Die Inzidenz zeigt seit fast drei Wochen einen sinkenden Trend. (Quelle: imago images/Science Photo Library)" src="https://img.toi.de/t.gif" title="Illustration des Coronavirus (Symbolbild): Die Inzidenz zeigt seit fast drei Wochen einen sinkenden Trend. (Quelle: imago images/Science Photo Library)" /><noscript><img src="https://bilder.t-online.de/b/89/68/69/46/id_89686946/300_80/tid_da/illustration-des-coronavirus-symbolbild-die-inzidenz-zeigt-seit-fast-drei-wochen-einen-sinkenden-trend-.jpg" width="300" height="169" alt="Illustration des Coronavirus (Symbolbild): Die Inzidenz zeigt seit fast drei Wochen einen sinkenden Trend." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/17/74/id_91911774/300_80/tid_da/karl-lauterbach-und-lothar-wieler-die-gesundheitsminister-von-bund-und-laendern-wollen-am-montag-ueber-die-hotspot-regel-fuer-schaerfere-corona-massnahmen-beraten-.jpg" width="300" class="Tlz" alt="Karl Lauterbach und Lothar Wieler: Die Gesundheitsminister von Bund und Ländern wollen am Montag über die Hotspot-Regel für schärfere Corona-Maßnahmen beraten. (Quelle: Reuters/Annegret Hilse)" src="https://img.toi.de/t.gif" title="Karl Lauterbach und Lothar Wieler: Die Gesundheitsminister von Bund und Ländern wollen am Montag über die Hotspot-Regel für schärfere Corona-Maßnahmen beraten. (Quelle: Reuters/Annegret Hilse)" /><noscript><img src="https://bilder.t-online.de/b/91/91/17/74/id_91911774/300_80/tid_da/karl-lauterbach-und-lothar-wieler-die-gesundheitsminister-von-bund-und-laendern-wollen-am-montag-ueber-die-hotspot-regel-fuer-schaerfere-corona-massnahmen-beraten-.jpg" width="300" height="169" alt="Karl Lauterbach und Lothar Wieler: Die Gesundheitsminister von Bund und Ländern wollen am Montag über die Hotspot-Regel für schärfere Corona-Maßnahmen beraten." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2866,24 +2861,24 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91683600" onfocus="A('zid=91683600;mp=0201;vn=6')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91912916" onfocus="A('zid=91912916;mp=0201;vn=5')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/region/duesseldorf/news/id_91683600/duesseldorf-verkuendet-enorme-corona-lockerungen-fuer-nrw.html"> "Zurück in die Normalität" - NRW lockert die Corona-Regeln
+<a href="https://www.t-online.de/nachrichten/ausland/id_91912916/covid-19-israels-regierungschef-bennett-mit-coronavirus-infiziert.html"> Nach Treffen mit Blinken - Israels Regierungschef Bennett mit Coronavirus infiziert
   </a>
 
 
- <h6>&quot;Zur&uuml;ck in die Normalit&auml;t&quot;</h6>  <h5 data-tb-region-item-title="">NRW lockert die Corona-Regeln</h5>
+ <h6>Nach Treffen mit Blinken</h6>  <h5 data-tb-region-item-title="">Israels Regierungschef Bennett mit Coronavirus infiziert</h5>
 
-<p class="Ttst">Die Landesregierung in Düsseldorf lockert die Corona-Beschränkungen: Neben dem Einzelhandel sind auch private Treffen betroffen. Dort soll es bald keine Einschränkungen mehr für Genesene und Geimpfte geben.
+<p class="Ttst">Am Wochenende hatten sich Anthony Blinken und Israels Regierungschef Bennett getroffen. Nun hat einer der beiden einen positiven Corona-Test. Dem 50-Jährigen gehe es aber gut, heißt es.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/region/duesseldorf/news/id_91683600/duesseldorf-verkuendet-enorme-corona-lockerungen-fuer-nrw.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91912916/covid-19-israels-regierungschef-bennett-mit-coronavirus-infiziert.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/68/37/14/id_91683714/300_80/tid_da/ein-durchgestrichenes-schild-zur-2g-regelung-in-einem-geschaeft-symbolbild-die-zugangsbeschraenkungen-fallen-bald-weg-.jpg" width="300" class="Tlz" alt="Ein durchgestrichenes Schild zur 2G-Regelung in einem Geschäft (Symbolbild): Die Zugangsbeschränkungen fallen bald weg. (Quelle: imago images/Sven Simon)" src="https://img.toi.de/t.gif" title="Ein durchgestrichenes Schild zur 2G-Regelung in einem Geschäft (Symbolbild): Die Zugangsbeschränkungen fallen bald weg. (Quelle: imago images/Sven Simon)" /><noscript><img src="https://bilder.t-online.de/b/91/68/37/14/id_91683714/300_80/tid_da/ein-durchgestrichenes-schild-zur-2g-regelung-in-einem-geschaeft-symbolbild-die-zugangsbeschraenkungen-fallen-bald-weg-.jpg" width="300" height="169" alt="Ein durchgestrichenes Schild zur 2G-Regelung in einem Geschäft (Symbolbild): Die Zugangsbeschränkungen fallen bald weg." /></noscript>                                                              
+<img height="168" data-original="https://bilder.t-online.de/b/91/91/29/86/id_91912986/300_80/tid_da/anthony-blinken-l-und-naftali-bennett-der-us-aussenminister-und-israels-regierungschef-haben-sich-am-sonntag-getroffen-.jpg" width="300" class="Tlz" alt="Anthony Blinken (l.) und Naftali Bennett: Der US-Außenminister und Israels Regierungschef haben sich am Sonntag getroffen. (Quelle: imago images/UPI Photo)" src="https://img.toi.de/t.gif" title="Anthony Blinken (l.) und Naftali Bennett: Der US-Außenminister und Israels Regierungschef haben sich am Sonntag getroffen. (Quelle: imago images/UPI Photo)" /><noscript><img src="https://bilder.t-online.de/b/91/91/29/86/id_91912986/300_80/tid_da/anthony-blinken-l-und-naftali-bennett-der-us-aussenminister-und-israels-regierungschef-haben-sich-am-sonntag-getroffen-.jpg" width="300" height="169" alt="Anthony Blinken (l.) und Naftali Bennett: Der US-Außenminister und Israels Regierungschef haben sich am Sonntag getroffen." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2893,24 +2888,51 @@ Lotto </a> </div>
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91680538" onfocus="A('zid=91680538;mp=0201;vn=16')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91911694" onfocus="A('zid=91911694;mp=0201;vn=8')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/deutschland/id_91680538/corona-beschluesse-karl-lauterbach-wirkt-zunehmend-ueberfordert-.html"> Presse zu Corona-Beschlüssen - "Karl Lauterbach wirkt zunehmend überfordert"
+<a href="https://www.t-online.de/nachrichten/panorama/id_91911694/rki-sieben-tage-inzidenz-sinkt-leicht-67-501-neuinfektionen.html"> Corona-Lage in Deutschland - Sieben-Tage-Inzidenz sinkt erneut leicht – 67.501 Neuinfektionen
   </a>
 
 
- <h6>Presse zu Corona-Beschl&uuml;ssen</h6>  <h5 data-tb-region-item-title="">&quot;Karl Lauterbach wirkt zunehmend &uuml;berfordert&quot;</h5>
+ <h6>Corona-Lage in Deutschland</h6>  <h5 data-tb-region-item-title="">Sieben-Tage-Inzidenz sinkt erneut leicht &ndash; 67.501 Neuinfektionen</h5>
 
-<p class="Ttst">Bund und Länder haben Lockerungen beschlossen. Für viele ist das ein erster Lichtblick in der Pandemie – andere warnen davor, was im Herbst folgen könnte. So bewertet die deutsche Presse die derzeitige Corona-Politik. 
+<p class="Ttst">Am zweiten Tag in Folge ist der bundesweite Wert der Sieben-Tage-Inzidenz gesunken – wenn auch wieder nur leicht. Das RKI gibt ihn mit 1.700,6 an. Am Vortag lag der Wert bei 1.723,8.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91680538/corona-beschluesse-karl-lauterbach-wirkt-zunehmend-ueberfordert-.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91911694/rki-sieben-tage-inzidenz-sinkt-leicht-67-501-neuinfektionen.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/68/05/44/id_91680544/300_80/tid_da/-zutritt-bitte-nur-mit-ffp2-maske-die-maskenpflicht-soll-weiterhin-bleiben-.jpg" width="300" class="Tlz" alt="'Zutritt bitte nur mit FFP2-Maske': Die Maskenpflicht soll weiterhin bleiben. (Quelle: dpa/Tobias Hase)" src="https://img.toi.de/t.gif" title="'Zutritt bitte nur mit FFP2-Maske': Die Maskenpflicht soll weiterhin bleiben. (Quelle: dpa/Tobias Hase)" /><noscript><img src="https://bilder.t-online.de/b/91/68/05/44/id_91680544/300_80/tid_da/-zutritt-bitte-nur-mit-ffp2-maske-die-maskenpflicht-soll-weiterhin-bleiben-.jpg" width="300" height="169" alt="'Zutritt bitte nur mit FFP2-Maske': Die Maskenpflicht soll weiterhin bleiben." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/16/98/id_91911698/300_80/tid_da/coronavirus-test-seit-sonntag-sinkt-der-inzidenzwert-in-deutschland-wieder-.jpg" width="300" class="Tlz" alt="Coronavirus-Test: Seit Sonntag sinkt der Inzidenzwert in Deutschland wieder. (Quelle: dpa/Jens Kalaene)" src="https://img.toi.de/t.gif" title="Coronavirus-Test: Seit Sonntag sinkt der Inzidenzwert in Deutschland wieder. (Quelle: dpa/Jens Kalaene)" /><noscript><img src="https://bilder.t-online.de/b/91/91/16/98/id_91911698/300_80/tid_da/coronavirus-test-seit-sonntag-sinkt-der-inzidenzwert-in-deutschland-wieder-.jpg" width="300" height="169" alt="Coronavirus-Test: Seit Sonntag sinkt der Inzidenzwert in Deutschland wieder." /></noscript>                                                              
+                                                          <div class=""><i></i></div>
+                      </a></div> </div> </div>
+
+
+
+
+
+
+
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91910234" onfocus="A('zid=91910234;mp=0201;vn=8')" >
+<div class="Ttsc Ttsh300"> 
+<div class="Ttslink"> 
+<a href="https://www.t-online.de/nachrichten/ausland/id_91910234/corona-in-china-shanghai-geht-ab-montag-in-harten-lockdown.html"> 26 Millionen Einwohner betroffen - Shanghai geht ab Montag in harten Lockdown
+  </a>
+
+
+ <h6>26 Millionen Einwohner betroffen</h6>  <h5 data-tb-region-item-title="">Shanghai geht ab Montag in harten Lockdown</h5>
+
+<p class="Ttst">Die strikte Null-Covid-Strategie Chinas führt nun doch zu einem Lockdown in Shanghai. Experten erwarten von den Maßnahmen in der Hafenstadt schwerwiegende Auswirkungen auf den internationalen Frachtverkehr.
+
+</p>
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/ausland/id_91910234/corona-in-china-shanghai-geht-ab-montag-in-harten-lockdown.html">
+        
+
+
+
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/02/74/id_91910274/300_80/tid_da/shanghai-china-bislang-galten-die-lockdowns-nur-fuer-einzelne-stadtviertel-der-millionen-metropole-.jpg" width="300" class="Tlz" alt="Shanghai, China: Bislang galten die Lockdowns nur für einzelne Stadtviertel der Millionen-Metropole. (Quelle: Reuters/Aly Song/File Photo)" src="https://img.toi.de/t.gif" title="Shanghai, China: Bislang galten die Lockdowns nur für einzelne Stadtviertel der Millionen-Metropole. (Quelle: Reuters/Aly Song/File Photo)" /><noscript><img src="https://bilder.t-online.de/b/91/91/02/74/id_91910274/300_80/tid_da/shanghai-china-bislang-galten-die-lockdowns-nur-fuer-einzelne-stadtviertel-der-millionen-metropole-.jpg" width="300" height="169" alt="Shanghai, China: Bislang galten die Lockdowns nur für einzelne Stadtviertel der Millionen-Metropole." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
  <div class="Tgbpagination Tts Tmm Tll fixedBlock" onfocus="A('mp=autolist-paginierung')">
@@ -3354,6 +3376,6 @@ T$(function(){
 
 </body>
 
-<!--generated: Tue Mar 01 02:26:30 CET 2022, host: 'cmsweb00/09', release: CM7-2013-foundation-17.2.0.4, backend: cmsweb00:21120, id.version: 87559708.8-->
+<!--generated: Fri Apr 01 03:54:23 CEST 2022, host: 'cmsweb05/09', release: CM7-2013-foundation-17.2.0.4, backend: cmsweb05:21120, id.version: 87559708.8-->
 
 </html>

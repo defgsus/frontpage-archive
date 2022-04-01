@@ -40,7 +40,7 @@
 <meta http-equiv="content-script-type" content="text/javascript" />
 <title>Coronavirus: News, Ratgeber und alle Informationen zur Erkrankung</title>
 <script type="text/javascript">/*<![CDATA[*/
-var T = {T0:(new Date()).getTime(), EGO:'toi', MP:3, SN:2, ID:87248472, EWA:false, AJ:false, TI:87627268, SLIN:1, STH:1, disableAdblockLayer:0, PN:'Coronavirus', PORT:1, GAME:0, ART:0, ASTCK:0, SCRIBBLE:0, MZT:0, VIDEO:0, AS:0, GL:0, RECIPE:0, PRE:0, KG:'04140000', DMN:'.t-online.de', DCL:1, R0:'https://www.t-online.de/coronavirus-news-ratgeber-und-alle-informationen-zur-erkrankung/id_87248472/tid_ajax_empty/index', STATION_ID: "K11000000", SVO: false,  PA:'/specials/coronavirus/fp-coronavirus-allgemein', TPD:'https://www.t-online.de', TS:1646098365}, TMS = {IVW:['https://','toi.ivwbox.de/cgi-bin/ivw/','CP']};
+var T = {T0:(new Date()).getTime(), EGO:'toi', MP:3, SN:2, ID:87248472, EWA:false, AJ:false, TI:87627268, SLIN:1, STH:1, disableAdblockLayer:0, PN:'Coronavirus', PORT:1, GAME:0, ART:0, ASTCK:0, SCRIBBLE:0, MZT:0, VIDEO:0, AS:0, GL:0, RECIPE:0, PRE:0, KG:'04140000', DMN:'.t-online.de', DCL:1, R0:'https://www.t-online.de/coronavirus-news-ratgeber-und-alle-informationen-zur-erkrankung/id_87248472/tid_ajax_empty/index', STATION_ID: "K11000000", SVO: false,  PA:'/specials/coronavirus/fp-coronavirus-allgemein', TPD:'https://www.t-online.de', TS:1648778086}, TMS = {IVW:['https://','toi.ivwbox.de/cgi-bin/ivw/','CP']};
 /*]]>*/</script>
 
 
@@ -162,9 +162,7 @@ function setTestVariation(testVariation, cKey, days) {
       var testvariation = getTestVariation('consent');
       if(!testvariation) {
          var cases = {
-            "2021-12-13-cmp-test-pur-4-C" : 20,
-            "2021-12-13-cmp-test-pur-4-B" : 20,
-            "2021-12-13-cmp-test-pur-4-A" : 60
+            "2022-03-21-cmp-pur-5-A" : 100
          }
          testvariation = weightedRandom(cases);
       }
@@ -1062,18 +1060,6 @@ if(typeof consentManager === 'undefined') {
     'placehtext': '<p class="TConsentEmbed-Text">Wir benötigen Ihre Zustimmung, um den von unserer Redaktion eingebundenen externen Inhalt unseres Dienstleisters Famobi GmbH anzuzeigen. Sie können diesen (und damit auch alle weiteren externen Inhalte von Famobi GmbH auf t-online) mit einem Klick anzeigen lassen und auch wieder deaktivieren.</p>  <div class="TConsentEmbedSwitchToggle">   <div class="TConsentEmbedSwitchToggleContainer">      <label class="switch">        <input type="checkbox">        <span class="slider"></span>      </label>    </div>    <p>Famobi Inhalte immer anzeigen</p> ',
     'providers': ['Famobi GmbH', 'famobi gmbh']
   },
-  'wordle': {
-    'extraConsent': true,
-    'vendor': 'wordleat',
-    'label': 'WORDLE',
-    'providers': ['Wordle.at', 'wordleat']
-  },
-  'teamdeuschland': {
-    'extraConsent': true,
-    'vendor': 'teamdeuschland',
-    'label': 'Olympia Team Deutschland',
-    'providers': ['teamdeutschland']
-  },
   'glomex': {
     'vendor': '5eb9779c2a005a254474efde',
     'label': 'Glomex Videoplayer',
@@ -1421,12 +1407,44 @@ if ( typeof consentManager === 'undefined' ) {
 
 <script>
   var googleConsentCookie = typeof TgC == 'function' ? TgC('TconsentStateV755') : 'no-consent-state';
+  // Loginbox message handler (ENGAGE-362)
+  var mailloginstate = 'no mail-login-state';
+  if ( localStorage.getItem( 'nonolobostat' ) ) mailloginstate = localStorage.getItem( 'nonolobostat' );
+
+  window.addEventListener("message", function(ev) {
+    // Do we trust the sender of this message?
+    if (ev.origin !== "https://www.t-online.de" || typeof ev.data != 'string')
+      return;
+
+    // ev.source is window.opener
+    // ev.data is "Loginbox:Status:[not-logged-in|loggedin|loggedin-firstview]"
+    if ( loginstate=ev.data.match(/Loginbox:Status:(.*)/) ) {
+      switch( loginstate[1] ) {
+        case 'not-logged-in':
+          dataLayer.push({'mailLoginState' : 'logged-out'});
+          break;
+        case 'loggedin':
+          dataLayer.push({'mailLoginState' : 'logged-in'});
+          break;
+        case 'loggedin-firstview':
+          dataLayer.push({'mailLoginState' : 'logged-in_first_view'});
+          break;
+        default:
+          break;
+      }
+    }
+  });
 </script>
 <script>
-var obVariation = null
+var obVariation = null;
+var betaBlacklisted = null;
 if (typeof TgC !== 'function' ||  !TgC('tbremmxxi')); 
-else if (TgC('tbremmxxi') == 'rd' ) obVariation = "beta";
-else if (TgC('tbremmxxi').substr(0,2) == 'bl' ) obVariation = "live"; ; 
+else if (TgC('tbremmxxi').substr(0,2) == 'rd' ) obVariation = "beta";
+else if (TgC('tbremmxxi').substr(0,2) == 'bl' ) obVariation = "live";
+else if (TgC('tbremmxxi').substr(0,2) == 'bk' ) {
+  obVariation = "live";
+  betaBlacklisted = 1;
+};
 </script>
 <script>
   if ( ! googleConsentCookie ) googleConsentCookie = 'no-consent-state';
@@ -1472,8 +1490,10 @@ dataLayer = [{
 'testVariation':    getTestVariation(),
 'testVariationCMS': getTestVariation(true),
 'consentStateV755': googleConsentCookie,
-'consentVariant':   getTestVariation('consent'), 
-'obVariation' : obVariation
+'consentVariant':   getTestVariation('consent'),
+'betaBlacklisted' : betaBlacklisted,
+'obVariation' : obVariation,
+'mailLoginState' : mailloginstate
 
 }];
 
@@ -1622,7 +1642,7 @@ IM.GlobalAdTag.register = function (){
  <meta name="scc_messung" content="true" />
 <meta name="referrer" content="unsafe-url">
 
-<link rel="stylesheet" type="text/css" href="https://stats.t-online.de/rl13-726-css/id_63141836/tid_css/index_ts37963834090.css" />
+<link rel="stylesheet" type="text/css" href="https://stats.t-online.de/rl13-726-css/id_63141836/tid_css/index_ts78763141836.css" />
 <script>
   var _smartWaiter = function (selector, callback) {
   function _requestFunction() {
@@ -1688,7 +1708,7 @@ perfMarksDealer.start();
 
 
 </script>
-<script type="text/javascript" src="https://stats.t-online.de/rl13-js-537/id_63608454/tid_js/index_ts686360170.js"></script>
+<script type="text/javascript" src="https://stats.t-online.de/rl13-js-537/id_63608454/tid_js/index_ts6764609914.js"></script>
 <!--<script>!function(){var e;try{e=top.location.href}catch(t){e=document.referrer||location.href}var t=document.createElement("script");t.type="text/javascript",t.async=!0,t.setAttribute("rel","preload"),t.setAttribute("as","script"),t.src="//d.nativendo.de/cds/delivery/init?url="+e;var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r)
 var t1=document.createElement("script");t1.type="text/javascript",t1.async=!0,t1.setAttribute("rel","preconnect"),t1.setAttribute("as","script"),t1.src="//d.nativendo.de/cds/delivery/init?url="+e;var r1=document.getElementsByTagName("script")[1];r1.parentNode.insertBefore(t1,r1)
 }();console.log("PER");
@@ -1841,7 +1861,7 @@ if(typeof consentManager !== 'undefined') {
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P9FVTRJ"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) --><div id="Tstart"><a id="top" name="top"></a></div>
-<script type="text/javascript">/*<![CDATA[*/TfA();/*]]>*/</script><div id="Tstat"><script type="text/javascript">/*<![CDATA[*/ var par=T.PA.split(/\//);
+<script type="text/javascript">/*<![CDATA[*/TfA();/*]]>*/</script><div id="Tstat"><script type="text/javascript">/*<![CDATA[*/  var par=T.PA.split(/\//);
     if (typeof T.MP == U) T.MP=3;
     var KGnG="",pls=0;
     var trsl8m = { 
@@ -1852,8 +1872,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
        'Ä' : 'Ae', 
        'Ü' : 'Ue', 
        'ß' : 'ss' 
-     };
-    var st='toi';  var sv = (T.ID==46 || T.ID==71040302) ? 'ke' : 'in';  for(i=0; i < par.length && pls < T.MP; i++){
+     }; 
+for(i=0; i < par.length && pls < T.MP; i++){
       if(par[i] && par[i] != '' && par[i].indexOf('ar-') < 0 && par[i].indexOf('fp-') < 0 && par[i].indexOf('p_') < 0) { 
         KGnG+='/'+TTrsl8Char( par[i], trsl8m ); 
         pls++; 
@@ -1865,10 +1885,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       else if (xtcustom.cms_doc_types.indexOf('Fotoshow_spiele')>-1) KGnG+='/fs';
       else if (xtcustom.cms_doc_types.indexOf('Artikelshow')>-1) KGnG+='/as';
       else if (T.DCL == 0 && xtcustom.cms_doc_types.indexOf('Video')>-1) KGnG+='/vd';
-    }
-
-    var iam_data = {st:st, sv:sv, co:"kommentar", sc:"yes"}; 
-    iam_data[ T.PRE ? 'xp' : 'cp' ] = KGnG;  iom.c(iam_data); /*]]>*/</script>
+    } 
+/*]]>*/</script>
 
 <!-- Script Konfiguration Measurement Manager -->
 <script type='text/javascript'>
@@ -1876,13 +1894,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
      IOMm('configure',
       { 
        st: 'mobtoi',
-       dn: 'data-1df8532686.t-online.de'
+       dn: 'data-1df8532686.t-online.de',
+       mh:5
       });
     } else {
     IOMm('configure',
       { 
        st: 'toi',
-       dn: 'data-501446ac98.t-online.de'
+       dn: 'data-501446ac98.t-online.de',
+       mh:5
       });
     }
  </script>
@@ -1890,11 +1910,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
  <!-- Anfang Pageview -->
 <script type='text/javascript'>
-  IOMm('pageview',
-  { 
-   cp: KGnG,
-   co: 'kommentar'
-  });
+  var ptca = '';
+  if(T.PRE){ ptca = 'xp';} else { ptca = 'cp'; }
+    IOMm('pageview',
+    { 
+      pt: ptca,
+      cp: KGnG,
+      co: 'kommentar'
+    });
 </script>
  <!-- Ende Pageview -->
 
@@ -2144,60 +2167,60 @@ Lotto </a> </div>
 
 
 <!-- MrRu RenderBlock false -->
-<div class="Tmm  Tts Tww2 Thh4 Tmc2xl Tafm  " id="T-91740470" onfocus="A('zid=91740470;mp=0101-01;vn=8')" > <div class='Tstage-text'> 
+<div class="Tmm  Tts Tww2 Thh4 Tmc2xl Tafm  " id="T-91939124" onfocus="A('zid=91939124;mp=0101-01;vn=3')" > <div class='Tstage-text'> 
 
 
-<a href="https://www.t-online.de/nachrichten/panorama/id_91740470/rki-meldet-weiter-sinkende-inzidenz-62-349-neuinfektionen-.html">                   <h6><span>62.349 Neuinfektionen</span></h6>
-                   <h5 data-tb-region-item-title="RKI meldet weiter sinkenden Inzidenzwert"><span>RKI</span><span>meldet</span><span>weiter</span><span>sinkenden</span><span>Inzidenzwert</span></h5>        </a> </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91740470/rki-meldet-weiter-sinkende-inzidenz-62-349-neuinfektionen-.html">
+<a href="https://www.t-online.de/nachrichten/panorama/id_91939124/letzte-corona-massnahmen-fallen-in-der-schweiz.html">                   <h6><span>Inzidenz gesunken</span></h6>
+                   <h5 data-tb-region-item-title="Letzte Corona-Ma&szlig;nahmen fallen in der Schweiz"><span>Letzte</span><span>Corona-Ma&szlig;nahmen</span><span>fallen</span><span>in</span><span>der</span><span>Schweiz</span></h5>        </a> </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91939124/letzte-corona-massnahmen-fallen-in-der-schweiz.html">
         
 
 
 
-<img height="343" width="610" alt="Eine Frau hält ein Fläschchen mit dem Impfstoff Nuvaxovid in der Hand (Symbolbild): Die Inzidenz in Deutschland sinkt wieder.  (Quelle: dpa/Guido Kirchner)" src="https://bilder.t-online.de/b/91/74/04/72/id_91740472/610_80/tid_da/eine-frau-haelt-ein-flaeschchen-mit-dem-impfstoff-nuvaxovid-in-der-hand-symbolbild-die-inzidenz-in-deutschland-sinkt-wieder-.jpg" title="Eine Frau hält ein Fläschchen mit dem Impfstoff Nuvaxovid in der Hand (Symbolbild): Die Inzidenz in Deutschland sinkt wieder.  (Quelle: dpa/Guido Kirchner)" />                                                              
+<img height="343" width="610" alt="Eine Frau kauft mit Maske in einem Schweizer Geschäft ein (Symbolbild); Seit heute fallen die Corona-Vorschriften. (Quelle: imago images/Geisser)" src="https://bilder.t-online.de/b/91/93/91/26/id_91939126/610_80/tid_da/eine-frau-kauft-mit-maske-in-einem-schweizer-geschaeft-ein-symbolbild-seit-heute-fallen-die-corona-vorschriften-.jpg" title="Eine Frau kauft mit Maske in einem Schweizer Geschäft ein (Symbolbild); Seit heute fallen die Corona-Vorschriften. (Quelle: imago images/Geisser)" />                                                              
                                                           <div class=""><i></i></div>
                       </a></div></div>
 
 
-<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-91737432" onfocus="A('zid=91737432;mp=0101-02;vn=20')" > <div class="Ttsc Ttsh100"> 
+<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-91938892" onfocus="A('zid=91938892;mp=0101-02;vn=3')" > <div class="Ttsc Ttsh100"> 
 
 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91737432/neue-theorien-zum-corona-ursprung-laborunfall-oder-wildtiermarkt-.html">                   <h6>Laborunfall oder Wildtiermarkt?</h6>
-                   <h5 data-tb-region-item-title="">Neue Theorien zum Ursprung des Coronavirus</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91737432/neue-theorien-zum-corona-ursprung-laborunfall-oder-wildtiermarkt-.html">
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91938892/rki-gipfel-der-corona-welle-wahrscheinlich-erreicht-.html">                   <h6>Risiko bleibt dennoch hoch</h6>
+                   <h5 data-tb-region-item-title="">RKI: Gipfel der Corona-Welle &quot;wahrscheinlich erreicht&quot;</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91938892/rki-gipfel-der-corona-welle-wahrscheinlich-erreicht-.html">
         
 
 
 
-<img height="100" width="100" alt="Coronavirus (Symbolbild): Erstmals nachgewiesen wurde der Erreger Ende 2019 in China. (Quelle: Getty Images/JONGHO SHIN)" src="https://bilder.t-online.de/b/91/73/80/80/id_91738080/100_95/c_Master-1-1-Small/tid_da/coronavirus-symbolbild-erstmals-nachgewiesen-wurde-der-erreger-ende-2019-in-china-.jpg" title="Coronavirus (Symbolbild): Erstmals nachgewiesen wurde der Erreger Ende 2019 in China. (Quelle: Getty Images/JONGHO SHIN)" />                                                              
+<img height="100" width="100" alt="Die aktuelle Coronawelle könnte laut dem RKI nun ihren Höhepunkt erreicht haben. (Symbolfoto) (Quelle: dpa/ Annette Riedl)" src="https://bilder.t-online.de/b/91/93/89/14/id_91938914/100_95/c_Master-1-1-Small/tid_da/die-aktuelle-coronawelle-koennte-laut-dem-rki-nun-ihren-hoehepunkt-erreicht-haben-symbolfoto-.jpg" title="Die aktuelle Coronawelle könnte laut dem RKI nun ihren Höhepunkt erreicht haben. (Symbolfoto) (Quelle: dpa/ Annette Riedl)" />                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div>
 </div>
 
 
-<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-91717660" onfocus="A('zid=91717660;mp=0101-03;vn=8')" > <div class="Ttsc Ttsh100"> 
+<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-91936632" onfocus="A('zid=91936632;mp=0101-03;vn=21')" > <div class="Ttsc Ttsh100"> 
 
 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91717660/corona-omikron-variante-schuetzt-ba-1-vor-einer-ba-2-infektion-.html">                   <h6>Neue Untersuchung</h6>
-                   <h5 data-tb-region-item-title="">Mehrfach mit Omikron infiziert? Diese Personen trifft es meist</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91717660/corona-omikron-variante-schuetzt-ba-1-vor-einer-ba-2-infektion-.html">
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91936632/corona-impfpflicht-neuer-kompromiss-stoesst-auf-skepsis.html">                   <h6>Corona-Pandemie</h6>
+                   <h5 data-tb-region-item-title="">&Uuml;ber diesen Impfpflicht-Kompromiss wird jetzt verhandelt</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91936632/corona-impfpflicht-neuer-kompromiss-stoesst-auf-skepsis.html">
         
 
 
 
-<img height="100" width="100" alt="Corona-Pandemie: Ist es mit der Omikron-Variante möglich, sich gleich mehrfach zu infizieren? (Quelle: Getty Images/Powerofflowers)" src="https://bilder.t-online.de/b/91/71/77/34/id_91717734/100_95/c_Master-1-1-Small/tid_da/corona-pandemie-ist-es-mit-der-omikron-variante-moeglich-sich-gleich-mehrfach-zu-infizieren-.jpg" title="Corona-Pandemie: Ist es mit der Omikron-Variante möglich, sich gleich mehrfach zu infizieren? (Quelle: Getty Images/Powerofflowers)" />                                                              
+<img height="100" width="100" alt="Karl Lauterbach: Kommt noch eine Impfpflicht? (Quelle: dpa/Bernd von Jutrczenka)" src="https://bilder.t-online.de/b/91/93/71/18/id_91937118/100_95/c_Master-1-1-Small/tid_da/karl-lauterbach-kommt-noch-eine-impfpflicht-.jpg" title="Karl Lauterbach: Kommt noch eine Impfpflicht? (Quelle: dpa/Bernd von Jutrczenka)" />                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div>
 </div>
 
 
-<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-89978562" onfocus="A('zid=89978562;mp=0101-04;vn=47')" > <div class="Ttsc Ttsh100"> 
+<!-- MrRu RenderBlock false --><div class="Tmm  Tts Tmc4b Ttshh Tww1 Thh1 Tmc5e  " id="T-91937576" onfocus="A('zid=91937576;mp=0101-04;vn=4')" > <div class="Ttsc Ttsh100"> 
 
 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_89978562/corona-impfung-alkohol-rauchen-sport-worauf-sollte-man-verzichten-.html">                   <h6>&Uuml;berraschendes Studienergebnis</h6>
-                   <h5 data-tb-region-item-title="">So soll sich die Impfwirkung noch steigern lassen</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_89978562/corona-impfung-alkohol-rauchen-sport-worauf-sollte-man-verzichten-.html">
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91937576/thueringen-koalition-scheitert-mit-verlaengerung-der-corona-regeln.html">                   <h6>Keine Hotspot-Ma&szlig;nahmen</h6>
+                   <h5 data-tb-region-item-title="">Th&uuml;ringer Koalition scheitert mit Verl&auml;ngerung der Corona-Regeln</h5>        </a><div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91937576/thueringen-koalition-scheitert-mit-verlaengerung-der-corona-regeln.html">
         
 
 
 
-<img height="100" width="100" alt="Stretching: Wie lange sollte man nach einer Impfung keinen Sport treiben? Experten sind sich hier uneinig. (Quelle: Getty Images/HRAUN)" src="https://bilder.t-online.de/b/91/71/53/22/id_91715322/100_95/c_Master-1-1-Small/tid_da/stretching-wie-lange-sollte-man-nach-einer-impfung-keinen-sport-treiben-experten-sind-sich-hier-uneinig-.jpg" title="Stretching: Wie lange sollte man nach einer Impfung keinen Sport treiben? Experten sind sich hier uneinig. (Quelle: Getty Images/HRAUN)" />                                                              
+<img height="100" width="100" alt="Bodo Ramelow: Der Ministerpräsident kritisierte das neue Infektionsschutzgesetz des Bundes vor der Abstimmung scharf. (Quelle: imago images/Jacob Schröter)" src="https://bilder.t-online.de/b/91/93/77/06/id_91937706/100_95/c_Master-1-1-Small/tid_da/bodo-ramelow-der-ministerpraesident-kritisierte-das-neue-infektionsschutzgesetz-des-bundes-vor-der-abstimmung-scharf-.jpg" title="Bodo Ramelow: Der Ministerpräsident kritisierte das neue Infektionsschutzgesetz des Bundes vor der Abstimmung scharf. (Quelle: imago images/Jacob Schröter)" />                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div>
 </div>
@@ -2551,24 +2574,83 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91734934" onfocus="A('zid=91734934;mp=0202;vn=8')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91930228" onfocus="A('zid=91930228;mp=0202;vn=22')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91734934/corona-neue-variante-erste-faelle-von-deltakron-in-grossbritannien.html"> Neue Corona-Variante - Erste Fälle von "Deltakron" in Großbritannien
+<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91930228/ende-der-corona-massnahmen-risikopatienten-haben-angst.html"> Ende der Maskenpflicht - Risikopatientin: "Das ist einfach Wahnsinn"
   </a>
 
 
- <h6>Neue Corona-Variante</h6>  <h5 data-tb-region-item-title="">Erste F&auml;lle von &quot;Deltakron&quot; in Gro&szlig;britannien</h5>
+ <h6>Ende der Maskenpflicht</h6>  <h5 data-tb-region-item-title="">Risikopatientin: &quot;Das ist einfach Wahnsinn&quot;</h5>
 
-<p class="Ttst">Erstmals verzeichnet das Vereinigte Königreich mehrere Fälle einer neuen Variante des Coronavirus – einer Kreuzung aus Delta und Omikron. Was bislang bekannt ist. | Von C. Braunsdorf
+<p class="Ttst">In fast allen Bundesländern fällt in den kommenden Tagen die Maskenpflicht in vielen Bereichen. Auch andere Corona-Maßnahmen sind passé. Für viele Risikopatienten bedeutet das jedoch keineswegs Freiheit. | Von S. Simonsen
+
+
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91734934/corona-neue-variante-erste-faelle-von-deltakron-in-grossbritannien.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91930228/ende-der-corona-massnahmen-risikopatienten-haben-angst.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/73/79/72/id_91737972/300_80/tid_da/u-bahn-in-london-wie-stark-sich-deltakron-ausbreiten-wird-ist-noch-voellig-unklar-.jpg" width="300" class="Tlz" alt="U-Bahn in London: Wie stark sich Deltakron ausbreiten wird, ist noch völlig unklar. (Quelle: imago images/Xinhua)" src="https://img.toi.de/t.gif" title="U-Bahn in London: Wie stark sich Deltakron ausbreiten wird, ist noch völlig unklar. (Quelle: imago images/Xinhua)" /><noscript><img src="https://bilder.t-online.de/b/91/73/79/72/id_91737972/300_80/tid_da/u-bahn-in-london-wie-stark-sich-deltakron-ausbreiten-wird-ist-noch-voellig-unklar-.jpg" width="300" height="169" alt="U-Bahn in London: Wie stark sich Deltakron ausbreiten wird, ist noch völlig unklar." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/93/03/90/id_91930390/300_80/tid_da/maskenpflicht-im-supermarkt-schon-bald-koennten-die-masken-auch-hier-nicht-mehr-vorgeschrieben-sein-.jpg" width="300" class="Tlz" alt="Maskenpflicht im Supermarkt: Schon bald könnten die Masken auch hier nicht mehr vorgeschrieben sein. (Quelle: Getty Images/Goodboy Picture Company)" src="https://img.toi.de/t.gif" title="Maskenpflicht im Supermarkt: Schon bald könnten die Masken auch hier nicht mehr vorgeschrieben sein. (Quelle: Getty Images/Goodboy Picture Company)" /><noscript><img src="https://bilder.t-online.de/b/91/93/03/90/id_91930390/300_80/tid_da/maskenpflicht-im-supermarkt-schon-bald-koennten-die-masken-auch-hier-nicht-mehr-vorgeschrieben-sein-.jpg" width="300" height="169" alt="Maskenpflicht im Supermarkt: Schon bald könnten die Masken auch hier nicht mehr vorgeschrieben sein." /></noscript>                                                              
+                                                                       
+                                </a></div> </div> </div>
+
+
+
+
+
+
+
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-87687880" onfocus="A('zid=87687880;mp=0202;vn=51')" >
+<div class="Ttsc Ttsh300"> 
+<div class="Ttslink"> 
+<a href="https://www.t-online.de/gesundheit/id_87687880/so-kann-sich-corona-im-supermarkt-uebertragen-videosimulation-gibt-aufschluss.html"> Ende der Maskenpflicht - Was ein Corona-Infizierter im Supermarkt auslösen kann
+  </a>
+
+
+ <h6>Ende der Maskenpflicht</h6>  <h5 data-tb-region-item-title="">Was ein Corona-Infizierter im Supermarkt ausl&ouml;sen kann</h5>
+
+<p class="Ttst">Im deutschen Einzelhandel herrscht Maskenpflicht – noch. Erste Ketten wie Edeka bestätigen, dass Kunden ab Montag keinen Mund-Nase-Schutz mehr tragen müssen. Was das für Folgen haben kann, zeigt eine Simulation.
+
+
+</p>
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/id_87687880/so-kann-sich-corona-im-supermarkt-uebertragen-videosimulation-gibt-aufschluss.html">
+        
+
+
+
+<img height="169" data-original="https://bilder.t-online.de/b/87/68/81/98/id_87688198/300_80/tid_da/index.jpg" width="300" class="Tlz" alt=" (Quelle: t-online.de)" src="https://img.toi.de/t.gif" title=" (Quelle: t-online.de)" /><noscript><img src="https://bilder.t-online.de/b/87/68/81/98/id_87688198/300_80/tid_da/index.jpg" width="300" height="169" alt="" /></noscript>                                                              
+                                                          <div class="Ticon Tplay"><i></i></div>
+                      </a></div> </div> </div>
+
+
+
+
+
+
+
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91931306" onfocus="A('zid=91931306;mp=0202;vn=3')" >
+<div class="Ttsc Ttsh300"> 
+<div class="Ttslink"> 
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91931306/rki-schlaegt-quarantaene-von-fuenf-tagen-vor.html"> "Keine strenge Isolierung" - RKI schlägt verkürzte Quarantäne vor
+  </a>
+
+
+ <h6>&quot;Keine strenge Isolierung&quot;</h6>  <h5 data-tb-region-item-title="">RKI schl&auml;gt verk&uuml;rzte Quarant&auml;ne vor</h5>
+
+<p class="Ttst">Gemeinsam mit dem Gesundheitsministerium schlägt das Institut vor, dass Infizierte sich künftig nur noch halb so lange isolieren müssen. Gleiches soll für Kontaktpersonen gelten. Doch beschlossen ist das Vorhaben noch nicht.
+
+
+
+</p>
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91931306/rki-schlaegt-quarantaene-von-fuenf-tagen-vor.html">
+        
+
+
+
+<img height="169" data-original="https://bilder.t-online.de/b/91/93/13/54/id_91931354/300_80/tid_da/rki-und-gesundheitsministerium-schlagen-vor-isolation-und-quarantaene-kuenftig-auf-fuenf-tage-zu-reduzieren-symbolfoto-.jpg" width="300" class="Tlz" alt="RKI und Gesundheitsministerium schlagen vor, Isolation und Quarantäne künftig auf fünf Tage zu reduzieren. (Symbolfoto) (Quelle: dpa/Jens Kalaene)" src="https://img.toi.de/t.gif" title="RKI und Gesundheitsministerium schlagen vor, Isolation und Quarantäne künftig auf fünf Tage zu reduzieren. (Symbolfoto) (Quelle: dpa/Jens Kalaene)" /><noscript><img src="https://bilder.t-online.de/b/91/93/13/54/id_91931354/300_80/tid_da/rki-und-gesundheitsministerium-schlagen-vor-isolation-und-quarantaene-kuenftig-auf-fuenf-tage-zu-reduzieren-symbolfoto-.jpg" width="300" height="169" alt="RKI und Gesundheitsministerium schlagen vor, Isolation und Quarantäne künftig auf fünf Tage zu reduzieren. (Symbolfoto)" /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2578,24 +2660,24 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-90875408" onfocus="A('zid=90875408;mp=0202;vn=42')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91931668" onfocus="A('zid=91931668;mp=0202;vn=5')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_90875408/corona-impfung-gibt-es-wirklich-langzeitschaeden-das-ist-bislang-bekannt.html"> Was bislang bekannt ist - Gibt es wirklich Langzeitschäden der Corona-Impfung?
+<a href="https://www.t-online.de/nachrichten/panorama/id_91931668/rki-fallzahlen-corona-inzidenz-sinkt-auf-1-625-1.html"> RKI meldet 274.900 Neuinfektionen - Bundesweite Corona-Inzidenz sinkt auf 1.625,1
   </a>
 
 
- <h6>Was bislang bekannt ist</h6>  <h5 data-tb-region-item-title="">Gibt es wirklich Langzeitsch&auml;den der Corona-Impfung?</h5>
+ <h6>RKI meldet 274.900 Neuinfektionen</h6>  <h5 data-tb-region-item-title="">Bundesweite Corona-Inzidenz sinkt auf 1.625,1</h5>
 
-<p class="Ttst">Sicherheitsbedenken spielen bei vielen eine Rolle, die sich nicht impfen lassen wollen. Experten erklären, warum das aber unbegründet ist. | Von C. Braunsdorf
+<p class="Ttst">Die Zahl der Neuansteckungen in Deutschland liegt weiterhin auf hohem Niveau. Die Sieben-Tage-Inzidenz ist jedoch erneut gesunken, gestern wurde sie noch mit 1.663,0 angegeben. 
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_90875408/corona-impfung-gibt-es-wirklich-langzeitschaeden-das-ist-bislang-bekannt.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91931668/rki-fallzahlen-corona-inzidenz-sinkt-auf-1-625-1.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/02/75/96/id_91027596/300_80/tid_da/ein-mann-wird-in-einem-impfbus-in-berlin-geimpft-die-diskussion-um-vermeintliche-langzeitfolgen-der-impfung-reisst-nicht-ab-.jpg" width="300" class="Tlz" alt="Ein Mann wird in einem Impfbus in Berlin geimpft: Die Diskussion um vermeintliche Langzeitfolgen der Impfung reißt nicht ab. (Quelle: dpa/Kira Hofmann)" src="https://img.toi.de/t.gif" title="Ein Mann wird in einem Impfbus in Berlin geimpft: Die Diskussion um vermeintliche Langzeitfolgen der Impfung reißt nicht ab. (Quelle: dpa/Kira Hofmann)" /><noscript><img src="https://bilder.t-online.de/b/91/02/75/96/id_91027596/300_80/tid_da/ein-mann-wird-in-einem-impfbus-in-berlin-geimpft-die-diskussion-um-vermeintliche-langzeitfolgen-der-impfung-reisst-nicht-ab-.jpg" width="300" height="169" alt="Ein Mann wird in einem Impfbus in Berlin geimpft: Die Diskussion um vermeintliche Langzeitfolgen der Impfung reißt nicht ab." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/93/16/84/id_91931684/300_80/tid_da/coronavirus-teststation-in-mainz-das-rki-meldet-derzeit-wieder-einen-sinkenden-inzidenzwert-.jpg" width="300" class="Tlz" alt="Coronavirus-Teststation in Mainz: Das RKI meldet derzeit wieder einen sinkenden Inzidenzwert. (Quelle: dpa/Sebastian Gollnow)" src="https://img.toi.de/t.gif" title="Coronavirus-Teststation in Mainz: Das RKI meldet derzeit wieder einen sinkenden Inzidenzwert. (Quelle: dpa/Sebastian Gollnow)" /><noscript><img src="https://bilder.t-online.de/b/91/93/16/84/id_91931684/300_80/tid_da/coronavirus-teststation-in-mainz-das-rki-meldet-derzeit-wieder-einen-sinkenden-inzidenzwert-.jpg" width="300" height="169" alt="Coronavirus-Teststation in Mainz: Das RKI meldet derzeit wieder einen sinkenden Inzidenzwert." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2605,24 +2687,24 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91072496" onfocus="A('zid=91072496;mp=0202;vn=19')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91929032" onfocus="A('zid=91929032;mp=0202;vn=7')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91072496/schlimmer-als-corona-nur-spanische-grippe-und-aids-toeteten-mehr-menschen.html"> Schlimmste Pandemien - Nur zwei Erreger waren tödlicher als Corona
+<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91929032/exklusive-corona-umfrage-70-prozent-der-menschen-wollen-weiter-maske-tragen.html"> Exklusive Umfrage - Darum wollen viele Deutsche weiter Maske tragen
   </a>
 
 
- <h6>Schlimmste Pandemien</h6>  <h5 data-tb-region-item-title="">Nur zwei Erreger waren t&ouml;dlicher als Corona</h5>
+ <h6>Exklusive Umfrage</h6>  <h5 data-tb-region-item-title="">Darum wollen viele Deutsche weiter Maske tragen</h5>
 
-<p class="Ttst">Fast sechs Millionen Corona-Tote weltweit sind im Vergleich zu anderen Pandemien und Epidemien extrem viel. Es gab jedoch auch Seuchen, die mehr Todesopfer forderten.
+<p class="Ttst">In fast allen Bundesländern fällt in den kommenden Tagen die Maskenpflicht in vielen Bereichen. Trotzdem will die Mehrheit der Menschen weiter Maske tragen. Was sind ihre Beweggründe? | Von Sandra Simonsen 
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91072496/schlimmer-als-corona-nur-spanische-grippe-und-aids-toeteten-mehr-menschen.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91929032/exklusive-corona-umfrage-70-prozent-der-menschen-wollen-weiter-maske-tragen.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/07/25/28/id_91072528/300_80/tid_da/coronavirus-die-pandemie-zaehlt-mittlerweile-zu-den-verheerendsten-der-welt-.jpg" width="300" class="Tlz" alt="Coronavirus: Die Pandemie zählt mittlerweile zu den verheerendsten der Welt. (Quelle: imago images/Bihlmaierfotografie)" src="https://img.toi.de/t.gif" title="Coronavirus: Die Pandemie zählt mittlerweile zu den verheerendsten der Welt. (Quelle: imago images/Bihlmaierfotografie)" /><noscript><img src="https://bilder.t-online.de/b/91/07/25/28/id_91072528/300_80/tid_da/coronavirus-die-pandemie-zaehlt-mittlerweile-zu-den-verheerendsten-der-welt-.jpg" width="300" height="169" alt="Coronavirus: Die Pandemie zählt mittlerweile zu den verheerendsten der Welt." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/92/92/56/id_91929256/300_80/tid_da/maskenpflicht-symbolbild-auch-nach-dem-ende-der-pflicht-wollen-viele-nicht-auf-die-maske-verzichten-.jpg" width="300" class="Tlz" alt="Maskenpflicht (Symbolbild): Auch nach dem Ende der Pflicht wollen viele nicht auf die Maske verzichten. (Quelle: imago images/Michael Gstettenbauer)" src="https://img.toi.de/t.gif" title="Maskenpflicht (Symbolbild): Auch nach dem Ende der Pflicht wollen viele nicht auf die Maske verzichten. (Quelle: imago images/Michael Gstettenbauer)" /><noscript><img src="https://bilder.t-online.de/b/91/92/92/56/id_91929256/300_80/tid_da/maskenpflicht-symbolbild-auch-nach-dem-ende-der-pflicht-wollen-viele-nicht-auf-die-maske-verzichten-.jpg" width="300" height="169" alt="Maskenpflicht (Symbolbild): Auch nach dem Ende der Pflicht wollen viele nicht auf die Maske verzichten." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2632,169 +2714,7 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91721460" onfocus="A('zid=91721460;mp=0202;vn=18')" >
-<div class="Ttsc Ttsh300"> 
-<div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91721460/vier-szenarien-so-kann-die-zukunft-mit-corona-aussehen.html"> Von Best Case bis Worst Case - So kann die Zukunft mit Corona aussehen
-  </a>
-
-
- <h6>Von Best Case bis Worst Case</h6>  <h5 data-tb-region-item-title="">So kann die Zukunft mit Corona aussehen</h5>
-
-<p class="Ttst">Erste Länder haben bereits alle Anti-Corona-Maßnahmen aufgehoben. Doch das Virus ist nicht weg. Wie kann es sich weiter entwickeln? Britische Forscher haben vier Szenarien entworfen. | Von C. Braunsdorf
-
-</p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91721460/vier-szenarien-so-kann-die-zukunft-mit-corona-aussehen.html">
-        
-
-
-
-<img height="169" data-original="https://bilder.t-online.de/b/91/72/16/02/id_91721602/300_80/tid_da/fussgaengerzone-in-stuttgart-wie-unbeschwert-wird-das-leben-mit-corona-.jpg" width="300" class="Tlz" alt="Fußgängerzone in Stuttgart: Wie unbeschwert wird das Leben mit Corona? (Quelle: imago images/IMAGO / Arnulf Hettrich)" src="https://img.toi.de/t.gif" title="Fußgängerzone in Stuttgart: Wie unbeschwert wird das Leben mit Corona? (Quelle: imago images/IMAGO / Arnulf Hettrich)" /><noscript><img src="https://bilder.t-online.de/b/91/72/16/02/id_91721602/300_80/tid_da/fussgaengerzone-in-stuttgart-wie-unbeschwert-wird-das-leben-mit-corona-.jpg" width="300" height="169" alt="Fußgängerzone in Stuttgart: Wie unbeschwert wird das Leben mit Corona?" /></noscript>                                                              
-                                                          <div class=""><i></i></div>
-                      </a></div> </div> </div>
-
-
-
-
-
-
-
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-89259030" onfocus="A('zid=89259030;mp=0202;vn=48')" >
-<div class="Ttsc Ttsh300"> 
-<div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_89259030/trockene-augen-durch-die-maske-wie-sie-beschwerden-lindern.html"> Rote Augen durch die Maske - Was hinter dem MATA-Syndrom steckt
-  </a>
-
-
- <h6>Rote Augen durch die Maske</h6>  <h5 data-tb-region-item-title="">Was hinter dem MATA-Syndrom steckt</h5>
-
-<p class="Ttst">Immer mehr Menschen klagen derzeit über gerötete, entzündete Augen. Schuld daran kann der Mund-Nasen-Schutz sein. Doch es gibt Tricks, wie Sie sich schützen können.
-
-</p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_89259030/trockene-augen-durch-die-maske-wie-sie-beschwerden-lindern.html">
-        
-
-
-
-<img height="169" data-original="https://bilder.t-online.de/b/89/25/92/28/id_89259228/300_80/tid_da/eine-frau-mit-leicht-geroeteten-augen-traegt-eine-alltagsmaske-sitzt-diese-an-der-nase-nicht-richtig-stroemt-luft-zu-den-augen-und-laesst-sie-austrocknen-.jpg" width="300" class="Tlz" alt="Eine Frau mit leicht geröteten Augen trägt eine Alltagsmaske: Sitzt diese an der Nase nicht richtig, strömt Luft zu den Augen und lässt sie austrocknen.  (Quelle: Getty Images/ kovop58)" src="https://img.toi.de/t.gif" title="Eine Frau mit leicht geröteten Augen trägt eine Alltagsmaske: Sitzt diese an der Nase nicht richtig, strömt Luft zu den Augen und lässt sie austrocknen.  (Quelle: Getty Images/ kovop58)" /><noscript><img src="https://bilder.t-online.de/b/89/25/92/28/id_89259228/300_80/tid_da/eine-frau-mit-leicht-geroeteten-augen-traegt-eine-alltagsmaske-sitzt-diese-an-der-nase-nicht-richtig-stroemt-luft-zu-den-augen-und-laesst-sie-austrocknen-.jpg" width="300" height="169" alt="Eine Frau mit leicht geröteten Augen trägt eine Alltagsmaske: Sitzt diese an der Nase nicht richtig, strömt Luft zu den Augen und lässt sie austrocknen. " /></noscript>                                                              
-                                                          <div class=""><i></i></div>
-                      </a></div> </div> </div>
-
-
-
-
-
-
-
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91726274" onfocus="A('zid=91726274;mp=0202;vn=9')" >
-<div class="Ttsc Ttsh300"> 
-<div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/deutschland/id_91726274/karl-lauterbach-corona-zahlen-werden-unterschaetzt-kritik-an-freedom-day-.html"> Neue Omikron-Variante - Lauterbach: Corona-Fallzahlen werden unterschätzt
-  </a>
-
-
- <h6>Neue Omikron-Variante</h6>  <h5 data-tb-region-item-title="">Lauterbach: Corona-Fallzahlen werden untersch&auml;tzt</h5>
-
-<p class="Ttst">Wegen eines neuen Omikron-Untertyps können die Corona-Fallzahlen möglicherweise wieder steigen. Gesundheitsminister Karl Lauterbach warnt ausdrücklich davor, die Pandemie für beendet zu erklären.
-
-</p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91726274/karl-lauterbach-corona-zahlen-werden-unterschaetzt-kritik-an-freedom-day-.html">
-        
-
-
-
-<img height="169" data-original="https://bilder.t-online.de/b/91/72/69/76/id_91726976/300_80/tid_da/karl-lauterbach-fuer-eine-beschleunigte-oeffnung-haben-wir-ueberhaupt-keine-spielraeume-a-news-conference-in-berlin.jpg" width="300" class="Tlz" alt="Karl Lauterbach: 'Für eine beschleunigte Öffnung haben wir überhaupt keine Spielräume.'a news conference, in Berlin (Quelle: Reuters/Michele Tantussi)" src="https://img.toi.de/t.gif" title="Karl Lauterbach: 'Für eine beschleunigte Öffnung haben wir überhaupt keine Spielräume.'a news conference, in Berlin (Quelle: Reuters/Michele Tantussi)" /><noscript><img src="https://bilder.t-online.de/b/91/72/69/76/id_91726976/300_80/tid_da/karl-lauterbach-fuer-eine-beschleunigte-oeffnung-haben-wir-ueberhaupt-keine-spielraeume-a-news-conference-in-berlin.jpg" width="300" height="169" alt="Karl Lauterbach: 'Für eine beschleunigte Öffnung haben wir überhaupt keine Spielräume.'a news conference, in Berlin" /></noscript>                                                              
-                                                          <div class=""><i></i></div>
-                      </a></div> </div> </div>
-
-
-
-
-
-
-
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91714102" onfocus="A('zid=91714102;mp=0202;vn=15')" >
-<div class="Ttsc Ttsh300"> 
-<div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91714102/corona-impfung-stiko-empfiehlt-neue-vorsichtsmassnahme-wozu-.html"> Überraschende Stiko-Empfehlung - Aspiration bei Covid-Impfung: Wurde bislang "falsch" geimpft?
-  </a>
-
-
- <h6>&Uuml;berraschende Stiko-Empfehlung</h6>  <h5 data-tb-region-item-title="">Aspiration bei Covid-Impfung: Wurde bislang &quot;falsch&quot; geimpft?</h5>
-
-<p class="Ttst">Die Ständige Impfkommission empfiehlt bei der Corona-Impfung jetzt eine Aspiration als neue Vorsichtsmaßnahme. Was hat es damit auf sich? Wurde bislang "falsch" geimpft? | Von Melanie Rannow
-
-</p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91714102/corona-impfung-stiko-empfiehlt-neue-vorsichtsmassnahme-wozu-.html">
-        
-
-
-
-<img height="169" data-original="https://bilder.t-online.de/b/91/71/41/36/id_91714136/300_80/tid_da/impfung-gegen-das-coronavirus-der-wirkstoff-wird-in-den-muskel-gespritzt-.jpg" width="300" class="Tlz" alt="Impfung gegen das Coronavirus: Der Wirkstoff wird in den Muskel gespritzt. (Quelle: dpa/Bernd Weißbrod)" src="https://img.toi.de/t.gif" title="Impfung gegen das Coronavirus: Der Wirkstoff wird in den Muskel gespritzt. (Quelle: dpa/Bernd Weißbrod)" /><noscript><img src="https://bilder.t-online.de/b/91/71/41/36/id_91714136/300_80/tid_da/impfung-gegen-das-coronavirus-der-wirkstoff-wird-in-den-muskel-gespritzt-.jpg" width="300" height="169" alt="Impfung gegen das Coronavirus: Der Wirkstoff wird in den Muskel gespritzt." /></noscript>                                                              
-                                                          <div class=""><i></i></div>
-                      </a></div> </div> </div>
-
-
-
-
-
-
-
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-89483968" onfocus="A('zid=89483968;mp=0202;vn=33')" >
-<div class="Ttsc Ttsh300"> 
-<div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_89483968/feuchte-masken-ueberraschendes-studienergebnis-zeigt-positiven-effekt.html"> Überraschendes Ergebnis - Feuchtigkeit in Masken erzielt positiven Corona-Effekt
-  </a>
-
-
- <h6>&Uuml;berraschendes Ergebnis</h6>  <h5 data-tb-region-item-title="">Feuchtigkeit in Masken erzielt positiven Corona-Effekt</h5>
-
-<p class="Ttst">Das Tragen einer Mund- und Nasenbedeckung zählt zu den wichtigsten Corona-Maßnahmen, um Ansteckungen zu reduzieren. Eine Studie zeigt, wie Masken noch effektiver schützen. | Von Melanie Rannow
-
-</p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_89483968/feuchte-masken-ueberraschendes-studienergebnis-zeigt-positiven-effekt.html">
-        
-
-
-
-<img height="169" data-original="https://bilder.t-online.de/b/91/19/71/48/id_91197148/300_80/tid_da/mund-nasen-schutz-in-der-kalten-jahreszeit-werden-masken-durch-den-atem-schneller-feucht-.jpg" width="300" class="Tlz" alt="Mund-Nasen-Schutz: In der kalten Jahreszeit werden Masken durch den Atem schneller feucht. (Quelle: Getty Images/lisegagne)" src="https://img.toi.de/t.gif" title="Mund-Nasen-Schutz: In der kalten Jahreszeit werden Masken durch den Atem schneller feucht. (Quelle: Getty Images/lisegagne)" /><noscript><img src="https://bilder.t-online.de/b/91/19/71/48/id_91197148/300_80/tid_da/mund-nasen-schutz-in-der-kalten-jahreszeit-werden-masken-durch-den-atem-schneller-feucht-.jpg" width="300" height="169" alt="Mund-Nasen-Schutz: In der kalten Jahreszeit werden Masken durch den Atem schneller feucht." /></noscript>                                                              
-                                                          <div class=""><i></i></div>
-                      </a></div> </div> </div>
-
-
-
-
-
-
-
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91591958" onfocus="A('zid=91591958;mp=0202;vn=17')" >
-<div class="Ttsc Ttsh300"> 
-<div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91591958/corona-schnelltests-achtung-diese-tests-sollten-sie-lieber-nicht-kaufen.html"> Zu geringe Sensitivität - Diese Corona-Schnelltests sollten Sie lieber nicht kaufen
-  </a>
-
-
- <h6>Zu geringe Sensitivit&auml;t</h6>  <h5 data-tb-region-item-title="">Diese Corona-Schnelltests sollten Sie lieber nicht kaufen</h5>
-
-<p class="Ttst">Mittlerweile gibt es Hunderte Anbieter von Corona-Schnelltests für zu Hause. Nicht alle sind gleichermaßen zuverlässig. Das Paul-Ehrlich-Institut hat eine neue Auswertung veröffentlicht. | Von M. Rannow
-
-</p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91591958/corona-schnelltests-achtung-diese-tests-sollten-sie-lieber-nicht-kaufen.html">
-        
-
-
-
-<img height="169" data-original="https://bilder.t-online.de/b/91/59/24/06/id_91592406/300_80/tid_da/corona-schnelltest-welche-produkte-sind-wirklich-zuverlaessig-.jpg" width="300" class="Tlz" alt="Corona-Schnelltest: Welche Produkte sind wirklich zuverlässig? (Quelle: imago images/Wolfgang Maria Weber)" src="https://img.toi.de/t.gif" title="Corona-Schnelltest: Welche Produkte sind wirklich zuverlässig? (Quelle: imago images/Wolfgang Maria Weber)" /><noscript><img src="https://bilder.t-online.de/b/91/59/24/06/id_91592406/300_80/tid_da/corona-schnelltest-welche-produkte-sind-wirklich-zuverlaessig-.jpg" width="300" height="169" alt="Corona-Schnelltest: Welche Produkte sind wirklich zuverlässig?" /></noscript>                                                              
-                                                          <div class=""><i></i></div>
-                      </a></div> </div> </div>
-
-
-
-
-
-
-
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-87840494" onfocus="A('zid=87840494;mp=0202;vn=547')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-87840494" onfocus="A('zid=87840494;mp=0202;vn=555')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
 <a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_87840494/corona-lage-in-deutschland-so-ist-die-sieben-tage-inzidenz-in-ihrem-landkreis.html"> Sieben-Tage-Inzidenz in Deutschland - Karte: So viele Neuinfektionen gibt es in Ihrer Region
@@ -2823,24 +2743,24 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91722216" onfocus="A('zid=91722216;mp=0202;vn=6')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91920484" onfocus="A('zid=91920484;mp=0202;vn=72')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/deutschland/id_91722216/lauterbach-erhielt-mit-13-krebsdiagnose-er-litt-viele-jahre-unter-dem-eingriff.html"> Er sollte sein Bein verlieren - Lauterbach erhielt mit 13 Krebsdiagnose
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91920484/corona-absurdistan-thueringen-es-kann-niemand-mehr-kontrollieren.html"> Corona-Absurdistan Thüringen - Und plötzlich kann es niemand mehr kontrollieren
   </a>
 
 
- <h6>Er sollte sein Bein verlieren</h6>  <h5 data-tb-region-item-title="">Lauterbach erhielt mit 13 Krebsdiagnose</h5>
+ <h6>Corona-Absurdistan Th&uuml;ringen</h6>  <h5 data-tb-region-item-title="">Und pl&ouml;tzlich kann es niemand mehr kontrollieren</h5>
 
-<p class="Ttst">Karl Lauterbach ist einer der bekanntesten deutschen Politiker. In seinem neuen Buch "Bevor es zu spät ist" gibt der Bundesgesundheitsminister tiefe Einblicke in sein Privatleben. 
+<p class="Ttst">Die Bundesregierung hat die Verantwortung für die Corona-Politik auf die Länder abgeschoben. So richtig zufrieden ist damit gerade niemand. Doch nirgends ist die Situation so prekär wie in Thüringen. | Von J. Bebermeier
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91722216/lauterbach-erhielt-mit-13-krebsdiagnose-er-litt-viele-jahre-unter-dem-eingriff.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91920484/corona-absurdistan-thueringen-es-kann-niemand-mehr-kontrollieren.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/72/22/56/id_91722256/300_80/tid_da/karl-lauterbach-waehrend-einer-pressekonferenz-zur-aktuellen-corona-situation-in-deutschland-archivbild-in-seinem-neuen-buch-erzaehlt-er-auch-von-persoenlichen-erfahrungen-.jpg" width="300" class="Tlz" alt="Karl Lauterbach während einer Pressekonferenz zur aktuellen Corona Situation in Deutschland (Archivbild): In seinem neuen Buch erzählt er auch von persönlichen Erfahrungen. (Quelle: Reuters/Hannibal Hanschke)" src="https://img.toi.de/t.gif" title="Karl Lauterbach während einer Pressekonferenz zur aktuellen Corona Situation in Deutschland (Archivbild): In seinem neuen Buch erzählt er auch von persönlichen Erfahrungen. (Quelle: Reuters/Hannibal Hanschke)" /><noscript><img src="https://bilder.t-online.de/b/91/72/22/56/id_91722256/300_80/tid_da/karl-lauterbach-waehrend-einer-pressekonferenz-zur-aktuellen-corona-situation-in-deutschland-archivbild-in-seinem-neuen-buch-erzaehlt-er-auch-von-persoenlichen-erfahrungen-.jpg" width="300" height="169" alt="Karl Lauterbach während einer Pressekonferenz zur aktuellen Corona Situation in Deutschland (Archivbild): In seinem neuen Buch erzählt er auch von persönlichen Erfahrungen." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/92/15/98/id_91921598/300_80/tid_da/karl-lauterbach-ich-hoffe-dass-die-laender-jetzt-aus-der-schmollecke-herauskommen-.jpg" width="300" class="Tlz" alt="Karl Lauterbach: 'Ich hoffe, dass die Länder jetzt aus der Schmollecke herauskommen.'  (Quelle: dpa/Christoph Soeder)" src="https://img.toi.de/t.gif" title="Karl Lauterbach: 'Ich hoffe, dass die Länder jetzt aus der Schmollecke herauskommen.'  (Quelle: dpa/Christoph Soeder)" /><noscript><img src="https://bilder.t-online.de/b/91/92/15/98/id_91921598/300_80/tid_da/karl-lauterbach-ich-hoffe-dass-die-laender-jetzt-aus-der-schmollecke-herauskommen-.jpg" width="300" height="169" alt="Karl Lauterbach: 'Ich hoffe, dass die Länder jetzt aus der Schmollecke herauskommen.' " /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2850,24 +2770,24 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-87581174" onfocus="A('zid=87581174;mp=0202;vn=51')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-88904670" onfocus="A('zid=88904670;mp=0202;vn=48')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_87581174/coronavirus-was-bluthochdruck-patienten-unbedingt-beachten-sollten.html"> Schutz vor Omikron-Infektion - Das sollten Bluthochdruck-Patienten beachten
+<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_88904670/corona-test-positiv-ist-man-noch-ansteckend-ct-wert-gibt-hinweis.html"> Was der Ct-Wert verrrät - Corona positiv, aber nicht ansteckend?
   </a>
 
 
- <h6>Schutz vor Omikron-Infektion</h6>  <h5 data-tb-region-item-title="">Das sollten Bluthochdruck-Patienten beachten</h5>
+ <h6>Was der Ct-Wert verrr&auml;t</h6>  <h5 data-tb-region-item-title="">Corona positiv, aber nicht ansteckend?</h5>
 
-<p class="Ttst">Insbesondere ältere Menschen sind durch eine Infektion mit dem Coronavirus gefährdet. Sie leiden besonders häufig an Bluthochdruck. Wir haben die wichtigsten Informationen zur Medikation und Blutdruckmessung gesammelt.
+<p class="Ttst">Nicht jeder Corona-Patient ist gleichermaßen infektiös. Eine wesentliche Rolle spielt dabei die Virenkonzentration – und die zeigt der Ct-Wert an. Doch was bedeuten die unterschiedlichen Zahlen? | Von M. Rannow
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_87581174/coronavirus-was-bluthochdruck-patienten-unbedingt-beachten-sollten.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_88904670/corona-test-positiv-ist-man-noch-ansteckend-ct-wert-gibt-hinweis.html">
         
 
 
 
-<img height="168" data-original="https://bilder.t-online.de/b/91/05/61/44/id_91056144/300_80/tid_da/blutdruck-messen-hypertonie-patienten-sollten-regelmaessig-ihre-werte-kontrollieren-.jpg" width="300" class="Tlz" alt="Blutdruck messen: Hypertonie-Patienten sollten regelmäßig ihre Werte kontrollieren. (Quelle: Getty Images/PIKSEL)" src="https://img.toi.de/t.gif" title="Blutdruck messen: Hypertonie-Patienten sollten regelmäßig ihre Werte kontrollieren. (Quelle: Getty Images/PIKSEL)" /><noscript><img src="https://bilder.t-online.de/b/91/05/61/44/id_91056144/300_80/tid_da/blutdruck-messen-hypertonie-patienten-sollten-regelmaessig-ihre-werte-kontrollieren-.jpg" width="300" height="169" alt="Blutdruck messen: Hypertonie-Patienten sollten regelmäßig ihre Werte kontrollieren." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/88/90/74/92/id_88907492/300_80/tid_da/pcr-test-mittels-abstrich-aus-rachen-und-oder-nase-kann-das-coronavirus-sars-cov-2-nachgewiesen-werden-.jpg" width="300" class="Tlz" alt="PCR-Test: Mittels Abstrich aus Rachen und/oder Nase kann das Coronavirus SARS-CoV-2 nachgewiesen werden. (Quelle: imago images/ZUMA Wire)" src="https://img.toi.de/t.gif" title="PCR-Test: Mittels Abstrich aus Rachen und/oder Nase kann das Coronavirus SARS-CoV-2 nachgewiesen werden. (Quelle: imago images/ZUMA Wire)" /><noscript><img src="https://bilder.t-online.de/b/88/90/74/92/id_88907492/300_80/tid_da/pcr-test-mittels-abstrich-aus-rachen-und-oder-nase-kann-das-coronavirus-sars-cov-2-nachgewiesen-werden-.jpg" width="300" height="169" alt="PCR-Test: Mittels Abstrich aus Rachen und/oder Nase kann das Coronavirus SARS-CoV-2 nachgewiesen werden." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2877,24 +2797,24 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91715298" onfocus="A('zid=91715298;mp=0202;vn=23')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91923692" onfocus="A('zid=91923692;mp=0202;vn=7')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91715298/experte-warnt-vor-omikron-der-peak-ist-noch-nicht-erreicht-.html"> Trügen die Zahlen? - In diesen Altersgruppen steigen die Inzidenzen weiter
+<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91923692/us-arzneimittelbehoerde-genehmigt-vierte-corona-impfung-mit-zwei-vakzinen.html"> Mit zwei Vakzinen - US-Behörde genehmigt vierte Corona-Impfung
   </a>
 
 
- <h6><span class="Tts__label Tts__label--interview">INTERVIEW</span>Tr&uuml;gen die Zahlen?</h6>  <h5 data-tb-region-item-title="">In diesen Altersgruppen steigen die Inzidenzen weiter</h5>
+ <h6>Mit zwei Vakzinen</h6>  <h5 data-tb-region-item-title="">US-Beh&ouml;rde genehmigt vierte Corona-Impfung</h5>
 
-<p class="Ttst">Bundesweit sinken die Inzidenzen – scheinbar. Doch ein Modellierer warnt eindringlich: Die Zahlen täuschten. Der Gipfel sei noch nicht erreicht. Er spricht sich gegen schnelle Öffnungen aus. | Von C. Braunsdorf
+<p class="Ttst">Die amerikanische Arzneimittelbehörde FDA hat eine zweite Corona-Auffrischungsimpfung erlaubt. Die Zulassung gilt aber nur für bestimmte Personengruppen.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91715298/experte-warnt-vor-omikron-der-peak-ist-noch-nicht-erreicht-.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91923692/us-arzneimittelbehoerde-genehmigt-vierte-corona-impfung-mit-zwei-vakzinen.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/71/58/38/id_91715838/300_80/tid_da/testzentrum-in-hannover-sorgt-die-veraenderte-teststrategie-fuer-truegerische-zahlen-.jpg" width="300" class="Tlz" alt="Testzentrum in Hannover: Sorgt die veränderte Teststrategie für trügerische Zahlen? (Quelle: imago images/IMAGO / localpic)" src="https://img.toi.de/t.gif" title="Testzentrum in Hannover: Sorgt die veränderte Teststrategie für trügerische Zahlen? (Quelle: imago images/IMAGO / localpic)" /><noscript><img src="https://bilder.t-online.de/b/91/71/58/38/id_91715838/300_80/tid_da/testzentrum-in-hannover-sorgt-die-veraenderte-teststrategie-fuer-truegerische-zahlen-.jpg" width="300" height="169" alt="Testzentrum in Hannover: Sorgt die veränderte Teststrategie für trügerische Zahlen?" /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/92/39/30/id_91923930/300_80/tid_da/corona-impfung-in-den-usa-koennen-sich-menschen-ab-50-jahren-nun-ihren-zweiten-booster-und-damit-ihre-vierte-impfdosis-abholen-.jpg" width="300" class="Tlz" alt="Corona-Impfung: In den USA können sich Menschen ab 50 Jahren nun ihren zweiten Booster und damit ihre vierte Impfdosis abholen. (Quelle: simarik/Getty Images/obs)" src="https://img.toi.de/t.gif" title="Corona-Impfung: In den USA können sich Menschen ab 50 Jahren nun ihren zweiten Booster und damit ihre vierte Impfdosis abholen. (Quelle: simarik/Getty Images/obs)" /><noscript><img src="https://bilder.t-online.de/b/91/92/39/30/id_91923930/300_80/tid_da/corona-impfung-in-den-usa-koennen-sich-menschen-ab-50-jahren-nun-ihren-zweiten-booster-und-damit-ihre-vierte-impfdosis-abholen-.jpg" width="300" height="169" alt="Corona-Impfung: In den USA können sich Menschen ab 50 Jahren nun ihren zweiten Booster und damit ihre vierte Impfdosis abholen." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2904,24 +2824,24 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91714860" onfocus="A('zid=91714860;mp=0202;vn=13')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91915062" onfocus="A('zid=91915062;mp=0202;vn=15')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/leben/reisen/id_91714860/mallorca-kein-hochrisikogebiet-mehr-was-gilt-nun-fuer-den-urlaub-.html"> Corona-Hochrisikogebiete - RKI stuft Mallorca zurück: Was gilt dort nun für Urlauber?
+<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91915062/corona-experte-warnt-durchseuchung-ist-keine-option-.html"> Neues Corona-Konzept - Experte warnt: "Durchseuchung ist keine Option"
   </a>
 
 
- <h6>Corona-Hochrisikogebiete</h6>  <h5 data-tb-region-item-title="">RKI stuft Mallorca zur&uuml;ck: Was gilt dort nun f&uuml;r Urlauber?</h5>
+ <h6><span class="Tts__label Tts__label--interview">INTERVIEW</span>Neues Corona-Konzept</h6>  <h5 data-tb-region-item-title="">Experte warnt: &quot;Durchseuchung ist keine Option&quot;</h5>
 
-<p class="Ttst">Monatelang galt ganz Spanien als Corona-Hochrisikogebiet, auch für Mallorca gab es strenge Rückreiseregeln. Das wurde jetzt aufgehoben. Trotzdem bleiben einige Corona-Regeln. | Von S. Simonsen
+<p class="Ttst">Die Corona-Inzidenzen schwanken, bleiben aber weiter enorm hoch. Haben wir die Kontrolle verloren? Und stehen jetzt alle Zeichen auf Durchseuchung? Ein Experte warnt eindringlich. | Von C. Braunsdorf
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/leben/reisen/id_91714860/mallorca-kein-hochrisikogebiet-mehr-was-gilt-nun-fuer-den-urlaub-.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91915062/corona-experte-warnt-durchseuchung-ist-keine-option-.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/71/48/84/id_91714884/300_80/tid_da/blick-auf-den-strand-von-palma-de-mallorca-symbolbild-ganz-spanien-gilt-seit-sonntag-nicht-mehr-als-corona-hochrisikogebiet-.jpg" width="300" class="Tlz" alt="Blick auf den Strand von Palma de Mallorca (Symbolbild): Ganz Spanien gilt seit Sonntag nicht mehr als Corona-Hochrisikogebiet.  (Quelle: Getty Images/Balate Dorin)" src="https://img.toi.de/t.gif" title="Blick auf den Strand von Palma de Mallorca (Symbolbild): Ganz Spanien gilt seit Sonntag nicht mehr als Corona-Hochrisikogebiet.  (Quelle: Getty Images/Balate Dorin)" /><noscript><img src="https://bilder.t-online.de/b/91/71/48/84/id_91714884/300_80/tid_da/blick-auf-den-strand-von-palma-de-mallorca-symbolbild-ganz-spanien-gilt-seit-sonntag-nicht-mehr-als-corona-hochrisikogebiet-.jpg" width="300" height="169" alt="Blick auf den Strand von Palma de Mallorca (Symbolbild): Ganz Spanien gilt seit Sonntag nicht mehr als Corona-Hochrisikogebiet. " /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/51/84/id_91915184/300_80/tid_da/strassencafe-in-frankfurt-am-main-wann-und-wie-kommt-die-nach-corona-normalitaet-.jpg" width="300" class="Tlz" alt="Straßencafé in Frankfurt am Main: Wann und wie kommt die Nach-Corona-Normalität? (Quelle: dpa/picture alliance / Daniel Kubirski | Daniel Kubirski)" src="https://img.toi.de/t.gif" title="Straßencafé in Frankfurt am Main: Wann und wie kommt die Nach-Corona-Normalität? (Quelle: dpa/picture alliance / Daniel Kubirski | Daniel Kubirski)" /><noscript><img src="https://bilder.t-online.de/b/91/91/51/84/id_91915184/300_80/tid_da/strassencafe-in-frankfurt-am-main-wann-und-wie-kommt-die-nach-corona-normalitaet-.jpg" width="300" height="169" alt="Straßencafé in Frankfurt am Main: Wann und wie kommt die Nach-Corona-Normalität?" /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2931,24 +2851,51 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91720458" onfocus="A('zid=91720458;mp=0202;vn=10')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-89665422" onfocus="A('zid=89665422;mp=0202;vn=10')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91720458/stiko-chef-mertens-ueber-omikron-subtyp-ba-2-koennte-beunruhigend-werden-.html"> Stiko-Chef Mertens - Omikron-Mutation "könnte beunruhigend werden"
+<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_89665422/corona-selbsttest-wofuer-steht-eigentlich-das-c-.html"> Nicht für Corona - Corona-Selbsttest: Wofür steht das C?
   </a>
 
 
- <h6>Stiko-Chef Mertens</h6>  <h5 data-tb-region-item-title="">Omikron-Mutation &quot;k&ouml;nnte beunruhigend werden&quot;</h5>
+ <h6>Nicht f&uuml;r Corona</h6>  <h5 data-tb-region-item-title="">Corona-Selbsttest: Wof&uuml;r steht das C?</h5>
 
-<p class="Ttst">Die Infektionszahlen sinken zwar, doch die Lage ist angesichts der Omikron-Variante BA.2 weiter angespannt. Stiko-Chef Mertens sieht nur ein "entscheidendes Instrument" zur Eindämmung von Corona.
+<p class="Ttst">Wer sich mit einem Schnelltest für daheim auf das Coronavirus testet, muss die Streifen richtig interpretieren. Der Strich beim C sorgt dabei häufig für Verwirrung. Was bedeutet der Buchstabe?
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91720458/stiko-chef-mertens-ueber-omikron-subtyp-ba-2-koennte-beunruhigend-werden-.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_89665422/corona-selbsttest-wofuer-steht-eigentlich-das-c-.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/72/05/56/id_91720556/300_80/tid_da/prof-dr-thomas-mertens-der-vorsitzende-der-staendigen-impfkommission-ist-angesichts-der-neuen-omikron-variante-besorgt-.jpg" width="300" class="Tlz" alt="Prof. Dr. Thomas Mertens: Der Vorsitzende der Ständigen Impfkommission ist angesichts der neuen Omikron-Variante besorgt. (Quelle: imago images/Jürgen Heinrich)" src="https://img.toi.de/t.gif" title="Prof. Dr. Thomas Mertens: Der Vorsitzende der Ständigen Impfkommission ist angesichts der neuen Omikron-Variante besorgt. (Quelle: imago images/Jürgen Heinrich)" /><noscript><img src="https://bilder.t-online.de/b/91/72/05/56/id_91720556/300_80/tid_da/prof-dr-thomas-mertens-der-vorsitzende-der-staendigen-impfkommission-ist-angesichts-der-neuen-omikron-variante-besorgt-.jpg" width="300" height="169" alt="Prof. Dr. Thomas Mertens: Der Vorsitzende der Ständigen Impfkommission ist angesichts der neuen Omikron-Variante besorgt." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/89/66/54/26/id_89665426/300_80/tid_da/ein-strich-nur-beim-c-ist-ein-gutes-zeichen-so-sieht-ein-schnelltest-mit-negativem-testergebnis-aus-.jpg" width="300" class="Tlz" alt="Ein Strich nur beim C ist ein gutes Zeichen: So sieht ein Schnelltest mit negativem Testergebnis aus. (Quelle: dpa)" src="https://img.toi.de/t.gif" title="Ein Strich nur beim C ist ein gutes Zeichen: So sieht ein Schnelltest mit negativem Testergebnis aus. (Quelle: dpa)" /><noscript><img src="https://bilder.t-online.de/b/89/66/54/26/id_89665426/300_80/tid_da/ein-strich-nur-beim-c-ist-ein-gutes-zeichen-so-sieht-ein-schnelltest-mit-negativem-testergebnis-aus-.jpg" width="300" height="169" alt="Ein Strich nur beim C ist ein gutes Zeichen: So sieht ein Schnelltest mit negativem Testergebnis aus." /></noscript>                                                              
+                                                                       
+                                </a></div> </div> </div>
+
+
+
+
+
+
+
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91924942" onfocus="A('zid=91924942;mp=0202;vn=8')" >
+<div class="Ttsc Ttsh300"> 
+<div class="Ttslink"> 
+<a href="https://www.t-online.de/nachrichten/panorama/id_91924942/letzter-corona-podcast-mit-christian-drosten-das-verblueffte-ihn-am-meisten.html"> Letzte Episode des Corona-Podcasts - Das verblüffte Virologen Drosten am meisten
+  </a>
+
+
+ <h6>Letzte Episode des Corona-Podcasts</h6>  <h5 data-tb-region-item-title="">Das verbl&uuml;ffte Virologen Drosten am meisten</h5>
+
+<p class="Ttst">Der Virologe Christian Drosten galt durch den Corona-Podcast als die Stimme der Wissenschaft in der Pandemie. Jetzt hört er in der Sendung auf – und blickte mit seiner Kollegin Sandra Ciesek zurück.
+
+</p>
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91924942/letzter-corona-podcast-mit-christian-drosten-das-verblueffte-ihn-am-meisten.html">
+        
+
+
+
+<img height="169" data-original="https://bilder.t-online.de/b/91/92/49/88/id_91924988/300_80/tid_da/christian-drosten-bei-einer-pressekonferenz-archivbild-der-virologe-hoert-beim-podcast-auf-und-gab-zum-letzten-mal-einen-ausblick-.jpg" width="300" class="Tlz" alt="Christian Drosten bei einer Pressekonferenz (Archivbild): Der Virologe hört beim Podcast auf – und gab zum letzten Mal einen Ausblick. (Quelle: imago images/ IPON)" src="https://img.toi.de/t.gif" title="Christian Drosten bei einer Pressekonferenz (Archivbild): Der Virologe hört beim Podcast auf – und gab zum letzten Mal einen Ausblick. (Quelle: imago images/ IPON)" /><noscript><img src="https://bilder.t-online.de/b/91/92/49/88/id_91924988/300_80/tid_da/christian-drosten-bei-einer-pressekonferenz-archivbild-der-virologe-hoert-beim-podcast-auf-und-gab-zum-letzten-mal-einen-ausblick-.jpg" width="300" height="169" alt="Christian Drosten bei einer Pressekonferenz (Archivbild): Der Virologe hört beim Podcast auf – und gab zum letzten Mal einen Ausblick." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2958,26 +2905,24 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91719562" onfocus="A('zid=91719562;mp=0202;vn=11')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91925248" onfocus="A('zid=91925248;mp=0202;vn=3')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/panorama/id_91719562/corona-pandemie-robert-koch-institut-mehr-neuinfektionen-inzidenz-sinkt.html"> Inzidenzwert sinkt - RKI meldet 216.322 neue Corona-Infektionen
+<a href="https://www.t-online.de/nachrichten/panorama/id_91925248/corona-zahlen-in-deutschland-rki-meldet-sieben-tage-inzidenz-von-1-663.html"> Mehr als 260.000 Neuansteckungen - Bundesweite Corona-Inzidenz sinkt auf 1.663
   </a>
 
 
- <h6>Inzidenzwert sinkt</h6>  <h5 data-tb-region-item-title="">RKI meldet 216.322 neue Corona-Infektionen</h5>
+ <h6>Mehr als 260.000 Neuansteckungen</h6>  <h5 data-tb-region-item-title="">Bundesweite Corona-Inzidenz sinkt auf 1.663</h5>
 
-<p class="Ttst">Die Zahl der Neuinfektionen ist am Donnerstagmorgen gegenüber dem Vortag leicht gestiegen. Das RKI gibt den Wert der Sieben-Tage-Inzidenz mit 1.265,0 an.
-
-
+<p class="Ttst">Die Zahl der Neuansteckungen in Deutschland liegt weiterhin auf hohem Niveau. Die Sieben-Tage-Inzidenz ist aber gesunken, gestern wurde sie noch mit 1.703,3 angegeben. 
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91719562/corona-pandemie-robert-koch-institut-mehr-neuinfektionen-inzidenz-sinkt.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91925248/corona-zahlen-in-deutschland-rki-meldet-sieben-tage-inzidenz-von-1-663.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/71/95/64/id_91719564/300_80/tid_da/aerzte-und-pfleger-untersuchen-einen-patienten-auf-der-covid-19-intensivstation-die-infektionszahlen-sind-gegenueber-dem-vortag-leicht-gestiegen-.jpg" width="300" class="Tlz" alt="Ärzte und Pfleger untersuchen einen Patienten auf der Covid-19-Intensivstation: Die Infektionszahlen sind gegenüber dem Vortag leicht gestiegen. (Quelle: dpa/Bodo Schackow)" src="https://img.toi.de/t.gif" title="Ärzte und Pfleger untersuchen einen Patienten auf der Covid-19-Intensivstation: Die Infektionszahlen sind gegenüber dem Vortag leicht gestiegen. (Quelle: dpa/Bodo Schackow)" /><noscript><img src="https://bilder.t-online.de/b/91/71/95/64/id_91719564/300_80/tid_da/aerzte-und-pfleger-untersuchen-einen-patienten-auf-der-covid-19-intensivstation-die-infektionszahlen-sind-gegenueber-dem-vortag-leicht-gestiegen-.jpg" width="300" height="169" alt="Ärzte und Pfleger untersuchen einen Patienten auf der Covid-19-Intensivstation: Die Infektionszahlen sind gegenüber dem Vortag leicht gestiegen." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/92/52/50/id_91925250/300_80/tid_da/ein-antigen-schnelltest-das-rki-meldete-am-mittwochmorgen-mehr-als-260-000-neuansteckungen-mit-dem-coronavirus-.jpg" width="300" class="Tlz" alt="Ein Antigen-Schnelltest: Das RKI meldete am Mittwochmorgen mehr als 260.000 Neuansteckungen mit dem Coronavirus. (Quelle: dpa/Fernando Gutierrez-Juarez)" src="https://img.toi.de/t.gif" title="Ein Antigen-Schnelltest: Das RKI meldete am Mittwochmorgen mehr als 260.000 Neuansteckungen mit dem Coronavirus. (Quelle: dpa/Fernando Gutierrez-Juarez)" /><noscript><img src="https://bilder.t-online.de/b/91/92/52/50/id_91925250/300_80/tid_da/ein-antigen-schnelltest-das-rki-meldete-am-mittwochmorgen-mehr-als-260-000-neuansteckungen-mit-dem-coronavirus-.jpg" width="300" height="169" alt="Ein Antigen-Schnelltest: Das RKI meldete am Mittwochmorgen mehr als 260.000 Neuansteckungen mit dem Coronavirus." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -2987,24 +2932,24 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91718548" onfocus="A('zid=91718548;mp=0202;vn=7')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91923576" onfocus="A('zid=91923576;mp=0202;vn=6')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/panorama/id_91718548/corona-tests-millionen-betrug-mit-schnellteststationen-in-baden-wuerttemberg.html"> Polizei ermittelt - Millionen-Betrug mit Corona-Teststationen
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91923576/viele-bundeslaender-wollen-auf-maskenpflicht-verzichten-fehlende-rechtssicherheit.html"> Fehlende Rechtssicherheit - Viele Bundesländer wollen auf Maskenpflicht verzichten
   </a>
 
 
- <h6>Polizei ermittelt</h6>  <h5 data-tb-region-item-title="">Millionen-Betrug mit Corona-Teststationen</h5>
+ <h6>Fehlende Rechtssicherheit</h6>  <h5 data-tb-region-item-title="">Viele Bundesl&auml;nder wollen auf Maskenpflicht verzichten</h5>
 
-<p class="Ttst">Die Polizei hat im Raum Karlsruhe sechs mutmaßliche Betrüger festgenommen. Sie sollen über eine Million Euro mit falschen Abrechnungen bei Schnelltests verdient haben. Mehr als 50 Stationen wurden geschlossen.
+<p class="Ttst">Masken in Supermärkten, Schulen, 3G- oder 2G-Regeln: Am Wochenende läuft die Grundlage für diese Corona-Maßnahmen aus. Bundesländer können zwar Hotspot-Regionen ausrufen – doch die meisten planen das nicht.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91718548/corona-tests-millionen-betrug-mit-schnellteststationen-in-baden-wuerttemberg.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91923576/viele-bundeslaender-wollen-auf-maskenpflicht-verzichten-fehlende-rechtssicherheit.html">
         
 
 
 
-<img height="168" data-original="https://bilder.t-online.de/b/91/71/85/60/id_91718560/300_80/tid_da/eine-frau-fuehrt-einen-corona-schnelltest-durch-symbolbild-die-polizei-in-baden-wuerttemberg-ermittelt-in-dutzenden-faellen-wegen-moeglichem-abrechnungsbetrug-in-corona-testzentren-.jpg" width="300" class="Tlz" alt="Eine Frau führt einen Corona-Schnelltest durch (Symbolbild): Die Polizei in Baden-Württemberg ermittelt in dutzenden Fällen wegen möglichem Abrechnungsbetrug in Corona-Testzentren. (Quelle: dpa/Marijan Murat)" src="https://img.toi.de/t.gif" title="Eine Frau führt einen Corona-Schnelltest durch (Symbolbild): Die Polizei in Baden-Württemberg ermittelt in dutzenden Fällen wegen möglichem Abrechnungsbetrug in Corona-Testzentren. (Quelle: dpa/Marijan Murat)" /><noscript><img src="https://bilder.t-online.de/b/91/71/85/60/id_91718560/300_80/tid_da/eine-frau-fuehrt-einen-corona-schnelltest-durch-symbolbild-die-polizei-in-baden-wuerttemberg-ermittelt-in-dutzenden-faellen-wegen-moeglichem-abrechnungsbetrug-in-corona-testzentren-.jpg" width="300" height="169" alt="Eine Frau führt einen Corona-Schnelltest durch (Symbolbild): Die Polizei in Baden-Württemberg ermittelt in dutzenden Fällen wegen möglichem Abrechnungsbetrug in Corona-Testzentren." /></noscript>                                                              
+<img height="168" data-original="https://bilder.t-online.de/b/91/92/37/14/id_91923714/300_80/tid_da/einkaufsszene-in-berlin-immer-mehr-bundeslaender-entscheiden-sich-dagegen-die-corona-massnahmen-zu-verlaengern-.jpg" width="300" class="Tlz" alt="Einkaufsszene in Berlin: Immer mehr Bundesländer entscheiden sich dagegen, die Corona-Maßnahmen zu verlängern. (Quelle: dpa/Monika Skolimowska)" src="https://img.toi.de/t.gif" title="Einkaufsszene in Berlin: Immer mehr Bundesländer entscheiden sich dagegen, die Corona-Maßnahmen zu verlängern. (Quelle: dpa/Monika Skolimowska)" /><noscript><img src="https://bilder.t-online.de/b/91/92/37/14/id_91923714/300_80/tid_da/einkaufsszene-in-berlin-immer-mehr-bundeslaender-entscheiden-sich-dagegen-die-corona-massnahmen-zu-verlaengern-.jpg" width="300" height="169" alt="Einkaufsszene in Berlin: Immer mehr Bundesländer entscheiden sich dagegen, die Corona-Maßnahmen zu verlängern." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -3014,24 +2959,26 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91716346" onfocus="A('zid=91716346;mp=0202;vn=7')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91919644" onfocus="A('zid=91919644;mp=0202;vn=6')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91716346/das-koennte-omikron-typ-ba-2-in-deutschland-bewirken-modellierer-warnen.html"> Zwei extreme Szenarien - Das könnte BA.2 in Deutschland bewirken
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91919644/corona-karl-lauterbach-fordert-vierte-impfung-fuer-alle-ueber-dringend-.html"> "Dringend nötig" - Lauterbach: Umgang mit vierter Impfung wird EU-weit angeglichen
   </a>
 
 
- <h6>Zwei extreme Szenarien</h6>  <h5 data-tb-region-item-title="">Das k&ouml;nnte BA.2 in Deutschland bewirken</h5>
+ <h6>&quot;Dringend n&ouml;tig&quot;</h6>  <h5 data-tb-region-item-title="">Lauterbach: Umgang mit vierter Impfung wird EU-weit angeglichen</h5>
 
-<p class="Ttst">Der neue Omikron-Typ BA.2 wird in immer mehr Proben nachgewiesen. Modellierer der TU Berlin haben berechnet, wie hoch die Infektionszahlen dadurch ansteigen könnten.
+<p class="Ttst">Bislang wird die vierte Corona-Impfung in Deutschland über 70-Jährigen und Risikopatienten empfohlen. Das soll sich nach einer Forderung von Gesundheitsminister Lauterbach EU-weit ändern.  
+
+
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91716346/das-koennte-omikron-typ-ba-2-in-deutschland-bewirken-modellierer-warnen.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91919644/corona-karl-lauterbach-fordert-vierte-impfung-fuer-alle-ueber-dringend-.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/71/64/62/id_91716462/300_80/tid_da/corona-pandemie-auch-das-verhalten-der-buerger-bestimmt-wie-hoch-die-corona-welle-ausfallen-wird-.jpg" width="300" class="Tlz" alt="Corona-Pandemie: Auch das Verhalten der Bürger bestimmt, wie hoch die Corona-Welle ausfallen wird. (Quelle: imago images/Michael Gstettenbauer)" src="https://img.toi.de/t.gif" title="Corona-Pandemie: Auch das Verhalten der Bürger bestimmt, wie hoch die Corona-Welle ausfallen wird. (Quelle: imago images/Michael Gstettenbauer)" /><noscript><img src="https://bilder.t-online.de/b/91/71/64/62/id_91716462/300_80/tid_da/corona-pandemie-auch-das-verhalten-der-buerger-bestimmt-wie-hoch-die-corona-welle-ausfallen-wird-.jpg" width="300" height="169" alt="Corona-Pandemie: Auch das Verhalten der Bürger bestimmt, wie hoch die Corona-Welle ausfallen wird." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/96/76/id_91919676/300_80/tid_da/karl-lauterbach-der-gesundheitsminister-beurteilt-eine-vierte-impfung-fuer-ueber-60-jaehrige-als-dringend-noetig-.jpg" width="300" class="Tlz" alt="Karl Lauterbach: Der Gesundheitsminister beurteilt eine vierte Impfung für über 60-Jährige als 'dringend nötig'. (Quelle: imago images/Chris Emil Janßen)" src="https://img.toi.de/t.gif" title="Karl Lauterbach: Der Gesundheitsminister beurteilt eine vierte Impfung für über 60-Jährige als 'dringend nötig'. (Quelle: imago images/Chris Emil Janßen)" /><noscript><img src="https://bilder.t-online.de/b/91/91/96/76/id_91919676/300_80/tid_da/karl-lauterbach-der-gesundheitsminister-beurteilt-eine-vierte-impfung-fuer-ueber-60-jaehrige-als-dringend-noetig-.jpg" width="300" height="169" alt="Karl Lauterbach: Der Gesundheitsminister beurteilt eine vierte Impfung für über 60-Jährige als 'dringend nötig'." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -3041,24 +2988,24 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91705294" onfocus="A('zid=91705294;mp=0202;vn=16')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91395098" onfocus="A('zid=91395098;mp=0202;vn=25')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91705294/immunologe-ueber-vierte-impfung-wird-das-problem-nicht-dauerhaft-loesen-.html"> Immunologe stellt klar - "Auch die vierte Impfung wird das Problem nicht lösen"
+<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91395098/corona-infektion-mit-omikron-ist-ein-milder-verlauf-wirklich-mild-.html"> Bei einer Corona-Infektion - Was ist eigentlich ein "leichter Verlauf"?
   </a>
 
 
- <h6><span class="Tts__label Tts__label--interview">INTERVIEW</span>Immunologe stellt klar</h6>  <h5 data-tb-region-item-title="">&quot;Auch die vierte Impfung wird das Problem nicht l&ouml;sen&quot;</h5>
+ <h6>Bei einer Corona-Infektion</h6>  <h5 data-tb-region-item-title="">Was ist eigentlich ein &quot;leichter Verlauf&quot;?</h5>
 
-<p class="Ttst">Seit Anfang des Monats empfiehlt die Ständige Impfkommission die vierte Impfung für bestimmte Gruppen. Wie sinnvoll ist sie? Ein Immunologe schätzt den Nutzen ein. | Von Christiane Braunsdorf
+<p class="Ttst">Die Corona-Variante Omikron führt eher zu leichten Verläufen. Doch was bedeutet das – droht auch bei einem milden Verlauf ein Krankenhausaufenthalt? | Von Sandra Simonsen
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91705294/immunologe-ueber-vierte-impfung-wird-das-problem-nicht-dauerhaft-loesen-.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91395098/corona-infektion-mit-omikron-ist-ein-milder-verlauf-wirklich-mild-.html">
         
 
 
 
-<img height="168" data-original="https://bilder.t-online.de/b/91/71/81/46/id_91718146/300_80/tid_da/corona-impfung-aelteren-und-risikopatienten-wird-bereits-der-vierte-piks-angeboten-.jpg" width="300" class="Tlz" alt="Corona-Impfung: Älteren und Risikopatienten wird bereits der vierte Piks angeboten. (Quelle: dpa/Markus Scholz)" src="https://img.toi.de/t.gif" title="Corona-Impfung: Älteren und Risikopatienten wird bereits der vierte Piks angeboten. (Quelle: dpa/Markus Scholz)" /><noscript><img src="https://bilder.t-online.de/b/91/71/81/46/id_91718146/300_80/tid_da/corona-impfung-aelteren-und-risikopatienten-wird-bereits-der-vierte-piks-angeboten-.jpg" width="300" height="169" alt="Corona-Impfung: Älteren und Risikopatienten wird bereits der vierte Piks angeboten." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/41/19/72/id_91411972/300_80/tid_da/kopf-und-gliederschmerzen-symbolfoto-auch-bei-einem-leichten-corona-verlauf-kann-es-ihnen-sehr-schlecht-gehen-.jpg" width="300" class="Tlz" alt="Kopf- und Gliederschmerzen (Symbolfoto): Auch bei einem leichten Corona-Verlauf kann es Ihnen sehr schlecht gehen. (Quelle: imago images/Ute Grabowsky/photothek)" src="https://img.toi.de/t.gif" title="Kopf- und Gliederschmerzen (Symbolfoto): Auch bei einem leichten Corona-Verlauf kann es Ihnen sehr schlecht gehen. (Quelle: imago images/Ute Grabowsky/photothek)" /><noscript><img src="https://bilder.t-online.de/b/91/41/19/72/id_91411972/300_80/tid_da/kopf-und-gliederschmerzen-symbolfoto-auch-bei-einem-leichten-corona-verlauf-kann-es-ihnen-sehr-schlecht-gehen-.jpg" width="300" height="169" alt="Kopf- und Gliederschmerzen (Symbolfoto): Auch bei einem leichten Corona-Verlauf kann es Ihnen sehr schlecht gehen." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -3068,24 +3015,24 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-90451672" onfocus="A('zid=90451672;mp=0202;vn=13')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91917996" onfocus="A('zid=91917996;mp=0202;vn=7')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_90451672/seltene-corona-impfreaktion-symptome-des-guillain-barre-syndroms.html"> Seltene Corona-Impfreaktion - Woran sich das Guillain-Barré-Syndrom erkennen lässt
+<a href="https://www.t-online.de/nachrichten/panorama/id_91917996/rki-mehr-als-230-000-neue-corona-faelle-inzidenzwert-steigt.html"> Inzidenzwert wieder leicht gestiegen - RKI meldet mehr als 230.000 neue Corona-Fälle
   </a>
 
 
- <h6>Seltene Corona-Impfreaktion</h6>  <h5 data-tb-region-item-title="">Woran sich das Guillain-Barr&eacute;-Syndrom erkennen l&auml;sst</h5>
+ <h6>Inzidenzwert wieder leicht gestiegen</h6>  <h5 data-tb-region-item-title="">RKI meldet mehr als 230.000 neue Corona-F&auml;lle</h5>
 
-<p class="Ttst">In wenigen Fällen wurde nach Covid-19-Impfungen das Guillain-Barré-Syndrom festgestellt. Was hinter der seltenen Nervenkrankheit steckt – und wie sie sich bemerkbar macht. | Von Melanie Rannow
+<p class="Ttst">Der bundesweite Inzidenzwert liegt nun bei 1.703,3. Am Vortag hatte er bei 1.700,6 gelegen. Binnen 24 Stunden wurden 307 Todesfälle im Zusammenhang mit dem Coronavirus gemeldet. 
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_90451672/seltene-corona-impfreaktion-symptome-des-guillain-barre-syndroms.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91917996/rki-mehr-als-230-000-neue-corona-faelle-inzidenzwert-steigt.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/90/45/18/76/id_90451876/300_80/tid_da/guillain-barre-syndrom-erste-anzeichen-der-erkrankung-sind-beispielsweise-kribbeln-oder-auch-taubheit-in-den-beinen-.jpg" width="300" class="Tlz" alt="Guillain-Barré-Syndrom: Erste Anzeichen der Erkrankung sind beispielsweise Kribbeln oder auch Taubheit in den Beinen. (Quelle: Getty Images/PORNCHAI SODA)" src="https://img.toi.de/t.gif" title="Guillain-Barré-Syndrom: Erste Anzeichen der Erkrankung sind beispielsweise Kribbeln oder auch Taubheit in den Beinen. (Quelle: Getty Images/PORNCHAI SODA)" /><noscript><img src="https://bilder.t-online.de/b/90/45/18/76/id_90451876/300_80/tid_da/guillain-barre-syndrom-erste-anzeichen-der-erkrankung-sind-beispielsweise-kribbeln-oder-auch-taubheit-in-den-beinen-.jpg" width="300" height="169" alt="Guillain-Barré-Syndrom: Erste Anzeichen der Erkrankung sind beispielsweise Kribbeln oder auch Taubheit in den Beinen." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/79/98/id_91917998/300_80/tid_da/ein-intensivpatient-im-krankenhaus-die-zahl-der-neuansteckungen-mit-dem-coronavirus-in-deutschland-liegt-weiter-auf-hohem-niveau-.jpg" width="300" class="Tlz" alt="Ein Intensivpatient im Krankenhaus: Die Zahl der Neuansteckungen mit dem Coronavirus in Deutschland liegt weiter auf hohem Niveau. (Quelle: dpa/Friso Gentsch)" src="https://img.toi.de/t.gif" title="Ein Intensivpatient im Krankenhaus: Die Zahl der Neuansteckungen mit dem Coronavirus in Deutschland liegt weiter auf hohem Niveau. (Quelle: dpa/Friso Gentsch)" /><noscript><img src="https://bilder.t-online.de/b/91/91/79/98/id_91917998/300_80/tid_da/ein-intensivpatient-im-krankenhaus-die-zahl-der-neuansteckungen-mit-dem-coronavirus-in-deutschland-liegt-weiter-auf-hohem-niveau-.jpg" width="300" height="169" alt="Ein Intensivpatient im Krankenhaus: Die Zahl der Neuansteckungen mit dem Coronavirus in Deutschland liegt weiter auf hohem Niveau." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -3095,24 +3042,24 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91513580" onfocus="A('zid=91513580;mp=0202;vn=22')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91917872" onfocus="A('zid=91917872;mp=0202;vn=8')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91513580/corona-totimpfstoff-was-kann-der-booster-von-sanofi-leisten-.html"> Corona-Impfstoff ohne mRNA - Nächster Pharmakonzern will Zulassung beantragen
+<a href="https://www.t-online.de/nachrichten/panorama/id_91917872/-coronavirus-update-virologen-drosten-und-ciesek-hoeren-mit-podcast-auf-.html"> Letzte Ausgabe des "Coronavirus-Update" - Virologen Drosten und Ciesek hören mit Podcast auf 
   </a>
 
 
- <h6>Corona-Impfstoff ohne mRNA</h6>  <h5 data-tb-region-item-title="">N&auml;chster Pharmakonzern will Zulassung beantragen</h5>
+ <h6>Letzte Ausgabe des &quot;Coronavirus-Update&quot;</h6>  <h5 data-tb-region-item-title="">Virologen Drosten und Ciesek h&ouml;ren mit Podcast auf</h5>
 
-<p class="Ttst">Mit Novavax gibt es bereits einen zugelassenen Impfstoff, der auf Proteinen basiert. Sanofi und GSK wollen mit ihrem Kandidaten bald nachziehen. Zuvor wurde die Produktion eines mRNA-Impfstoffes gestoppt. | Von M. Rannow
+<p class="Ttst">Ein Podcast als Maßnahme zur Pandemiebekämpfung: Auch damit ist der Virologe Christian Drosten in den vergangenen zwei Jahren bundesweit bekannt geworden. Jetzt ist Schluss, zumindest vorerst.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91513580/corona-totimpfstoff-was-kann-der-booster-von-sanofi-leisten-.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91917872/-coronavirus-update-virologen-drosten-und-ciesek-hoeren-mit-podcast-auf-.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/71/79/68/id_91717968/300_80/tid_da/sanofi-der-impfstoffkandidat-gegen-covid-19-soll-2022-auf-den-markt-kommen-.jpg" width="300" class="Tlz" alt="Sanofi: Der Impfstoffkandidat gegen Covid-19 soll 2022 auf den Markt kommen. (Quelle: imago images/Sven Simon)" src="https://img.toi.de/t.gif" title="Sanofi: Der Impfstoffkandidat gegen Covid-19 soll 2022 auf den Markt kommen. (Quelle: imago images/Sven Simon)" /><noscript><img src="https://bilder.t-online.de/b/91/71/79/68/id_91717968/300_80/tid_da/sanofi-der-impfstoffkandidat-gegen-covid-19-soll-2022-auf-den-markt-kommen-.jpg" width="300" height="169" alt="Sanofi: Der Impfstoffkandidat gegen Covid-19 soll 2022 auf den Markt kommen." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/79/94/id_91917994/300_80/tid_da/virologen-ciesek-und-drosten-die-virologen-wurden-auch-durch-ihren-ndr-podcast-bekannt-.jpg" width="300" class="Tlz" alt="Virologen Ciesek und Drosten: Die Virologen wurden auch durch ihren NDR-Podcast bekannt. (Quelle: dpa/Frank Rumpenhorst)" src="https://img.toi.de/t.gif" title="Virologen Ciesek und Drosten: Die Virologen wurden auch durch ihren NDR-Podcast bekannt. (Quelle: dpa/Frank Rumpenhorst)" /><noscript><img src="https://bilder.t-online.de/b/91/91/79/94/id_91917994/300_80/tid_da/virologen-ciesek-und-drosten-die-virologen-wurden-auch-durch-ihren-ndr-podcast-bekannt-.jpg" width="300" height="169" alt="Virologen Ciesek und Drosten: Die Virologen wurden auch durch ihren NDR-Podcast bekannt." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -3122,24 +3069,24 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91703950" onfocus="A('zid=91703950;mp=0202;vn=17')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91915108" onfocus="A('zid=91915108;mp=0202;vn=5')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91703950/corona-massnahmen-ab-20-maerz-was-bedeutet-basisschutz-.html"> "Basisschutz" ab 20. März - Welche Corona-Maßnahmen bleiben erhalten?
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91915108/corona-regeln-karl-lauterbach-blockt-laender-aufstand-ab-und-aergert-sich.html"> Streit um Corona-Maßnahmen - Lauterbach blockt Länder-Aufstand ab – und ärgert sich
   </a>
 
 
- <h6>&quot;Basisschutz&quot; ab 20. M&auml;rz</h6>  <h5 data-tb-region-item-title="">Welche Corona-Ma&szlig;nahmen bleiben erhalten?</h5>
+ <h6>Streit um Corona-Ma&szlig;nahmen</h6>  <h5 data-tb-region-item-title="">Lauterbach blockt L&auml;nder-Aufstand ab &ndash; und &auml;rgert sich</h5>
 
-<p class="Ttst">Deutschland will zum Frühling hin lockern: Viele Corona-Regeln sollen stufenweise fallen, ein "Basisschutz" der Bevölkerung jedoch bleiben. Was hat es damit auf sich? | Von Melanie Rannow
+<p class="Ttst">Die Corona-Infektionszahlen sind hoch, dennoch stehen Lockerungen kurz bevor. Einige Bundesländer sind mit der künftigen Rechtslage unzufrieden – doch ihr Vorstoß ist gescheitert. Minister Lauterbach fordert mehr Tempo.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91703950/corona-massnahmen-ab-20-maerz-was-bedeutet-basisschutz-.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91915108/corona-regeln-karl-lauterbach-blockt-laender-aufstand-ab-und-aergert-sich.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/70/40/98/id_91704098/300_80/tid_da/corona-schutz-die-mehrheit-der-deutschen-ist-dafuer-dass-die-maskenpflicht-in-bestimmten-situationen-beibehalten-wird-.jpg" width="300" class="Tlz" alt="Corona-Schutz: Die Mehrheit der Deutschen ist dafür, dass die Maskenpflicht in bestimmten Situationen beibehalten wird. (Quelle: imago images/Michael Gstettenbauer)" src="https://img.toi.de/t.gif" title="Corona-Schutz: Die Mehrheit der Deutschen ist dafür, dass die Maskenpflicht in bestimmten Situationen beibehalten wird. (Quelle: imago images/Michael Gstettenbauer)" /><noscript><img src="https://bilder.t-online.de/b/91/70/40/98/id_91704098/300_80/tid_da/corona-schutz-die-mehrheit-der-deutschen-ist-dafuer-dass-die-maskenpflicht-in-bestimmten-situationen-beibehalten-wird-.jpg" width="300" height="169" alt="Corona-Schutz: Die Mehrheit der Deutschen ist dafür, dass die Maskenpflicht in bestimmten Situationen beibehalten wird." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/52/12/id_91915212/300_80/tid_da/karl-lauterbach-die-laender-gehen-mit-klaren-forderungen-an-ihn-in-die-gesundheitsministerkonferenz-.jpg" width="300" class="Tlz" alt="Karl Lauterbach: Die Länder gehen mit klaren Forderungen an ihn in die Gesundheitsministerkonferenz. (Quelle: dpa/Kay Nietfeld)" src="https://img.toi.de/t.gif" title="Karl Lauterbach: Die Länder gehen mit klaren Forderungen an ihn in die Gesundheitsministerkonferenz. (Quelle: dpa/Kay Nietfeld)" /><noscript><img src="https://bilder.t-online.de/b/91/91/52/12/id_91915212/300_80/tid_da/karl-lauterbach-die-laender-gehen-mit-klaren-forderungen-an-ihn-in-die-gesundheitsministerkonferenz-.jpg" width="300" height="169" alt="Karl Lauterbach: Die Länder gehen mit klaren Forderungen an ihn in die Gesundheitsministerkonferenz." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -3149,24 +3096,24 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-89057424" onfocus="A('zid=89057424;mp=0202;vn=17')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91911876" onfocus="A('zid=91911876;mp=0202;vn=5')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_89057424/covid-19-wie-kann-man-riech-und-geschmacksstoerungen-loswerden-.html"> Symptome bei Covid-19 - Warum kann ich nicht mehr riechen und schmecken?
+<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91911876/macht-zugluft-krank-.html"> Lüften in der Corona-Pandemie - Macht Zugluft krank?
   </a>
 
 
- <h6>Symptome bei Covid-19</h6>  <h5 data-tb-region-item-title="">Warum kann ich nicht mehr riechen und schmecken?</h5>
+ <h6>L&uuml;ften in der Corona-Pandemie</h6>  <h5 data-tb-region-item-title="">Macht Zugluft krank?</h5>
 
-<p class="Ttst">Viele Corona-Infizierte berichten von Geruchs- und Geschmacksstörungen, die teilweise monatelang anhalten. Mit einer Therapie wollen Dresdner Forscher Betroffenen wieder das Riechen lehren. | Von M. Rannow
+<p class="Ttst">Fenster auf gegen das Coronavirus – Lüften gehört zu den Grundregeln des Infektionsschutzes. Doch mit der frischen Luft kommt schnell auch die Kälte. Ist Lüften selbst also ein Krankheitsrisiko?
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_89057424/covid-19-wie-kann-man-riech-und-geschmacksstoerungen-loswerden-.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91911876/macht-zugluft-krank-.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/89/05/77/86/id_89057786/300_80/tid_da/riechstoerung-sie-gilt-als-frueher-indikator-fuer-eine-corona-infektion-symbolbild-.jpg" width="300" class="Tlz" alt="Riechstörung: Sie gilt als früher Indikator für eine Corona-Infektion. (Symbolbild) (Quelle: Getty Images/Nes)" src="https://img.toi.de/t.gif" title="Riechstörung: Sie gilt als früher Indikator für eine Corona-Infektion. (Symbolbild) (Quelle: Getty Images/Nes)" /><noscript><img src="https://bilder.t-online.de/b/89/05/77/86/id_89057786/300_80/tid_da/riechstoerung-sie-gilt-als-frueher-indikator-fuer-eine-corona-infektion-symbolbild-.jpg" width="300" height="169" alt="Riechstörung: Sie gilt als früher Indikator für eine Corona-Infektion. (Symbolbild)" /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/18/80/id_91911880/300_80/tid_da/lueften-zum-infektionsschutz-einige-menschen-reagieren-auf-zugluft-empfindlicher-als-andere-.jpg" width="300" class="Tlz" alt="Lüften zum Infektionsschutz: Einige Menschen reagieren auf Zugluft empfindlicher als andere. (Quelle: dpa/tmn/Christin Klose)" src="https://img.toi.de/t.gif" title="Lüften zum Infektionsschutz: Einige Menschen reagieren auf Zugluft empfindlicher als andere. (Quelle: dpa/tmn/Christin Klose)" /><noscript><img src="https://bilder.t-online.de/b/91/91/18/80/id_91911880/300_80/tid_da/lueften-zum-infektionsschutz-einige-menschen-reagieren-auf-zugluft-empfindlicher-als-andere-.jpg" width="300" height="169" alt="Lüften zum Infektionsschutz: Einige Menschen reagieren auf Zugluft empfindlicher als andere." /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -3176,24 +3123,24 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91465458" onfocus="A('zid=91465458;mp=0202;vn=7')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91577376" onfocus="A('zid=91577376;mp=0202;vn=26')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91465458/coronavirus-herzprobleme-luftnot-angst-wie-long-covid-zuschlaegt.html"> Langzeitfolgen des Coronavirus - Darunter leiden die meisten Long-Covid-Patienten
+<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91577376/positiver-corona-test-ab-wann-muss-ich-zum-arzt-gehen-.html"> Nach positivem Test - Wann brauche ich mit Corona einen Arzt?
   </a>
 
 
- <h6>Langzeitfolgen des Coronavirus</h6>  <h5 data-tb-region-item-title="">Darunter leiden die meisten Long-Covid-Patienten</h5>
+ <h6>Nach positivem Test</h6>  <h5 data-tb-region-item-title="">Wann brauche ich mit Corona einen Arzt?</h5>
 
-<p class="Ttst">Monate nach einer Corona-Infektion reißt Long Covid Betroffene oft vollständig aus ihrem Berufsleben. In den Reha-Einrichtungen zeigt sich die Bandbreite der Beschwerden.
+<p class="Ttst">Der Anteil positiver PCR-Tests in Deutschland ist so hoch wie nie. Die Variante Omikron verursacht jedoch meist nur milde Krankheitssymptome. Wie Sie diese lindern können und wann Sie doch einen Arzt aufsuchen sollten.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91465458/coronavirus-herzprobleme-luftnot-angst-wie-long-covid-zuschlaegt.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91577376/positiver-corona-test-ab-wann-muss-ich-zum-arzt-gehen-.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/46/54/62/id_91465462/300_80/tid_da/schwindende-fitness-long-covid-kranke-sind-nach-aktuellen-erfahrungen-aus-der-reha-mit-unterschiedlichen-symptomen-konfrontiert-.jpg" width="300" class="Tlz" alt="Schwindende Fitness: Long-Covid-Kranke sind nach aktuellen Erfahrungen aus der Reha mit unterschiedlichen Symptomen konfrontiert. (Quelle: dpa/Sina Schuldt)" src="https://img.toi.de/t.gif" title="Schwindende Fitness: Long-Covid-Kranke sind nach aktuellen Erfahrungen aus der Reha mit unterschiedlichen Symptomen konfrontiert. (Quelle: dpa/Sina Schuldt)" /><noscript><img src="https://bilder.t-online.de/b/91/46/54/62/id_91465462/300_80/tid_da/schwindende-fitness-long-covid-kranke-sind-nach-aktuellen-erfahrungen-aus-der-reha-mit-unterschiedlichen-symptomen-konfrontiert-.jpg" width="300" height="169" alt="Schwindende Fitness: Long-Covid-Kranke sind nach aktuellen Erfahrungen aus der Reha mit unterschiedlichen Symptomen konfrontiert." /></noscript>                                                              
+<img height="168" data-original="https://bilder.t-online.de/b/91/57/77/10/id_91577710/300_80/tid_da/krank-im-bett-wann-wird-eine-corona-infektion-gefaehrlich-.jpg" width="300" class="Tlz" alt="Krank im Bett: Wann wird eine Corona-Infektion gefährlich? (Quelle: Getty Images/ iStock / Getty Images Plus)" src="https://img.toi.de/t.gif" title="Krank im Bett: Wann wird eine Corona-Infektion gefährlich? (Quelle: Getty Images/ iStock / Getty Images Plus)" /><noscript><img src="https://bilder.t-online.de/b/91/57/77/10/id_91577710/300_80/tid_da/krank-im-bett-wann-wird-eine-corona-infektion-gefaehrlich-.jpg" width="300" height="169" alt="Krank im Bett: Wann wird eine Corona-Infektion gefährlich?" /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -3203,24 +3150,24 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91633982" onfocus="A('zid=91633982;mp=0202;vn=256')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91881258" onfocus="A('zid=91881258;mp=0202;vn=21')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/deutschland/id_91633982/corona-news-ministerpraesident-weil-warnt-vor-anhaltenden-corona-gefahren.html"> Newsblog Covid-19 - Ministerpräsident warnt vor anhaltenden Corona-Gefahren
+<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91881258/infektion-besser-als-impfung-wer-den-hoechsten-schutz-hat.html"> Rekord-Inzidenzen - Infektion besser als Impfung? Wer den höchsten Schutz hat
   </a>
 
 
- <h6>Newsblog Covid-19</h6>  <h5 data-tb-region-item-title="">Ministerpr&auml;sident warnt vor anhaltenden Corona-Gefahren</h5>
+ <h6><span class="Tts__label Tts__label--interview">INTERVIEW</span>Rekord-Inzidenzen</h6>  <h5 data-tb-region-item-title="">Infektion besser als Impfung? Wer den h&ouml;chsten Schutz hat</h5>
 
-<p class="Ttst">Niedersachsens Ministerpräsident Weil hat einen Ausblick auf das weitere Vorgehen in der Pandemie gegeben. Die geplanten Lockerungen hält er für vertretbar und spricht dennoch eine Warnung aus. Alle Infos im Newsblog.
+<p class="Ttst">Noch immer steigen die Zahlen der Corona-Infektionen. Doch wie sieht es mit unserem Schutz aus? Kann die vierte Impfung helfen? Ein Immunologe erklärt den Forschungsstand. | Von C. Braunsdorf
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91633982/corona-news-ministerpraesident-weil-warnt-vor-anhaltenden-corona-gefahren.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91881258/infektion-besser-als-impfung-wer-den-hoechsten-schutz-hat.html">
         
 
 
 
-<img height="168" data-original="https://bilder.t-online.de/b/91/71/62/82/id_91716282/300_80/tid_da/stephan-weil-spd-haelt-eine-regierungserklaerung-zur-pandemie-der-ministerpraesident-von-niedersachsen-warnt-vor-den-anhaltenden-gefahren-des-coronavirus-.jpg" width="300" class="Tlz" alt="Stephan Weil (SPD) hält eine Regierungserklärung zur Pandemie: Der Ministerpräsident von Niedersachsen warnt vor den anhaltenden Gefahren des Coronavirus. (Quelle: dpa/Julian Stratenschulte)" src="https://img.toi.de/t.gif" title="Stephan Weil (SPD) hält eine Regierungserklärung zur Pandemie: Der Ministerpräsident von Niedersachsen warnt vor den anhaltenden Gefahren des Coronavirus. (Quelle: dpa/Julian Stratenschulte)" /><noscript><img src="https://bilder.t-online.de/b/91/71/62/82/id_91716282/300_80/tid_da/stephan-weil-spd-haelt-eine-regierungserklaerung-zur-pandemie-der-ministerpraesident-von-niedersachsen-warnt-vor-den-anhaltenden-gefahren-des-coronavirus-.jpg" width="300" height="169" alt="Stephan Weil (SPD) hält eine Regierungserklärung zur Pandemie: Der Ministerpräsident von Niedersachsen warnt vor den anhaltenden Gefahren des Coronavirus." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/89/68/04/id_91896804/300_80/tid_da/menschen-sind-in-der-muenchner-innenstadt-unterwegs-symbolbild-das-virus-greift-weiter-um-sich-.jpg" width="300" class="Tlz" alt="Menschen sind in der Münchner Innenstadt unterwegs (Symbolbild):  Das Virus greift weiter um sich.  (Quelle: imago images/Wolfgang Maria Weber)" src="https://img.toi.de/t.gif" title="Menschen sind in der Münchner Innenstadt unterwegs (Symbolbild):  Das Virus greift weiter um sich.  (Quelle: imago images/Wolfgang Maria Weber)" /><noscript><img src="https://bilder.t-online.de/b/91/89/68/04/id_91896804/300_80/tid_da/menschen-sind-in-der-muenchner-innenstadt-unterwegs-symbolbild-das-virus-greift-weiter-um-sich-.jpg" width="300" height="169" alt="Menschen sind in der Münchner Innenstadt unterwegs (Symbolbild):  Das Virus greift weiter um sich. " /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
 
@@ -3230,24 +3177,105 @@ position: relative;
 
 
 
-<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91713040" onfocus="A('zid=91713040;mp=0202;vn=5')" >
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91911758" onfocus="A('zid=91911758;mp=0202;vn=9')" >
 <div class="Ttsc Ttsh300"> 
 <div class="Ttslink"> 
-<a href="https://www.t-online.de/nachrichten/panorama/id_91713040/rki-bundesweite-corona-inzidenz-sinkt-auf-1-278-9.html"> Daten des RKI - Bundesweite Corona-Inzidenz sinkt auf 1.278,9
+<a href="https://www.t-online.de/nachrichten/deutschland/id_91911758/corona-massnahmen-karl-lauterbach-will-vier-kriterien-fuer-hotspots-vorschlagen.html"> Debatte über Corona-Lockerungen - Lauterbach will vier Kriterien für Hotspots vorschlagen
   </a>
 
 
- <h6>Daten des RKI</h6>  <h5 data-tb-region-item-title="">Bundesweite Corona-Inzidenz sinkt auf 1.278,9</h5>
+ <h6>Debatte &uuml;ber Corona-Lockerungen</h6>  <h5 data-tb-region-item-title="">Lauterbach will vier Kriterien f&uuml;r Hotspots vorschlagen</h5>
 
-<p class="Ttst">Dem Robert Koch-Institut sind mehr als 200.000 neue Positiv-Tests gemeldet worden. Die bundesweite Sieben-Tage-Inzidenz sinkt jedoch Vergleich zum Vortag weiter. 
+<p class="Ttst">Die Hotspot-Regel für schärfere Corona-Regeln sorgt für Diskussionen in den Bundesländern. Für die Konferenz der Gesundheitsminister hat sich Karl Lauterbach mit einem Vorschlag gewappnet.
 
 </p>
- </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91713040/rki-bundesweite-corona-inzidenz-sinkt-auf-1-278-9.html">
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/deutschland/id_91911758/corona-massnahmen-karl-lauterbach-will-vier-kriterien-fuer-hotspots-vorschlagen.html">
         
 
 
 
-<img height="169" data-original="https://bilder.t-online.de/b/91/71/30/42/id_91713042/300_80/tid_da/impfung-in-rostock-der-inzidenzwert-in-deutschland-sinkt-weiter-.jpg" width="300" class="Tlz" alt="Impfung in Rostock: Der Inzidenzwert in Deutschland sinkt weiter. (Quelle: dpa/Bernd Wüstneck)" src="https://img.toi.de/t.gif" title="Impfung in Rostock: Der Inzidenzwert in Deutschland sinkt weiter. (Quelle: dpa/Bernd Wüstneck)" /><noscript><img src="https://bilder.t-online.de/b/91/71/30/42/id_91713042/300_80/tid_da/impfung-in-rostock-der-inzidenzwert-in-deutschland-sinkt-weiter-.jpg" width="300" height="169" alt="Impfung in Rostock: Der Inzidenzwert in Deutschland sinkt weiter." /></noscript>                                                              
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/17/74/id_91911774/300_80/tid_da/karl-lauterbach-und-lothar-wieler-die-gesundheitsminister-von-bund-und-laendern-wollen-am-montag-ueber-die-hotspot-regel-fuer-schaerfere-corona-massnahmen-beraten-.jpg" width="300" class="Tlz" alt="Karl Lauterbach und Lothar Wieler: Die Gesundheitsminister von Bund und Ländern wollen am Montag über die Hotspot-Regel für schärfere Corona-Maßnahmen beraten. (Quelle: Reuters/Annegret Hilse)" src="https://img.toi.de/t.gif" title="Karl Lauterbach und Lothar Wieler: Die Gesundheitsminister von Bund und Ländern wollen am Montag über die Hotspot-Regel für schärfere Corona-Maßnahmen beraten. (Quelle: Reuters/Annegret Hilse)" /><noscript><img src="https://bilder.t-online.de/b/91/91/17/74/id_91911774/300_80/tid_da/karl-lauterbach-und-lothar-wieler-die-gesundheitsminister-von-bund-und-laendern-wollen-am-montag-ueber-die-hotspot-regel-fuer-schaerfere-corona-massnahmen-beraten-.jpg" width="300" height="169" alt="Karl Lauterbach und Lothar Wieler: Die Gesundheitsminister von Bund und Ländern wollen am Montag über die Hotspot-Regel für schärfere Corona-Maßnahmen beraten." /></noscript>                                                              
+                                                          <div class=""><i></i></div>
+                      </a></div> </div> </div>
+
+
+
+
+
+
+
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-88270470" onfocus="A('zid=88270470;mp=0202;vn=48')" >
+<div class="Ttsc Ttsh300"> 
+<div class="Ttslink"> 
+<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_88270470/corona-infektion-schwere-schlaganfaelle-bei-covid-19-haeufiger.html"> Eine Altersgruppe besonders betroffen - Schwere Schlaganfälle bei Covid-19 häufiger
+  </a>
+
+
+ <h6>Eine Altersgruppe besonders betroffen</h6>  <h5 data-tb-region-item-title="">Schwere Schlaganf&auml;lle bei Covid-19 h&auml;ufiger</h5>
+
+<p class="Ttst">Das Coronavirus kann auch das Gehirn angreifen. Die Folgen können von Riechstörungen bis hin zu Schlaganfällen reichen. Forscher der Charité haben dafür eine mögliche Erklärung gefunden. | Von M. Rannow
+
+</p>
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_88270470/corona-infektion-schwere-schlaganfaelle-bei-covid-19-haeufiger.html">
+        
+
+
+
+<img height="168" data-original="https://bilder.t-online.de/b/88/27/30/32/id_88273032/300_80/tid_da/hirnscan-das-coronavirus-sars-cov-2-ist-in-der-lage-verschiedene-bereiche-des-koerpers-anzugreifen-so-auch-das-gehirn-und-das-nervensystem-.jpg" width="300" class="Tlz" alt="Hirnscan: Das Coronavirus SARS-CoV-2 ist in der Lage, verschiedene Bereiche des Körpers anzugreifen – so auch das Gehirn und das Nervensystem. (Quelle: Getty Images/sudok1)" src="https://img.toi.de/t.gif" title="Hirnscan: Das Coronavirus SARS-CoV-2 ist in der Lage, verschiedene Bereiche des Körpers anzugreifen – so auch das Gehirn und das Nervensystem. (Quelle: Getty Images/sudok1)" /><noscript><img src="https://bilder.t-online.de/b/88/27/30/32/id_88273032/300_80/tid_da/hirnscan-das-coronavirus-sars-cov-2-ist-in-der-lage-verschiedene-bereiche-des-koerpers-anzugreifen-so-auch-das-gehirn-und-das-nervensystem-.jpg" width="300" height="169" alt="Hirnscan: Das Coronavirus SARS-CoV-2 ist in der Lage, verschiedene Bereiche des Körpers anzugreifen – so auch das Gehirn und das Nervensystem." /></noscript>                                                              
+                                                          <div class=""><i></i></div>
+                      </a></div> </div> </div>
+
+
+
+
+
+
+
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91911694" onfocus="A('zid=91911694;mp=0202;vn=8')" >
+<div class="Ttsc Ttsh300"> 
+<div class="Ttslink"> 
+<a href="https://www.t-online.de/nachrichten/panorama/id_91911694/rki-sieben-tage-inzidenz-sinkt-leicht-67-501-neuinfektionen.html"> Corona-Lage in Deutschland - Sieben-Tage-Inzidenz sinkt erneut leicht – 67.501 Neuinfektionen
+  </a>
+
+
+ <h6>Corona-Lage in Deutschland</h6>  <h5 data-tb-region-item-title="">Sieben-Tage-Inzidenz sinkt erneut leicht &ndash; 67.501 Neuinfektionen</h5>
+
+<p class="Ttst">Am zweiten Tag in Folge ist der bundesweite Wert der Sieben-Tage-Inzidenz gesunken – wenn auch wieder nur leicht. Das RKI gibt ihn mit 1.700,6 an. Am Vortag lag der Wert bei 1.723,8.
+
+</p>
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/nachrichten/panorama/id_91911694/rki-sieben-tage-inzidenz-sinkt-leicht-67-501-neuinfektionen.html">
+        
+
+
+
+<img height="169" data-original="https://bilder.t-online.de/b/91/91/16/98/id_91911698/300_80/tid_da/coronavirus-test-seit-sonntag-sinkt-der-inzidenzwert-in-deutschland-wieder-.jpg" width="300" class="Tlz" alt="Coronavirus-Test: Seit Sonntag sinkt der Inzidenzwert in Deutschland wieder. (Quelle: dpa/Jens Kalaene)" src="https://img.toi.de/t.gif" title="Coronavirus-Test: Seit Sonntag sinkt der Inzidenzwert in Deutschland wieder. (Quelle: dpa/Jens Kalaene)" /><noscript><img src="https://bilder.t-online.de/b/91/91/16/98/id_91911698/300_80/tid_da/coronavirus-test-seit-sonntag-sinkt-der-inzidenzwert-in-deutschland-wieder-.jpg" width="300" height="169" alt="Coronavirus-Test: Seit Sonntag sinkt der Inzidenzwert in Deutschland wieder." /></noscript>                                                              
+                                                          <div class=""><i></i></div>
+                      </a></div> </div> </div>
+
+
+
+
+
+
+
+<div class="Tmm  Tts Tmc3 Tww2    Thh2   " id="T-91889646" onfocus="A('zid=91889646;mp=0202;vn=13')" >
+<div class="Ttsc Ttsh300"> 
+<div class="Ttslink"> 
+<a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91889646/deltakron-wie-gefaehrlich-sind-eigentlich-corona-mischvarianten-.html"> Omikron und Delta in einem - Deltakron: Wie gefährlich sind Corona-Mischvarianten?
+  </a>
+
+
+ <h6>Omikron und Delta in einem</h6>  <h5 data-tb-region-item-title="">Deltakron: Wie gef&auml;hrlich sind Corona-Mischvarianten?</h5>
+
+<p class="Ttst">So krankmachend wie Delta, so ansteckend wie Omikron – das Schreckgespenst einer solchen Supervariante des Coronavirus geistert schon seit einiger Zeit herum. Was steckt dahinter?
+
+</p>
+ </div> <div class="Ttsi"><a href="https://www.t-online.de/gesundheit/krankheiten-symptome/id_91889646/deltakron-wie-gefaehrlich-sind-eigentlich-corona-mischvarianten-.html">
+        
+
+
+
+<img height="169" data-original="https://bilder.t-online.de/b/91/88/96/50/id_91889650/300_80/tid_da/pcr-test-symbolfoto-nicht-jeder-test-wird-auch-auf-corona-varianten-untersucht-.jpg" width="300" class="Tlz" alt="PCR-Test (Symbolfoto): Nicht jeder Test wird auch auf Corona-Varianten untersucht.  (Quelle: dpa/Julian Stratenschulte/dpa)" src="https://img.toi.de/t.gif" title="PCR-Test (Symbolfoto): Nicht jeder Test wird auch auf Corona-Varianten untersucht.  (Quelle: dpa/Julian Stratenschulte/dpa)" /><noscript><img src="https://bilder.t-online.de/b/91/88/96/50/id_91889650/300_80/tid_da/pcr-test-symbolfoto-nicht-jeder-test-wird-auch-auf-corona-varianten-untersucht-.jpg" width="300" height="169" alt="PCR-Test (Symbolfoto): Nicht jeder Test wird auch auf Corona-Varianten untersucht. " /></noscript>                                                              
                                                           <div class=""><i></i></div>
                       </a></div> </div> </div>
  <div class="Tgbpagination Tts Tmm Tll fixedBlock" onfocus="A('mp=autolist-paginierung')">
@@ -3370,7 +3398,7 @@ _smartWaiter('#Tfoot', function() {
 <script type="text/javascript">/*<![CDATA[*/TfU();/*]]>*/</script> <script type="text/javascript">isNotificationDisabled = false;</script>
 
 </div>
-<!-- Taboola Feed in Foot Startseite Desktop Start net.toi.cms.cae.common.contentbeans.TOIClientCodeImpl@56f5e417[content=coremedia:///cap/content/89446634] --><div class="Tgboxf"> <div id="Taboola-container"></div>
+<!-- Taboola Feed in Foot Startseite Desktop Start net.toi.cms.cae.common.contentbeans.TOIClientCodeImpl@147e507f[content=coremedia:///cap/content/89446634] --><div class="Tgboxf"> <div id="Taboola-container"></div>
 <style>
 @media(min-width:919px){#Taboola-container{width:920px}}
 </style>
@@ -3607,6 +3635,6 @@ T$(function(){
 
 </body>
 
-<!--generated: Tue Mar 01 02:32:46 CET 2022, host: 'cmsweb04/04', release: CM7-2013-foundation-17.2.0.4, backend: cmsweb02:21120, id.version: 87248472.20-->
+<!--generated: Fri Apr 01 03:54:47 CEST 2022, host: 'cmsweb01/04', release: CM7-2013-foundation-17.2.0.4, backend: cmsweb01:21120, id.version: 87248472.20-->
 
 </html>

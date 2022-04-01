@@ -20,10 +20,10 @@
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/tabletgothic/TabletGothic-Regular.woff2?v1" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/tabletgothic/TabletGothic-Bold.woff2?v1" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/beckett/Beckett-Light.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/normalize.e0da9b1352e31388502ccf5901353346.css">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/base/base.4c1dad5e87a3ccd6628ab40678d52421.css">
+<link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/normalize.b648639a8a670ac0c5193dc2aa040d9c.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/base/base.aec7f4d7eba260efa0b54d6c62f184d9.css">
 
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/centerpage/centerpage.e2552976b72155961f6e5b3b755e174a.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/centerpage/centerpage.e5f3ffa669157f406df93b3b81f28ecc.css">
     <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/base/print.d10d184e525c294273416ab5339d693d.css" media="print">
 
     <script id="zonConfig" type="application/json">
@@ -62,7 +62,7 @@
                 "spark_clicktracking": true,
                 "sticky_mobile_navigation": false,
                 "sticky_navigation": true,
-                "zwe_fix_viewport_height_via_js": true
+                "zwe_hijack_images_scrolling": true
                 },
             "settings": {
                 "addefend_cookie_expire": 30,
@@ -89,15 +89,17 @@
                 "sourcepoint_vendor_manager_id": "364876",
                 "sso_cookie": "zeit_sso_201501",
                 "sso_session_cookie": "zeit_sso_session_201501",
-                "tickaroo_liveblog_deep_link_limit": "",
-                "tickaroo_liveblog_limit": "",
+                "tickaroo_liveblog_deep_link_limit": 50,
+                "tickaroo_liveblog_limit": 25,
                 "sso_url": "https://meine.zeit.de"
                 },
             "view": {
                 "advertising_enabled": true,
                 "banner_channel": "campus/homepage/centerpage",
+                "genre": null,
                 "is_pure_page": false,
                 "ressort": "campus",
+                "show_sticky_mobile_navigation": "",
                 "sub_ressort": "",
                 "type": "centerpage"
                 },
@@ -142,17 +144,23 @@
                 },
                 isAdBlocker: undefined,
                 device: {
-                    hasFastConnection: (function() {
+                    hasSlowConnection: (function() {
                         if ( 'connection' in navigator ) {
                             if ( navigator.connection.type == 'cellular' ) {
-                                return false;
+                                return true;
                             }
     
-                            if ( parseInt( navigator.connection.effectiveType, 10 ) >= 4 ) {
+                            if ( parseInt( navigator.connection.effectiveType, 10 ) < 4 ) {
                                 return true;
                             }
                         }
     
+                        return false;
+                    })(),
+                    hasDataSaverEnabled: (function () {
+                        if ('connection' in navigator) {
+                            return navigator.connection.saveData;
+                        }
                         return false;
                     })()
                 },
@@ -281,27 +289,29 @@
                 require: function() {
                     this.queue.push( arguments );
                 },
-                setFontSize: function(size, updateStorage) {
-                    updateStorage = (typeof updateStorage !== 'undefined') ?  updateStorage : true;
-                    size = parseInt(size, 10);
-                    if (size >= 30 && size <= 300 && window.localStorage) {
-                        document.querySelector('html').style.fontSize = size + '%';
-                        if (updateStorage) window.localStorage.setItem( 'fontsize', size );
-                        return size;
-                    }
+                setFontSize: function( size, updateStorage ) {
+                    size = parseInt( size, 10 );
+                    try {
+                        if ( size >= 50 && size <= 200 && window.localStorage ) {
+                            document.documentElement.style.fontSize = size + '%';
+                            if ( size === 100 ) {
+                                window.localStorage.removeItem( 'fontsize' );
+                            } else if ( updateStorage !== false ) {
+                                window.localStorage.setItem( 'fontsize', size );
+                            }
+                            return size;
+                        }
+                    } catch ( e ) {}
                 },
                 getFontSize: function() {
                     try {
-                        if (window.localStorage) {
+                        if ( window.localStorage ) {
                             var size = window.localStorage.getItem( 'fontsize' );
-                            size = parseInt(size, 10);
-                            if (size >= 30 && size <= 300) {
+                            if ( size >= 50 && size !== 100 && size <= 200 ) {
                                 return size;
                             }
                         }
-                    } catch ( Exception ) {
-                        return false;
-                    }
+                    } catch ( e ) {}
                 },
                 cookieCreate: function( name, value, days, domain, secure, samesite ) {
                     var expires = '',
@@ -442,7 +452,6 @@
         window.Zeit.loadJS('https://' + ioDomain + '/iomm/latest/bootstrap/stub.js');
     </script>
 
-                
     <meta name="robots" content="index,follow,noarchive,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
@@ -473,9 +482,10 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="Homepage Zeit Campus Online">
     <meta property="og:description" content="Das neue Online-Magazin für das Leben zwischen Abitur und Jobeinstieg">
-    <meta property="og:url" content="https://www.zeit.de/campus/index">    <link rel="canonical" href="https://www.zeit.de/campus/index">
+    <meta property="og:url" content="https://www.zeit.de/campus/index">
+    <link rel="canonical" href="https://www.zeit.de/campus/index">
     <link type="application/rss+xml" rel="alternate" href="https://newsfeed.zeit.de/campus/index">
-    
+
     
 
     <script type="application/ld+json">
@@ -516,13 +526,13 @@
     </script>
     
     <script type="application/ld+json">
-        {"@context": "http://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://www.zeit.de/campus/2022-02/russland-ukraine-krieg-voelkerrecht-hannah-birkenkoetter"}, {"@type": "ListItem", "position": 2, "url": "https://www.zeit.de/campus/2022-02/krieg-ukraine-proteste-berlin-solidaritaet-freiheit"}, {"@type": "ListItem", "position": 3, "url": "https://www.zeit.de/campus/2022-02/sucht-familie-eltern-kinder-auswirkungen"}, {"@type": "ListItem", "position": 4, "url": "https://www.zeit.de/campus/2022/02/arbeitsbedingungen-essenslieferanten-gewerkschaften-betriebsraete-fairness"}, {"@type": "ListItem", "position": 5, "url": "https://www.zeit.de/campus/2022-02/jackson-mackenzie-keine-macht-den-psychopathen-toxische-beziehung"}, {"@type": "ListItem", "position": 6, "url": "https://www.zeit.de/campus/2022/02/arbeit-handel-arbeitsbedingung-kassiererin-logistiker"}, {"@type": "ListItem", "position": 7, "url": "https://www.zeit.de/campus/2022/02/dating-apps-liebe-veraenderung-erlebnisse"}, {"@type": "ListItem", "position": 8, "url": "https://www.zeit.de/campus/2022-02/hanau-bildungsinitiative-ferhat-unvar-rassismus-anschlag"}, {"@type": "ListItem", "position": 9, "url": "https://www.zeit.de/campus/2022-02/scheidung-ehe-jung-liebe-aufruf"}, {"@type": "ListItem", "position": 10, "url": "https://www.zeit.de/campus/2022-02/onlinedating-dating-apps-sex"}, {"@type": "ListItem", "position": 11, "url": "https://www.zeit.de/campus/2022-01/intimitaet-sex-sexspielzeug-dating"}, {"@type": "ListItem", "position": 12, "url": "https://www.zeit.de/campus/2021-12/liebe-dating-gefuehle-sicherheit"}, {"@type": "ListItem", "position": 13, "url": "https://www.zeit.de/campus/2022-02/freedom-day-deutschland-corona-freiheit-party"}, {"@type": "ListItem", "position": 14, "url": "https://www.zeit.de/2022/08/universitaet-vechta-germanistik-klausur-online-lehre"}, {"@type": "ListItem", "position": 15, "url": "https://www.zeit.de/campus/2022-01/liebe-corona-zoom-dating-liebesgeschichten"}, {"@type": "ListItem", "position": 16, "url": "https://www.zeit.de/campus/2022/02/irina-schlauch-princess-charming-lesbische-datingshow"}]}
+        {"@context": "http://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://www.zeit.de/campus/2022-03/beziehung-partnerschaft-beziehungsprobleme-trennung"}, {"@type": "ListItem", "position": 2, "url": "https://www.zeit.de/campus/ratgeber/2022/01/master-studium-ausslandssemeser-studieren-ausland"}, {"@type": "ListItem", "position": 3, "url": "https://www.zeit.de/campus/2022-03/design-minimalismus-farben-moebel-mode-pandemie"}, {"@type": "ListItem", "position": 4, "url": "https://www.zeit.de/campus/2022/03/samenspende-kuenstliche-befruchtung-kinder-eltern-beziehung"}, {"@type": "ListItem", "position": 5, "url": "https://www.zeit.de/2022-03/inneneinrichtung-wohnen-homeoffice-dekoration-tipps"}, {"@type": "ListItem", "position": 6, "url": "https://www.zeit.de/campus/2022-03/trendsportarten-spike-ball-yoga-sommer-tipps"}, {"@type": "ListItem", "position": 7, "url": "https://www.zeit.de/campus/ratgeber/2022/01/master-richtig-studieren-chaos-ueberblick"}, {"@type": "ListItem", "position": 8, "url": "https://www.zeit.de/campus/2022-03/ukrainische-armee-frauen-wladimir-putin-krieg-masha-kondakova"}, {"@type": "ListItem", "position": 9, "url": "https://www.zeit.de/campus/2022-03/berlin-dating-liebe-beziehung-grossstadt"}, {"@type": "ListItem", "position": 10, "url": "https://www.zeit.de/campus/2022-02/onlinedating-dating-apps-sex"}, {"@type": "ListItem", "position": 11, "url": "https://www.zeit.de/campus/2022-01/intimitaet-sex-sexspielzeug-dating"}, {"@type": "ListItem", "position": 12, "url": "https://www.zeit.de/campus/2021-12/liebe-dating-gefuehle-sicherheit"}, {"@type": "ListItem", "position": 13, "url": "https://www.zeit.de/campus/2022/02/dialekt-baden-wuerttemberg-hochdeutsch-lernen"}, {"@type": "ListItem", "position": 14, "url": "https://www.zeit.de/campus/2022-03/depression-erkennen-druck-weltlage-motivation-hilfe"}, {"@type": "ListItem", "position": 15, "url": "https://www.zeit.de/campus/2022-01/liebe-corona-zoom-dating-liebesgeschichten"}, {"@type": "ListItem", "position": 16, "url": "https://www.zeit.de/campus/ratgeber/2022/01/studium-praktika-master-auffallen-netzwerken"}]}
     </script>
 
     
     
     <script>
-        window.Zeit.user = {"ssoid": null, "state": null, "adFree": false, "paywall": null, "iqd_usergroup": null, "C1-Meter-Type": "none", "C1-Meter-Status": "open", "C1-Meter-Info": "tracking_entitlement", "C1-Meter-User-Status": "anonymous", "C1-Meter-User-Group-Action": "{\"cms_snippet\":{\"parameters\":[\"abtest_paywall_euro_2\",\"block\"]}}", "C1-Meter-Count": "0", "C1-Meter-Max-Count": "0", "C1-Meter-Access-Group": "free"};
+        window.Zeit.user = {"ssoid": null, "state": null, "adFree": false, "paywall": null, "iqd_usergroup": null, "C1-Meter-Info": "tracking_entitlement", "C1-Meter-Max-Count": "0", "C1-Meter-User-Group-Action": "{\"cms_snippet\":{\"parameters\":[\"dynamic_user\",\"abtest_paywall_euro\",\"block\"]}}", "C1-Meter-Type": "none", "C1-Meter-User-Status": "anonymous", "C1-Meter-Status": "open", "C1-Meter-Count": "0", "C1-Meter-Access-Group": "dynamic"};
 
         </script>
     
@@ -596,12 +606,16 @@
                     ( navigator.msMaxTouchPoints > 0 ) );
             }
 
-            function isMacOS1015Firefox() {
+            function hasScrollSnapBug() {
                 // Firefox froze the Mac OS Version from 10.15 upwards. this isn't
                 // good, but what can we do...
                 // this is for https://bugzil.la/1737820
+                // this bug is fixed in firefox version 99 (released april 2022)
                 const UA = navigator.userAgent;
-                return ['MAC OS X 10.15', 'Firefox/'].some(el => UA.includes(el));
+                const splittedUA = UA.split('/');
+                const isMacOSFirefox = ['MAC OS X 10.15', 'Firefox/'].some(el => UA.includes(el));
+                const isVersion99 = parseFloat(splittedUA[splittedUA.length - 1]) >= 99;
+                return isMacOSFirefox && !isVersion99;
             }
 
             // .(no-)js as basic
@@ -620,7 +634,7 @@
             }
 
             // disable scrollsnapping in firefox (https://bugzil.la/1737820)
-            if (isMacOS1015Firefox()) {
+            if (hasScrollSnapBug()) {
                 html.classList.add( 'no-scroll-snap' );
             } else {
                 html.classList.add( 'scroll-snap' );
@@ -754,11 +768,10 @@
 <!-- ad controller head end -->
 <style>
     :root {
-        --vh: 100vh;         --100vh: 100vh;
-        
+        --vh: 100vh;         
     }
     </style>
-    <script src="https://static.zeit.de/p/zeit.web/js/colorscheme.0d2d6ff8569f8039cd45.js" ></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/colorscheme.ac931398b3d53e7c5f76.js" ></script>
     <!-- zeit.web.core.template.include_in_head injection point -->
 </head>
 <body data-page-type="centerpage" data-is-hp="true" data-unique-id="http://xml.zeit.de/campus/index" data-overscrolling="off">
@@ -941,7 +954,7 @@
     </a>
     <noscript class="webtrekk_noscript">
     <div>
-        <img alt="" width="1" height="1" src="https://audev.zeit.de/981949533494636/wt.pl?p=453min-3,redaktion.campus...centerpage.zede%7Cwww.zeit.de/campus/index,0,0,0,0,0,0,0,0&amp;cg1=redaktion&amp;cg2=centerpage&amp;cg3=campus&amp;cg4=zede&amp;cg5=&amp;cg6=&amp;cg7=index&amp;cg8=campus%2Fhomepage%2Fcenterpage&amp;cg9=2016-04-19&amp;cp1=&amp;cp2=campus%2Fbild-text&amp;cp3=1%2F1&amp;cp4=zeit%3Bkpmg%3Bzeit+online%3Bjobeinstieg%3Bhomepage%3Bliebe%3Bgeneration+y&amp;cp5=2021-12-06+11%3A43%3A47.357611%2B01%3A00&amp;cp6=&amp;cp8=zede&amp;cp9=campus%2Fhomepage%2Fcenterpage&amp;cp10=yes&amp;cp12=desktop.site&amp;cp13=stationaer&amp;cp15=&amp;cp25=original&amp;cp26=centerpage.homepage&amp;cp27=&amp;cp28=free&amp;cp29=unfeasible&amp;cp30=open&amp;cp34=&amp;cp38=undefined&amp;cp40=undefined&amp;cp49=de6e0d19-d954-457b-a7ba-3bd69df9f473&amp;cp23=nicht_angemeldet&amp;cp46=false&amp;cd=" />
+        <img alt="" width="1" height="1" src="https://audev.zeit.de/981949533494636/wt.pl?p=453min-3,redaktion.campus...centerpage.zede%7Cwww.zeit.de/campus/index,0,0,0,0,0,0,0,0&amp;cg1=redaktion&amp;cg2=centerpage&amp;cg3=campus&amp;cg4=zede&amp;cg5=&amp;cg6=&amp;cg7=index&amp;cg8=campus%2Fhomepage%2Fcenterpage&amp;cg9=2016-04-19&amp;cp1=&amp;cp2=campus%2Fbild-text&amp;cp3=1%2F1&amp;cp4=zeit%3Bkpmg%3Bzeit+online%3Bjobeinstieg%3Bhomepage%3Bliebe%3Bgeneration+y&amp;cp5=2021-12-06+11%3A43%3A47.357611%2B01%3A00&amp;cp6=&amp;cp8=zede&amp;cp9=campus%2Fhomepage%2Fcenterpage&amp;cp10=yes&amp;cp12=desktop.site&amp;cp13=stationaer&amp;cp15=&amp;cp25=original&amp;cp26=centerpage.homepage&amp;cp27=&amp;cp28=free&amp;cp29=unfeasible&amp;cp30=open&amp;cp34=&amp;cp38=undefined&amp;cp40=undefined&amp;cp49=de6e0d19-d954-457b-a7ba-3bd69df9f473&amp;cp23=nicht_angemeldet&amp;cp46=undefined&amp;cd=" />
     </div>
 </noscript>
 
@@ -1042,46 +1055,45 @@
                                     
 
 <article class="teaser-lead-portrait "
-    data-unique-id="http://xml.zeit.de/campus/2022-02/russland-ukraine-krieg-voelkerrecht-hannah-birkenkoetter" data-zplus="zplus-dynamic">
+    data-unique-id="http://xml.zeit.de/campus/2022-03/beziehung-partnerschaft-beziehungsprobleme-trennung" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2022-02/russland-ukraine-krieg-voelkerrecht-hannah-birkenkoetter" class="teaser-lead-portrait__faux-link" title="Russland-Ukraine-Krieg: &#34;Wladimir Putin will die Völkerrechtsordnung umdeuten&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Russland-Ukraine-Krieg: &#34;Wladimir Putin will die Völkerrechtsordnung umdeuten&#34;</a>
-                <figure class="teaser-lead-portrait__media  scaled-image variant variant--portrait">
+                    <a href="https://www.zeit.de/campus/2022-03/beziehung-partnerschaft-beziehungsprobleme-trennung" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Beziehung: &#34;Liebe ist immer wieder eine Entscheidung&#34;">Beziehung: &#34;Liebe ist immer wieder eine Entscheidung&#34;</a>
+                <figure class="teaser-lead-portrait__media teaser-lead-portrait__media--force-mobile scaled-image variant variant--portrait">
                 <div class="teaser-lead-portrait__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2022-02/russland-ukraine-krieg-voelkerrecht-birkenkoetter/portrait__612x816">
+            <noscript data-src="https://img.zeit.de/campus/2022-03/bild-beziehung-partnerschaft-beziehungsprobleme-trennung/portrait__612x816">
                                 <img class="teaser-lead-portrait__media-item"
-                          alt="Russland-Ukraine-Krieg: &#34;Wladimir Putin will die Völkerrechtsordnung umdeuten&#34;"
-                     src="https://img.zeit.de/campus/2022-02/russland-ukraine-krieg-voelkerrecht-birkenkoetter/portrait__612x816"
-                     data-src="https://img.zeit.de/campus/2022-02/russland-ukraine-krieg-voelkerrecht-birkenkoetter/portrait"
+                          alt="Beziehung: &#34;Liebe ist immer wieder eine Entscheidung&#34;"
+                     src="https://img.zeit.de/campus/2022-03/bild-beziehung-partnerschaft-beziehungsprobleme-trennung/portrait__612x816"
+                     data-src="https://img.zeit.de/campus/2022-03/bild-beziehung-partnerschaft-beziehungsprobleme-trennung/portrait"
                      data-ratio="0.75"
-                     data-mobile-src="https://img.zeit.de/campus/2022-02/russland-ukraine-krieg-voelkerrecht-birkenkoetter/wide" data-mobile-ratio="1.77777777778"decoding="async">
+                     data-mobile-src="https://img.zeit.de/campus/2022-03/bild-beziehung-partnerschaft-beziehungsprobleme-trennung/wide" data-mobile-ratio="1.77777777778"decoding="async">
                             </noscript></div>
 
         <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2022-02/russland-ukraine-krieg-voelkerrecht-birkenkoetter/portrait__612x816",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Dimitar Dilkoff/\u200bAFP/\u200bGetty Images"}
+    "url": "https://img.zeit.de/campus/2022-03/bild-beziehung-partnerschaft-beziehungsprobleme-trennung/portrait__612x816",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Renate Vanaga/\u200bunsplash.com"}
 }
 </script>        </figure>
 
         <div class="teaser-lead-portrait__content">
                             <h2 class="teaser-lead-portrait__heading">
                 <a class="teaser-lead-portrait__heading-link"
-                   title="Russland-Ukraine-Krieg - &#34;Wladimir Putin will die Völkerrechtsordnung umdeuten&#34;"
-                   href="https://www.zeit.de/campus/2022-02/russland-ukraine-krieg-voelkerrecht-hannah-birkenkoetter"
+                   title="Beziehung - &#34;Liebe ist immer wieder eine Entscheidung&#34;"
+                   href="https://www.zeit.de/campus/2022-03/beziehung-partnerschaft-beziehungsprobleme-trennung"
                    >
                                                                         <span class="teaser-lead-portrait__kicker">
-                                                                                                <span>Russland-Ukraine-Krieg</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">&#34;Wladimir Putin will die Völkerrechtsordnung umdeuten&#34;</span>
+                                                                                                <span>Beziehung</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">&#34;Liebe ist immer wieder eine Entscheidung&#34;</span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-portrait__text">Olaf Scholz sagt, Russland handle völkerrechtswidrig. Was bringt das, wenn Putin sich mit Gewalt darüber stellt? Das erklärt die Völkerrechtlerin Hannah Birkenkötter.</p>
+                                    <p class="teaser-lead-portrait__text">Was kann ich aus meiner gescheiterten Beziehung lernen? Wie man seine alten Probleme nicht in die nächste Partnerschaft schleppt, erklärt die Therapeutin Sharon Brehm.</p>
                                                 <div class="teaser-lead-portrait__metadata">
-                                                                            <span class="teaser-lead-portrait__byline">    Interview:            Markus Sehl </span>
-                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/2022-02/russland-ukraine-krieg-voelkerrecht-hannah-birkenkoetter#comments" data-ct-label="comments" title="Kommentare anzeigen">18 Kommentare</a>
-                                                </div>
+                                                                            <span class="teaser-lead-portrait__byline">    Interview:            Berit Dießelkämper</span>
+                                                                                                                        </div>
                                 
     
     </div>
@@ -1116,46 +1128,45 @@
                                     
 
 <article class="teaser-lead-portrait "
-    data-unique-id="http://xml.zeit.de/campus/2022-02/krieg-ukraine-proteste-berlin-solidaritaet-freiheit">
+    data-unique-id="http://xml.zeit.de/campus/ratgeber/2022/01/master-studium-ausslandssemeser-studieren-ausland" data-zplus="zplus-dynamic">
 
-                    <a href="https://www.zeit.de/campus/2022-02/krieg-ukraine-proteste-berlin-solidaritaet-freiheit" class="teaser-lead-portrait__faux-link" title="Proteste gegen den Krieg: &#34;Meine Eltern, meine Tanten und Cousinen sind aus Kiew geflohen&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Proteste gegen den Krieg: &#34;Meine Eltern, meine Tanten und Cousinen sind aus Kiew geflohen&#34;</a>
+                    <a href="https://www.zeit.de/campus/ratgeber/2022/01/master-studium-ausslandssemeser-studieren-ausland" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Im Ausland studieren: &#34;Bevor wir anfangen zu essen, sprechen wir ein Tischgebet auf Latein&#34; ">Im Ausland studieren: &#34;Bevor wir anfangen zu essen, sprechen wir ein Tischgebet auf Latein&#34; </a>
                 <figure class="teaser-lead-portrait__media  scaled-image variant variant--portrait">
                 <div class="teaser-lead-portrait__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2022-02/krieg-ukraine-proteste-berlin-solidaritaet-freiheit-kateryna-bild-3/portrait__612x816">
+            <noscript data-src="https://img.zeit.de/campus/ratgeber/2022/01/im-paradies-bild-1/portrait__612x816">
                                 <img class="teaser-lead-portrait__media-item"
-                          alt="Proteste gegen den Krieg: &#34;Meine Eltern, meine Tanten und Cousinen sind aus Kiew geflohen&#34;"
-                     src="https://img.zeit.de/campus/2022-02/krieg-ukraine-proteste-berlin-solidaritaet-freiheit-kateryna-bild-3/portrait__612x816"
-                     data-src="https://img.zeit.de/campus/2022-02/krieg-ukraine-proteste-berlin-solidaritaet-freiheit-kateryna-bild-3/portrait"
+                          alt="Im Ausland studieren: &#34;Bevor wir anfangen zu essen, sprechen wir ein Tischgebet auf Latein&#34; "
+                     src="https://img.zeit.de/campus/ratgeber/2022/01/im-paradies-bild-1/portrait__612x816"
+                     data-src="https://img.zeit.de/campus/ratgeber/2022/01/im-paradies-bild-1/portrait"
                      data-ratio="0.75"
-                     data-mobile-src="https://img.zeit.de/campus/2022-02/krieg-ukraine-proteste-berlin-solidaritaet-freiheit-kateryna-bild-3/wide" data-mobile-ratio="1.77777777778"decoding="async">
+                     data-mobile-src="https://img.zeit.de/campus/ratgeber/2022/01/im-paradies-bild-1/wide" data-mobile-ratio="1.77777777778"decoding="async">
                             </noscript></div>
 
         <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2022-02/krieg-ukraine-proteste-berlin-solidaritaet-freiheit-kateryna-bild-3/portrait__612x816",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Nadja Wohlleben f\u00fcr ZEIT ONLINE"}
+    "url": "https://img.zeit.de/campus/ratgeber/2022/01/im-paradies-bild-1/portrait__612x816",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Romain Philippon"}
 }
 </script>        </figure>
 
         <div class="teaser-lead-portrait__content">
                             <h2 class="teaser-lead-portrait__heading">
                 <a class="teaser-lead-portrait__heading-link"
-                   title="Proteste gegen den Krieg - &#34;Meine Eltern, meine Tanten und Cousinen sind aus Kiew geflohen&#34;"
-                   href="https://www.zeit.de/campus/2022-02/krieg-ukraine-proteste-berlin-solidaritaet-freiheit"
+                   title="Im Ausland studieren - &#34;Bevor wir anfangen zu essen, sprechen wir ein Tischgebet auf Latein&#34; "
+                   href="https://www.zeit.de/campus/ratgeber/2022/01/master-studium-ausslandssemeser-studieren-ausland"
                    >
                                                                         <span class="teaser-lead-portrait__kicker">
-                                                                                                <span>Proteste gegen den Krieg</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">&#34;Meine Eltern, meine Tanten und Cousinen sind aus Kiew geflohen&#34;</span>
+                                                                                                <span>Im Ausland studieren</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">&#34;Bevor wir anfangen zu essen, sprechen wir ein Tischgebet auf Latein&#34; </span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-portrait__text">Mehr als 100.000 Menschen gingen in Berlin gegen den Krieg auf die Straße. Sie demonstrieren für die Freiheit ihrer Familien in der Ukraine, Europas und ihre eigene.</p>
+                                    <p class="teaser-lead-portrait__text">Die eine fühlt sich in Oxford plötzlich wie in Hogwarts, die andere macht Erasmus mitten im Indischen Ozean. Zwei Studentinnen nehmen uns mit in ihr Auslandssemester.</p>
                                                 <div class="teaser-lead-portrait__metadata">
-                                                                            <span class="teaser-lead-portrait__byline">    Protokoll:            Sofie Czilwik</span>
-                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/2022-02/krieg-ukraine-proteste-berlin-solidaritaet-freiheit#comments" data-ct-label="comments" title="Kommentare anzeigen">12 Kommentare</a>
-                                                </div>
+                                                                            <span class="teaser-lead-portrait__byline">    Protokoll:            Marisa Uphoff</span>
+                                                                                                                        </div>
                                 
     
     </div>
@@ -1259,16 +1270,16 @@
                                     
 
 <article class="teaser-square "
-    data-unique-id="http://xml.zeit.de/campus/2022-02/sucht-familie-eltern-kinder-auswirkungen" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2022-03/design-minimalismus-farben-moebel-mode-pandemie" data-zplus="zplus-dynamic">
 
-                    <a href="https://www.zeit.de/campus/2022-02/sucht-familie-eltern-kinder-auswirkungen" class="teaser-square__faux-link" title="Sucht in der Familie: &#34;Sucht ist ein transgenerationales Thema&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Sucht in der Familie: &#34;Sucht ist ein transgenerationales Thema&#34;</a>
-                <figure class="teaser-square__media teaser-square__media--force-mobile scaled-image variant variant--square">
+                    <a href="https://www.zeit.de/campus/2022-03/design-minimalismus-farben-moebel-mode-pandemie" class="teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Design: Die ästhetische Revolution ist längst da">Design: Die ästhetische Revolution ist längst da</a>
+                <figure class="teaser-square__media  scaled-image variant variant--square">
                 <div class="teaser-square__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2022-02/alk/square__460x460">
+            <noscript data-src="https://img.zeit.de/campus/2022-02/suesswarend-trends-gummibaerchen-erdbeeren-kaugummi-klunker-teaser/square__460x460">
                                 <img class="teaser-square__media-item"
-                          alt="Sucht in der Familie: &#34;Sucht ist ein transgenerationales Thema&#34;"
-                     src="https://img.zeit.de/campus/2022-02/alk/square__460x460"
-                     data-src="https://img.zeit.de/campus/2022-02/alk/square"
+                          alt="Design: Die ästhetische Revolution ist längst da"
+                     src="https://img.zeit.de/campus/2022-02/suesswarend-trends-gummibaerchen-erdbeeren-kaugummi-klunker-teaser/square__460x460"
+                     data-src="https://img.zeit.de/campus/2022-02/suesswarend-trends-gummibaerchen-erdbeeren-kaugummi-klunker-teaser/square"
                      data-ratio="1.0"
                      decoding="async">
                             </noscript></div>
@@ -1277,27 +1288,26 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2022-02/alk/square__460x460",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Tobias Tullius/\u200bunsplash.com", "url": "https://unsplash.com/photos/pNjfR_8XI4M"}
+    "url": "https://img.zeit.de/campus/2022-02/suesswarend-trends-gummibaerchen-erdbeeren-kaugummi-klunker-teaser/square__460x460",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Christopher Mitchell"}
 }
 </script>        </figure>
 
                         <h2 class="teaser-square__heading">
                 <a class="teaser-square__heading-link"
-                   title="Sucht in der Familie - &#34;Sucht ist ein transgenerationales Thema&#34;"
-                   href="https://www.zeit.de/campus/2022-02/sucht-familie-eltern-kinder-auswirkungen"
+                   title="Design - Die ästhetische Revolution ist längst da"
+                   href="https://www.zeit.de/campus/2022-03/design-minimalismus-farben-moebel-mode-pandemie"
                    >
                                                                         <span class="teaser-square__kicker">
-                                <span class="series-label">Nüchtern betrachtet?</span>
-                                                                                                    <span>Sucht in der Familie</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-square__title">&#34;Sucht ist ein transgenerationales Thema&#34;</span>
+                                                                                                <span>Design</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-square__title">Die ästhetische Revolution ist längst da</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-square__text">Wer süchtige Eltern hat, den prägt das meist ein Leben lang, sagt der Tiefenpsychologe Christian Stadler. Die Folgen gehen weit über das eigene Trinkverhalten hinaus.</p>
+                                    <p class="teaser-square__text">Adieu, dezente Designwelt in Beige, Weiß, Grau. Skandinavischer Minimalismus ist vorbei. Die Generation Z sagt Hallo zu Kitsch und Kidcore.</p>
                                                 <div class="teaser-square__metadata">
-                                                                            <span class="teaser-square__byline">    Interview:            Leopold Zaak</span>
-                                                                                                                                            <a class="teaser-square__commentcount" href="https://www.zeit.de/campus/2022-02/sucht-familie-eltern-kinder-auswirkungen#comments" data-ct-label="comments" title="Kommentare anzeigen">5 Kommentare</a>
+                                                                            <span class="teaser-square__byline">    Von            Nina Piatscheck</span>
+                                                                                                                                            <a class="teaser-square__commentcount" href="https://www.zeit.de/campus/2022-03/design-minimalismus-farben-moebel-mode-pandemie#comments" data-ct-label="comments" title="Kommentare anzeigen">14 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -1311,16 +1321,16 @@
                                     
 
 <article class="teaser-square "
-    data-unique-id="http://xml.zeit.de/campus/2022/02/arbeitsbedingungen-essenslieferanten-gewerkschaften-betriebsraete-fairness" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2022/03/samenspende-kuenstliche-befruchtung-kinder-eltern-beziehung" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2022/02/arbeitsbedingungen-essenslieferanten-gewerkschaften-betriebsraete-fairness" class="teaser-square__faux-link" title="Arbeitsbedingungen: Fair abliefern " tabindex="-1" aria-hidden="true" data-ct-label="link">Arbeitsbedingungen: Fair abliefern </a>
+                    <a href="https://www.zeit.de/campus/2022/03/samenspende-kuenstliche-befruchtung-kinder-eltern-beziehung" class="teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Samenspende • Das Beste aus Z+: &#34;Ich habe gedacht, ich sei im Krankenhaus vertauscht worden&#34;">Samenspende • Das Beste aus Z+: &#34;Ich habe gedacht, ich sei im Krankenhaus vertauscht worden&#34;</a>
                 <figure class="teaser-square__media teaser-square__media--force-mobile scaled-image variant variant--square">
                 <div class="teaser-square__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2022/02/fair-abliefern-bild-1/square__460x460">
+            <noscript data-src="https://img.zeit.de/campus/2022-03/samenspende-kuenstliche-befruchtung-kinder-eltern/square__460x460">
                                 <img class="teaser-square__media-item"
-                          alt="Arbeitsbedingungen: Fair abliefern "
-                     src="https://img.zeit.de/campus/2022/02/fair-abliefern-bild-1/square__460x460"
-                     data-src="https://img.zeit.de/campus/2022/02/fair-abliefern-bild-1/square"
+                          alt="Samenspende • Das Beste aus Z+: &#34;Ich habe gedacht, ich sei im Krankenhaus vertauscht worden&#34;"
+                     src="https://img.zeit.de/campus/2022-03/samenspende-kuenstliche-befruchtung-kinder-eltern/square__460x460"
+                     data-src="https://img.zeit.de/campus/2022-03/samenspende-kuenstliche-befruchtung-kinder-eltern/square"
                      data-ratio="1.0"
                      decoding="async">
                             </noscript></div>
@@ -1329,26 +1339,26 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2022/02/fair-abliefern-bild-1/square__460x460",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Max Slobodda"}
+    "url": "https://img.zeit.de/campus/2022-03/samenspende-kuenstliche-befruchtung-kinder-eltern/square__460x460",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Ilya Ilford/\u200bunsplash.com"}
 }
 </script>        </figure>
 
                         <h2 class="teaser-square__heading">
                 <a class="teaser-square__heading-link"
-                   title="Arbeitsbedingungen - Fair abliefern "
-                   href="https://www.zeit.de/campus/2022/02/arbeitsbedingungen-essenslieferanten-gewerkschaften-betriebsraete-fairness"
+                   title="Samenspende • Das Beste aus Z+ - &#34;Ich habe gedacht, ich sei im Krankenhaus vertauscht worden&#34;"
+                   href="https://www.zeit.de/campus/2022/03/samenspende-kuenstliche-befruchtung-kinder-eltern-beziehung"
                    >
                                                                         <span class="teaser-square__kicker">
-                                                                                                <span>Arbeitsbedingungen</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-square__title">Fair abliefern </span>
+                                                                                                <span>Samenspende • Das Beste aus Z+</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-square__title teaser-square__title--has-comma">&#34;Ich habe gedacht, ich sei im Krankenhaus vertauscht worden&#34;</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-square__text">Die Fahrer:innen von Lieferando und Gorillas sind jung, wütend und sehr erfolgreich in ihrem Kampf für bessere Arbeitsbedingungen. Wie schaffen sie das?</p>
+                                    <p class="teaser-square__text">Manche Paare erfüllen sich mit einer Samenspende ihren Kinderwunsch. Doch für Kinder, die sich auf die Suche nach ihrem Vater machen, ist das oft schmerzhaft.</p>
                                                 <div class="teaser-square__metadata">
-                                                                            <span class="teaser-square__byline">    Von            Laura Binder</span>
-                                                                                                                                            <a class="teaser-square__commentcount" href="https://www.zeit.de/campus/2022/02/arbeitsbedingungen-essenslieferanten-gewerkschaften-betriebsraete-fairness#comments" data-ct-label="comments" title="Kommentare anzeigen">16 Kommentare</a>
+                                                                            <span class="teaser-square__byline">    Von            Theresa Tröndle            und            Madeleine Londene</span>
+                                                                                                                                            <a class="teaser-square__commentcount" href="https://www.zeit.de/campus/2022/03/samenspende-kuenstliche-befruchtung-kinder-eltern-beziehung#comments" data-ct-label="comments" title="Kommentare anzeigen">38 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -1361,45 +1371,45 @@
                                     
 
 <article class="teaser-lead-portrait "
-    data-unique-id="http://xml.zeit.de/campus/2022-02/jackson-mackenzie-keine-macht-den-psychopathen-toxische-beziehung" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/2022-03/inneneinrichtung-wohnen-homeoffice-dekoration-tipps" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2022-02/jackson-mackenzie-keine-macht-den-psychopathen-toxische-beziehung" class="teaser-lead-portrait__faux-link" title="Jackson MacKenzie: &#34;Mit Love Bombing fängt es oft an&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Jackson MacKenzie: &#34;Mit Love Bombing fängt es oft an&#34;</a>
+                    <a href="https://www.zeit.de/2022-03/inneneinrichtung-wohnen-homeoffice-dekoration-tipps" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Inneneinrichtung: &#34;Eine Lampe in der Mitte des Raums ist eine schlechte Beleuchtung&#34;">Inneneinrichtung: &#34;Eine Lampe in der Mitte des Raums ist eine schlechte Beleuchtung&#34;</a>
                 <figure class="teaser-lead-portrait__media teaser-lead-portrait__media--force-mobile scaled-image variant variant--portrait">
                 <div class="teaser-lead-portrait__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2022-02/kissmen/portrait__612x816">
+            <noscript data-src="https://img.zeit.de/campus/2022-03/beige/portrait__612x816">
                                 <img class="teaser-lead-portrait__media-item"
-                          alt="Jackson MacKenzie: &#34;Mit Love Bombing fängt es oft an&#34;"
-                     src="https://img.zeit.de/campus/2022-02/kissmen/portrait__612x816"
-                     data-src="https://img.zeit.de/campus/2022-02/kissmen/portrait"
+                          alt="Inneneinrichtung: &#34;Eine Lampe in der Mitte des Raums ist eine schlechte Beleuchtung&#34;"
+                     src="https://img.zeit.de/campus/2022-03/beige/portrait__612x816"
+                     data-src="https://img.zeit.de/campus/2022-03/beige/portrait"
                      data-ratio="0.75"
-                     data-mobile-src="https://img.zeit.de/campus/2022-02/kissmen/wide" data-mobile-ratio="1.77777777778"decoding="async">
+                     data-mobile-src="https://img.zeit.de/campus/2022-03/beige/wide" data-mobile-ratio="1.77777777778"decoding="async">
                             </noscript></div>
 
         <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2022-02/kissmen/portrait__612x816",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Anastasiia Mukhina/\u200bunsplash.com", "url": "https://unsplash.com/photos/-PU1yMCThVU"}
+    "url": "https://img.zeit.de/campus/2022-03/beige/portrait__612x816",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Nathan Oakley/\u200bunsplash.com", "url": "https://unsplash.com/photos/ueJ2oJeEK-U"}
 }
 </script>        </figure>
 
         <div class="teaser-lead-portrait__content">
                             <h2 class="teaser-lead-portrait__heading">
                 <a class="teaser-lead-portrait__heading-link"
-                   title="Jackson MacKenzie - &#34;Mit Love Bombing fängt es oft an&#34;"
-                   href="https://www.zeit.de/campus/2022-02/jackson-mackenzie-keine-macht-den-psychopathen-toxische-beziehung"
+                   title="Inneneinrichtung - &#34;Eine Lampe in der Mitte des Raums ist eine schlechte Beleuchtung&#34;"
+                   href="https://www.zeit.de/2022-03/inneneinrichtung-wohnen-homeoffice-dekoration-tipps"
                    >
                                                                         <span class="teaser-lead-portrait__kicker">
-                                                                                                <span>Jackson MacKenzie</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">&#34;Mit Love Bombing fängt es oft an&#34;</span>
+                                                                                                <span>Inneneinrichtung</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">&#34;Eine Lampe in der Mitte des Raums ist eine schlechte Beleuchtung&#34;</span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-portrait__text">Er wurde mit Liebe überschüttet – bis er sich aufgab: Jackson MacKenzie war in einer toxischen Beziehung. In seinem Buch darüber erklärt er, wie er sich befreit hat.</p>
+                                    <p class="teaser-lead-portrait__text">Gemischtes Licht macht Kopfschmerzen, beigefarbene Wände bringen Ruhe: Die Innenarchitektin Andrea Franke weiß, wie man mit wenig Aufwand die Wohnung aufhübschen kann. </p>
                                                 <div class="teaser-lead-portrait__metadata">
-                                                                            <span class="teaser-lead-portrait__byline">    Interview:            Martina Kix</span>
-                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/2022-02/jackson-mackenzie-keine-macht-den-psychopathen-toxische-beziehung#comments" data-ct-label="comments" title="Kommentare anzeigen">22 Kommentare</a>
+                                                                            <span class="teaser-lead-portrait__byline">    Interview:            Kathrin Hollmer</span>
+                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/2022-03/inneneinrichtung-wohnen-homeoffice-dekoration-tipps#comments" data-ct-label="comments" title="Kommentare anzeigen">49 Kommentare</a>
                                                 </div>
                                 
     
@@ -1415,16 +1425,16 @@
                                     
 
 <article class="teaser-wide-large "
-    data-unique-id="http://xml.zeit.de/campus/2022/02/arbeit-handel-arbeitsbedingung-kassiererin-logistiker" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2022-03/trendsportarten-spike-ball-yoga-sommer-tipps" data-zplus="zplus-dynamic">
 
-                    <a href="https://www.zeit.de/campus/2022/02/arbeit-handel-arbeitsbedingung-kassiererin-logistiker" class="teaser-wide-large__faux-link" title="Arbeit im Handel: &#34;Am schlimmsten sind gehetzte Kunden, die ihren Korb aufs Band kippen&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Arbeit im Handel: &#34;Am schlimmsten sind gehetzte Kunden, die ihren Korb aufs Band kippen&#34;</a>
-                <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
+                    <a href="https://www.zeit.de/campus/2022-03/trendsportarten-spike-ball-yoga-sommer-tipps" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Trendsportarten: Fünf Trendsportarten, die in den Frühling pushen">Trendsportarten: Fünf Trendsportarten, die in den Frühling pushen</a>
+                <figure class="teaser-wide-large__media  scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2022-02/arbeit-handel-arbeitsbedingung-kassiererin-logistiker-supermarkt/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/2022-03/trendsportarten/cinema__980x420">
                                 <img class="teaser-wide-large__media-item"
-                          alt="Arbeit im Handel: &#34;Am schlimmsten sind gehetzte Kunden, die ihren Korb aufs Band kippen&#34;"
-                     src="https://img.zeit.de/campus/2022-02/arbeit-handel-arbeitsbedingung-kassiererin-logistiker-supermarkt/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2022-02/arbeit-handel-arbeitsbedingung-kassiererin-logistiker-supermarkt/cinema"
+                          alt="Trendsportarten: Fünf Trendsportarten, die in den Frühling pushen"
+                     src="https://img.zeit.de/campus/2022-03/trendsportarten/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/2022-03/trendsportarten/cinema"
                      data-ratio="2.33333333333"
                      decoding="async">
                             </noscript></div>
@@ -1433,26 +1443,26 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2022-02/arbeit-handel-arbeitsbedingung-kassiererin-logistiker-supermarkt/cinema__980x420",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Aarpm Doucett/\u200bunsplash.com", "url": "https://unsplash.com/photos/HkbeLxOJlqk"}
+    "url": "https://img.zeit.de/campus/2022-03/trendsportarten/cinema__980x420",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Thibault Feyaerts/\u200bunsplash.com"}
 }
 </script>        </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Arbeit im Handel - &#34;Am schlimmsten sind gehetzte Kunden, die ihren Korb aufs Band kippen&#34;"
-                   href="https://www.zeit.de/campus/2022/02/arbeit-handel-arbeitsbedingung-kassiererin-logistiker"
+                   title="Trendsportarten - Fünf Trendsportarten, die in den Frühling pushen"
+                   href="https://www.zeit.de/campus/2022-03/trendsportarten-spike-ball-yoga-sommer-tipps"
                    >
                                                                         <span class="teaser-wide-large__kicker">
-                                                                                                <span>Arbeit im Handel</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-wide-large__title">&#34;Am schlimmsten sind gehetzte Kunden, die ihren Korb aufs Band kippen&#34;</span>
+                                                                                                <span>Trendsportarten</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-wide-large__title">Fünf Trendsportarten, die in den Frühling pushen</span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Manchmal lassen Menschen sie spüren, dass sie Dienstleistende sind. Eine Kassiererin, ein Logistiker und ein Filialleiter erzählen, wie es ist, im Handel zu arbeiten.</p>
+                                    <p class="teaser-wide-large__text">Leicht depri, verspannt und immer noch auf der Couch? Es gibt neue Sportarten wie Spike Ball und Hyrox, bei denen man Leute trifft, an die Luft kommt und Muskeln aufbaut.</p>
                                                 <div class="teaser-wide-large__metadata">
-                                                                            <span class="teaser-wide-large__byline">    Von            Brigitte Wenger</span>
-                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2022/02/arbeit-handel-arbeitsbedingung-kassiererin-logistiker#comments" data-ct-label="comments" title="Kommentare anzeigen">22 Kommentare</a>
+                                                                            <span class="teaser-wide-large__byline">    Von            Johanna Pankow</span>
+                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2022-03/trendsportarten-spike-ball-yoga-sommer-tipps#comments" data-ct-label="comments" title="Kommentare anzeigen">7 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -1466,16 +1476,16 @@
                                     
 
 <article class="teaser-wide-large "
-    data-unique-id="http://xml.zeit.de/campus/2022/02/dating-apps-liebe-veraenderung-erlebnisse" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/ratgeber/2022/01/master-richtig-studieren-chaos-ueberblick" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2022/02/dating-apps-liebe-veraenderung-erlebnisse" class="teaser-wide-large__faux-link" title="Dating-Apps: Ja? Nein. Vielleicht!" tabindex="-1" aria-hidden="true" data-ct-label="link">Dating-Apps: Ja? Nein. Vielleicht!</a>
+                    <a href="https://www.zeit.de/campus/ratgeber/2022/01/master-richtig-studieren-chaos-ueberblick" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Richtig Studieren: &#34;Lästige Aufgaben erledige ich morgens zuerst&#34;">Richtig Studieren: &#34;Lästige Aufgaben erledige ich morgens zuerst&#34;</a>
                 <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2022-02/dating-apps-liebe-teaser/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/ratgeber/2022/01/master-richtig-studieren-chaos/cinema__980x420">
                                 <img class="teaser-wide-large__media-item"
-                          alt="Dating-Apps: Ja? Nein. Vielleicht!"
-                     src="https://img.zeit.de/campus/2022-02/dating-apps-liebe-teaser/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2022-02/dating-apps-liebe-teaser/cinema"
+                          alt="Richtig Studieren: &#34;Lästige Aufgaben erledige ich morgens zuerst&#34;"
+                     src="https://img.zeit.de/campus/ratgeber/2022/01/master-richtig-studieren-chaos/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/ratgeber/2022/01/master-richtig-studieren-chaos/cinema"
                      data-ratio="2.33333333333"
                      decoding="async">
                             </noscript></div>
@@ -1484,26 +1494,27 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2022-02/dating-apps-liebe-teaser/cinema__980x420",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Ronja Falkenbach"}
+    "url": "https://img.zeit.de/campus/ratgeber/2022/01/master-richtig-studieren-chaos/cinema__980x420",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Peter Muller/\u200bDEEPOL/\u200bplainpicture"}
 }
 </script>        </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Dating-Apps - Ja? Nein. Vielleicht!"
-                   href="https://www.zeit.de/campus/2022/02/dating-apps-liebe-veraenderung-erlebnisse"
+                   title="Richtig Studieren - &#34;Lästige Aufgaben erledige ich morgens zuerst&#34;"
+                   href="https://www.zeit.de/campus/ratgeber/2022/01/master-richtig-studieren-chaos-ueberblick"
                    >
                                                                         <span class="teaser-wide-large__kicker">
-                                                                                                <span>Dating-Apps</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-wide-large__title">Ja? Nein. Vielleicht!</span>
+                                                                                                <span>Richtig Studieren</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-wide-large__title">&#34;Lästige Aufgaben erledige ich morgens zuerst&#34;</span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Dating-Apps verändern die Liebe. Sie machen ihre Definition deutlicher – und das vereinfacht vieles. Acht Menschen erzählen von ihren schönsten und schlimmsten Dates.</p>
+                                    <p class="teaser-wide-large__text">Verabredungen oder wichtige Termine verballern: Wer kennt das nicht? So behältst du mit To-do-Listen und Excel-Kalendern den Überblick – in der Uni und im Leben.</p>
                                                 <div class="teaser-wide-large__metadata">
-                                                                            <span class="teaser-wide-large__byline">    Von            Marie Gamillscheg</span>
-                                                                                                                        </div>
+                                                                            <span class="teaser-wide-large__byline">    Interview:            Johanna Pankow</span>
+                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/ratgeber/2022/01/master-richtig-studieren-chaos-ueberblick#comments" data-ct-label="comments" title="Kommentare anzeigen">1 Kommentar</a>
+                                                </div>
                                 
     </article>
 
@@ -1589,16 +1600,16 @@
                                     
 
 <article class="teaser-wide-large "
-    data-unique-id="http://xml.zeit.de/campus/2022-02/hanau-bildungsinitiative-ferhat-unvar-rassismus-anschlag" data-zplus="zplus-dynamic">
+    data-unique-id="http://xml.zeit.de/campus/2022-03/ukrainische-armee-frauen-wladimir-putin-krieg-masha-kondakova" data-zplus="zplus-dynamic">
 
-                    <a href="https://www.zeit.de/campus/2022-02/hanau-bildungsinitiative-ferhat-unvar-rassismus-anschlag" class="teaser-wide-large__faux-link" title="Bildungsinitiative Ferhat Unvar: &#34;Ferhat soll nicht umsonst gestorben sein&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Bildungsinitiative Ferhat Unvar: &#34;Ferhat soll nicht umsonst gestorben sein&#34;</a>
+                    <a href="https://www.zeit.de/campus/2022-03/ukrainische-armee-frauen-wladimir-putin-krieg-masha-kondakova" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Masha Kondakova: &#34;Ich glaube, Putin hat nicht mit diesen Frauen gerechnet&#34;">Masha Kondakova: &#34;Ich glaube, Putin hat nicht mit diesen Frauen gerechnet&#34;</a>
                 <figure class="teaser-wide-large__media  scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2022-02/hanau-bildungsinitiative-ferhat-unvar-rassismus-anschlag-bild/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/2022-03/ukrainische-armee-frauen-wladimir-putin-krieg-masha-kondakova-portraet-2/cinema__980x420">
                                 <img class="teaser-wide-large__media-item"
-                          alt="Bildungsinitiative Ferhat Unvar: &#34;Ferhat soll nicht umsonst gestorben sein&#34;"
-                     src="https://img.zeit.de/campus/2022-02/hanau-bildungsinitiative-ferhat-unvar-rassismus-anschlag-bild/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2022-02/hanau-bildungsinitiative-ferhat-unvar-rassismus-anschlag-bild/cinema"
+                          alt="Masha Kondakova: &#34;Ich glaube, Putin hat nicht mit diesen Frauen gerechnet&#34;"
+                     src="https://img.zeit.de/campus/2022-03/ukrainische-armee-frauen-wladimir-putin-krieg-masha-kondakova-portraet-2/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/2022-03/ukrainische-armee-frauen-wladimir-putin-krieg-masha-kondakova-portraet-2/cinema"
                      data-ratio="2.33333333333"
                      decoding="async">
                             </noscript></div>
@@ -1607,26 +1618,26 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2022-02/hanau-bildungsinitiative-ferhat-unvar-rassismus-anschlag-bild/cinema__980x420",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Thomas Pirot f\u00fcr ZEIT ONLINE"}
+    "url": "https://img.zeit.de/campus/2022-03/ukrainische-armee-frauen-wladimir-putin-krieg-masha-kondakova-portraet-2/cinema__980x420",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Inna Vlasyuk"}
 }
 </script>        </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Bildungsinitiative Ferhat Unvar - &#34;Ferhat soll nicht umsonst gestorben sein&#34;"
-                   href="https://www.zeit.de/campus/2022-02/hanau-bildungsinitiative-ferhat-unvar-rassismus-anschlag"
+                   title="Masha Kondakova - &#34;Ich glaube, Putin hat nicht mit diesen Frauen gerechnet&#34;"
+                   href="https://www.zeit.de/campus/2022-03/ukrainische-armee-frauen-wladimir-putin-krieg-masha-kondakova"
                    >
                                                                         <span class="teaser-wide-large__kicker">
-                                                                                                <span>Bildungsinitiative Ferhat Unvar</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-wide-large__title">&#34;Ferhat soll nicht umsonst gestorben sein&#34;</span>
+                                                                                                <span>Masha Kondakova</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-wide-large__title">&#34;Ich glaube, Putin hat nicht mit diesen Frauen gerechnet&#34;</span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Die Schulen in Hanau behandelten ihren Sohn wie einen Menschen zweiter Klasse, sagt Serpil Unvar. Mit ihrer Initiative bekämpft sie den Rassismus, der ihn umbrachte.</p>
+                                    <p class="teaser-wide-large__text">Die ukrainische Armee hat den höchsten Frauenanteil Europas. Ein Gespräch mit der Regisseurin Masha Kondakova, die mehrere Jahre Soldatinnen im Donbass begleitet hat.</p>
                                                 <div class="teaser-wide-large__metadata">
-                                                                            <span class="teaser-wide-large__byline">    Interview:            Katharina Meyer zu Eppendorf            und            Cathrin Schmiegel</span>
-                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2022-02/hanau-bildungsinitiative-ferhat-unvar-rassismus-anschlag#comments" data-ct-label="comments" title="Kommentare anzeigen">16 Kommentare</a>
+                                                                            <span class="teaser-wide-large__byline">    Interview:            Katharina Böhm</span>
+                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2022-03/ukrainische-armee-frauen-wladimir-putin-krieg-masha-kondakova#comments" data-ct-label="comments" title="Kommentare anzeigen">48 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -1640,16 +1651,16 @@
                                     
 
 <article class="teaser-wide-large "
-    data-unique-id="http://xml.zeit.de/campus/2022-02/scheidung-ehe-jung-liebe-aufruf">
+    data-unique-id="http://xml.zeit.de/campus/2022-03/berlin-dating-liebe-beziehung-grossstadt" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2022-02/scheidung-ehe-jung-liebe-aufruf" class="teaser-wide-large__faux-link" title="Scheidung: Bist du jung und schon geschieden?" tabindex="-1" aria-hidden="true" data-ct-label="link">Scheidung: Bist du jung und schon geschieden?</a>
-                <figure class="teaser-wide-large__media  scaled-image variant variant--cinema">
+                    <a href="https://www.zeit.de/campus/2022-03/berlin-dating-liebe-beziehung-grossstadt" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Dating in der Großstadt: Sex ohne Kondom ist in Berlin schon Beziehung">Dating in der Großstadt: Sex ohne Kondom ist in Berlin schon Beziehung</a>
+                <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2022-02/scheidung-ehe-jung-liebe-aufruf-frau/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/2022-03/berlin-dating-liebe-beziehung-grossstadt-frau/cinema__980x420">
                                 <img class="teaser-wide-large__media-item"
-                          alt="Scheidung: Bist du jung und schon geschieden?"
-                     src="https://img.zeit.de/campus/2022-02/scheidung-ehe-jung-liebe-aufruf-frau/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2022-02/scheidung-ehe-jung-liebe-aufruf-frau/cinema"
+                          alt="Dating in der Großstadt: Sex ohne Kondom ist in Berlin schon Beziehung"
+                     src="https://img.zeit.de/campus/2022-03/berlin-dating-liebe-beziehung-grossstadt-frau/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/2022-03/berlin-dating-liebe-beziehung-grossstadt-frau/cinema"
                      data-ratio="2.33333333333"
                      decoding="async">
                             </noscript></div>
@@ -1658,25 +1669,26 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2022-02/scheidung-ehe-jung-liebe-aufruf-frau/cinema__980x420",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Priscilla Du Preez/\u200bunsplash.com", "url": "https://unsplash.com/photos/4hwfLpG54eA"}
+    "url": "https://img.zeit.de/campus/2022-03/berlin-dating-liebe-beziehung-grossstadt-frau/cinema__980x420",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0pawel szvmanski/\u200bunsplash.com", "url": "https://unsplash.com/photos/yIQ_9gdpsuw"}
 }
 </script>        </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Scheidung - Bist du jung und schon geschieden?"
-                   href="https://www.zeit.de/campus/2022-02/scheidung-ehe-jung-liebe-aufruf"
+                   title="Dating in der Großstadt - Sex ohne Kondom ist in Berlin schon Beziehung"
+                   href="https://www.zeit.de/campus/2022-03/berlin-dating-liebe-beziehung-grossstadt"
                    >
                                                                         <span class="teaser-wide-large__kicker">
-                                                                                                <span>Scheidung</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-wide-large__title">Bist du jung und schon geschieden?</span>
+                                                                                                <span>Dating in der Großstadt</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-wide-large__title">Sex ohne Kondom ist in Berlin schon Beziehung</span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Die Liebe war groß, doch das Ende der Ehe kam schnell. Du hast jung geheiratet, aber es ist schon wieder vorbei? Wir suchen deine Geschichte.</p>
+                                    <p class="teaser-wide-large__text">Das Leben in der Großstadt macht beziehungsunfähig. Aber ist es so absurd, nicht nur nach einer &#34;gut funktionierenden Beziehung&#34; zu suchen, sondern nach der großen Liebe?</p>
                                                 <div class="teaser-wide-large__metadata">
-                                                                                                                                                                                <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2022-02/scheidung-ehe-jung-liebe-aufruf#comments" data-ct-label="comments" title="Kommentare anzeigen">55 Kommentare</a>
+                                                                            <span class="teaser-wide-large__byline">    Von            Mascha Anders</span>
+                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2022-03/berlin-dating-liebe-beziehung-grossstadt#comments" data-ct-label="comments" title="Kommentare anzeigen">23 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -1710,7 +1722,7 @@
 <article class="teaser-topic-main "
     data-unique-id="http://xml.zeit.de/campus/2022-02/onlinedating-dating-apps-sex" data-zplus="zplus">
 
-    									<a href="https://www.zeit.de/campus/2022-02/onlinedating-dating-apps-sex" class="teaser-topic-main__faux-link" title="Hey, na?: Vielleicht ist dieser Sex einfach zu rough " tabindex="-1" aria-hidden="true" data-ct-label="link">Hey, na?: Vielleicht ist dieser Sex einfach zu rough </a>
+    									<a href="https://www.zeit.de/campus/2022-02/onlinedating-dating-apps-sex" class="teaser-topic-main__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Hey, na?: Vielleicht ist dieser Sex einfach zu rough ">Hey, na?: Vielleicht ist dieser Sex einfach zu rough </a>
     
             		<h2 class="teaser-topic-main__heading">
 		<span class="teaser-topic-main__kicker">Serie</span><span class="visually-hidden">: </span>		<span class="teaser-topic-main__title">Hey, na?</span>
@@ -1731,7 +1743,7 @@
 <article class="teaser-topic-item "
     data-unique-id="http://xml.zeit.de/campus/2022-02/onlinedating-dating-apps-sex" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2022-02/onlinedating-dating-apps-sex" class="teaser-topic-item__faux-link" title="Onlinedating: Vielleicht ist dieser Sex einfach zu rough " tabindex="-1" aria-hidden="true" data-ct-label="link">Onlinedating: Vielleicht ist dieser Sex einfach zu rough </a>
+                    <a href="https://www.zeit.de/campus/2022-02/onlinedating-dating-apps-sex" class="teaser-topic-item__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Onlinedating: Vielleicht ist dieser Sex einfach zu rough ">Onlinedating: Vielleicht ist dieser Sex einfach zu rough </a>
     
                         <h2 class="teaser-topic-item__heading">
                 <a class="teaser-topic-item__heading-link"
@@ -1754,7 +1766,7 @@
 <article class="teaser-topic-item "
     data-unique-id="http://xml.zeit.de/campus/2022-01/intimitaet-sex-sexspielzeug-dating" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2022-01/intimitaet-sex-sexspielzeug-dating" class="teaser-topic-item__faux-link" title="Intimität beim Sex: Er sagt: Mindblowing! Ich sag: normaler Sex" tabindex="-1" aria-hidden="true" data-ct-label="link">Intimität beim Sex: Er sagt: Mindblowing! Ich sag: normaler Sex</a>
+                    <a href="https://www.zeit.de/campus/2022-01/intimitaet-sex-sexspielzeug-dating" class="teaser-topic-item__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Intimität beim Sex: Er sagt: Mindblowing! Ich sag: normaler Sex">Intimität beim Sex: Er sagt: Mindblowing! Ich sag: normaler Sex</a>
     
                         <h2 class="teaser-topic-item__heading">
                 <a class="teaser-topic-item__heading-link"
@@ -1777,7 +1789,7 @@
 <article class="teaser-topic-item "
     data-unique-id="http://xml.zeit.de/campus/2021-12/liebe-dating-gefuehle-sicherheit" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2021-12/liebe-dating-gefuehle-sicherheit" class="teaser-topic-item__faux-link" title="Liebe : &#34;Ich finde dein Gesicht schön und mag deinen Penis&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Liebe : &#34;Ich finde dein Gesicht schön und mag deinen Penis&#34;</a>
+                    <a href="https://www.zeit.de/campus/2021-12/liebe-dating-gefuehle-sicherheit" class="teaser-topic-item__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Liebe : &#34;Ich finde dein Gesicht schön und mag deinen Penis&#34;">Liebe : &#34;Ich finde dein Gesicht schön und mag deinen Penis&#34;</a>
     
                         <h2 class="teaser-topic-item__heading">
                 <a class="teaser-topic-item__heading-link"
@@ -1804,44 +1816,44 @@
                                     
 
 <article class="teaser-lead-cinema "
-    data-unique-id="http://xml.zeit.de/campus/2022-02/freedom-day-deutschland-corona-freiheit-party" data-zplus="zplus-dynamic">
+    data-unique-id="http://xml.zeit.de/campus/2022/02/dialekt-baden-wuerttemberg-hochdeutsch-lernen" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2022-02/freedom-day-deutschland-corona-freiheit-party" class="teaser-lead-cinema__faux-link" title="Freedom Day: Tschau Grundrechts­ein­schränkungen, tschau Zwänge" tabindex="-1" aria-hidden="true" data-ct-label="link">Freedom Day: Tschau Grundrechts­ein­schränkungen, tschau Zwänge</a>
-                <figure class="teaser-lead-cinema__media  scaled-image variant variant--cinema">
+                    <a href="https://www.zeit.de/campus/2022/02/dialekt-baden-wuerttemberg-hochdeutsch-lernen" class="teaser-lead-cinema__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Dialekt: Es isch, wie’s isch">Dialekt: Es isch, wie’s isch</a>
+                <figure class="teaser-lead-cinema__media teaser-lead-cinema__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-lead-cinema__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2022-02/bild-freedom-day-deutschland-corona-freiheit-party/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/2022/02/es-isch-wie-s-isch-bild-1/cinema__980x420">
                                 <img class="teaser-lead-cinema__media-item"
-                          alt="Freedom Day: Tschau Grundrechts­ein­schränkungen, tschau Zwänge"
-                     src="https://img.zeit.de/campus/2022-02/bild-freedom-day-deutschland-corona-freiheit-party/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2022-02/bild-freedom-day-deutschland-corona-freiheit-party/cinema"
+                          alt="Dialekt: Es isch, wie’s isch"
+                     src="https://img.zeit.de/campus/2022/02/es-isch-wie-s-isch-bild-1/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/2022/02/es-isch-wie-s-isch-bild-1/cinema"
                      data-ratio="2.33333333333"
-                     data-mobile-src="https://img.zeit.de/campus/2022-02/bild-freedom-day-deutschland-corona-freiheit-party/wide" data-mobile-ratio="1.77777777778"decoding="async">
+                     data-mobile-src="https://img.zeit.de/campus/2022/02/es-isch-wie-s-isch-bild-1/wide" data-mobile-ratio="1.77777777778"decoding="async">
                             </noscript></div>
 
         <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2022-02/bild-freedom-day-deutschland-corona-freiheit-party/cinema__980x420",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Joshua Earle Hire/\u200bunsplash.com"}
+    "url": "https://img.zeit.de/campus/2022/02/es-isch-wie-s-isch-bild-1/cinema__980x420",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Tijsje Revalk"}
 }
 </script>        </figure>
 
                         <h2 class="teaser-lead-cinema__heading">
                 <a class="teaser-lead-cinema__heading-link"
-                   title="Freedom Day - Tschau Grundrechts­ein­schränkungen, tschau Zwänge"
-                   href="https://www.zeit.de/campus/2022-02/freedom-day-deutschland-corona-freiheit-party"
+                   title="Dialekt - Es isch, wie’s isch"
+                   href="https://www.zeit.de/campus/2022/02/dialekt-baden-wuerttemberg-hochdeutsch-lernen"
                    >
                                                                         <span class="teaser-lead-cinema__kicker">
-                                                                                                <span>Freedom Day</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-lead-cinema__title teaser-lead-cinema__title--has-comma">Tschau Grundrechts­ein­schränkungen, tschau Zwänge</span>
+                                                                                                <span>Dialekt</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-lead-cinema__title teaser-lead-cinema__title--has-comma">Es isch, wie’s isch</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-cinema__text">Uns droht bald ein Freedom Day. Die Jugend bereitet sich auf Eskalation vor. Besonders drei junge Polohemdenträger sind begeistert und planen eine angemessene Party. </p>
+                                    <p class="teaser-lead-cinema__text">Die Mundart aus der Heimat ablegen? Fast unmöglich. Dabei verdient man mit Dialekt bis zu 20 Prozent weniger. Also auf zum Topspeaker-Seminar – und danach zur Familie</p>
                                                 <div class="teaser-lead-cinema__metadata">
-                                                                            <span class="teaser-lead-cinema__byline">    Eine Glosse von            Berit Dießelkämper</span>
-                                                                                                                                            <a class="teaser-lead-cinema__commentcount" href="https://www.zeit.de/campus/2022-02/freedom-day-deutschland-corona-freiheit-party#comments" data-ct-label="comments" title="Kommentare anzeigen">48 Kommentare</a>
+                                                                            <span class="teaser-lead-cinema__byline">    Eine Reportage von            Theresa Tröndle</span>
+                                                                                                                                            <a class="teaser-lead-cinema__commentcount" href="https://www.zeit.de/campus/2022/02/dialekt-baden-wuerttemberg-hochdeutsch-lernen#comments" data-ct-label="comments" title="Kommentare anzeigen">114 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -1876,16 +1888,16 @@
                                     
 
 <article class="teaser-wide-large "
-    data-unique-id="http://xml.zeit.de/2022/08/universitaet-vechta-germanistik-klausur-online-lehre" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2022-03/depression-erkennen-druck-weltlage-motivation-hilfe" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/2022/08/universitaet-vechta-germanistik-klausur-online-lehre" class="teaser-wide-large__faux-link" title="Universität Vechta: Das Rätsel der 98 Prozent" tabindex="-1" aria-hidden="true" data-ct-label="link">Universität Vechta: Das Rätsel der 98 Prozent</a>
+                    <a href="https://www.zeit.de/campus/2022-03/depression-erkennen-druck-weltlage-motivation-hilfe" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Depression : Ist es Weltschmerz oder eine Depression?">Depression : Ist es Weltschmerz oder eine Depression?</a>
                 <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2022-02/universitaet-vechta-germanistik-jochen-a-baer/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/2022-03/depression/cinema__980x420">
                                 <img class="teaser-wide-large__media-item"
-                          alt="Universität Vechta: Das Rätsel der 98 Prozent"
-                     src="https://img.zeit.de/campus/2022-02/universitaet-vechta-germanistik-jochen-a-baer/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2022-02/universitaet-vechta-germanistik-jochen-a-baer/cinema"
+                          alt="Depression : Ist es Weltschmerz oder eine Depression?"
+                     src="https://img.zeit.de/campus/2022-03/depression/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/2022-03/depression/cinema"
                      data-ratio="2.33333333333"
                      decoding="async">
                             </noscript></div>
@@ -1894,26 +1906,26 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2022-02/universitaet-vechta-germanistik-jochen-a-baer/cinema__980x420",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Daubenspeck/\u200b\u200bUniversit\u00e4t Vechta; jeswin thomas/\u200bunsplash.com"}
+    "url": "https://img.zeit.de/campus/2022-03/depression/cinema__980x420",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Anthony Tran/\u200bunsplash.com", "url": "https://unsplash.com/photos/i-ePv9Dxg7U"}
 }
 </script>        </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Universität Vechta - Das Rätsel der 98 Prozent"
-                   href="https://www.zeit.de/2022/08/universitaet-vechta-germanistik-klausur-online-lehre"
+                   title="Depression  - Ist es Weltschmerz oder eine Depression?"
+                   href="https://www.zeit.de/campus/2022-03/depression-erkennen-druck-weltlage-motivation-hilfe"
                    >
                                                                         <span class="teaser-wide-large__kicker">
-                                                                                                <span>Universität Vechta</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-wide-large__title">Das Rätsel der 98 Prozent</span>
+                                                                                                <span>Depression </span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-wide-large__title">Ist es Weltschmerz oder eine Depression?</span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">An der Universität Vechta fielen Germanistikstudierende reihenweise durch eine Klausur. Das habe es noch nie gegeben, sagt der Professor, der sich die Prüfung ausdachte.</p>
+                                    <p class="teaser-wide-large__text">Keinen Antrieb, null Spaß, Isolation: Die Therapeutin Julia Ebhardt erklärt, wie man psychisch mit der Weltlage umgehen kann und woran man eine ernste Depression erkennt.</p>
                                                 <div class="teaser-wide-large__metadata">
-                                                                            <span class="teaser-wide-large__byline">    Interview:            Astrid Herbold</span>
-                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/2022/08/universitaet-vechta-germanistik-klausur-online-lehre#comments" data-ct-label="comments" title="Kommentare anzeigen">154 Kommentare</a>
+                                                                            <span class="teaser-wide-large__byline">    Interview:            Lukas Hildebrand</span>
+                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2022-03/depression-erkennen-druck-weltlage-motivation-hilfe#comments" data-ct-label="comments" title="Kommentare anzeigen">24 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -1929,7 +1941,7 @@
 <article class="teaser-wide-large "
     data-unique-id="http://xml.zeit.de/campus/2022-01/liebe-corona-zoom-dating-liebesgeschichten">
 
-                    <a href="https://www.zeit.de/campus/2022-01/liebe-corona-zoom-dating-liebesgeschichten" class="teaser-wide-large__faux-link" title="Liebe und Corona: Hast du dich in der Pandemie verliebt? " tabindex="-1" aria-hidden="true" data-ct-label="link">Liebe und Corona: Hast du dich in der Pandemie verliebt? </a>
+                    <a href="https://www.zeit.de/campus/2022-01/liebe-corona-zoom-dating-liebesgeschichten" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Liebe und Corona: Hast du dich in der Pandemie verliebt? ">Liebe und Corona: Hast du dich in der Pandemie verliebt? </a>
                 <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
             <noscript data-src="https://img.zeit.de/campus/2022-01/liebe-corona-zoom-dating-liebesgeschichten-paar/cinema__980x420">
@@ -1976,46 +1988,45 @@
                                     
 
 <article class="teaser-lead-portrait "
-    data-unique-id="http://xml.zeit.de/campus/2022/02/irina-schlauch-princess-charming-lesbische-datingshow" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/ratgeber/2022/01/studium-praktika-master-auffallen-netzwerken" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2022/02/irina-schlauch-princess-charming-lesbische-datingshow" class="teaser-lead-portrait__faux-link" title="Irina Schlauch: &#34;Irgendwann sind Outings hoffentlich nicht mehr nötig&#34;" tabindex="-1" aria-hidden="true" data-ct-label="link">Irina Schlauch: &#34;Irgendwann sind Outings hoffentlich nicht mehr nötig&#34;</a>
+                    <a href="https://www.zeit.de/campus/ratgeber/2022/01/studium-praktika-master-auffallen-netzwerken" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Praktika im Studium: &#34;Mit ein wenig Demut ins Praktikum zu starten, wirkt sympathisch&#34;">Praktika im Studium: &#34;Mit ein wenig Demut ins Praktikum zu starten, wirkt sympathisch&#34;</a>
                 <figure class="teaser-lead-portrait__media teaser-lead-portrait__media--force-mobile scaled-image variant variant--portrait">
                 <div class="teaser-lead-portrait__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2022/02/irgendwann-sind-outings-hoffentlich-nicht-mehr-noetig-bild-1/portrait__612x816">
+            <noscript data-src="https://img.zeit.de/campus/ratgeber/2022/01/auffallen-im-praktikum-bild-2/portrait__612x816">
                                 <img class="teaser-lead-portrait__media-item"
-                          alt="Irina Schlauch: &#34;Irgendwann sind Outings hoffentlich nicht mehr nötig&#34;"
-                     src="https://img.zeit.de/campus/2022/02/irgendwann-sind-outings-hoffentlich-nicht-mehr-noetig-bild-1/portrait__612x816"
-                     data-src="https://img.zeit.de/campus/2022/02/irgendwann-sind-outings-hoffentlich-nicht-mehr-noetig-bild-1/portrait"
+                          alt="Praktika im Studium: &#34;Mit ein wenig Demut ins Praktikum zu starten, wirkt sympathisch&#34;"
+                     src="https://img.zeit.de/campus/ratgeber/2022/01/auffallen-im-praktikum-bild-2/portrait__612x816"
+                     data-src="https://img.zeit.de/campus/ratgeber/2022/01/auffallen-im-praktikum-bild-2/portrait"
                      data-ratio="0.75"
-                     data-mobile-src="https://img.zeit.de/campus/2022/02/irgendwann-sind-outings-hoffentlich-nicht-mehr-noetig-bild-1/wide" data-mobile-ratio="1.77777777778"decoding="async">
+                     data-mobile-src="https://img.zeit.de/campus/ratgeber/2022/01/auffallen-im-praktikum-bild-2/wide" data-mobile-ratio="1.77777777778"decoding="async">
                             </noscript></div>
 
         <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2022/02/irgendwann-sind-outings-hoffentlich-nicht-mehr-noetig-bild-1/portrait__612x816",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Sigrid Reinichs"}
+    "url": "https://img.zeit.de/campus/ratgeber/2022/01/auffallen-im-praktikum-bild-2/portrait__612x816",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Illustration: Timo Lenzen"}
 }
 </script>        </figure>
 
         <div class="teaser-lead-portrait__content">
                             <h2 class="teaser-lead-portrait__heading">
                 <a class="teaser-lead-portrait__heading-link"
-                   title="Irina Schlauch - &#34;Irgendwann sind Outings hoffentlich nicht mehr nötig&#34;"
-                   href="https://www.zeit.de/campus/2022/02/irina-schlauch-princess-charming-lesbische-datingshow"
+                   title="Praktika im Studium - &#34;Mit ein wenig Demut ins Praktikum zu starten, wirkt sympathisch&#34;"
+                   href="https://www.zeit.de/campus/ratgeber/2022/01/studium-praktika-master-auffallen-netzwerken"
                    >
                                                                         <span class="teaser-lead-portrait__kicker">
-                                <span class="series-label">Der Ort meines Lebens</span>
-                                                                                                    <span>Irina Schlauch</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">&#34;Irgendwann sind Outings hoffentlich nicht mehr nötig&#34;</span>
+                                                                                                <span>Praktika im Studium</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">&#34;Mit ein wenig Demut ins Praktikum zu starten, wirkt sympathisch&#34;</span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-portrait__text">Beim Fußball verliebte Irina Schlauch sich in eine Frau und lernte: Männerteams sind unentspannter mit queerer Liebe. Ein Gespräch mit der ersten Princess Charming</p>
+                                    <p class="teaser-lead-portrait__text">Netzwerken und mit dem Chef diskutieren: Raffaela Drüppel betreut pro Jahr 400 Praktikant:innen und erklärt, wie man wirklich Eindruck in einem Unternehmen macht.</p>
                                                 <div class="teaser-lead-portrait__metadata">
-                                                                            <span class="teaser-lead-portrait__byline">    Interview:            Cathrin Schmiegel</span>
-                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/2022/02/irina-schlauch-princess-charming-lesbische-datingshow#comments" data-ct-label="comments" title="Kommentare anzeigen">19 Kommentare</a>
+                                                                            <span class="teaser-lead-portrait__byline">    Interview:            Mitsuo Martin Iwamoto</span>
+                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/ratgeber/2022/01/studium-praktika-master-auffallen-netzwerken#comments" data-ct-label="comments" title="Kommentare anzeigen">6 Kommentare</a>
                                                 </div>
                                 
     
@@ -2176,7 +2187,7 @@
                             return;
                         }
 
-                        var max = 2;
+                        var max = 3;
                         var teasers = zplusDossierArea.querySelectorAll('.zon-teaser-standard');
                         for (var i = max; i < teasers.length; i++) {
                             teasers[i].remove();
@@ -2282,11 +2293,11 @@
 })();
 </script>
     
-    <script src="https://static.zeit.de/p/zeit.web/js/mausabhaengigeszaehlinstrument.874ac05ef198cd09e8cb.js" async></script>
-    <script src="https://static.zeit.de/p/zeit.web/js/images.71dcbd5609a06533a96d.js" async></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/mausabhaengigeszaehlinstrument.e0d2464c275212f2acb6.js" async></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/images.94e661e927624d4ca428.js" async></script>
 
-    <script src="https://static.zeit.de/p/zeit.web/js/promise.9472eaf6a943f5f06679.js" nomodule defer></script>
-    <script src="https://static.zeit.de/p/zeit.web/js/campus.a3f72c0da5fd8fccf6f1.js" defer></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/promise.d3aeb3fa22c2d515fcca.js" nomodule defer></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/campus.05c986e5e08f597e7514.js" defer></script>
 
     <script class="webtrekk_script">
 window.Zeit.loadJS( 'https://scripts.zeit.de/static/js/webtrekk/webtrekk_v4.5.3.min-3.js', function() {
@@ -2374,7 +2385,7 @@ window.Zeit.loadJS( 'https://scripts.zeit.de/static/js/webtrekk/webtrekk_v4.5.3.
 
         
         wt.customParameter[23] = 'nicht_angemeldet';
-        wt.customParameter[46] = 'false';
+        wt.customParameter[46] = window.Zeit.cookieRead('zonconsent') ? 'false' : 'undefined';
 
         if ( window.Zeit.user ) {
             if ( window.Zeit.user.ssoid ) {
