@@ -18,6 +18,12 @@
 
         
         <link rel="shortcut icon" type="image/x-icon" href="//img.ui-portal.de/cd/ci/gmx.net/favicon.ico"/>
+        <link sizes="16x16" rel="icon" href="https://img.ui-portal.de/ux/gmx/icons/favicon-16x16.png" type="image/png">
+        <link sizes="32x32" rel="icon" href="https://img.ui-portal.de/ux/gmx/icons/favicon-32x32.png" type="image/png">
+        <link sizes="180x180" rel="apple-touch-icon" href="https://img.ui-portal.de/ux/gmx/icons/apple-touch-icon.png">
+        <link sizes="192x192" rel="icon" href="https://img.ui-portal.de/ux/gmx/icons/android-chrome-192x192.png" type="image/png">
+        <link color="#333333" rel="mask-icon" href="https://img.ui-portal.de/ux/gmx/icons/safari-pinned-tab.svg">
+
                     <link rel="stylesheet" type="text/css" href="//js.ui-portal.de/cd/products/gmx.net/5.10.0/products.css"/>
                 
                                     <script src="//js.ui-portal.de/prompt/permission/latest/connector.min.js?group=portal&amp;portal=gmxnet"></script>
@@ -1998,48 +2004,54 @@ $('.navigation > ul > li span.close.icon').on('click', function () {
         }
     }
 
+    function trackScrollViews() {
+        if (countTrackedModules <= moduleno) {
+            $("html, body").scrollTop($(window).scrollTop() + 1);
+            window.addEventListener('scroll', throttle(function () {
+                if (isElementPartiallyInViewport($(document).find('.header'))) {
+                    trackHeader = $(document).find('.header');
+                    countTrackedModules++;
+                    viewContentposition = trackHeader.closest('[data-tracking-contentposition]').data('tracking-contentposition');
+                    trackView(modules, 'page.header.view', 1, 1, viewContentposition);
+                }
+                if (isElementPartiallyInViewport($(document).find(".navigation"))) {
+                    var navigation = document.querySelector(".navigation[data-tracking-contentposition]");
+                    countTrackedModules++;
+                    trackView(modules, 'page.navigation.view', 2, 2, navigation.getAttribute('data-tracking-contentposition'));
+                }
+
+                var allDivModules = $grid.children("div[data-tracking-count]");
+                allDivModules.each(function () {
+                    if (isElementPartiallyInViewport(this)) {
+                        countTrackedModules++;
+                        trackView(modules, 'page.module.view', this.getAttribute("data-tracking-count"),
+                            this.getAttribute("data-tracking-count"), this.getAttribute("data-tracking-contentposition"));
+                    }
+                });
+
+                if (isElementPartiallyInViewport(document.querySelector("#footer div[data-tracking-contentposition='footer']"))) {
+                    var footer = document.querySelector("#footer div[data-tracking-contentposition='footer']");
+                    countTrackedModules++;
+                    $("html, body").scrollTop($(window).scrollTop() + 1);
+                    trackView(modules, 'page.footer.view', moduleno - 1, moduleno - 1, footer.getAttribute('data-tracking-contentposition'));
+                }
+                if (isElementPartiallyInViewport(document.querySelector("#footer div[data-tracking-contentposition='basefooter']"))) {
+                    var basefooter = document.querySelector("#footer div[data-tracking-contentposition='basefooter']");
+                    countTrackedModules++;
+                    trackView(modules, 'page.basefooter.view', moduleno, moduleno, basefooter.getAttribute('data-tracking-contentposition'));
+                }
+            }, 400));
+        }
+    }
+
     $grid = $(".grid");
 
     var modules = {};
     var countTrackedModules = 0;
 
-    if (countTrackedModules <= moduleno) {
-        $("html, body").scrollTop($(window).scrollTop() + 1);
-        window.addEventListener('scroll', throttle(function () {
-            if (isElementPartiallyInViewport($(document).find('.header'))) {
-                trackHeader = $(document).find('.header');
-                countTrackedModules++;
-                viewContentposition = trackHeader.closest('[data-tracking-contentposition]').data('tracking-contentposition');
-                trackView(modules, 'page.header.view', 1, 1, viewContentposition);
-            }
-            if (isElementPartiallyInViewport($(document).find(".navigation"))) {
-                var navigation = document.querySelector(".navigation[data-tracking-contentposition]");
-                countTrackedModules++;
-                trackView(modules, 'page.navigation.view', 2, 2, navigation.getAttribute('data-tracking-contentposition'));
-            }
-
-            var allDivModules = $grid.children("div[data-tracking-count]");
-            allDivModules.each(function () {
-                if (isElementPartiallyInViewport(this)) {
-                    countTrackedModules++;
-                    trackView(modules, 'page.module.view', this.getAttribute("data-tracking-count"),
-                        this.getAttribute("data-tracking-count"), this.getAttribute("data-tracking-contentposition"));
-                }
-            });
-
-            if (isElementPartiallyInViewport(document.querySelector("#footer div[data-tracking-contentposition='footer']"))) {
-                var footer = document.querySelector("#footer div[data-tracking-contentposition='footer']");
-                countTrackedModules++;
-                $("html, body").scrollTop($(window).scrollTop() +1);
-                trackView(modules, 'page.footer.view', moduleno - 1, moduleno - 1, footer.getAttribute('data-tracking-contentposition'));
-            }
-            if (isElementPartiallyInViewport(document.querySelector("#footer div[data-tracking-contentposition='basefooter']"))) {
-                var basefooter = document.querySelector("#footer div[data-tracking-contentposition='basefooter']");
-                countTrackedModules++;
-                trackView(modules, 'page.basefooter.view', moduleno, moduleno, basefooter.getAttribute('data-tracking-contentposition'));
-            }
-        }, 400));
-    }
+    document.addEventListener(window.waitForRedirect ? 'noredirect' : 'tcfLoad', function (event) {
+        trackScrollViews();
+    });
 </script>
         <script type="text/javascript">
     var anchor = window.location.hash.substr(1);
