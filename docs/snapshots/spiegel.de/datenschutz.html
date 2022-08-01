@@ -1,4 +1,4 @@
-<!doctype html><html lang="de">
+<!doctype html><html x-data lang="de" :class="{ 'audio-player-open': !!$store.WebAudio.clip }">
 <head>
 <title>So gehen wir mit Ihren Daten um - DER SPIEGEL</title>
 <meta charset="utf-8">
@@ -43,11 +43,11 @@
 <link rel="apple-touch-icon" sizes="144x144" href="https://cdn.prod.www.spiegel.de/public/spon/images/icons/touch-icon144.png">
 <link rel="apple-touch-icon" sizes="152x152" href="https://cdn.prod.www.spiegel.de/public/spon/images/icons/touch-icon152.png">
 <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.prod.www.spiegel.de/public/spon/images/icons/touch-icon180.png">
-<link rel="preload" href="https://cdn.prod.www.spiegel.de/public/spon/generated/css/styles.spon.ab33ab7165b94fa5dbfbb777e74a12a0.css" as="style">
-<link rel="preload" href="https://cdn.prod.www.spiegel.de/public/shared/generated/js/commons.499c6527271353f018b3.js" as="script">
-<link rel="preload" href="https://cdn.prod.www.spiegel.de/public/shared/generated/js/header.141f2505469acabbc55b.js" as="script">
-<link rel="preload" href="https://cdn.prod.www.spiegel.de/public/shared/generated/js/vendors.19347d0c0591b7a75e26.js" as="script">
-<link rel="preload" href="https://cdn.prod.www.spiegel.de/public/shared/generated/js/index.c643e3e591a2b613f4e3.js" as="script">
+<link rel="preload" href="https://cdn.prod.www.spiegel.de/public/spon/generated/css/styles.spon.126a9319bbb05fb60493061c5f691a60.css" as="style">
+<link rel="preload" href="https://cdn.prod.www.spiegel.de/public/shared/generated/js/commons.3894e12e2573716e1b3d.js" as="script">
+<link rel="preload" href="https://cdn.prod.www.spiegel.de/public/shared/generated/js/header.e4509cc5f80524a556d1.js" as="script">
+<link rel="preload" href="https://cdn.prod.www.spiegel.de/public/shared/generated/js/vendors.214f335cd171ba559f79.js" as="script">
+<link rel="preload" href="https://cdn.prod.www.spiegel.de/public/shared/generated/js/index.9d46ddf5d55670c8fc17.js" as="script">
 <link rel="preload" href="https://cdn.prod.www.spiegel.de/public/shared/fonts/SpiegelSans4UI-Bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="https://cdn.prod.www.spiegel.de/public/shared/fonts/SpiegelSans4UI-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="https://cdn.prod.www.spiegel.de/public/shared/fonts/SpiegelSlab4UICd-ExtraBold.woff2" as="font" type="font/woff2" crossorigin>
@@ -59,7 +59,37 @@
 <link rel="preload" href="https://cdn.prod.www.spiegel.de/public/shared/fonts/SpiegelSerifDisplayUI-BoldItalic.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="alternate" type="application/rss+xml" title="DER SPIEGEL | RSS Schlagzeilen" href="https://www.spiegel.de/schlagzeilen/index.rss">
 <style>
-                html.overlay-open body {
+                html {
+    --polygon-app-bottombar-height: 0px;
+    --polygon-audioplayer-height: 0px;
+    --polygon-featurebar-height: 0px;
+    --polygon-headerbar-height: 0px;
+    --polygon-block-title-height: 0px;
+    --gujad-sticky-offset: 0px;
+}
+
+html.is-app:not(.is-unsupported-web-toc-navigation) {
+    --polygon-app-bottombar-height: 53px;
+}
+html.audio-player-open {
+    --polygon-audioplayer-height: 68px;
+}
+html:not(.is-app) [data-featurebar-height] {
+    --polygon-featurebar-height: 60px;
+}
+
+[data-block-el*="title"] ~ DIV {
+    --polygon-block-title-height: 50px;
+}
+
+html,
+html [data-headerbar-height],
+html [data-featurebar-height],
+[data-block-el*="title"] ~ DIV {
+    --gujad-sticky-offset: calc(var(--polygon-headerbar-height, 0px) + var(--polygon-featurebar-height, 0px) + var(--polygon-block-title-height, 0px))
+}
+
+html.overlay-open body {
     overflow: hidden !important;
 }
 
@@ -100,9 +130,6 @@ html:not(.is-unsupported-web-toc-navigation) [data-has-app-no-native-toc-button-
     display: none;
 }
 
-html.is-unsupported-native-audio-player [data-is-unsupported-native-audio-player-hidden] {
-    display: none;
-}
 html.is-unsupported-audio-playlist [data-is-unsupported-audio-playlist-hidden] {
     display: none;
 }
@@ -119,15 +146,6 @@ html:not(.is-android) [data-not-android-hidden] {
     display: none;
 }
 
-html.is-app:not(.is-unsupported-web-toc-navigation) [data-app-bottombar-height] {
-    height: 56px;
-}
-html.is-app:not(.is-unsupported-web-toc-navigation) [data-app-bottombar-max-h-80] {
-    max-height: 136px;
-}
-html.is-app:not(.is-unsupported-web-toc-navigation) [data-app-bottombar-offset] {
-    bottom: 56px;
-}
 html.is-app:not(.is-unsupported-web-toc-navigation) body>[id^="sp_message_container"] {
     overflow: visible !important;
     height: calc(100vh - 56px) !important;
@@ -188,23 +206,6 @@ html:not(.has-paid-access) [data-has-no-paid-access-hidden] {
     display: none;
 }
 
-[data-block-el*="title"] ~ DIV {
-    --polygon-block-title-height: 50px;
-}
-html:not(.is-app) [data-featurebar-height] {
-    --polygon-featurebar-height: 60px;
-}
-[data-app-headerbar-offset] {
-    top: var(--polygon-headerbar-height, 0px);
-}
-
-html,
-html [data-headerbar-height],
-html [data-featurebar-height],
-[data-block-el*="title"] ~ DIV {
-    --gujad-sticky-offset: calc(var(--polygon-headerbar-height, 0px) + var(--polygon-featurebar-height, 0px) + var(--polygon-block-title-height, 0px))
-}
-
 [data-advertisement^="GujAd"] .teads-inread,
 .RichText .teads-inread {
     margin-bottom: 24px !important;
@@ -244,6 +245,10 @@ a > svg:first-of-type:last-of-type {
 
 [data-not-loaded-w-full]:not(.loaded) {
     width: 100%;
+}
+
+[x-cloak] {
+    display: none !important;
 }
 
 [data-area*="margin_column_bottom"] > :empty:not(.border-separator),
@@ -316,6 +321,9 @@ a > svg:first-of-type:last-of-type {
 }
 
 @media (max-width: 719px) {
+    html.audio-player-open {
+        --polygon-audioplayer-height: 60px;
+    }
     html:not(.is-app) [data-featurebar-height] {
         --polygon-featurebar-height: 53px;
     }
@@ -342,10 +350,10 @@ html:not(.Spplus) [data-has-spplus-visible] {
         --polygon-headerbar-height: 48px;
     }
 }.media-button.color-mmo {background-color: #1b43a4;}.media-button.color-mmo:hover {background-color: #163683;}.media-button.color-mmo:focus {background-color: #0e2252;}@media (prefers-color-scheme: dark) {html:not([amp]) .media-button.color-mmo {background-color: #346BF1;}html:not([amp]) .media-button.color-mmo:hover {background-color: #163683;}html:not([amp]) .media-button.color-mmo:focus {background-color: #0e2252;}}</style>
-<link rel="stylesheet" href="https://cdn.prod.www.spiegel.de/public/spon/generated/css/styles.spon.ab33ab7165b94fa5dbfbb777e74a12a0.css">
-<link rel="stylesheet" media="(min-width:720px) and (max-width:1011px)" href="https://cdn.prod.www.spiegel.de/public/spon/generated/css/styles.spon-md.c1854e973765e0bb3c0d.css">
-<link rel="stylesheet" media="(min-width:1012px)" href="https://cdn.prod.www.spiegel.de/public/spon/generated/css/styles.spon-lg.6ff7438ebc0149943a8a.css">
-<link rel="stylesheet" media="(max-width:719px)" href="https://cdn.prod.www.spiegel.de/public/spon/generated/css/styles.spon-sm.4cf0fa617b45b371a416.css">
+<link rel="stylesheet" href="https://cdn.prod.www.spiegel.de/public/spon/generated/css/styles.spon.126a9319bbb05fb60493061c5f691a60.css">
+<link rel="stylesheet" media="(max-width:719px)" href="https://cdn.prod.www.spiegel.de/public/spon/generated/css/styles.spon-sm.dce0923f3b74b9dc2f50.css">
+<link rel="stylesheet" media="(min-width:720px) and (max-width:1011px)" href="https://cdn.prod.www.spiegel.de/public/spon/generated/css/styles.spon-md.11cad04fc9264540169f.css">
+<link rel="stylesheet" media="(min-width:1012px)" href="https://cdn.prod.www.spiegel.de/public/spon/generated/css/styles.spon-lg.394728a442cb21183338.css">
 <script type="application/settings+json">{"general":{"breakpoints":{"lg":{"min":1012},"md":{"max":1011,"min":720},"sm":{"max":719}},"cacheControl":{"breakingnews":{"sessionStorageMaxAge":900}},"consent":{"disabled":true,"globallyDisabled":false,"minUpdatedAt":1626213600},"disableAds":true,"domain":"spon","endToEndTestEnabled":false,"noAds":true,"secondLevelDomain":"spiegel","subscriptions":{"noads":"Sppur","paid":["Spplus"]},"text":{"authorDetailsSuffix":{"removeWhitespaceBeforeCharacters":[",",".",":",";"]}},"topLevelDomain":"de","urls":{"assetsBasePath":"https://cdn.prod.www.spiegel.de","base":"https://www.spiegel.de","offers":{"abo":"https://abo.spiegel.de/de/c/spiegelplus?requestAccessToken=true\u0026targetUrl=https%3A%2F%2Fwww.spiegel.de%2Fdatenschutz-spiegel","antiquariat":"https://www.spiegel-antiquariat.de/?utm_campaign=spon\u0026utm_medium=text\u0026utm_source=sponarchiv","header":"https://abo.spiegel.de/?b=SPOHNAVABO\u0026requestAccessToken=true\u0026sara_icid=disp_upd_9h6L5hu8K1AAnttzYATx3hvk7taDkP\u0026targetUrl=https%3A%2F%2Fwww.spiegel.de%2Fdatenschutz-spiegel","magazin":"https://magazin.spiegel.de/","noads":"https://abo.spiegel.de/de/c/microsites/pur/abo?requestAccessToken=true\u0026targetUrl=https%3A%2F%2Fwww.spiegel.de%2Fdatenschutz-spiegel","paid":"https://abo.spiegel.de/de/c/spiegelplus?requestAccessToken=true\u0026targetUrl=https%3A%2F%2Fwww.spiegel.de%2Fdatenschutz-spiegel","print":"https://abo.spiegel.de/de/c/amazon_spon/"},"user":{"account":"https://gruppenkonto.spiegel.de/meinkonto/uebersicht.html","bookmarks":"https://www.spiegel.de/fuermich/merkliste","forme":"https://www.spiegel.de/fuermich/","login":"https://gruppenkonto.spiegel.de/authenticate?requestAccessToken=true\u0026targetUrl=https%3A%2F%2Fwww.spiegel.de%2Fdatenschutz-spiegel","logout":"https://gruppenkonto.spiegel.de/abmelden.html?targetUrl=https%3A%2F%2Fwww.spiegel.de%2F","register":"https://gruppenkonto.spiegel.de/registrieren.html?requestAccessToken=true\u0026targetUrl=https%3A%2F%2Fwww.spiegel.de%2Fdatenschutz-spiegel"}}}
 ,"app":{"minOSVersions":{"android":{"general":{"build":0,"major":5,"minor":0},"nativeAudioPlayer":{"build":0,"major":0,"minor":0}},"ios":{"general":{"build":0,"major":0,"minor":0},"nativeAudioPlayer":{"build":0,"major":0,"minor":0}}},"minVersions":{"android":{"audioPlaylist":169,"consent":158,"general":158,"nativeAudioPlayer":160,"offlineIssue":166,"webTocNavigation":170},"ios":{"audioPlaylist":151,"consent":142,"general":0,"nativeAudioPlayer":144,"offlineIssue":147,"webTocNavigation":153}},"pageContext":{"collection":"page","documentId":"9cef483c-4397-4011-bcfc-8d0dd57af79b","headerTitle":"default","isAudioPlaylistEnabled":false,"isBookmarkEnabled":false,"isCommentsEnabled":false,"isOfflineLibraryEnabled":false,"isSharingEnabled":false,"isTextToSpeechEnabled":false,"isTocEnabled":false,"route":"page","socialMediaTitle":""},"products":{"android":{"Spplus":[{"id":"sp_iap_subscription_pdf_2","isSubscription":true,"minVersion":0}],"Sppur":[{"id":"spiegel_no_ads_monthly","isSubscription":true,"minVersion":0}]},"ios":{"Spplus":[{"id":"SpiegelPlusMonthly","isSubscription":true,"minVersion":0},{"id":"SpiegelPlusMonthlyIVW","isSubscription":true,"minVersion":148}],"Sppur":[{"id":"SpiegelAdFreeMonthly","isSubscription":true,"minVersion":0}]}},"storeUrl":{"android":"https://play.google.com/store/apps/details?id=de.spiegel.android.app.spon","ios":"https://apps.apple.com/de/app/spiegel-online-nachrichten/id424881832"}}
 ,"guj":{"isIndexPage":false,"keywords":["nextgen"],"spmard":"","spmtid":"","spmtp":"default","spmurid":"","zone":"_default"}
@@ -384,8 +392,8 @@ html:not(.Spplus) [data-has-spplus-visible] {
             }
         }
     </script>
-<script src="https://cdn.prod.www.spiegel.de/public/shared/generated/js/commons.499c6527271353f018b3.js"></script>
-<script src="https://cdn.prod.www.spiegel.de/public/shared/generated/js/header.141f2505469acabbc55b.js"></script>
+<script src="https://cdn.prod.www.spiegel.de/public/shared/generated/js/commons.3894e12e2573716e1b3d.js"></script>
+<script src="https://cdn.prod.www.spiegel.de/public/shared/generated/js/header.e4509cc5f80524a556d1.js"></script>
 <script>
     var GujAd = GujAd || {};
     GujAd.cmd = GujAd.cmd || [];
@@ -436,9 +444,9 @@ html:not(.Spplus) [data-has-spplus-visible] {
 <span class="flex">
 <span class="relative bottom-px">Anmelden</span>
 <span class="flex leading-none items-center ml-8"><svg id="spon-chevron-right-f-s" class="stroke-current" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="s-chevron-right-f-1891846e-b26e-4add-8c53-a4167f722f3f">
-        <g id="s-chevron-right-1891846e-b26e-4add-8c53-a4167f722f3f">
-            <path id="vector-1891846e-b26e-4add-8c53-a4167f722f3f" d="M4.333 2.667L7.667 6 4.333 9.333" stroke-width="1.5" stroke-linecap="round"/>
+    <g id="s-chevron-right-f-cf437983-ee1c-4948-8abf-701d83f4abc0">
+        <g id="s-chevron-right-cf437983-ee1c-4948-8abf-701d83f4abc0">
+            <path id="vector-cf437983-ee1c-4948-8abf-701d83f4abc0" d="M4.333 2.667L7.667 6 4.333 9.333" stroke-width="1.5" stroke-linecap="round"/>
         </g>
     </g>
 </svg>
@@ -447,19 +455,19 @@ html:not(.Spplus) [data-has-spplus-visible] {
 </a>
 <a href="https://www.spiegel.de/fuermich/" class="ml-24 bg-white h-40 inline-flex items-center justify-center rounded-circle w-40 md:hidden sm:hidden text-primary-base dark:text-dm-primary-base hover:opacity-distinct" data-not-logged-in-hidden title="Für Mich"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
     <path d="M8.05 8.5A3.917 3.917 0 0112 4.55a3.917 3.917 0 013.95 3.95A3.917 3.917 0 0112 12.45 3.917 3.917 0 018.05 8.5z" class="stroke-current" stroke-width="1.1"/>
-    <mask id="a-cf19e052-1832-44a4-a4e9-dcdb4b7642bf" fill="#fff">
+    <mask id="a-870543de-f0c2-4329-8dc7-ad99843a861c" fill="#fff">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M8 16.1h8a3.9 3.9 0 013.9 3.9H21a5 5 0 00-5-5H8a5 5 0 00-5 5h1.1A3.9 3.9 0 018 16.1z"/>
     </mask>
-    <path d="M19.9 20h-1.3v1.3h1.3V20zm1.1 0v1.3h1.3V20H21zM3 20H1.7v1.3H3V20zm1.1 0v1.3h1.3V20H4.1zM16 14.8H8v2.6h8v-2.6zm5.2 5.2a5.2 5.2 0 00-5.2-5.2v2.6a2.6 2.6 0 012.6 2.6h2.6zm-1.3 1.3H21v-2.6h-1.1v2.6zm-3.9-5a3.7 3.7 0 013.7 3.7h2.6a6.3 6.3 0 00-6.3-6.3v2.6zm0-2.6H8v2.6h8v-2.6zM4.3 20A3.7 3.7 0 018 16.3v-2.6A6.3 6.3 0 001.7 20h2.6zM3 21.3h1.1v-2.6H3v2.6zm5-6.5A5.2 5.2 0 002.8 20h2.6A2.6 2.6 0 018 17.4v-2.6z" class="fill-current" mask="url(#a-cf19e052-1832-44a4-a4e9-dcdb4b7642bf)"/>
+    <path d="M19.9 20h-1.3v1.3h1.3V20zm1.1 0v1.3h1.3V20H21zM3 20H1.7v1.3H3V20zm1.1 0v1.3h1.3V20H4.1zM16 14.8H8v2.6h8v-2.6zm5.2 5.2a5.2 5.2 0 00-5.2-5.2v2.6a2.6 2.6 0 012.6 2.6h2.6zm-1.3 1.3H21v-2.6h-1.1v2.6zm-3.9-5a3.7 3.7 0 013.7 3.7h2.6a6.3 6.3 0 00-6.3-6.3v2.6zm0-2.6H8v2.6h8v-2.6zM4.3 20A3.7 3.7 0 018 16.3v-2.6A6.3 6.3 0 001.7 20h2.6zM3 21.3h1.1v-2.6H3v2.6zm5-6.5A5.2 5.2 0 002.8 20h2.6A2.6 2.6 0 018 17.4v-2.6z" class="fill-current" mask="url(#a-870543de-f0c2-4329-8dc7-ad99843a861c)"/>
 </svg>
 </a>
 </div>
 <button class="md:absolute lg:absolute md:h-full lg:h-full md:top-0 lg:top-0 lg:invisible md:invisible lg:opacity-none md:opacity-none md:-ml-4 lg:-ml-4 text-white dark:text-shade-lightest leading-none outline-focus" data-headerbar-el="menuActivator" data-sara-click-el="button">
 <span class="sr-only">Menü öffnen</span><svg id="spon-menu-l" class="stroke-current" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="l-menu-c59cd383-9a26-4110-b666-2459a5d4eec3" stroke-width="1.3" stroke-linecap="round">
-        <path id="line-c59cd383-9a26-4110-b666-2459a5d4eec3" d="M19.35 6.65H4.65"/>
-        <path id="line_2-c59cd383-9a26-4110-b666-2459a5d4eec3" d="M19.35 11.65H4.65"/>
-        <path id="line_3-c59cd383-9a26-4110-b666-2459a5d4eec3" d="M19.35 16.65H4.65"/>
+    <g id="l-menu-10b13d81-dfd6-4d52-87eb-8a749371eb27" stroke-width="1.3" stroke-linecap="round">
+        <path id="line-10b13d81-dfd6-4d52-87eb-8a749371eb27" d="M19.35 6.65H4.65"/>
+        <path id="line_2-10b13d81-dfd6-4d52-87eb-8a749371eb27" d="M19.35 11.65H4.65"/>
+        <path id="line_3-10b13d81-dfd6-4d52-87eb-8a749371eb27" d="M19.35 16.65H4.65"/>
     </g>
 </svg>
 </button>
@@ -508,10 +516,10 @@ html:not(.Spplus) [data-has-spplus-visible] {
 <li data-target-hide>
 <a href="https://www.spiegel.de/fuermich/" target="_self" title="Account" aria-label="Account" class="inline-flex md:p-12 sm:p-8 text-black dark:text-shade-lightest"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
     <path d="M8.05 8.5A3.917 3.917 0 0112 4.55a3.917 3.917 0 013.95 3.95A3.917 3.917 0 0112 12.45 3.917 3.917 0 018.05 8.5z" class="stroke-current" stroke-width="1.1"/>
-    <mask id="a-6108d4de-ba9b-41d1-ba64-0cbb51289be4" fill="#fff">
+    <mask id="a-7eade437-283a-42b6-b174-0c84a090393e" fill="#fff">
         <path fill-rule="evenodd" clip-rule="evenodd" d="M8 16.1h8a3.9 3.9 0 013.9 3.9H21a5 5 0 00-5-5H8a5 5 0 00-5 5h1.1A3.9 3.9 0 018 16.1z"/>
     </mask>
-    <path d="M19.9 20h-1.3v1.3h1.3V20zm1.1 0v1.3h1.3V20H21zM3 20H1.7v1.3H3V20zm1.1 0v1.3h1.3V20H4.1zM16 14.8H8v2.6h8v-2.6zm5.2 5.2a5.2 5.2 0 00-5.2-5.2v2.6a2.6 2.6 0 012.6 2.6h2.6zm-1.3 1.3H21v-2.6h-1.1v2.6zm-3.9-5a3.7 3.7 0 013.7 3.7h2.6a6.3 6.3 0 00-6.3-6.3v2.6zm0-2.6H8v2.6h8v-2.6zM4.3 20A3.7 3.7 0 018 16.3v-2.6A6.3 6.3 0 001.7 20h2.6zM3 21.3h1.1v-2.6H3v2.6zm5-6.5A5.2 5.2 0 002.8 20h2.6A2.6 2.6 0 018 17.4v-2.6z" class="fill-current" mask="url(#a-6108d4de-ba9b-41d1-ba64-0cbb51289be4)"/>
+    <path d="M19.9 20h-1.3v1.3h1.3V20zm1.1 0v1.3h1.3V20H21zM3 20H1.7v1.3H3V20zm1.1 0v1.3h1.3V20H4.1zM16 14.8H8v2.6h8v-2.6zm5.2 5.2a5.2 5.2 0 00-5.2-5.2v2.6a2.6 2.6 0 012.6 2.6h2.6zm-1.3 1.3H21v-2.6h-1.1v2.6zm-3.9-5a3.7 3.7 0 013.7 3.7h2.6a6.3 6.3 0 00-6.3-6.3v2.6zm0-2.6H8v2.6h8v-2.6zM4.3 20A3.7 3.7 0 018 16.3v-2.6A6.3 6.3 0 001.7 20h2.6zM3 21.3h1.1v-2.6H3v2.6zm5-6.5A5.2 5.2 0 002.8 20h2.6A2.6 2.6 0 018 17.4v-2.6z" class="fill-current" mask="url(#a-7eade437-283a-42b6-b174-0c84a090393e)"/>
 </svg>
 <span class="hidden">Account</span>
 </a>
@@ -519,7 +527,7 @@ html:not(.Spplus) [data-has-spplus-visible] {
 </ul>
 </div>
 </div>
-<div class="z-10 relative bg-white dark:bg-dm-shade-darkest w-full shadow font-sans" data-component="NavBar" data-settings="{&#34;isBreadcrumb&#34;:true,&#34;updateId&#34;:&#34;58cda511-82c7-4731-95d2-b6d01cd5c8ea&#34;}" data-area="nav-bar" data-app-hidden>
+<div class="z-10 relative bg-white dark:bg-dm-shade-darkest w-full shadow font-sans" data-component="NavBar" data-settings="{&#34;isBreadcrumb&#34;:true,&#34;updateId&#34;:&#34;f030633d-ff62-46bb-bdd0-67382ac9d97a&#34;}" data-area="nav-bar" data-app-hidden>
 <div class="OffsetContainer bg-white dark:bg-dm-shade-darkest">
 <div class="lg:max-w-lg mx-auto font-sansUI flex items-center lg:h-56 md:h-56 sm:h-40 lg:pl-12 lg:pr-16 md:pl-4 md:pr-8">
 <div class="flex items-center sm:hidden lg:flex-shrink-0 md:flex-shrink-0" data-app-hidden>
@@ -536,10 +544,10 @@ html:not(.Spplus) [data-has-spplus-visible] {
 <div class="z-10 absolute left-0 bottom-0 lg:h-56 md:h-56 sm:h-40">
 <div class="flex items-center">
 <span class="md:hidden sm:hidden bg-white dark:bg-dm-shade-darkest w-48 py-18 text-center cursor-pointer"><svg id="spon-chevron-left-f-s" class="stroke-current" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="s-chevron-left-f-081b56ab-3037-4711-b5ff-9098adab5360">
-        <g id="s-chevron-right-f-081b56ab-3037-4711-b5ff-9098adab5360">
-            <g id="s-chevron-right-081b56ab-3037-4711-b5ff-9098adab5360">
-                <path id="vector-081b56ab-3037-4711-b5ff-9098adab5360" d="M7.667 9.333L4.333 6l3.334-3.333" stroke-width="1.5" stroke-linecap="round"/>
+    <g id="s-chevron-left-f-bddadf55-c4e5-49d3-8fc8-2b7b75839eb0">
+        <g id="s-chevron-right-f-bddadf55-c4e5-49d3-8fc8-2b7b75839eb0">
+            <g id="s-chevron-right-bddadf55-c4e5-49d3-8fc8-2b7b75839eb0">
+                <path id="vector-bddadf55-c4e5-49d3-8fc8-2b7b75839eb0" d="M7.667 9.333L4.333 6l3.334-3.333" stroke-width="1.5" stroke-linecap="round"/>
             </g>
         </g>
     </g>
@@ -557,8 +565,8 @@ html:not(.Spplus) [data-has-spplus-visible] {
 Startseite
 </span>
 <span class="leading-none ml-8"><svg id="spon-chevron-right-m" class="stroke-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="m-chevron-right-e1760a7c-7539-4376-ae5f-ac5dd4ee763d">
-        <path id="vector-e1760a7c-7539-4376-ae5f-ac5dd4ee763d" d="M6 4l4 4-4 4" stroke-linecap="round"/>
+    <g id="m-chevron-right-62059fc3-a683-4735-9ddc-40ae0213a38e">
+        <path id="vector-62059fc3-a683-4735-9ddc-40ae0213a38e" d="M6 4l4 4-4 4" stroke-linecap="round"/>
     </g>
 </svg>
 </span>
@@ -583,16 +591,16 @@ So gehen wir mit Ihren Daten um
 <div class="sm:hidden h-full lg:py-16 md:py-16 sm:py-8" data-app-hidden>
 <div class="border-separator-r w-px h-full"></div>
 </div>
-<div data-component="SearchActivator" data-settings="{&#34;updateId&#34;:&#34;58cda511-82c7-4731-95d2-b6d01cd5c8ea&#34;}" class="relative sm:hidden flex-none transition-all duration-300 ease-in-out w-56 h-40" data-app-hidden>
+<div data-component="SearchActivator" data-settings="{&#34;updateId&#34;:&#34;f030633d-ff62-46bb-bdd0-67382ac9d97a&#34;}" class="relative sm:hidden flex-none transition-all duration-300 ease-in-out w-56 h-40" data-app-hidden>
 <form data-searchactivator-el="form" action="https://www.spiegel.de/suche/" role="search" class="transition-all duration-300 ease-in-out opacity-none">
 <div class="inline-flex flex-col ml-16 pr-20 w-full" data-searchactivator-el="input">
 <div class="group relative flex flex-col">
 <input id="search-input-field" name="suchbegriff" placeholder="spiegel.de durchsuchen ..." class="peer appearance-none rounded placeholder-shade-base dark:disabled:placeholder-shade-dark outline-focus disabled:cursor-not-allowed pl-12 pr-48 h-40 font-sansUI leading-normal text-black dark:text-shade-lightest text-s bg-white dark:bg-shade-darkest dark:disabled:bg-dm-shade-darkest border border-shade-base hover:border-black disabled:border-shade-lighter dark:border-shade-light dark:hover:border-shade-lightest dark:disabled:border-shade-dark autofill:transition-colors autofill:duration-max">
 <span class="absolute top-0 bottom-0 right-0 pr-12 pointer-events-none flex items-center text-shade-darker dark:text-shade-lightest group-hover:text-shade-darkest dark:group-hover:text-shade-lightest peer-disabled:text-shade-base dark:peer-disabled:text-shade-dark" data-input-el="icon"><svg id="spon-search-l" class="stroke-current" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="l-search-ecd2875e-a43a-44dd-ba00-d4c4eb2cb44b">
-        <g id="group-ecd2875e-a43a-44dd-ba00-d4c4eb2cb44b" stroke-width="1.3">
-            <circle id="ellipse-ecd2875e-a43a-44dd-ba00-d4c4eb2cb44b" cx="10" cy="11" r="5.35"/>
-            <path id="vector-ecd2875e-a43a-44dd-ba00-d4c4eb2cb44b" d="M14 15l4.5 4.5" stroke-linecap="round"/>
+    <g id="l-search-8b9b873e-3835-419f-b285-f610f6f3652b">
+        <g id="group-8b9b873e-3835-419f-b285-f610f6f3652b" stroke-width="1.3">
+            <circle id="ellipse-8b9b873e-3835-419f-b285-f610f6f3652b" cx="10" cy="11" r="5.35"/>
+            <path id="vector-8b9b873e-3835-419f-b285-f610f6f3652b" d="M14 15l4.5 4.5" stroke-linecap="round"/>
         </g>
     </g>
 </svg>
@@ -622,9 +630,9 @@ So gehen wir mit Ihren Daten um
 <span class="pl-4">__proto_headline__</span>
 </span>
 <span class="leading-none sm:hidden flex-shrink-0 ml-8" aria-hidden="true"><svg id="spon-chevron-right-f-m" class="stroke-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="m-chevron-right-f-4ed94b46-c6cc-4a39-8faf-7295d8cb5d28">
-        <g id="m-chevron-right-4ed94b46-c6cc-4a39-8faf-7295d8cb5d28">
-            <path id="vector-4ed94b46-c6cc-4a39-8faf-7295d8cb5d28" d="M6 4l4 4-4 4" stroke-width="1.8" stroke-linecap="round"/>
+    <g id="m-chevron-right-f-6dcecd0d-e7cc-4709-8784-10c46841e245">
+        <g id="m-chevron-right-6dcecd0d-e7cc-4709-8784-10c46841e245">
+            <path id="vector-6dcecd0d-e7cc-4709-8784-10c46841e245" d="M6 4l4 4-4 4" stroke-width="1.8" stroke-linecap="round"/>
         </g>
     </g>
 </svg>
@@ -783,20 +791,20 @@ So gehen wir mit Ihren Daten um
 <button class="text-shade-light dark:text-shade-dark text-base outline-focus hover:text-primary-dark focus:text-primary-darker active:text-primary-darker" data-accordion-el="switch">
 <span class="flex items-center py-18 px-20 h-56 w-56">
 <span class="leading-none hidden" data-accordion-el="collapseIcon"><svg id="spon-chevron-up-f-m" class="stroke-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="m-chevron-up-f-50a785f1-2847-48f8-ae18-3baec61b4353">
-        <g id="m-chevron-right-f-50a785f1-2847-48f8-ae18-3baec61b4353">
-            <g id="m-chevron-right-50a785f1-2847-48f8-ae18-3baec61b4353">
-                <path id="vector-50a785f1-2847-48f8-ae18-3baec61b4353" d="M4 10l4-4 4 4" stroke-width="1.8" stroke-linecap="round"/>
+    <g id="m-chevron-up-f-8c79eb4b-8a52-4465-82a1-b7f8691ba410">
+        <g id="m-chevron-right-f-8c79eb4b-8a52-4465-82a1-b7f8691ba410">
+            <g id="m-chevron-right-8c79eb4b-8a52-4465-82a1-b7f8691ba410">
+                <path id="vector-8c79eb4b-8a52-4465-82a1-b7f8691ba410" d="M4 10l4-4 4 4" stroke-width="1.8" stroke-linecap="round"/>
             </g>
         </g>
     </g>
 </svg>
 </span>
 <span class="leading-none" data-accordion-el="expandIcon"><svg id="spon-chevron-down-f-m" class="stroke-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="m-chevron-down-f-356d29d7-4ca3-46cf-9b0a-e24650f062c6">
-        <g id="m-chevron-right-f-356d29d7-4ca3-46cf-9b0a-e24650f062c6">
-            <g id="m-chevron-right-356d29d7-4ca3-46cf-9b0a-e24650f062c6">
-                <path id="vector-356d29d7-4ca3-46cf-9b0a-e24650f062c6" d="M12 6l-4 4-4-4" stroke-width="1.8" stroke-linecap="round"/>
+    <g id="m-chevron-down-f-2996a3e9-4ab2-46c5-86ee-d04db50e449d">
+        <g id="m-chevron-right-f-2996a3e9-4ab2-46c5-86ee-d04db50e449d">
+            <g id="m-chevron-right-2996a3e9-4ab2-46c5-86ee-d04db50e449d">
+                <path id="vector-2996a3e9-4ab2-46c5-86ee-d04db50e449d" d="M12 6l-4 4-4-4" stroke-width="1.8" stroke-linecap="round"/>
             </g>
         </g>
     </g>
@@ -1558,6 +1566,11 @@ So gehen wir mit Ihren Daten um
 </span>
 <ul class="overflow-hidden opacity-none max-h-0 hidden" data-accordion-el="container" aria-hidden="true">
 <li>
+<a href="https://www.spiegel.de/panorama/taegliches-quiz-beim-spiegel-7-fragen-zum-allgemeinwissen-pro-tag-a-8a9692b2-4462-4192-942c-fd7809c7519c" class="text-base hover:text-primary-dark focus:text-primary-darker active:text-primary-darker outline-focus text-black dark:text-shade-lightest" target="_self" title="Das tägliche Quiz">
+<span class="block font-sansUI font-normal py-12 px-32">Das tägliche Quiz</span>
+</a>
+</li>
+<li>
 <a href="https://spiele.spiegel.de/kreuzwortraetsel/?utm_campaign=kreuzwortraetsel&utm_medium=navigation_link&utm_source=spiegel_de" class="text-base hover:text-primary-dark focus:text-primary-darker active:text-primary-darker outline-focus text-black dark:text-shade-lightest" target="_self" title="Kreuzworträtsel">
 <span class="block font-sansUI font-normal py-12 px-32">Kreuzworträtsel</span>
 </a>
@@ -1877,7 +1890,7 @@ Wo Sie uns noch folgen können
 <div class="OffsetContainer sm:bg-shade-lightest sm:dark:bg-black md:bg-shade-lightest md:dark:bg-black" data-body-el="offset-container" data-headerbar-height>
 <div class="relative z-20 w-full mx-auto sm:max-w-sm md:max-w-md lg:max-w-lg">
 <div class="absolute h-full lg:pt-16 md:-mr-4 sm:-mr-4 md:hidden sm:hidden" style="width: 300px; right: -300px" data-tablet-hidden>
-<div class="sticky" data-app-headerbar-offset data-stickyfill>
+<div class="sticky" style="top: var(--polygon-headerbar-height, 0px);" data-stickyfill>
 <div class="gujAd focus-within:outline-focus hidden md:overflow-hidden sm:overflow-hidden" id="skyscraper_1" data-advertisement="GujAd skyscraper_1 desktop lg"></div>
 </div>
 </div>
@@ -1903,7 +1916,7 @@ Datenschutzerklärung
 <section data-app-hidden>
 <div class="lg:pt-20 md:pt-20 sm:pt-20 lg:pb-40 md:pb-40 sm:pb-32 w-full"></div>
 <div class="absolute w-full h-full top-0 z-20 pointer-events-none">
-<div class="sticky bg-white dark:bg-dm-shade-darkest pointer-events-auto" data-app-headerbar-offset data-stickyfill>
+<div class="sticky bg-white dark:bg-dm-shade-darkest pointer-events-auto" style="top: var(--polygon-headerbar-height, 0px);" data-stickyfill>
 <div class="mx-auto sm:max-w-sm md:max-w-md lg:max-w-lg relative" data-component="FeatureBar" data-settings="{&#34;url&#34;:&#34;https://www.spiegel.de/datenschutz-spiegel&#34;}" data-area="feature-bar">
 <div class="border-separator-b lg:mx-24 md:mx-24 sm:mx-16">
 <div class="border-separator-t flex justify-between items-center">
@@ -1925,8 +1938,8 @@ Datenschutzerklärung
 <li class="pl-24
 sm:hidden">
 <a class="inline-flex items-center text-black dark:text-shade-lightest lg:py-16 md:py-16 sm:py-12 hover:opacity-distinct" href="mailto:?subject=Datenschutzerkl%C3%A4rung:%20So%20gehen%20wir%20mit%20Ihren%20Daten%20um%20%28DER%20SPIEGEL%29&body=https%3A%2F%2Fwww.spiegel.de%2Fdatenschutz-spiegel" target="_self" rel="nofollow" title="E-Mail" data-featurebar-share="mail link" data-sara-click-el="button"><svg id="spon-mail-xl" class="stroke-current" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="xl-mail-a2c9253f-3d25-4fac-8857-b8382d2f6b50">
-        <path id="rectangle-a2c9253f-3d25-4fac-8857-b8382d2f6b50" d="M4.5 6.5h19m-19 0v15m0-15l6.5 7m12.5-7v15m0-15l-6.5 7m6.5 8h-19m19 0l-6.5-8m-12.5 8l6.5-8m0 0l3 2.833 3-2.833" stroke-linecap="round" stroke-linejoin="round"/>
+    <g id="xl-mail-3f23663c-bf72-4b7b-a8d1-35b79ada1594">
+        <path id="rectangle-3f23663c-bf72-4b7b-a8d1-35b79ada1594" d="M4.5 6.5h19m-19 0v15m0-15l6.5 7m12.5-7v15m0-15l-6.5 7m6.5 8h-19m19 0l-6.5-8m-12.5 8l6.5-8m0 0l3 2.833 3-2.833" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
 </svg>
 </a>
@@ -1951,10 +1964,10 @@ md:hidden lg:hidden" data-not-mobile-hidden>
 </li>
 <li class="sm:hidden pl-24">
 <button class="inline-flex items-center text-black dark:text-shade-lightest lg:py-16 md:py-16 sm:py-12 hover:opacity-distinct" data-featurebar-share="link copy" data-sara-click-el="button"><svg id="spon-copylink-xl" class="stroke-current" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="xl-copylink-994d9f18-74b0-4092-93f3-da252c28bd47" stroke-width="1.1" stroke-linecap="round">
-        <path id="rectangle-994d9f18-74b0-4092-93f3-da252c28bd47" d="M14.47 17.3s.945.944-.1 1.989l-2.137 2.137a3.5 3.5 0 01-4.95 0l-.354-.354-.354-.354a3.5 3.5 0 010-4.95l2.137-2.137c1.045-1.045 1.987-.102 1.987-.102" stroke-miterlimit="10"/>
-        <path id="rectangle_2-994d9f18-74b0-4092-93f3-da252c28bd47" d="M17.299 14.471s.944.945 1.989-.1l2.137-2.137a3.5 3.5 0 000-4.95l-.354-.354-.354-.354a3.5 3.5 0 00-4.95 0L13.63 8.713c-1.045 1.045-.102 1.987-.102 1.987" stroke-miterlimit="10"/>
-        <path id="vector-994d9f18-74b0-4092-93f3-da252c28bd47" d="M10.293 17.707l7.414-7.414"/>
+    <g id="xl-copylink-ddab8a74-4a1e-4171-b5a3-75f4f5c7e3c8" stroke-width="1.1" stroke-linecap="round">
+        <path id="rectangle-ddab8a74-4a1e-4171-b5a3-75f4f5c7e3c8" d="M14.47 17.3s.945.944-.1 1.989l-2.137 2.137a3.5 3.5 0 01-4.95 0l-.354-.354-.354-.354a3.5 3.5 0 010-4.95l2.137-2.137c1.045-1.045 1.987-.102 1.987-.102" stroke-miterlimit="10"/>
+        <path id="rectangle_2-ddab8a74-4a1e-4171-b5a3-75f4f5c7e3c8" d="M17.299 14.471s.944.945 1.989-.1l2.137-2.137a3.5 3.5 0 000-4.95l-.354-.354-.354-.354a3.5 3.5 0 00-4.95 0L13.63 8.713c-1.045 1.045-.102 1.987-.102 1.987" stroke-miterlimit="10"/>
+        <path id="vector-ddab8a74-4a1e-4171-b5a3-75f4f5c7e3c8" d="M10.293 17.707l7.414-7.414"/>
     </g>
 </svg>
 <span class="sr-only">Link kopieren</span>
@@ -1975,8 +1988,8 @@ md:hidden lg:hidden" data-not-mobile-hidden>
 <a class="flex items-center leading-normal px-16 py-12 text-black dark:text-shade-lightest hover:bg-shade-lightest dark:hover:bg-black w-full disabled:opacity-slight disabled:cursor-not-allowed" href="mailto:?subject=Datenschutzerkl%C3%A4rung:%20So%20gehen%20wir%20mit%20Ihren%20Daten%20um%20%28DER%20SPIEGEL%29&body=https%3A%2F%2Fwww.spiegel.de%2Fdatenschutz-spiegel" target="_self" rel="nofollow" title="E-Mail" data-featurebar-share="mail link contextlink" data-sara-click-el="button">
 <span>
 <span class="mr-16 inline-flex align-middle"><svg id="spon-mail-l" class="stroke-current" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="l-mail-afef5b5b-9be8-4eb0-8944-15192673fcc5">
-        <path id="rectangle-afef5b5b-9be8-4eb0-8944-15192673fcc5" d="M3.5 5.5h17m-17 0v13m0-13L10 12m10.5-6.5v13m0-13L14 12m6.5 6.5h-17m17 0L14 12M3.5 18.5L10 12m0 0l2 2 2-2" stroke-linecap="round" stroke-linejoin="round"/>
+    <g id="l-mail-d0280981-4feb-479d-aee4-e8120370bd7e">
+        <path id="rectangle-d0280981-4feb-479d-aee4-e8120370bd7e" d="M3.5 5.5h17m-17 0v13m0-13L10 12m10.5-6.5v13m0-13L14 12m6.5 6.5h-17m17 0L14 12M3.5 18.5L10 12m0 0l2 2 2-2" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
 </svg>
 </span>
@@ -2012,10 +2025,10 @@ md:hidden lg:hidden" data-not-mobile-hidden>
 <button class="flex items-center leading-normal px-16 py-12 text-black dark:text-shade-lightest hover:bg-shade-lightest dark:hover:bg-black w-full disabled:opacity-slight disabled:cursor-not-allowed" title="Link kopieren" data-featurebar-share="link copy contextlink" data-sara-click-el="button">
 <span>
 <span class="mr-16 inline-flex align-middle"><svg id="spon-copylink-l" class="stroke-current" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="l-copylink-3c6a7596-d2db-47b9-97fc-0d2bc5f6e7bb" stroke-width="1.1" stroke-linecap="round">
-        <path id="rectangle-3c6a7596-d2db-47b9-97fc-0d2bc5f6e7bb" d="M12.403 14.828s.81.81-.086 1.705l-1.832 1.832a3 3 0 01-4.242 0l-.304-.303-.304-.304a3 3 0 010-4.243l1.833-1.832c.895-.895 1.703-.087 1.703-.087" stroke-miterlimit="10"/>
-        <path id="rectangle_2-3c6a7596-d2db-47b9-97fc-0d2bc5f6e7bb" d="M14.828 12.404s.81.81 1.704-.086l1.832-1.832a3 3 0 000-4.243l-.303-.303-.304-.304a3 3 0 00-4.242 0l-1.832 1.832c-.896.896-.088 1.704-.088 1.704" stroke-miterlimit="10"/>
-        <path id="vector-3c6a7596-d2db-47b9-97fc-0d2bc5f6e7bb" d="M8.822 15.178l6.355-6.355"/>
+    <g id="l-copylink-9890f8c9-59d4-4e7c-ab5e-8393bc0d208c" stroke-width="1.1" stroke-linecap="round">
+        <path id="rectangle-9890f8c9-59d4-4e7c-ab5e-8393bc0d208c" d="M12.403 14.828s.81.81-.086 1.705l-1.832 1.832a3 3 0 01-4.242 0l-.304-.303-.304-.304a3 3 0 010-4.243l1.833-1.832c.895-.895 1.703-.087 1.703-.087" stroke-miterlimit="10"/>
+        <path id="rectangle_2-9890f8c9-59d4-4e7c-ab5e-8393bc0d208c" d="M14.828 12.404s.81.81 1.704-.086l1.832-1.832a3 3 0 000-4.243l-.303-.303-.304-.304a3 3 0 00-4.242 0l-1.832 1.832c-.896.896-.088 1.704-.088 1.704" stroke-miterlimit="10"/>
+        <path id="vector-9890f8c9-59d4-4e7c-ab5e-8393bc0d208c" d="M8.822 15.178l6.355-6.355"/>
     </g>
 </svg>
 </span>
@@ -2035,7 +2048,7 @@ md:hidden lg:hidden" data-not-mobile-hidden>
 <div data-area="body">
 <div data-sara-click-el="body_element" data-area="text" data-pos="1">
 <div class="RichText lg:w-8/12 md:w-10/12 lg:mx-auto md:mx-auto lg:px-24 md:px-24 sm:px-16 break-words word-wrap">
-<p><a href="https://www.spiegel.de/how-we-deal-with-your-data" data-link-flag="spon">switch to english version</a></p><p><strong>Liebe Leserin, lieber Leser,</strong></p><p>welche Daten sammeln wir während Ihres Besuches bzw. über Ihre Nutzung unserer Webseiten? Welche Werbung wird Ihnen ausgespielt? Wer kann Ihre Daten sehen, wenn Sie Digital-Abonnent oder registrierter Nutzer sind? Kurz, wie gehen wir mit Daten um, die beim Nutzen unserer digitalen Angebote entstehen? Diese Fragen und viele weitere wollen wir Ihnen in dieser Datenschutzerklärung beantworten.</p><p><strong>Stand: 29.06.2022</strong></p><p>Datenschutzrechtlich verantwortlich ist das jeweils im <a href="https://www.spiegel.de/impressum">Impressum</a> genannte Unternehmen der SPIEGEL-Gruppe. Dessen Datenschutzbeauftragten erreichen Sie unter <a href="mailto:datenschutz@spiegelgruppe.de" target="_blank">datenschutz@spiegelgruppe.de&nbsp;<svg class="align-middle mr-px mb-4 transform sm:scale-90" id="spon-external-flag-l" width="14" height="20" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+<p><a href="https://www.spiegel.de/how-we-deal-with-your-data" data-link-flag="spon">switch to english version</a></p><p><strong>Liebe Leserin, lieber Leser,</strong></p><p>welche Daten sammeln wir während Ihres Besuches bzw. über Ihre Nutzung unserer Webseiten? Welche Werbung wird Ihnen ausgespielt? Wer kann Ihre Daten sehen, wenn Sie Digital-Abonnent oder registrierter Nutzer sind? Kurz, wie gehen wir mit Daten um, die beim Nutzen unserer digitalen Angebote entstehen? Diese Fragen und viele weitere wollen wir Ihnen in dieser Datenschutzerklärung beantworten.</p><p><strong>Stand: 12.07.2022</strong></p><p>Datenschutzrechtlich verantwortlich ist das jeweils im <a href="https://www.spiegel.de/impressum">Impressum</a> genannte Unternehmen der SPIEGEL-Gruppe. Dessen Datenschutzbeauftragten erreichen Sie unter <a href="mailto:datenschutz@spiegelgruppe.de" target="_blank">datenschutz@spiegelgruppe.de&nbsp;<svg class="align-middle mr-px mb-4 transform sm:scale-90" id="spon-external-flag-l" width="14" height="20" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
     <path class="stroke-current" d="M5 5.5H.5v11h11V12M9 3.5h4.5V8"/>
     <path class="stroke-current" d="M13.5 3.5 5 12" stroke-width="1.1" />
 </svg></a> oder unter dem Kennwort Datenschutz, Ericusspitze 1, 20459 Hamburg.</p>
@@ -2044,7 +2057,7 @@ md:hidden lg:hidden" data-not-mobile-hidden>
 <div data-sara-click-el="body_element" data-area="multibox" data-pos="2">
 <div class="lg:mt-40 lg:mb-48 md:my-40 sm:mt-32 sm:mb-40 clear-both">
 <div class="lg:w-8/12 md:w-10/12 lg:mx-auto md:mx-auto lg:px-24 md:px-24 sm:px-16">
-<div data-component="MultiboxAccordionSection" data-settings="{&#34;isFirstItemOpen&#34;:true,&#34;multiboxId&#34;:&#34;0080388d-90f8-43ca-81ef-8220744944ac&#34;}" id="Abschnitt-1" data-anchor-offset>
+<div data-component="MultiboxAccordionSection" data-settings="{&#34;isFirstItemOpen&#34;:true,&#34;multiboxId&#34;:&#34;6172f271-352e-4e51-8083-3db2203acda5&#34;}" id="Abschnitt-1" data-anchor-offset>
 <button class="w-full group flex justify-between text-black dark:text-shade-lightest font-sansUI font-bold text-base p-16 outline-focus cursor-pointer leading-normal text-left bg-sec2-lightest dark:bg-sec2-darker" data-accordion-el="switch">
 <span class="group-hover:opacity-distinct group-focus:opacity-full">
 <span class="sr-only">Bereich</span>
@@ -2083,9 +2096,9 @@ md:hidden lg:hidden" data-not-mobile-hidden>
 <div class="absolute inset-0 bg-negative opacity-slight"></div>
 <div class="bg-negative flex items-center justify-center z-10">
 <span class="h-32 w-32 rounded-circle border border-white inline-flex items-center justify-center mx-8 text-white dark:text-shade-lightest"><svg id="spon-warning-f-l" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="l-warning-f-6b8bae2a-50b6-4060-9315-fedb0b84491c">
-        <path id="rectangle-3-6b8bae2a-50b6-4060-9315-fedb0b84491c" d="M10.345 6.633A1.5 1.5 0 0111.84 5h.322a1.5 1.5 0 011.494 1.633l-.566 6.37a1.093 1.093 0 01-2.178 0l-.566-6.37z" class="fill-current"/>
-        <circle id="ellipse-3-6b8bae2a-50b6-4060-9315-fedb0b84491c" cx="12" cy="17.5" r="1.5" class="fill-current"/>
+    <g id="l-warning-f-6da4d56b-46c0-4108-8811-e0e4ebbf8b6b">
+        <path id="rectangle-3-6da4d56b-46c0-4108-8811-e0e4ebbf8b6b" d="M10.345 6.633A1.5 1.5 0 0111.84 5h.322a1.5 1.5 0 011.494 1.633l-.566 6.37a1.093 1.093 0 01-2.178 0l-.566-6.37z" class="fill-current"/>
+        <circle id="ellipse-3-6da4d56b-46c0-4108-8811-e0e4ebbf8b6b" cx="12" cy="17.5" r="1.5" class="fill-current"/>
     </g>
 </svg>
 </span>
@@ -2286,7 +2299,7 @@ function closeSuccessAlert() {
 </div>
 <div class="border-separator-t h-px"></div>
 </div>
-<div data-component="MultiboxAccordionSection" data-settings="{&#34;isFirstItemOpen&#34;:false,&#34;multiboxId&#34;:&#34;09969f8c-7f89-4d0b-bcf9-45e91c2487ef&#34;}" id="Abschnitt-2" data-anchor-offset>
+<div data-component="MultiboxAccordionSection" data-settings="{&#34;isFirstItemOpen&#34;:false,&#34;multiboxId&#34;:&#34;08afe96d-73a6-4de8-a99c-a5010e3accd9&#34;}" id="Abschnitt-2" data-anchor-offset>
 <button class="w-full group flex justify-between text-black dark:text-shade-lightest font-sansUI font-bold text-base p-16 outline-focus cursor-pointer leading-normal text-left" data-accordion-el="switch">
 <span class="group-hover:opacity-distinct group-focus:opacity-full">
 <span class="sr-only">Bereich</span>
@@ -2304,7 +2317,7 @@ function closeSuccessAlert() {
 <div class="pt-8 pb-24">
 <div class="RichText RichText--sans RichText--small RichText--lastPmb0 RichText--lastInline">
 <p>Und nun von Anfang an: Die hier beschriebenen Hinweise zum Datenschutz gelten für die Nutzung der redaktionellen digitalen Angebote der SPIEGEL-Gruppe wie etwa <a href="http://www.spiegel.de">www.spiegel.de</a> und <a href="http://www.manager-magazin.de">www.manager-magazin.de</a>. Für andere Webseiten der SPIEGEL-Gruppe zum Beispiel zur Unternehmenskommunikation gelten ggf. selbstständige Datenschutzerklärungen, Datenschutzhinweise für die herkömmlichen Print-Abonnements bei Verlagen der SPIEGEL-Gruppe finden Sie in deren jeweiligen Allgemeinen Geschäfts- und Lieferbedingungen. Wenn wir auf andere Webseiten verlinken, haben wir keinen Einfluss und keine Kontrolle darüber, wie andere Anbieter dort Datenschutzbestimmungen einhalten. Wenn Sie uns bei einer verlinkten Seite oder einem unserer Partner auf mögliche Probleme hinweisen wollen, mailen Sie uns bitte.</p><p>Verantwortliche Stelle für die Datenverarbeitung durch dieses Angebot ist das jeweils im Impressum genannte Unternehmen der SPIEGEL-Gruppe, vertreten durch die Geschäftsführung. Mit Ihren Fragen können Sie sich stets an die SPIEGEL-Gruppe, Kennwort Datenschutz, Ericusspitze 1, 20459 Hamburg wenden oder an <a target="_blank" href="mailto:datenschutz@spiegelgruppe.de">datenschutz@spiegelgruppe.de&nbsp;<svg id="spon-external-flag-m" class="align-middle mr-px mb-4 stroke-current" width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="m-external-flag-bd096008-59bd-401d-93a8-9fd808c4c0c9">
+    <g id="m-external-flag-d91815a2-218c-4eed-8fb2-0ad2b7cace3f">
         <path id="Vector 2.10" d="M5 2.5H.5v11h11V9"/>
         <path id="Vector 2.10_2" d="M9 .5h4.5V5"/>
         <path id="Vector 2.10_3" d="M13.5.5L5 9" stroke-width="1.1"/>
@@ -2315,7 +2328,7 @@ function closeSuccessAlert() {
 </div>
 <div class="border-separator-t h-px"></div>
 </div>
-<div data-component="MultiboxAccordionSection" data-settings="{&#34;isFirstItemOpen&#34;:false,&#34;multiboxId&#34;:&#34;2f7138e1-dd11-4727-8605-019b112946e1&#34;}" id="Abschnitt-3" data-anchor-offset>
+<div data-component="MultiboxAccordionSection" data-settings="{&#34;isFirstItemOpen&#34;:false,&#34;multiboxId&#34;:&#34;7da98a41-14f8-46cf-a163-ffa4a403720a&#34;}" id="Abschnitt-3" data-anchor-offset>
 <button class="w-full group flex justify-between text-black dark:text-shade-lightest font-sansUI font-bold text-base p-16 outline-focus cursor-pointer leading-normal text-left" data-accordion-el="switch">
 <span class="group-hover:opacity-distinct group-focus:opacity-full">
 <span class="sr-only">Bereich</span>
@@ -2338,7 +2351,7 @@ function closeSuccessAlert() {
 </div>
 <div class="border-separator-t h-px"></div>
 </div>
-<div data-component="MultiboxAccordionSection" data-settings="{&#34;isFirstItemOpen&#34;:false,&#34;multiboxId&#34;:&#34;88450ac1-58f5-419a-87f4-5e3d3819acd4&#34;}" id="Abschnitt-4" data-anchor-offset>
+<div data-component="MultiboxAccordionSection" data-settings="{&#34;isFirstItemOpen&#34;:false,&#34;multiboxId&#34;:&#34;8bae9107-ec1c-498d-8000-9a6c2362781e&#34;}" id="Abschnitt-4" data-anchor-offset>
 <button class="w-full group flex justify-between text-black dark:text-shade-lightest font-sansUI font-bold text-base p-16 outline-focus cursor-pointer leading-normal text-left" data-accordion-el="switch">
 <span class="group-hover:opacity-distinct group-focus:opacity-full">
 <span class="sr-only">Bereich</span>
@@ -2361,7 +2374,7 @@ function closeSuccessAlert() {
 </div>
 <div class="border-separator-t h-px"></div>
 </div>
-<div data-component="MultiboxAccordionSection" data-settings="{&#34;isFirstItemOpen&#34;:false,&#34;multiboxId&#34;:&#34;d9cdc0d9-ad76-4177-b3d9-69161271418b&#34;}" id="Abschnitt-5" data-anchor-offset>
+<div data-component="MultiboxAccordionSection" data-settings="{&#34;isFirstItemOpen&#34;:false,&#34;multiboxId&#34;:&#34;f9f5ed92-b35d-4100-8624-79bf5bbe00e0&#34;}" id="Abschnitt-5" data-anchor-offset>
 <button class="w-full group flex justify-between text-black dark:text-shade-lightest font-sansUI font-bold text-base p-16 outline-focus cursor-pointer leading-normal text-left" data-accordion-el="switch">
 <span class="group-hover:opacity-distinct group-focus:opacity-full">
 <span class="sr-only">Bereich</span>
@@ -2384,7 +2397,7 @@ function closeSuccessAlert() {
 </div>
 <div class="border-separator-t h-px"></div>
 </div>
-<div data-component="MultiboxAccordionSection" data-settings="{&#34;isFirstItemOpen&#34;:false,&#34;multiboxId&#34;:&#34;fa1c5e6c-ae03-4f3b-bfb1-5f89ceae9132&#34;}" id="Abschnitt-6" data-anchor-offset>
+<div data-component="MultiboxAccordionSection" data-settings="{&#34;isFirstItemOpen&#34;:false,&#34;multiboxId&#34;:&#34;98056ed9-deb8-4e7d-9127-e6f9669e08d9&#34;}" id="Abschnitt-6" data-anchor-offset>
 <button class="w-full group flex justify-between text-black dark:text-shade-lightest font-sansUI font-bold text-base p-16 outline-focus cursor-pointer leading-normal text-left" data-accordion-el="switch">
 <span class="group-hover:opacity-distinct group-focus:opacity-full">
 <span class="sr-only">Bereich</span>
@@ -2407,7 +2420,7 @@ function closeSuccessAlert() {
 </div>
 <div class="border-separator-t h-px"></div>
 </div>
-<div data-component="MultiboxAccordionSection" data-settings="{&#34;isFirstItemOpen&#34;:false,&#34;multiboxId&#34;:&#34;e999096f-84a4-4c28-8c53-d7175b3c1489&#34;}" id="Abschnitt-7" data-anchor-offset>
+<div data-component="MultiboxAccordionSection" data-settings="{&#34;isFirstItemOpen&#34;:false,&#34;multiboxId&#34;:&#34;b41b2f88-1ede-4cce-afa2-b6f02d1d7dfa&#34;}" id="Abschnitt-7" data-anchor-offset>
 <button class="w-full group flex justify-between text-black dark:text-shade-lightest font-sansUI font-bold text-base p-16 outline-focus cursor-pointer leading-normal text-left" data-accordion-el="switch">
 <span class="group-hover:opacity-distinct group-focus:opacity-full">
 <span class="sr-only">Bereich</span>
@@ -2424,7 +2437,7 @@ function closeSuccessAlert() {
 <div class="px-16 bg-sec2-lightest dark:bg-sec2-darker overflow-hidden opacity-none max-h-0 hidden" data-accordion-el="container" aria-hidden="true">
 <div class="pt-8 pb-24">
 <div class="RichText RichText--sans RichText--small RichText--lastPmb0 RichText--lastInline">
-<p><strong><u>A.) </u>Datenschutzerklärung INFOnline Measurement</strong></p><p><strong>Datenschutzerklärung WEB - INFOnline Measurement</strong><br>Unsere Webseite setzt das mehrstufige Messverfahren 'INFOnline Measurement' der INFOnline GmbH (<a href="https://www.INFOnline.de" target="_blank">https://www.INFOnline.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>) zur Ermittlung statistischer Kennwerte (Page Impression, Visit, technischer Client) über die Nutzung unseres Digital-Angebots ein.</p><p>Ziel der Nutzungsmessung ist es, die Anzahl der Besuche auf unserer Website, die Anzahl der Websitebesucher und deren Surfverhalten statistisch – auf Basis eines einheitlichen Standardverfahrens - zu bestimmen und somit marktweit vergleichbare Werte zu erhalten.</p><p>Als Mitglied der Informationsgemeinschaft zur Feststellung der Verbreitung von Werbeträgern e.V. (IVW – <a href="https://www.ivw.eu" target="_blank">https://www.ivw.eu&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a> ) werden die Nutzungsstatistiken regelmäßig von der IVW mit den Leistungswerten 'Page Impression' und 'Visits' in der IVW-Ausweisung (<a href="https://ausweisung.ivw-online.de/" target="_blank">https://ausweisung.ivw-online.de/&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a> ) bereitgestellt.</p><p>Als Teilnehmer an der agof Studie daily digital facts werden die Nutzungsstatistiken unseres Digital-Angebots regelmäßig von der Arbeitsgemeinschaft Online-Forschung e.V. (agof - <a href="https://www.agof.de" target="_blank">https://www.agof.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>) und der Arbeitsgemeinschaft Media-Analyse e.V. (agma - <a href="https://www.agma-mmc.de" target="_blank">https://www.agma-mmc.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a> zu Reichweiten weiter verarbeitet und mit dem Leistungswert "Unique User" veröffentlicht.</p><p><strong>1. Rechtsgrundlage für die Verarbeitung</strong></p><p>Die Messung mit INFOnline Measurement (pseudonymes System: IOMp) durch die INFOnline GmbH erfolgt im Rahmen einer Nutzungsmessung mit der Einwilligung nach Art. 6 Abs. 1 lit. a) DSGVO.</p><p>Die Messung mit INFOnline Measurement (anonymes System: IOMa) durch die INFOnline GmbH erfolgt im Rahmen einer Nutzungsmessung durch Zugriff auf die Endeinrichtung des Nutzers mit der Einwilligung nach § 25 Abs. 1 S. 2 TTDSG.</p><p>Zweck der Verarbeitung der personenbezogenen Daten ist die Bildung von digitalen Leistungswerten (Page Impression, Visit und technischer Client) zur Erstellung von Statistiken. Die Statistiken dienen dazu, die Nutzung unseres Angebots nachvollziehen und belegen zu können.</p><p><strong>2. Art der Daten</strong></p><p>Die mit INFOnline Measurement erhobenen Daten ermöglichen aufgrund der Datenarten und Datenmenge keine eindeutige Identifizierung eines Nutzers als Person.</p><p>Es wird ein JavaScript-Code (sog. 'Measurement Manager') eingesetzt, der beim Aufruf über den Browser bzw. das Endgerät des Nutzers (Client) auf Basis der Consent-Informationen aus der vom Anbieter beim Digital-Angebot eingesetzten Consent Management Plattform (CMP) die erforderlichen Messsensoren für eine anonyme und / oder pseudonyme Datenverarbeitung zur Ermittlung der Kennzahlen automatisiert integriert und ausführt. Das INFOnline Measurement ist als anonymes System (ohne Client-Identifier) und als pseudonymes System (mit Client-Identifier) angelegt.</p><p><strong>Beim anonymen Zensusverfahren (IOMb)</strong></p><p>wird gänzlich auf eine Verarbeitung personenbeziehbarer Informationen verzichtet, dazu gehört im Besonderen die IP-Adresse. Diese wird gänzlich aus der Kommunikation und der Verarbeitung entfernt. Dazu verhindert eine Kommunikationsschnittstelle, die sog. 'Serviceplattform', als Messendpunkt den Austausch der IP-Adresse des Nutzers mit den Systemen der INFOnline im Rahmen des INFOnline Measurement. Die IP-Adresse als personenbezogenes Datum wird im Zensusverfahren auf der Serviceplattform verworfen, bevor der Messaufruf an INFOnline geleitet wird. Es erfolgt auch keine Geolokalisierung mittels IP-Adresse. Der beim Zensusverfahren erzeugte Datensatz ist eine reine PI-Datenerhebung.</p><p><strong>Beim pseudonymen Messverfahren (IOMp)</strong></p><p>werden mit dem 3rd-Party Cookie 'i00' (ioam.de) und dem 1st-Party-Cookie 'ioma2018' folgende Daten erhoben, welche nach EU-DSGVO einen Personenbezug aufweisen:</p><p>• IP-Adresse:</p><p>Im Internet benötigt jedes Gerät zur Übertragung von Daten eine eindeutige Adresse, die sogenannte IP-Adresse. Die zumindest kurzzeitige Speicherung der IP-Adresse ist aufgrund der Funktionsweise des Internets technisch erforderlich.</p><p>Die IP-Adressen werden vor jeglicher Verarbeitung um 1 Byte gekürzt und nur anonymisiert weiterverarbeitet. Es erfolgt keine Speicherung oder Verarbeitung der ungekürzten IP-Adressen.</p><p>• Einen zufällig erzeugten Client-Identifier:</p><p>Die Reichweitenmessung verwendet zur Wiedererkennung von Computersystemen eindeutige Kennungen des Endgerätes, ein 'Local Storage Object' (LSO) oder eine Signatur, die aus verschiedenen automatisch übertragenen Informationen Ihres Browsers erstellt wird. Diese Kennung ist für einen Browser eindeutig, solange das Cookie oder Local Storage Object nicht gelöscht wird. Eine Messung der Daten und anschließende Zuordnung zu dem jeweiligen Identifier ist unter Umständen auch dann möglich, wenn Sie andere Webseiten aufrufen, die ebenfalls das pseudonyme Messverfahren der INFOnline GmbH nutzen. Folgende eindeutige Kennungen können als Hash an die INFOnline GmbH übermittelt werden:</p><p>• gekürzte Client-IP bzw. X-Forwarded-For (XFF)</p><p>• Useragent (als Hash)</p><p>Personenbezogene Daten im Sinne der EU-DSGVO werden zur Messung nur insoweit genutzt, als dass der Einsatz eines JavaScripts gegenüber einem Nutzer erfolgt, dem eine individuelle IP-Adresse und ein zufällig erzeugter Client-Identifier zum Aufruf von Webinhalten zugewiesen wurde.</p><p><strong>Beim anonymen Messverfahren (IOMa)</strong></p><p>wird ein Messsensor (JavaScript) eingesetzt, der die Metriken im Browser (LocalStorage (LSO)) des Nutzers berechnet, automatisch verschlüsselt und die aggregierten Nutzungsdaten an eine Kommunikationsschnittstelle, die sog. 'Serviceplattform' überträgt. In der Serviceplattform werden für die Internetkommunikation benötigte Identifier (bspw. IP-Adresse des Clients) entfernt und die verschlüsselten anonymisierten Messdaten durch eine Geolokalisierung ergänzt und an die zentrale Serverkomponente bei INFOnline übermittelt.</p><p>Soweit die erhobenen Messdaten um eine Geolokalisation des Browsers angereichert werden, erfolgt auch dazu eine Verwendung einer IP-Adresse lediglich für den Zweck der Erhebung der Geolokalisation und der Anreicherung mit den erhobenen Messdaten. Eine dazu notwendige IP-Adresse wird unmittelbar nach der Anreicherung verworfen.</p><p>Während der Einführungsphase von IOMa wird ein 1st Party Cookie verwendet, um die Zeitstempel (Unix Epoch Timestamp) des letzten Nutzungsvorgangs pro Angebot und pro Seitencode zu speichern. Diese Werte werden für die Bildung von zeitbezogenen Metriken wie dem Visit bei einem Wechsel der HTTP-Origin als Richtgröße hinzugezogen. Es werden keine weiteren personenbezogenen Daten /IDs in dem Cookie abgelegt. Nach der Einführungsphase sollte es dann entfallen, so dass die Messung dann vollständig ohne Cookies erfolgt.</p><p>Personenbezogene Daten im Sinne der EU-DSGVO werden zur Messung nur insoweit genutzt, als dass der Einsatz eines JavaScripts gegenüber einem Nutzer erfolgt, dem eine individuelle IP-Adresse zum Aufruf von Webinhalten zugewiesen wurde.</p><p>Insoweit verarbeiten wir dauerhaft zu Ihrer Person keine personenbezogenen Daten durch den Einsatz vom anonymen Messverfahren (IOMa) im INFOnline Measurement.</p><p><strong>3. Nutzung der Daten</strong></p><p>Das Messverfahren der INFOnline GmbH, welches auf dieser Webseite eingesetzt wird, ermittelt Nutzungsdaten. Dies geschieht, um die Leistungswerte Page Impression, Visit und Client zu erheben.</p><p>• Geolokalisierung</p><p>Die Zuordnung eines Webseitenaufrufs zum Ort des Aufrufs erfolgt im pseudonymen Messverfahren (IOMp) und im anonymen Messverfahren (IOMa) ausschließlich auf der Grundlage der anonymisierten IP-Adresse und nur bis zur geographischen Ebene der Bundesländer / Regionen. Aus den so gewonnenen geographischen Informationen kann in keinem Fall ein Rückschluss auf den konkreten Wohnort eines Nutzers gezogen werden.</p><p>• Angebotsübergreifende Zusammenführung von Nutzungsdaten</p><p>Die Nutzungsdaten eines technischen Clients (bspw. eines Browsers auf einem Gerät) werden im pseudonymen Messverfahren (IOMp) webseitenübergreifend zusammengeführt und in einer Datenbank gespeichert.</p><p><strong>4. Speicherdauer der Daten</strong></p><p>Die vollständige IP-Adresse wird von der INFOnline GmbH nicht gespeichert.</p><p>Die IP-Adresse wird lediglich zum Empfang der Datenpakete verwendet und sodann um 1 Byte gekürzt.</p><p>Im Zensusverfahren (IOMb) wird die gekürzte IP-Adresse verworfen, im pseudonymen (IOMp) und anonymen Verfahren (IOMa) maximal 60 Tage gespeichert. Im pseudonymen (IOMp) und anonymen (IOMa) Verfahren werden die Nutzungsdaten in Verbindung mit dem eindeutigen Identifier maximal 6 Monate gespeichert.</p><p>Die Gültigkeit des im pseudonymen Verfahren (IOMp) verwendeten Cookies 'i00' und des Cookies 'ioma2018' auf dem Endgerät des Nutzers ist auf maximal 1 Jahr beschränkt.</p><p><strong>5. Weitergabe der Daten</strong></p><p>Die IP-Adresse wie auch die gekürzte IP-Adresse werden nicht weitergegeben.</p><p><strong>6. Rechte der betroffenen Person</strong></p><p>Die betroffene Person hat folgende Rechte:</p><p>Auskunftsrecht (Art. 15 DSGVO)</p><p>Recht auf Berichtigung (Art. 16 DSGVO)</p><p>Widerspruchsrecht (Art. 21 DSGVO)</p><p>Recht auf Löschung (Art. 17 DSGVO)</p><p>Recht auf Einschränkung der Verarbeitung (Art. 18f. DSGVO)</p><p>Recht auf Datenübertragbarkeit (Art. 20 DSGVO)</p><p>Recht auf Widerruf (Art. 7 Abs. 3 DSGVO) (bei Einwilligung)</p><p>Bei Anfragen dieser Art, wenden Sie sich bitte an datenschutz@spiegelgruppe.de. Bitte beachten Sie, dass wir bei derartigen Anfragen sicherstellen müssen, dass es sich tatsächlich um die betroffene Person handelt.</p><p>Die betroffene Person hat das Recht, bei einer Datenschutzbehörde Beschwerde einzulegen.</p><p>Weitere Informationen zum Datenschutz im INFOnline Measurement finden Sie auf der Webseite der INFOnline GmbH (<a href="https://www.infonline.de" target="_blank">https://www.infonline.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>), die das Messverfahren betreibt.</p><p><strong>Datenschutzerklärung App - INFOnline Measurement</strong></p><p>Unsere Applikation setzt das mehrstufige Messverfahren 'INFOnline Measurement' der INFOnline GmbH (<a href="https://www.INFOnline.de" target="_blank">https://www.INFOnline.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>) zur Ermittlung statistischer Kennwerte (Page Impression, Visit, technischer Client) über die Nutzung unseres Digital-Angebots ein.</p><p>Ziel der Nutzungsmessung ist es, die Nutzungsintensität, die Anzahl der Nutzungen und Nutzer unserer Applikation und deren Surfverhalten statistisch – auf Basis eines einheitlichen Standardverfahrens - zu bestimmen und somit marktweit vergleichbare Werte zu erhalten.</p><p>Als Mitglied der Informationsgemeinschaft zur Feststellung der Verbreitung von Werbeträgern e.V. (IVW – <a href="https://www.ivw.eu" target="_blank">https://www.ivw.eu&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>) werden die Nutzungsstatistiken regelmäßig von der IVW mit den Leistungswerten 'Page Impression' und 'Visits' in der IVW-Ausweisung (<a href="https://ausweisung.ivw-online.de/" target="_blank">https://ausweisung.ivw-online.de/&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a> ) bereitgestellt.</p><p>Als Teilnehmer an der agof Studie daily digital facts werden die Nutzungsstatistiken unseres Digital-Angebots regelmäßig von der Arbeitsgemeinschaft Online-Forschung e.V. (agof - <a href="https://www.agof.de" target="_blank">https://www.agof.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>) und der Arbeitsgemeinschaft Media-Analyse e.V. (agma - <a href="https://www.agma-mmc.de" target="_blank">https://www.agma-mmc.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a> zu Reichweiten weiter verarbeitet und mit dem Leistungswert "Unique User" veröffentlicht.</p><p><strong>1. Rechtsgrundlage für die Verarbeitung</strong></p><p>Die Messung mit INFOnline Measurement (pseudonymes System: IOMp) durch die INFOnline GmbH erfolgt im Rahmen einer Nutzungsmessung mit der Einwilligung nach Art. 6 Abs. 1 lit. a) DSGVO.</p><p>Zweck der Verarbeitung der personenbezogenen Daten ist die Bildung von digitalen Leistungswerten (Page Impression, Visit und technischer Client) zur Erstellung von Statistiken.</p><p>Die Statistiken dienen dazu, die Nutzung unseres Angebots nachvollziehen und belegen zu können</p><p><strong>2. Art der Daten</strong></p><p>Die mit INFOnline Measurement erhobenen Daten ermöglichen aufgrund der Datenarten und Datenmenge keine eindeutige Identifizierung eines Nutzers als Person.</p><p>Es werden Messlibraries eingesetzt, die beim Aufruf der App (Client) die erforderlichen Messsensoren für eine anonyme (IOMb) und / oder pseudonyme Datenverarbeitung (IOMp) zur Ermittlung der Kennzahlen automatisiert integriert und ausführt.</p><p><strong>Beim anonymen Zensusverfahren (IOMb)</strong></p><p>wird gänzlich auf eine Verarbeitung personenbeziehbarer Informationen verzichtet, dazu gehört im Besonderen die IP-Adresse. Diese wird gänzlich aus der Kommunikation und der Verarbeitung entfernt. Dazu verhindert eine Kommunikationsschnittstelle, die sog. 'Serviceplattform, als Messendpunkt den Austausch der IP-Adresse des Nutzers mit den Systemen der INFOnline im Rahmen des INFOnline Measurement. Die IP-Adresse als personenbezogenes Datum wird im Zensusverfahren auf der Serviceplattform verworfen, bevor der Messaufruf an INFOnline geleitet wird. Es erfolgt auch keine Geolokalisierung mittels IP-Adresse. Der beim Zensusverfahren erzeugte Datensatz ist eine reine PI-Datenerhebung.</p><p><strong>Beim pseudonymen Messverfahren (IOMp)</strong></p><p>werden mit der Messlibrary folgende Daten erhoben, welche nach EU-DSGVO einen Personenbezug aufweisen:</p><p>• IP-Adresse:</p><p>Im Internet benötigt jedes Gerät zur Übertragung von Daten eine eindeutige Adresse, die sogenannte IP-Adresse. Die zumindest kurzzeitige Speicherung der IP-Adresse ist aufgrund der Funktionsweise des Internets technisch erforderlich.</p><p>Die IP-Adressen werden vor jeglicher Verarbeitung um 1 Byte gekürzt und nur anonymisiert weiterverarbeitet. Es erfolgt keine Speicherung oder Verarbeitung der ungekürzten IP-Adressen.</p><p>• Einen zufällig erzeugten Client-Identifier:</p><p>Die Reichweitenmessung verwendet zur Wiedererkennung von Computersystemen eindeutige Kennungen des Endgerätes oder eine Signatur, die aus verschiedenen automatisch übertragenen Informationen Ihres Geräts erstellt wird. Eine Messung der Daten und anschließende Zuordnung zu dem jeweiligen Identifier ist unter Umständen auch dann möglich, wenn Sie andere Applikationen aufrufen, die ebenfalls das pseudonyme Messverfahren der INFOnline GmbH nutzen. Folgende eindeutige Kennungen können als Hash an die INFOnline GmbH übermittelt werden:</p><p>• Advertising-Identifier</p><p>• Installation-ID</p><p>• Android-ID</p><p>• Vendor-ID</p><p>Personenbezogene Daten im Sinne der EU-DSGVO werden zur Messung nur insoweit genutzt, als dass der Einsatz einer Library/ SDK gegenüber einem Nutzer erfolgt, dem eine individuelle IP-Adresse und ein zufällig erzeugter Client-Identifier zum Aufruf von App-Inhalten zugewiesen wurde. Die pseudonyme Messung (IOMp) wird nur bei Vorliegen eines positiven Consents des Nutzers aus der Consent Management Plattform (CMP) ausgeführt.</p><p><strong>3. Nutzung der Daten</strong></p><p>Das Messverfahren der INFOnline GmbH, welches in dieser App eingesetzt wird, ermittelt Nutzungsdaten. Dies geschieht, um die Leistungswerte Page Impression, Visit und Client zu erheben.</p><p>• Geolokalisierung:</p><p>Die Zuordnung einer App-Nutzung zum Ort des Aufrufs erfolgt ausschließlich auf der Grundlage der anonymisierten IP-Adresse und nur bis zur geographischen Ebene der Bundesländer / Regionen. Aus den so gewonnenen geographischen Informationen kann in keinem Fall ein Rückschluss auf den konkreten Wohnort eines Nutzers gezogen werden.</p><p>• Angebotsübergreifende Zusammenführung von Nutzungsdaten</p><p>Die Nutzungsdaten eines technischen Clients (bspw. eines Browsers auf einem Gerät) werden applikationsübergreifend zusammengeführt und in einer Datenbank gespeichert.</p><p><strong>4. Speicherdauer der Daten</strong></p><p>Die vollständige IP-Adresse wird von der INFOnline GmbH nicht gespeichert.</p><p>Die IP-Adresse wird lediglich zum Empfang der Datenpakete verwendet und sodann um 1 Byte gekürzt.</p><p>Im Zensusverfahren wird die gekürzte IP-Adresse verworfen, im pseudonymen Verfahren maximal 60 Tage gespeichert. Im pseudonymen Verfahren werden die Nutzungsdaten in Verbindung mit dem eindeutigen Identifier maximal 6 Monate gespeichert.</p><p><strong>5. Weitergabe der Daten</strong></p><p>Die IP-Adresse wie auch die gekürzte IP-Adresse werden nicht weitergegeben.</p><p><strong>6. Rechte der betroffenen Person</strong></p><p>Die betroffene Person hat folgende Rechte:</p><p>• Auskunftsrecht (Art. 15 DSGVO)</p><p>• Recht auf Berichtigung (Art. 16 DSGVO)</p><p>• Widerspruchsrecht (Art. 21 DSGVO)</p><p>• Recht auf Löschung (Art. 17 DSGVO)</p><p>• Recht auf Einschränkung der Verarbeitung (Art. 18f. DSGVO)</p><p>• Recht auf Datenübertragbarkeit (Art. 20 DSGVO)</p><p>• Recht auf Widerruf (Art. 7 Abs. 3 DSGVO) (bei Einwilligung)</p><p>Bei Anfragen dieser Art, wenden Sie sich bitte an datenschutz@spiegelgruppe.de. Bitte beachten Sie, dass wir bei derartigen Anfragen sicherstellen müssen, dass es sich tatsächlich um die betroffene Person handelt.</p><p>Die betroffene Person hat das Recht, bei einer Datenschutzbehörde Beschwerde einzulegen.</p><p>Weitere Informationen zum Datenschutz im Messverfahren finden Sie auf der Webseite der INFOnline GmbH (<a href="https://www.infonline.de" target="_blank">https://www.infonline.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>), die das Messverfahren betreibt.</p><p><strong><u>B.) Zur Zusammenarbeit mit IP Deutschland GmbH</u></strong></p><p><strong>1. Grundsätzliches</strong></p><p>Im Rahmen der Vermarktung unserer Internetangebote sind verschiedene Unternehmen sowohl im Bereich der Erhebung von Daten als auch bei der Ausspielung von Werbung beteiligt. Diese Unternehmen nehmen unterschiedliche Rollen ein. Sie können selbst verantwortlich für die Datenverarbeitung sein (Verantwortlicher) oder als reiner weisungsgebundener Dienstleister handeln (Auftragsverarbeiter). Im Rahmen der Werbevermarktung ist die IP Deutschland GmbH, Picassoplatz 1, 50679 Köln, E-Mail: <a target="_blank" href="mailto:kontakt@ip.de">kontakt@ip.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a> Verantwortlicher und damit mit uns zusammen »gemeinsam Verantwortlicher« i.S.v. Art 26 DSGVO im Hinblick auf unsere Internetangebote. Einzelheiten hierzu, zu Rollen und zu weiteren Verantwortlichen finden Sie <a target="_blank" href="http://www.ip.de/informationen_externe_vermarktung">hier&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>.</p><p><strong>2. Erfassung von Daten im Rahmen der Vermarktung (Tracking, Profilbildung etc.)</strong></p><p>Um Werbung zu personalisieren, interessensgerecht zu gestalten und passende Zielgruppen zu finden, abzurechnen, Reichweiten zu messen und die Ausspielung zu steuern/über sog. Frequency-Capping zu begrenzen, wird bei der Online-Vermarktung ein Verfahren verwendet, das Nutzerverhalten untersucht und pseudonymisierte Profile von Nutzern bildet, die dann bei der Ausspielung von Werbung heran gezogen werden können. Hierbei werden z.B. besuchte Angebote, geklickte Inhalte, etc. erfasst und gespeichert. Regelmäßig werden diese Daten in einer Datenbank / einem Profil hinterlegt, das mit einem Cookie oder einer anderen Identifikationsmöglichkeit angesprochen werden kann. Namen und persönliche Angaben von Nutzern werden nicht gespeichert. Das Cookie ist vielmehr ein Pseudonym, der echte Name/die Identität des Nutzers ist nicht bekannt. Ggf. können auch Daten aus eigenen weiteren Quellen, z.B. Teile von Profilen aus registrierten Bereichen oder auch technische Daten über das verwendete Gerät, Uhrzeit oder aus Drittquellen hinzugespeichert werden. Innerhalb der Profile werden Verhaltensmuster von Nutzern unserer Angebote gespeichert und ausgewertet sowie z.T. über soziodemografische Daten und Annahmen zu soziodemografischen Daten (sog. statistische Zwillinge von Profilen mit bekannten Daten, die über ähnliches oder gleiches Surfverhalten abgeglichen werden) ergänzt. Diese Profilbildung ist auch websiteübergreifend, d.h. über mehrere Internetangebote hinweg, möglich.</p><p><strong>3. Rechtsgrundlage</strong></p><p>Sowohl die Betreiber der Angebote als auch die Vermarkter und sonstigen Stellen, die als Verantwortliche Werbung auf den Angeboten ausspielen und/oder Daten erheben, haben ein berechtigtes Interesse an der Vermarktung und Monetarisierung ihrer (vermarkteten) Angebote über die zielgruppengenaue Ausspielung von Werbung sowie an der Messung von Reichweiten und Steuerung von der Ausspielung von Werbung über das Frequency Capping. Gleiches gilt für die Bildung von Nutzerprofilen, die diese Ausspielung erst ermöglicht. Ohne die Datenverarbeitung könnte dieser Zweck nicht erreicht werden. Aufgrund des pseudonymen Charakters der Daten werden die Nutzer solcher Angebote nicht über die Wiedererkennung der genutzten Browser/Endgeräte hinaus für uns und unseren Vermarkter erkennbar. Eingriffe in das Recht der informationellen Selbstbestimmung des Nutzers werden dadurch gerechtfertigt, dass Daten des Nutzers pseudonymisiert und auch nur für relativ kurze Zeiträume genutzt werden. Die Eingriffe in Rechte der Nutzer sind gering und für diesen auch innerhalb seines Erwartungshorizonts, da Nutzer in Datenschutzerklärungen transparent auf die eingesetzten Verfahren hingewiesen werden und ihnen wirksame Möglichkeiten zum Widerspruch zur Verfügung stehen. Es werden ferner keine Profile mit dem Fokus auf Kinder gebildet. Rechtgrundlage für sämtliche Verarbeitungen im Rahmen der Vermarktung ist Art. 6 1f) DSGVO (»berechtigte Interessen«), bzw. § 15 Abs. 3 TMG.</p><p><strong>4. Ausführliche Informationen sowie Widerspruchsmöglichkeiten</strong></p><ul><li><p>Vermarkter-Informationen und Technologie- Opt-out-Möglichkeiten</p></li></ul><p><a target="_blank" href="http://www.ip.de/informationen_externe_vermarktung">Hier&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a> finden Sie ausführliche Informationen zu den einzelnen Datenverarbeitungsvorgängen und den eingesetzten Dienstleistern/Beteiligten. Diese Übersicht beinhaltet allgemeine und Detailinformationen über den Namen und die Anschrift der Unternehmen, die personenbezogene Daten erheben, verarbeiten und/oder weiteren Dritten zur Verfügung stellen, die erhobenen Daten-Kategorien, den Zweck der Verarbeitung und die Opt-Out Möglichkeiten, Empfänger von Daten, Übermittlung in Drittstaaten, Speicherdauer und Datenquellen sowie die Kontaktmöglichkeit zum Datenschutzbeauftragten der IP Deutschland GmbH.</p><ul><li><p>Werbe-Kennungen für mobile Apps</p></li></ul><p>Damit Werbeanzeigen auch in Diensten ohne Cookie-Technologie ausgeliefert werden können, zum Beispiel in mobilen Apps, werden unter Umständen Technologien eingesetzt, die ähnlich wie Cookies funktionieren. Wenn Sie personalisierte Werbung auf Ihrem Mobilgerät deaktivieren möchten, folgen Sie der untenstehenden Anleitung.</p><p><strong>Android</strong></p><p>1. Sie finden die Google-Einstellungen je nach Gerät an einem der folgenden Orte:</p><p>a. In einer separaten App namens Google Einstellungen.</p><p>b. Scrollen Sie in Ihrer Haupt-App Einstellungen nach unten und tippen Sie auf Google.</p><p>2. Tippen Sie auf Anzeigen.</p><p>3. Tippen Sie das Kästchen neben Interessenbezogene Werbung zum Deaktivieren an.</p><p><strong>iOS</strong></p><p>Geräte mit iOS verwenden den Advertising Identifier von Apple. Weitere Informationen über die verschiedenen Möglichkeiten zur Verwendung dieses Identifiers finden Sie in der App Einstellungen auf Ihrem Gerät.</p><p>Sie erreichen diese wie folgt:</p><p>1. »Einstellungen« wählen</p><p>2. »Datenschutz« wählen</p><p>3. »Werbung« wählen. Dort können Sie über einen Schalter konkrete Einstellungen treffen.</p><p><strong>Widerspruchsrecht</strong></p><p>Wenn Sie an der Messung auf Webseiten nicht teilnehmen mochten, können Sie unter folgendem Link widersprechen: <a href="https://optout.ioam.de" target="_blank">https://optout.ioam.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>. Um einen Ausschluss von der Messung zu garantieren, ist es technisch notwendig, ein Cookie zu setzen. Sollten Sie die Cookies in Ihrem Browser löschen, ist es notwendig, den Opt-out-Vorgang unter dem oben genannten Link zu wiederholen. In Applikationen können Sie der Messung in den Einstellungen widersprechen: auf iOS in den iOS-Einstellungen > App > Menüpunkt AGOF-Zählung, auf Android direkt im App-Menü unter Datenschutz > IVW/AGOF-Zählung.</p><p><strong><u>C.) Zu Adobe Analytics</u></strong></p><p>Wir setzen auf unseren Webseiten die Tracking-Tools »Adobe Analytics« und »Adobe Audience Manager« ein. Diese sind Dienste der Adobe Systems Software Ireland Limited, Ireland, 4-6 Riverwalk, Citywest Business Campus, Dublin 24, Republic of Ireland (»Adobe«).</p><p>Das Tracking erfolgt pseudonym, das heißt, wir können aus den Informationen, die wir durch das Tracking erhalten, keinen unmittelbaren Rückschluss zu Ihnen als Person herbeiführen. Für das Webanalyseverfahren und zur Speicherung und Verarbeitung von Informationen über Ihr Nutzerverhalten kommen Cookies zum Einsatz, mit denen der Browser Ihres Endgeräts identifiziert werden kann.</p><p>Wir verwenden Adobe zu Marketing-, Personalisierungs- und Optimierungszwecken, insbesondere um die Nutzung unserer Webseiten und Angebote zu analysieren und um einzelne Funktionen und Angebote sowie das Nutzungserlebnis fortlaufend verbessern und personalisieren zu können.</p><p>Die Einbindung von Adobe erfolgt mit Ihrer Einwilligung, die sie jederzeit widerrufen können. Rechtsgrundlage stellt damit Art. 6 Abs. 1 lit. a) DSGVO dar.</p><p>Sie können das Tracking durch Adobe jederzeit unterbinden durch das Aufrufen des nachfolgenden Links (»Opt-out«): <a href="https://www.adobe.com/de/privacy/opt-out.html" target="_blank">https://www.adobe.com/de/privacy/opt-out.html&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>.</p><p>Die Unterbindung erfolgt über das Setzen eines Cookies auf Ihrem verwendeten Endgerät. Wenn Sie das Cookie löschen bzw. ein anderes Endgerät oder einen anderen Webbrowser verwenden, muss das Opt-out erneut eingerichtet werden. Hinsichtlich unserer mobilen Apps muss die Unterbindung in den jeweiligen App-Einstellungen vorgenommen werden.</p><p><strong><u>D.) Zu Opinary</u></strong></p><p>Wir binden auf unseren Webseiten Daten in gemeinsamer Verantwortlichkeit (sog. Joint-Controllership gem. Art 26 DSGVO) ein Umfragetool der Opinary GmbH, Engeldamm 62-64, 10179 Berlin ein. Die Verwendung dieses Dienstes ermöglicht es uns Online-Umfragen oder andere Inhalte zu erstellen und anzuzeigen. Durch das Opinary-Plugin werden folgende Information des Webseitenbesuchers abgerufen: Cookie IDs, Zeitstempel, Klickdaten, Vote Koordinaten und verkürzte IP. Für den Schutz Ihrer personenbezogenen Daten haben wir mit der Opinary GmbH gemeinsam die Reihenfolge der Verarbeitung dieser Daten festgelegt (Art. 26 DSGVO). Im Rahmen unserer gemeinsamen datenschutzrechtlichen Verantwortlichkeit wurde vereinbart, welche Partei welche Pflichten nach DSGVO erfüllt. Wir sind verantwortliche Partei für das Erheben und Übermitteln der Daten des Nutzers an Opinary. Die so erhobenen Daten werden daraufhin von Opinary anonymisiert und in aggregierter Form zur Verfügung gestellt. Zur Steuerung zielgruppenbasierter Werbung werden durch Opinary Informationen über Aktivitäten auf unseren Webseiten (z.B. geklickte Werbebanner, besuchte Unterseiten) unter einem Pseudonym erfasst und verwendet, um Ihnen interessengerechte Werbung Dritter auszuliefern. Hierdurch können Cookies von werbetreibenden Dritten auf Ihrem Endgerät gespeichert werden.</p><p>Weitere Informationen zur Verarbeitung Ihrer personenbezogenen Daten finden Sie in der Datenschutzerklärung von Opinary. Wenn Sie der Nutzung Ihrer Daten in der angegebenen Form nicht einverstanden sind, können Sie hier durch einen Opt-out widersprechen: <a href="https://compass.pressekompass.net/static/optout.html" target="_blank">https://compass.pressekompass.net/static/optout.html&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a></p><p><strong><u>E.) Zu Localytics</u></strong></p><p>Um die Nutzung unserer mobilen Apps besser zu verstehen, analysieren wir mit dem Dienst Localytics der Upland Software, Inc. beispielsweise, wie oft unsere Apps aufgerufen werden oder was angeklickt wird, erfasst werden nur Nutzungsdaten und alle Daten werden nur pseudonymisiert verarbeitet. Sie können die Analyse in den Einstellungen deaktivieren (auf iOS in den iOS-Einstellungen > App > Nutzungsdaten senden deaktivieren; auf Android direkt im App-Menü in den Einstellungen selbst).</p><p><strong><u>F.) Chatbot</u></strong></p><p>Für allgemeine Serviceanfragen bieten wir Ihnen die Möglichkeit, sich auf unserer Website mittels Chatbot Informationen zu unseren Kundenservice und Self-Care Lösungen mitteilen zu lassen. Unser technischer Dienstleister für diesen Service ist die knowhere GmbH, Steinhöft 9, 20459 Hamburg.</p><p>Für die Nutzung des Chatbots sind keine weiteren Angaben von Ihnen erforderlich. Zur Optimierung der künstlichen Intelligenz des Chatbots werden Logdateien und Chatverläufe 30 Tage gespeichert.</p><p>Die Datenverarbeitung erfolgt auf Grundlage unserer berechtigten Interessen gem. Art. 6 Abs. 1 S. 1 Buchstabe f) DSGVO.<br><br><strong><u>G.) Zu Consentric Technologie</u></strong></p><p>Das Consentric-Verfahren der Deutschen Post AG wurde von Beginn an vor dem Hintergrund datenschutzrechtlicher Anforderungen entwickelt und zielt darauf ab, so wenig wie möglich personenbeziehbare Daten zu verarbeiten. Mit dem Consentric-Verfahren verknüpft die Deutsche Post AG unter Einschaltung diverser Partner ein auf dem Endgerät eines Nutzers gespeichertes Cookie mit einer Mikrozelle der Deutschen Post Direkt GmbH (»DP Direkt«). Diese Mikrozelle enthält nur eine Aussage zu einer Gruppe – durchschnittlich 6,6 Personen –so dass die Cookie-Kennung (Cookie-ID) keiner Einzelperson zugeordnet werden kann. In einer Mikrozelle wurden verschiedene Adressen zusammengefasst, so dass mit dem Consentric-Verfahren eine datenschutzkonforme Verknüpfung eines Endgerätes mit einer Mikrozelle als geografischer Verortung erfolgt ist. Sie können der Datenverarbeitung im Rahmen des beschriebenen Verfahrens unter folgendem Link widersprechen: <a href="https://pixel.consentric.de/optout" target="_blank">https://pixel.consentric.de/optout&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>. Der Verwendung des Cookies des Dienstleisters intelliAd (diva-e Products GmbH, Sendlinger Str. 7, 80331 München) können Sie mit der intelliAd Opt-OutFunktion widersprechen.</p><p>In Bezug auf die Weiterleitung der im Rahmen Ihres Besuchs auf unserer Webseite ausgelesenen Cookie-ID besteht zwischen uns und der Deutschen Post AG eine gemeinsame Verantwortung nach Art. 26 DSGVO. Wir sind daher gemeinsam mit der Deutschen Post AG für den Schutz Ihrer personenbezogenen Daten verantwortlich. Die gemeinsame Verantwortlichkeit begrenzt sich auf die Weiterleitung der von Ihnen auf unseren Webseiten ausgelesenen Cookie-IDs an die Deutsche Post AG zur Teilnahme an dem Consentric-Verfahren (Umrechnung in eine Mikrozelle). Die einzelnen Prozessabschnitte teilen sich hierbei wie folgt auf: Wir sind für die Verpixelung /den Einbau eines Skripts auf unseren Webseiten und Weiterleitung des intelliAd-Cookies nebst Kampagneninformation an die Deutsche Post AG verantwortlich. Die Deutsche Post AG ist für den Betrieb des Consentric-Verfahrens und die Vorgaben an uns für die Weiterleitung Ihrer Cookie-IDs an die Deutsche Post AG verantwortlich. Mithilfe der Cookies kann erkannt werden, dass Sie eine an der Messung teilnehmende Website besuchen. Diese Information wird dann auf Basis der anonymen Mikrozelle der Deutschen Post Direkt GmbH aggregiert. Damit kann sie Ihnen nicht mehr zugeordnet werden. Zu keinem Zeitpunkt werden einzelne Nutzer namentlich identifiziert. Ihre Identität bleibt also geschützt. Die Deutsche Post Direkt GmbH verfügt über datenschutzkonforme Verfahren, wie anhand der Auswahl einer Mikrozelle eine postalische Werbung verschickt werden kann. Dieser Auswahlprozess einer Mikrozelle wird aufgrund des Consentric-Verfahrens erleichtert, da dann schon aufgrund des vorgelagerten Messverfahrens automatisch angezeigt wird, welche Mikrozellen für ein werbetreibendes Unternehmen interessant sind. So kann der Aufruf einer Webseite den Versand eines postalischen Werbeschreibens auslösen. Sollten Sie weitere Nachfragen zum Umgang mit personenbezogenen Daten haben, insbesondere Auskunft über verarbeitete personenbezogene Daten wünschen oder weitere Rechte geltend machen wollen, wenden Sie sich bitte zunächst an den Betreiber der Webseite. Das Recht, Ihre Betroffenenrechte auch gegenüber der Deutschen Post AG unter <a href="mailto:consentric@deutschepost.de" target="_blank">consentric@deutschepost.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a> geltend zu machen, bleibt hiervon unberührt.</p><p><strong><u>H.) Zur Zusammenarbeit mit AWIN AG</u></strong></p><p>Wir verarbeiten Ihre personenbezogenen Daten zur Durchführung einer Affiliate-Marketing-Kampagne. Auf diese Weise sind wir in der Lage nachzuverfolgen, welcher Drittanbieter von Webseiten, Apps oder anderen Technologien potenzielle Kunden auf unsere Webseiten und Apps verwiesen hat (»Referrer«) und ihm als Gegenleistung für diese Verweisungen eine Provision zu zahlen. Wir verfolgen hierbei das berechtigte Interesse, eine Online-Werbekampagne durchzuführen, die leistungsabhängig vergütet wird. Wir arbeiten mit Awin zusammen, die uns dabei unterstützen, diese Affiliate-Marketing-Kampagne umzusetzen. Die Awin-Datenschutzerklärung finden Sie <a href="https://www.awin.com/de/rechtliches/privacy-policy-DACH" target="_blank">hier&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>. Sie enthält Informationen über Ihre Rechte in Bezug auf die Datenverarbeitung durch Awin. In einigen Fällen kann Awin ein eingeschränktes Profil unterhalten, das sich auf Sie bezieht. Dieses wird aber weder Ihre Identität, Ihr Online-Verhalten oder andere persönliche Merkmale offenbaren. Dieses Profil dient allein dem Zweck nachzuvollziehen, ob eine Weiterleitung auf einem Gerät begonnen und auf einem anderen Gerät abgeschlossen wurde.</p><p>In einigen Fällen können Awin und der Referrer des potenziellen Kunden Ihre personenbezogenen Daten erhalten und verarbeiten, um die Affiliate-Marketing-Kampagne gemeinsam mit uns umzusetzen.</p><p>Gleichfalls erhalten wir personenbezogene Daten potenzieller Kunden von Awin und den Referrern, die sich in folgende Kategorien einteilen lassen: Cookie-Daten, Daten in Bezug auf die Webseite, App oder Technologie, von der ein potentieller Kunde an uns verwiesen wurde und technische Informationen über das von Ihnen genutzte Gerät.</p><p><strong><u>I.) Zur Zusammenarbeit mit The Reach Group GmbH</u></strong></p><p>Auf unseren Webseiten werden Cookies zur Ermöglichung der Schaltung von Retargeting-Kampagnen der The Reach Group GmbH (Am Karlsbad 16, 10785 Berlin, Deutschland) eingesetzt. Bei den gespeicherten Daten innerhalb des Cookies handelt es sich nur um eine verschlüsselte, pseudonymisierte User-ID. Die eingesetzte Adserving-Technologie verwendet eine verkürzte und gehashte IP-Adressen zur Auswertung der geographischen Region, der Zugangsgeschwindigkeit sowie des Internet-Providers. Zudem werden Zeitpunkt des Besuches, die IDs der Produkte, die betrachtet, gesucht oder gekauft wurden, die URLs der betrachteten Seiten, mögliche Suchbegriffe und/oder die IDs der aufgerufenen Kategorien gespeichert, um relevantere Werbeinhalte auszuliefern. Eine Speicherung von IP- oder Browser-Daten erfolgt ausschließlich in Deutschland und zur anonymisierten Anfertigung von Besucherstatistiken und Zuordnung von Transaktionen. Ein Rückschluss auf konkreten Personen, der genauen Adresse, des Aufenthaltsortes oder weitergehenden persönlichen Daten ist dabei zu keinem Zeitpunkt möglich. Es erfolgt keine explizite Weitergabe von IP-Daten an Dritte. Alle Informationen verfügen zudem über ein Verfallsdatum von maximal 90 Tagen, ab dem Ihr Browser die gespeicherten Daten automatisch löscht. Sie können die Speicherung des Cookies durch eine entsprechende Einstellung Ihrer Browser-Software verhindern. Sie können darüber hinaus die Erfassung der durch das Cookie erzeugten und auf Ihre Nutzung der Website bezogenen Daten verhindern, indem Sie die OptOut-Funktion unter dem folgenden Link aktivieren:</p><p><a href="https://hal9000.redintelligence.net/privacy/8lcfmzhxc8d6/" target="_blank">https://hal9000.redintelligence.net/privacy/8lcfmzhxc8d6/&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a></p><p>Weitere Informationen zum Datenschutz der The Reach Group GmbH finden Sie unter</p><p><a href="https://trg.de/datenschutzerklarung/" target="_blank">https://trg.de/datenschutzerklarung/&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a></p><p>Dieser Widerspruch gilt so lange, wie das zugehörige OptOut-Cookie nicht gelöscht wird. Dieses Cookie wird für die Domain, pro Browser und Benutzer eines Rechners gesetzt. Wenn Sie auf unseren Webseiten von mehreren Endgeräten und Browsern aus, zugreifen, müssen Sie daher auf jedem dieser Geräte und in jedem Browser der Datenerfassung separat und erneut widersprechen.</p><p><strong><u>J.) Zur Zusammenarbeit mit targeting360 GmbH</u></strong></p><p>Auf unseren Webseiten werden sog. »Cookies« zur Ermöglichung der Schaltung von Retargeting-Kampagnen der targeting360 GmbH (Gredinger Str. 28, 90453 Nürnberg) eingesetzt, die mit der Adserving-Technologie der NEORY GmbH arbeitet. Zudem können nach der NEORY-Technologie noch weitere Aufrufe zu den folgenden Technologien nachgeladen werden, welche ggf. Cookies setzen: Adform, Adition, Google, MediaMath, The Trade Desk, Emego. Dies dient dazu, Besuchern der Webseite im Rahmen unseres Partner-Werbenetzwerks interessenbezogene Werbeanzeigen zu präsentieren.</p><p>Cookies können es grundsätzlich ermöglichen, unser Angebot nutzerfreundlicher, effektiver und sicherer zu machen. Cookies sind kleine Textdateien, die Ihr Browser speichert und die so auf Ihrem Rechner abgelegt werden. Die meisten verwendeten Cookies sind so genannte »Session-Cookies«, die nach Ende Ihres Besuchs einer Webseite automatisch gelöscht werden. Andere Cookies bleiben auf Ihrem Endgerät gespeichert, bis Sie diese löschen. Generell können Sie die Speicherung von Cookies durch eine entsprechende Einstellung Ihrer Browser-Software verhindern.</p><p>Durch Auslesen der in einem Cookie gespeicherten Kennung ist es möglich, Ihr Endgerät wiederzuerkennen, wenn Sie Websites aufrufen, die dem Werbenetzwerk angehören. Auf diesen Seiten können dem Besucher dann Werbeanzeigen präsentiert werden, die sich auf Inhalte beziehen, die er auf Webseiten aufgerufen hat, die die genannte Adserving-Technologie verwenden. Bei der hier eingesetzten Technologie wird eine durch Kürzen und Hashen anonymisierte IP-Adresse sowie eine Cookie-ID zur Verarbeitung bzw. Auswertung folgender Informationen verwendet: Standort nach Land/Region/Bundesland/Stadt, Internetprovider, Zugangsgeschwindigkeit, technische Informationen zum verwendeten Browser und Endgerät, Betriebssystem, präferierte Sprachen gem. Browsereinstellung, HTTP-Referrer, Uhrzeit der Serveranfrage. Bei der gehashten IP-Adresse und der Cookie-ID handelt es sich um Pseudonyme. Die verarbeiteten Daten können daher nicht unmittelbar bestimmten Personen zugeordnet werden.</p><p>Rechtsgrundlage für den Einsatz der hier verwendeten Cookies und die nachfolgende Verarbeitung ist entsprechend Art. 6 Abs. 1 lit. a) DSGVO die hierfür erteilte Einwilligung. Eine Einwilligung zur Verarbeitung personenbezogener Daten - und auch zur Verwendung von Cookies - kann jederzeit widerrufen werden. Die auf Ihrer Einwilligung basierende Verarbeitung der oben genannten Daten und die weitere Nutzung der hierfür verwendeten Cookies können Sie beendigen, indem unter dem folgenden Link Gebrauch von Ihrem Widerrufs- bzw. Widerspruchsrecht machen: <a href="https://ad.ad-srv.net/privacy/kdb0xdq3ls8m/" target="_blank">https://ad.ad-srv.net/privacy/kdb0xdq3ls8m/&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a></p><p><strong>K.)StorifyMe</strong></p><p>StorifyMe GmbH: In einigen Angeboten nutzen wir diese deutsche Plattform, um redaktionelle Stories zu erstellen. Wenn Sie diese Stories öffnen, werden zwar generelle Nutzungsdaten erfasst, nicht aber die IP-Adresse Ihres Geräts. Werden Ihre IP-Adresse, User-Agent-String und Standard-Header an StorifyMe GmbH übertragen und verarbeitet, aber nicht aufgezeichnet.</p><p>Wenn Sie als Besucher unserer Website eine Internetseite mit einem Widget aufrufen, werden Ihre IP-Adresse, User-Agent-String und Standard-Header an StorifyMe übertragen, aber nicht verarbeitet und aufgezeichnet.</p><p>Mehr zum Datenschutz bei StorifyMe finden Sie <a target="_blank" rel="noopener noreferrer" href="https://www.storifyme.com/legal/privacy-policy">hier&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>.</p>
+<p><strong><u>A.) </u>Datenschutzerklärung INFOnline Measurement</strong></p><p><strong>Datenschutzerklärung WEB - INFOnline Measurement</strong><br>Unsere Webseite setzt das mehrstufige Messverfahren 'INFOnline Measurement' der INFOnline GmbH (<a href="https://www.INFOnline.de" target="_blank">https://www.INFOnline.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>) zur Ermittlung statistischer Kennwerte (Page Impression, Visit, technischer Client) über die Nutzung unseres Digital-Angebots ein.</p><p>Ziel der Nutzungsmessung ist es, die Anzahl der Besuche auf unserer Website, die Anzahl der Websitebesucher und deren Surfverhalten statistisch – auf Basis eines einheitlichen Standardverfahrens - zu bestimmen und somit marktweit vergleichbare Werte zu erhalten.</p><p>Als Mitglied der Informationsgemeinschaft zur Feststellung der Verbreitung von Werbeträgern e.V. (IVW – <a href="https://www.ivw.eu" target="_blank">https://www.ivw.eu&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a> ) werden die Nutzungsstatistiken regelmäßig von der IVW mit den Leistungswerten 'Page Impression' und 'Visits' in der IVW-Ausweisung (<a href="https://ausweisung.ivw-online.de/" target="_blank">https://ausweisung.ivw-online.de/&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a> ) bereitgestellt.</p><p>Als Teilnehmer an der agof Studie daily digital facts werden die Nutzungsstatistiken unseres Digital-Angebots regelmäßig von der Arbeitsgemeinschaft Online-Forschung e.V. (agof - <a href="https://www.agof.de" target="_blank">https://www.agof.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>) und der Arbeitsgemeinschaft Media-Analyse e.V. (agma - <a href="https://www.agma-mmc.de" target="_blank">https://www.agma-mmc.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a> zu Reichweiten weiter verarbeitet und mit dem Leistungswert "Unique User" veröffentlicht.</p><p><strong>1. Rechtsgrundlage für die Verarbeitung</strong></p><p>Die Messung mit INFOnline Measurement (pseudonymes System: IOMp) durch die INFOnline GmbH erfolgt im Rahmen einer Nutzungsmessung mit der Einwilligung nach Art. 6 Abs. 1 lit. a) DSGVO.</p><p>Die Messung mit INFOnline Measurement (anonymes System: IOMa) durch die INFOnline GmbH erfolgt im Rahmen einer Nutzungsmessung durch Zugriff auf die Endeinrichtung des Nutzers mit der Einwilligung nach § 25 Abs. 1 S. 2 TTDSG.</p><p>Zweck der Verarbeitung der personenbezogenen Daten ist die Bildung von digitalen Leistungswerten (Page Impression, Visit und technischer Client) zur Erstellung von Statistiken. Die Statistiken dienen dazu, die Nutzung unseres Angebots nachvollziehen und belegen zu können.</p><p><strong>2. Art der Daten</strong></p><p>Die mit INFOnline Measurement erhobenen Daten ermöglichen aufgrund der Datenarten und Datenmenge keine eindeutige Identifizierung eines Nutzers als Person.</p><p>Es wird ein JavaScript-Code (sog. 'Measurement Manager') eingesetzt, der beim Aufruf über den Browser bzw. das Endgerät des Nutzers (Client) auf Basis der Consent-Informationen aus der vom Anbieter beim Digital-Angebot eingesetzten Consent Management Plattform (CMP) die erforderlichen Messsensoren für eine anonyme und / oder pseudonyme Datenverarbeitung zur Ermittlung der Kennzahlen automatisiert integriert und ausführt. Das INFOnline Measurement ist als anonymes System (ohne Client-Identifier) und als pseudonymes System (mit Client-Identifier) angelegt.</p><p><strong>Beim anonymen Zensusverfahren (IOMb)</strong></p><p>wird gänzlich auf eine Verarbeitung personenbeziehbarer Informationen verzichtet, dazu gehört im Besonderen die IP-Adresse. Diese wird gänzlich aus der Kommunikation und der Verarbeitung entfernt. Dazu verhindert eine Kommunikationsschnittstelle, die sog. 'Serviceplattform', als Messendpunkt den Austausch der IP-Adresse des Nutzers mit den Systemen der INFOnline im Rahmen des INFOnline Measurement. Die IP-Adresse als personenbezogenes Datum wird im Zensusverfahren auf der Serviceplattform verworfen, bevor der Messaufruf an INFOnline geleitet wird. Es erfolgt auch keine Geolokalisierung mittels IP-Adresse. Der beim Zensusverfahren erzeugte Datensatz ist eine reine PI-Datenerhebung.</p><p><strong>Beim pseudonymen Messverfahren (IOMp)</strong></p><p>werden mit dem 3rd-Party Cookie 'i00' (ioam.de) und dem 1st-Party-Cookie 'ioma2018' folgende Daten erhoben, welche nach EU-DSGVO einen Personenbezug aufweisen:</p><p>• IP-Adresse:</p><p>Im Internet benötigt jedes Gerät zur Übertragung von Daten eine eindeutige Adresse, die sogenannte IP-Adresse. Die zumindest kurzzeitige Speicherung der IP-Adresse ist aufgrund der Funktionsweise des Internets technisch erforderlich.</p><p>Die IP-Adressen werden vor jeglicher Verarbeitung um 1 Byte gekürzt und nur anonymisiert weiterverarbeitet. Es erfolgt keine Speicherung oder Verarbeitung der ungekürzten IP-Adressen.</p><p>• Einen zufällig erzeugten Client-Identifier:</p><p>Die Reichweitenmessung verwendet zur Wiedererkennung von Computersystemen eindeutige Kennungen des Endgerätes, ein 'Local Storage Object' (LSO) oder eine Signatur, die aus verschiedenen automatisch übertragenen Informationen Ihres Browsers erstellt wird. Diese Kennung ist für einen Browser eindeutig, solange das Cookie oder Local Storage Object nicht gelöscht wird. Eine Messung der Daten und anschließende Zuordnung zu dem jeweiligen Identifier ist unter Umständen auch dann möglich, wenn Sie andere Webseiten aufrufen, die ebenfalls das pseudonyme Messverfahren der INFOnline GmbH nutzen. Folgende eindeutige Kennungen können als Hash an die INFOnline GmbH übermittelt werden:</p><p>• gekürzte Client-IP bzw. X-Forwarded-For (XFF)</p><p>• Useragent (als Hash)</p><p>Personenbezogene Daten im Sinne der EU-DSGVO werden zur Messung nur insoweit genutzt, als dass der Einsatz eines JavaScripts gegenüber einem Nutzer erfolgt, dem eine individuelle IP-Adresse und ein zufällig erzeugter Client-Identifier zum Aufruf von Webinhalten zugewiesen wurde.</p><p><strong>Beim anonymen Messverfahren (IOMa)</strong></p><p>wird ein Messsensor (JavaScript) eingesetzt, der die Metriken im Browser (LocalStorage (LSO)) des Nutzers berechnet, automatisch verschlüsselt und die aggregierten Nutzungsdaten an eine Kommunikationsschnittstelle, die sog. 'Serviceplattform' überträgt. In der Serviceplattform werden für die Internetkommunikation benötigte Identifier (bspw. IP-Adresse des Clients) entfernt und die verschlüsselten anonymisierten Messdaten durch eine Geolokalisierung ergänzt und an die zentrale Serverkomponente bei INFOnline übermittelt.</p><p>Soweit die erhobenen Messdaten um eine Geolokalisation des Browsers angereichert werden, erfolgt auch dazu eine Verwendung einer IP-Adresse lediglich für den Zweck der Erhebung der Geolokalisation und der Anreicherung mit den erhobenen Messdaten. Eine dazu notwendige IP-Adresse wird unmittelbar nach der Anreicherung verworfen.</p><p>Während der Einführungsphase von IOMa wird ein 1st Party Cookie verwendet, um die Zeitstempel (Unix Epoch Timestamp) des letzten Nutzungsvorgangs pro Angebot und pro Seitencode zu speichern. Diese Werte werden für die Bildung von zeitbezogenen Metriken wie dem Visit bei einem Wechsel der HTTP-Origin als Richtgröße hinzugezogen. Es werden keine weiteren personenbezogenen Daten /IDs in dem Cookie abgelegt. Nach der Einführungsphase sollte es dann entfallen, so dass die Messung dann vollständig ohne Cookies erfolgt.</p><p>Personenbezogene Daten im Sinne der EU-DSGVO werden zur Messung nur insoweit genutzt, als dass der Einsatz eines JavaScripts gegenüber einem Nutzer erfolgt, dem eine individuelle IP-Adresse zum Aufruf von Webinhalten zugewiesen wurde.</p><p>Insoweit verarbeiten wir dauerhaft zu Ihrer Person keine personenbezogenen Daten durch den Einsatz vom anonymen Messverfahren (IOMa) im INFOnline Measurement.</p><p><strong>3. Nutzung der Daten</strong></p><p>Das Messverfahren der INFOnline GmbH, welches auf dieser Webseite eingesetzt wird, ermittelt Nutzungsdaten. Dies geschieht, um die Leistungswerte Page Impression, Visit und Client zu erheben.</p><p>• Geolokalisierung</p><p>Die Zuordnung eines Webseitenaufrufs zum Ort des Aufrufs erfolgt im pseudonymen Messverfahren (IOMp) und im anonymen Messverfahren (IOMa) ausschließlich auf der Grundlage der anonymisierten IP-Adresse und nur bis zur geographischen Ebene der Bundesländer / Regionen. Aus den so gewonnenen geographischen Informationen kann in keinem Fall ein Rückschluss auf den konkreten Wohnort eines Nutzers gezogen werden.</p><p>• Angebotsübergreifende Zusammenführung von Nutzungsdaten</p><p>Die Nutzungsdaten eines technischen Clients (bspw. eines Browsers auf einem Gerät) werden im pseudonymen Messverfahren (IOMp) webseitenübergreifend zusammengeführt und in einer Datenbank gespeichert.</p><p><strong>4. Speicherdauer der Daten</strong></p><p>Die vollständige IP-Adresse wird von der INFOnline GmbH nicht gespeichert.</p><p>Die IP-Adresse wird lediglich zum Empfang der Datenpakete verwendet und sodann um 1 Byte gekürzt.</p><p>Im Zensusverfahren (IOMb) wird die gekürzte IP-Adresse verworfen, im pseudonymen (IOMp) und anonymen Verfahren (IOMa) maximal 60 Tage gespeichert. Im pseudonymen (IOMp) und anonymen (IOMa) Verfahren werden die Nutzungsdaten in Verbindung mit dem eindeutigen Identifier maximal 6 Monate gespeichert.</p><p>Die Gültigkeit des im pseudonymen Verfahren (IOMp) verwendeten Cookies 'i00' und des Cookies 'ioma2018' auf dem Endgerät des Nutzers ist auf maximal 1 Jahr beschränkt.</p><p><strong>5. Weitergabe der Daten</strong></p><p>Die IP-Adresse wie auch die gekürzte IP-Adresse werden nicht weitergegeben.</p><p><strong>6. Rechte der betroffenen Person</strong></p><p>Die betroffene Person hat folgende Rechte:</p><p>Auskunftsrecht (Art. 15 DSGVO)</p><p>Recht auf Berichtigung (Art. 16 DSGVO)</p><p>Widerspruchsrecht (Art. 21 DSGVO)</p><p>Recht auf Löschung (Art. 17 DSGVO)</p><p>Recht auf Einschränkung der Verarbeitung (Art. 18f. DSGVO)</p><p>Recht auf Datenübertragbarkeit (Art. 20 DSGVO)</p><p>Recht auf Widerruf (Art. 7 Abs. 3 DSGVO) (bei Einwilligung)</p><p>Bei Anfragen dieser Art, wenden Sie sich bitte an datenschutz@spiegelgruppe.de. Bitte beachten Sie, dass wir bei derartigen Anfragen sicherstellen müssen, dass es sich tatsächlich um die betroffene Person handelt.</p><p>Die betroffene Person hat das Recht, bei einer Datenschutzbehörde Beschwerde einzulegen.</p><p>Weitere Informationen zum Datenschutz im INFOnline Measurement finden Sie auf der Webseite der INFOnline GmbH (<a href="https://www.infonline.de" target="_blank">https://www.infonline.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>), die das Messverfahren betreibt.</p><p><strong>Datenschutzerklärung App - INFOnline Measurement</strong></p><p>Unsere Applikation setzt das mehrstufige Messverfahren 'INFOnline Measurement' der INFOnline GmbH (<a href="https://www.INFOnline.de" target="_blank">https://www.INFOnline.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>) zur Ermittlung statistischer Kennwerte (Page Impression, Visit, technischer Client) über die Nutzung unseres Digital-Angebots ein.</p><p>Ziel der Nutzungsmessung ist es, die Nutzungsintensität, die Anzahl der Nutzungen und Nutzer unserer Applikation und deren Surfverhalten statistisch – auf Basis eines einheitlichen Standardverfahrens - zu bestimmen und somit marktweit vergleichbare Werte zu erhalten.</p><p>Als Mitglied der Informationsgemeinschaft zur Feststellung der Verbreitung von Werbeträgern e.V. (IVW – <a href="https://www.ivw.eu" target="_blank">https://www.ivw.eu&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>) werden die Nutzungsstatistiken regelmäßig von der IVW mit den Leistungswerten 'Page Impression' und 'Visits' in der IVW-Ausweisung (<a href="https://ausweisung.ivw-online.de/" target="_blank">https://ausweisung.ivw-online.de/&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a> ) bereitgestellt.</p><p>Als Teilnehmer an der agof Studie daily digital facts werden die Nutzungsstatistiken unseres Digital-Angebots regelmäßig von der Arbeitsgemeinschaft Online-Forschung e.V. (agof - <a href="https://www.agof.de" target="_blank">https://www.agof.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>) und der Arbeitsgemeinschaft Media-Analyse e.V. (agma - <a href="https://www.agma-mmc.de" target="_blank">https://www.agma-mmc.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a> zu Reichweiten weiter verarbeitet und mit dem Leistungswert "Unique User" veröffentlicht.</p><p><strong>1. Rechtsgrundlage für die Verarbeitung</strong></p><p>Die Messung mit INFOnline Measurement (pseudonymes System: IOMp) durch die INFOnline GmbH erfolgt im Rahmen einer Nutzungsmessung mit der Einwilligung nach Art. 6 Abs. 1 lit. a) DSGVO.</p><p>Zweck der Verarbeitung der personenbezogenen Daten ist die Bildung von digitalen Leistungswerten (Page Impression, Visit und technischer Client) zur Erstellung von Statistiken.</p><p>Die Statistiken dienen dazu, die Nutzung unseres Angebots nachvollziehen und belegen zu können</p><p><strong>2. Art der Daten</strong></p><p>Die mit INFOnline Measurement erhobenen Daten ermöglichen aufgrund der Datenarten und Datenmenge keine eindeutige Identifizierung eines Nutzers als Person.</p><p>Es werden Messlibraries eingesetzt, die beim Aufruf der App (Client) die erforderlichen Messsensoren für eine anonyme (IOMb) und / oder pseudonyme Datenverarbeitung (IOMp) zur Ermittlung der Kennzahlen automatisiert integriert und ausführt.</p><p><strong>Beim anonymen Zensusverfahren (IOMb)</strong></p><p>wird gänzlich auf eine Verarbeitung personenbeziehbarer Informationen verzichtet, dazu gehört im Besonderen die IP-Adresse. Diese wird gänzlich aus der Kommunikation und der Verarbeitung entfernt. Dazu verhindert eine Kommunikationsschnittstelle, die sog. 'Serviceplattform, als Messendpunkt den Austausch der IP-Adresse des Nutzers mit den Systemen der INFOnline im Rahmen des INFOnline Measurement. Die IP-Adresse als personenbezogenes Datum wird im Zensusverfahren auf der Serviceplattform verworfen, bevor der Messaufruf an INFOnline geleitet wird. Es erfolgt auch keine Geolokalisierung mittels IP-Adresse. Der beim Zensusverfahren erzeugte Datensatz ist eine reine PI-Datenerhebung.</p><p><strong>Beim pseudonymen Messverfahren (IOMp)</strong></p><p>werden mit der Messlibrary folgende Daten erhoben, welche nach EU-DSGVO einen Personenbezug aufweisen:</p><p>• IP-Adresse:</p><p>Im Internet benötigt jedes Gerät zur Übertragung von Daten eine eindeutige Adresse, die sogenannte IP-Adresse. Die zumindest kurzzeitige Speicherung der IP-Adresse ist aufgrund der Funktionsweise des Internets technisch erforderlich.</p><p>Die IP-Adressen werden vor jeglicher Verarbeitung um 1 Byte gekürzt und nur anonymisiert weiterverarbeitet. Es erfolgt keine Speicherung oder Verarbeitung der ungekürzten IP-Adressen.</p><p>• Einen zufällig erzeugten Client-Identifier:</p><p>Die Reichweitenmessung verwendet zur Wiedererkennung von Computersystemen eindeutige Kennungen des Endgerätes oder eine Signatur, die aus verschiedenen automatisch übertragenen Informationen Ihres Geräts erstellt wird. Eine Messung der Daten und anschließende Zuordnung zu dem jeweiligen Identifier ist unter Umständen auch dann möglich, wenn Sie andere Applikationen aufrufen, die ebenfalls das pseudonyme Messverfahren der INFOnline GmbH nutzen. Folgende eindeutige Kennungen können als Hash an die INFOnline GmbH übermittelt werden:</p><p>• Advertising-Identifier</p><p>• Installation-ID</p><p>• Android-ID</p><p>• Vendor-ID</p><p>Personenbezogene Daten im Sinne der EU-DSGVO werden zur Messung nur insoweit genutzt, als dass der Einsatz einer Library/ SDK gegenüber einem Nutzer erfolgt, dem eine individuelle IP-Adresse und ein zufällig erzeugter Client-Identifier zum Aufruf von App-Inhalten zugewiesen wurde. Die pseudonyme Messung (IOMp) wird nur bei Vorliegen eines positiven Consents des Nutzers aus der Consent Management Plattform (CMP) ausgeführt.</p><p><strong>3. Nutzung der Daten</strong></p><p>Das Messverfahren der INFOnline GmbH, welches in dieser App eingesetzt wird, ermittelt Nutzungsdaten. Dies geschieht, um die Leistungswerte Page Impression, Visit und Client zu erheben.</p><p>• Geolokalisierung:</p><p>Die Zuordnung einer App-Nutzung zum Ort des Aufrufs erfolgt ausschließlich auf der Grundlage der anonymisierten IP-Adresse und nur bis zur geographischen Ebene der Bundesländer / Regionen. Aus den so gewonnenen geographischen Informationen kann in keinem Fall ein Rückschluss auf den konkreten Wohnort eines Nutzers gezogen werden.</p><p>• Angebotsübergreifende Zusammenführung von Nutzungsdaten</p><p>Die Nutzungsdaten eines technischen Clients (bspw. eines Browsers auf einem Gerät) werden applikationsübergreifend zusammengeführt und in einer Datenbank gespeichert.</p><p><strong>4. Speicherdauer der Daten</strong></p><p>Die vollständige IP-Adresse wird von der INFOnline GmbH nicht gespeichert.</p><p>Die IP-Adresse wird lediglich zum Empfang der Datenpakete verwendet und sodann um 1 Byte gekürzt.</p><p>Im Zensusverfahren wird die gekürzte IP-Adresse verworfen, im pseudonymen Verfahren maximal 60 Tage gespeichert. Im pseudonymen Verfahren werden die Nutzungsdaten in Verbindung mit dem eindeutigen Identifier maximal 6 Monate gespeichert.</p><p><strong>5. Weitergabe der Daten</strong></p><p>Die IP-Adresse wie auch die gekürzte IP-Adresse werden nicht weitergegeben.</p><p><strong>6. Rechte der betroffenen Person</strong></p><p>Die betroffene Person hat folgende Rechte:</p><p>• Auskunftsrecht (Art. 15 DSGVO)</p><p>• Recht auf Berichtigung (Art. 16 DSGVO)</p><p>• Widerspruchsrecht (Art. 21 DSGVO)</p><p>• Recht auf Löschung (Art. 17 DSGVO)</p><p>• Recht auf Einschränkung der Verarbeitung (Art. 18f. DSGVO)</p><p>• Recht auf Datenübertragbarkeit (Art. 20 DSGVO)</p><p>• Recht auf Widerruf (Art. 7 Abs. 3 DSGVO) (bei Einwilligung)</p><p>Bei Anfragen dieser Art, wenden Sie sich bitte an datenschutz@spiegelgruppe.de. Bitte beachten Sie, dass wir bei derartigen Anfragen sicherstellen müssen, dass es sich tatsächlich um die betroffene Person handelt.</p><p>Die betroffene Person hat das Recht, bei einer Datenschutzbehörde Beschwerde einzulegen.</p><p>Weitere Informationen zum Datenschutz im Messverfahren finden Sie auf der Webseite der INFOnline GmbH (<a href="https://www.infonline.de" target="_blank">https://www.infonline.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>), die das Messverfahren betreibt.</p><p><strong><u>B.) Zu Ad Alliance GmbH</u><br></strong>Wir bzw. unser Vermarkter die Ad Alliance GmbH verwenden im Zusammenhang mit der Ausspielung von Werbung in unseren Podcasts Ihre uns aus technischen Gründen stets mit übermittelte IP-Adresse sowie ihren User-Agent, d.h. automatische Informationen zu Ihrem Gerät, die durch Ihr Gerät an uns übermittelt werden, für folgende Zwecke:</p><ul><li><p>Ermittlung des ungefähren Standorts des Einwahlknotens Ihres Internetproviders (Radius ca. 10 km) für die Ausspielung von lokal relevanter Werbung: <br>Hierbei wird die IP-Adresse regional eingegrenzt, um innerhalb unseres Podcasts Werbung mit regionaler Relevanz auszuwählen und auszuspielen. Es wird kein Profil über Sie gebildet</p></li><li><p>Begrenzung der Ausspielungsfrequenz (Frequency Capping):<br>Hierbei werden IP-Adresse und User-Agent verwendet, um in unseren Systemen zu protokollieren, wie häufig ein bestimmter Werbespot bereits angehört wurde. Hierüber können wir erreichen, dass Nutzer nicht immer denselben Werbespot erhalten, bzw. die Häufigkeit von identischen Werbespots zu begrenzen, um so insgesamt eine bessere Werbewirkung und eine angenehmere Nutzererfahrung zu erreichen</p></li><li><p>Statistische Ermittlung und Analyse des Zuhörerkreises unserer Podcasts:<br>Hierbei werden IP-Adresse und User-Agent verwendet, um so – soweit Sie uns hierzu an anderer Stelle eine Einwilligung erteilt haben - eine Zuordnung zu einem über Sie evtl. bereits bestehenden Profil zu machen. Ein solches Profil wird nur dann über Sie bestehen, wenn Sie hierzu auf einem unserer anderen Angebote eine Einwilligung gegeben haben. Wenn eine solche Zuordnung erfolgen kann, verwenden wir die Daten aus dem bestehenden Profil, um statistische Erhebungen über die Zuhörerschaft des Podcasts vorzunehmen und diesen einer ungefähren Zielgruppe (z.B. bestimmte Altersgruppe oder ein allgemeines Interessensprofil, wie "Sportinteressiert”) zuzuordnen. Es erfolgt keine Anreicherung eines Profils von Ihnen und es erfolgt hierüber auch keine personalisierte Werbeausspielung an Sie. Die Datenverarbeitung erfolgt nur in Bezug auf den Inhalt des Podcasts, nicht in Bezug auf Sie als Person</p></li></ul><p>Rechtsgrundlage:</p><p>Rechtsgrundlage für die vorgenannten Verarbeitungen ist Art. 6 1f) DSGVO (berechtigte Interessen). Es ist unser Interesse, unsere Podcasts bestmöglich zu vermarkten und Werbung relevant und abwechslungsreich zu gestalten. Ferner haben wir ein Interesse daran zu erfahren, zu welchen Nutzergruppen die Zuhörerschaft unserer Podcasts gehört. Sie haben durch diese Verarbeitungen keine Nachteile. Es werden weder Profile über Sie gebildet, noch werden Sie als Person in Form von Direktwerbung angesprochen. Sie erhalten vielmehr abwechslungsreichere und relevantere Werbung anstatt zufälliger sich wiederholender Werbung.</p><p>Ein Widerspruchsrecht im Sinne von Art 21 Abs. 1 Satz 2DSGVO besteht im Sinne der vorgenannten Abwägung von Interessen nicht.</p><p><strong><u>C.) Zu Adobe Analytics</u></strong></p><p>Wir setzen auf unseren Webseiten die Tracking-Tools »Adobe Analytics« und »Adobe Audience Manager« ein. Diese sind Dienste der Adobe Systems Software Ireland Limited, Ireland, 4-6 Riverwalk, Citywest Business Campus, Dublin 24, Republic of Ireland (»Adobe«).</p><p>Das Tracking erfolgt pseudonym, das heißt, wir können aus den Informationen, die wir durch das Tracking erhalten, keinen unmittelbaren Rückschluss zu Ihnen als Person herbeiführen. Für das Webanalyseverfahren und zur Speicherung und Verarbeitung von Informationen über Ihr Nutzerverhalten kommen Cookies zum Einsatz, mit denen der Browser Ihres Endgeräts identifiziert werden kann.</p><p>Wir verwenden Adobe zu Marketing-, Personalisierungs- und Optimierungszwecken, insbesondere um die Nutzung unserer Webseiten und Angebote zu analysieren und um einzelne Funktionen und Angebote sowie das Nutzungserlebnis fortlaufend verbessern und personalisieren zu können.</p><p>Die Einbindung von Adobe erfolgt mit Ihrer Einwilligung, die sie jederzeit widerrufen können. Rechtsgrundlage stellt damit Art. 6 Abs. 1 lit. a) DSGVO dar.</p><p>Sie können das Tracking durch Adobe jederzeit unterbinden durch das Aufrufen des nachfolgenden Links (»Opt-out«): <a href="https://www.adobe.com/de/privacy/opt-out.html" target="_blank">https://www.adobe.com/de/privacy/opt-out.html&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>.</p><p>Die Unterbindung erfolgt über das Setzen eines Cookies auf Ihrem verwendeten Endgerät. Wenn Sie das Cookie löschen bzw. ein anderes Endgerät oder einen anderen Webbrowser verwenden, muss das Opt-out erneut eingerichtet werden. Hinsichtlich unserer mobilen Apps muss die Unterbindung in den jeweiligen App-Einstellungen vorgenommen werden.</p><p><strong><u>D.) Zu Opinary</u></strong></p><p>Wir binden auf unseren Webseiten Daten in gemeinsamer Verantwortlichkeit (sog. Joint-Controllership gem. Art 26 DSGVO) ein Umfragetool der Opinary GmbH, Engeldamm 62-64, 10179 Berlin ein. Die Verwendung dieses Dienstes ermöglicht es uns Online-Umfragen oder andere Inhalte zu erstellen und anzuzeigen. Durch das Opinary-Plugin werden folgende Information des Webseitenbesuchers abgerufen: Cookie IDs, Zeitstempel, Klickdaten, Vote Koordinaten und verkürzte IP. Für den Schutz Ihrer personenbezogenen Daten haben wir mit der Opinary GmbH gemeinsam die Reihenfolge der Verarbeitung dieser Daten festgelegt (Art. 26 DSGVO). Im Rahmen unserer gemeinsamen datenschutzrechtlichen Verantwortlichkeit wurde vereinbart, welche Partei welche Pflichten nach DSGVO erfüllt. Wir sind verantwortliche Partei für das Erheben und Übermitteln der Daten des Nutzers an Opinary. Die so erhobenen Daten werden daraufhin von Opinary anonymisiert und in aggregierter Form zur Verfügung gestellt. Zur Steuerung zielgruppenbasierter Werbung werden durch Opinary Informationen über Aktivitäten auf unseren Webseiten (z.B. geklickte Werbebanner, besuchte Unterseiten) unter einem Pseudonym erfasst und verwendet, um Ihnen interessengerechte Werbung Dritter auszuliefern. Hierdurch können Cookies von werbetreibenden Dritten auf Ihrem Endgerät gespeichert werden.</p><p>Weitere Informationen zur Verarbeitung Ihrer personenbezogenen Daten finden Sie in der Datenschutzerklärung von Opinary. Wenn Sie der Nutzung Ihrer Daten in der angegebenen Form nicht einverstanden sind, können Sie hier durch einen Opt-out widersprechen: <a href="https://compass.pressekompass.net/static/optout.html" target="_blank">https://compass.pressekompass.net/static/optout.html&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a></p><p><strong><u>E.) Zu Localytics</u></strong></p><p>Um die Nutzung unserer mobilen Apps besser zu verstehen, analysieren wir mit dem Dienst Localytics der Upland Software, Inc. beispielsweise, wie oft unsere Apps aufgerufen werden oder was angeklickt wird, erfasst werden nur Nutzungsdaten und alle Daten werden nur pseudonymisiert verarbeitet. Sie können die Analyse in den Einstellungen deaktivieren (auf iOS in den iOS-Einstellungen > App > Nutzungsdaten senden deaktivieren; auf Android direkt im App-Menü in den Einstellungen selbst).</p><p><strong><u>F.) Chatbot</u></strong></p><p>Für allgemeine Serviceanfragen bieten wir Ihnen die Möglichkeit, sich auf unserer Website mittels Chatbot Informationen zu unseren Kundenservice und Self-Care Lösungen mitteilen zu lassen. Unser technischer Dienstleister für diesen Service ist die knowhere GmbH, Steinhöft 9, 20459 Hamburg.</p><p>Für die Nutzung des Chatbots sind keine weiteren Angaben von Ihnen erforderlich. Zur Optimierung der künstlichen Intelligenz des Chatbots werden Logdateien und Chatverläufe 30 Tage gespeichert.</p><p>Die Datenverarbeitung erfolgt auf Grundlage unserer berechtigten Interessen gem. Art. 6 Abs. 1 S. 1 Buchstabe f) DSGVO.<br><br><strong><u>G.) Zu Consentric Technologie</u></strong></p><p>Das Consentric-Verfahren der Deutschen Post AG wurde von Beginn an vor dem Hintergrund datenschutzrechtlicher Anforderungen entwickelt und zielt darauf ab, so wenig wie möglich personenbeziehbare Daten zu verarbeiten. Mit dem Consentric-Verfahren verknüpft die Deutsche Post AG unter Einschaltung diverser Partner ein auf dem Endgerät eines Nutzers gespeichertes Cookie mit einer Mikrozelle der Deutschen Post Direkt GmbH (»DP Direkt«). Diese Mikrozelle enthält nur eine Aussage zu einer Gruppe – durchschnittlich 6,6 Personen –so dass die Cookie-Kennung (Cookie-ID) keiner Einzelperson zugeordnet werden kann. In einer Mikrozelle wurden verschiedene Adressen zusammengefasst, so dass mit dem Consentric-Verfahren eine datenschutzkonforme Verknüpfung eines Endgerätes mit einer Mikrozelle als geografischer Verortung erfolgt ist. Sie können der Datenverarbeitung im Rahmen des beschriebenen Verfahrens unter folgendem Link widersprechen: <a href="https://pixel.consentric.de/optout" target="_blank">https://pixel.consentric.de/optout&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>. Der Verwendung des Cookies des Dienstleisters intelliAd (diva-e Products GmbH, Sendlinger Str. 7, 80331 München) können Sie mit der intelliAd Opt-OutFunktion widersprechen.</p><p>In Bezug auf die Weiterleitung der im Rahmen Ihres Besuchs auf unserer Webseite ausgelesenen Cookie-ID besteht zwischen uns und der Deutschen Post AG eine gemeinsame Verantwortung nach Art. 26 DSGVO. Wir sind daher gemeinsam mit der Deutschen Post AG für den Schutz Ihrer personenbezogenen Daten verantwortlich. Die gemeinsame Verantwortlichkeit begrenzt sich auf die Weiterleitung der von Ihnen auf unseren Webseiten ausgelesenen Cookie-IDs an die Deutsche Post AG zur Teilnahme an dem Consentric-Verfahren (Umrechnung in eine Mikrozelle). Die einzelnen Prozessabschnitte teilen sich hierbei wie folgt auf: Wir sind für die Verpixelung /den Einbau eines Skripts auf unseren Webseiten und Weiterleitung des intelliAd-Cookies nebst Kampagneninformation an die Deutsche Post AG verantwortlich. Die Deutsche Post AG ist für den Betrieb des Consentric-Verfahrens und die Vorgaben an uns für die Weiterleitung Ihrer Cookie-IDs an die Deutsche Post AG verantwortlich. Mithilfe der Cookies kann erkannt werden, dass Sie eine an der Messung teilnehmende Website besuchen. Diese Information wird dann auf Basis der anonymen Mikrozelle der Deutschen Post Direkt GmbH aggregiert. Damit kann sie Ihnen nicht mehr zugeordnet werden. Zu keinem Zeitpunkt werden einzelne Nutzer namentlich identifiziert. Ihre Identität bleibt also geschützt. Die Deutsche Post Direkt GmbH verfügt über datenschutzkonforme Verfahren, wie anhand der Auswahl einer Mikrozelle eine postalische Werbung verschickt werden kann. Dieser Auswahlprozess einer Mikrozelle wird aufgrund des Consentric-Verfahrens erleichtert, da dann schon aufgrund des vorgelagerten Messverfahrens automatisch angezeigt wird, welche Mikrozellen für ein werbetreibendes Unternehmen interessant sind. So kann der Aufruf einer Webseite den Versand eines postalischen Werbeschreibens auslösen. Sollten Sie weitere Nachfragen zum Umgang mit personenbezogenen Daten haben, insbesondere Auskunft über verarbeitete personenbezogene Daten wünschen oder weitere Rechte geltend machen wollen, wenden Sie sich bitte zunächst an den Betreiber der Webseite. Das Recht, Ihre Betroffenenrechte auch gegenüber der Deutschen Post AG unter <a href="mailto:consentric@deutschepost.de" target="_blank">consentric@deutschepost.de&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a> geltend zu machen, bleibt hiervon unberührt.</p><p><strong><u>H.) Zur Zusammenarbeit mit AWIN AG</u></strong></p><p>Wir verarbeiten Ihre personenbezogenen Daten zur Durchführung einer Affiliate-Marketing-Kampagne. Auf diese Weise sind wir in der Lage nachzuverfolgen, welcher Drittanbieter von Webseiten, Apps oder anderen Technologien potenzielle Kunden auf unsere Webseiten und Apps verwiesen hat (»Referrer«) und ihm als Gegenleistung für diese Verweisungen eine Provision zu zahlen. Wir verfolgen hierbei das berechtigte Interesse, eine Online-Werbekampagne durchzuführen, die leistungsabhängig vergütet wird. Wir arbeiten mit Awin zusammen, die uns dabei unterstützen, diese Affiliate-Marketing-Kampagne umzusetzen. Die Awin-Datenschutzerklärung finden Sie <a href="https://www.awin.com/de/rechtliches/privacy-policy-DACH" target="_blank">hier&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>. Sie enthält Informationen über Ihre Rechte in Bezug auf die Datenverarbeitung durch Awin. In einigen Fällen kann Awin ein eingeschränktes Profil unterhalten, das sich auf Sie bezieht. Dieses wird aber weder Ihre Identität, Ihr Online-Verhalten oder andere persönliche Merkmale offenbaren. Dieses Profil dient allein dem Zweck nachzuvollziehen, ob eine Weiterleitung auf einem Gerät begonnen und auf einem anderen Gerät abgeschlossen wurde.</p><p>In einigen Fällen können Awin und der Referrer des potenziellen Kunden Ihre personenbezogenen Daten erhalten und verarbeiten, um die Affiliate-Marketing-Kampagne gemeinsam mit uns umzusetzen.</p><p>Gleichfalls erhalten wir personenbezogene Daten potenzieller Kunden von Awin und den Referrern, die sich in folgende Kategorien einteilen lassen: Cookie-Daten, Daten in Bezug auf die Webseite, App oder Technologie, von der ein potentieller Kunde an uns verwiesen wurde und technische Informationen über das von Ihnen genutzte Gerät.</p><p><strong><u>I.) Zur Zusammenarbeit mit The Reach Group GmbH</u></strong></p><p>Auf unseren Webseiten werden Cookies zur Ermöglichung der Schaltung von Retargeting-Kampagnen der The Reach Group GmbH (Am Karlsbad 16, 10785 Berlin, Deutschland) eingesetzt. Bei den gespeicherten Daten innerhalb des Cookies handelt es sich nur um eine verschlüsselte, pseudonymisierte User-ID. Die eingesetzte Adserving-Technologie verwendet eine verkürzte und gehashte IP-Adressen zur Auswertung der geographischen Region, der Zugangsgeschwindigkeit sowie des Internet-Providers. Zudem werden Zeitpunkt des Besuches, die IDs der Produkte, die betrachtet, gesucht oder gekauft wurden, die URLs der betrachteten Seiten, mögliche Suchbegriffe und/oder die IDs der aufgerufenen Kategorien gespeichert, um relevantere Werbeinhalte auszuliefern. Eine Speicherung von IP- oder Browser-Daten erfolgt ausschließlich in Deutschland und zur anonymisierten Anfertigung von Besucherstatistiken und Zuordnung von Transaktionen. Ein Rückschluss auf konkreten Personen, der genauen Adresse, des Aufenthaltsortes oder weitergehenden persönlichen Daten ist dabei zu keinem Zeitpunkt möglich. Es erfolgt keine explizite Weitergabe von IP-Daten an Dritte. Alle Informationen verfügen zudem über ein Verfallsdatum von maximal 90 Tagen, ab dem Ihr Browser die gespeicherten Daten automatisch löscht. Sie können die Speicherung des Cookies durch eine entsprechende Einstellung Ihrer Browser-Software verhindern. Sie können darüber hinaus die Erfassung der durch das Cookie erzeugten und auf Ihre Nutzung der Website bezogenen Daten verhindern, indem Sie die OptOut-Funktion unter dem folgenden Link aktivieren:</p><p><a href="https://hal9000.redintelligence.net/privacy/8lcfmzhxc8d6/" target="_blank">https://hal9000.redintelligence.net/privacy/8lcfmzhxc8d6/&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a></p><p>Weitere Informationen zum Datenschutz der The Reach Group GmbH finden Sie unter</p><p><a href="https://trg.de/datenschutzerklarung/" target="_blank">https://trg.de/datenschutzerklarung/&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a></p><p>Dieser Widerspruch gilt so lange, wie das zugehörige OptOut-Cookie nicht gelöscht wird. Dieses Cookie wird für die Domain, pro Browser und Benutzer eines Rechners gesetzt. Wenn Sie auf unseren Webseiten von mehreren Endgeräten und Browsern aus, zugreifen, müssen Sie daher auf jedem dieser Geräte und in jedem Browser der Datenerfassung separat und erneut widersprechen.</p><p><strong><u>J.) Zur Zusammenarbeit mit targeting360 GmbH</u></strong></p><p>Auf unseren Webseiten werden sog. »Cookies« zur Ermöglichung der Schaltung von Retargeting-Kampagnen der targeting360 GmbH (Gredinger Str. 28, 90453 Nürnberg) eingesetzt, die mit der Adserving-Technologie der NEORY GmbH arbeitet. Zudem können nach der NEORY-Technologie noch weitere Aufrufe zu den folgenden Technologien nachgeladen werden, welche ggf. Cookies setzen: Adform, Adition, Google, MediaMath, The Trade Desk, Emego. Dies dient dazu, Besuchern der Webseite im Rahmen unseres Partner-Werbenetzwerks interessenbezogene Werbeanzeigen zu präsentieren.</p><p>Cookies können es grundsätzlich ermöglichen, unser Angebot nutzerfreundlicher, effektiver und sicherer zu machen. Cookies sind kleine Textdateien, die Ihr Browser speichert und die so auf Ihrem Rechner abgelegt werden. Die meisten verwendeten Cookies sind so genannte »Session-Cookies«, die nach Ende Ihres Besuchs einer Webseite automatisch gelöscht werden. Andere Cookies bleiben auf Ihrem Endgerät gespeichert, bis Sie diese löschen. Generell können Sie die Speicherung von Cookies durch eine entsprechende Einstellung Ihrer Browser-Software verhindern.</p><p>Durch Auslesen der in einem Cookie gespeicherten Kennung ist es möglich, Ihr Endgerät wiederzuerkennen, wenn Sie Websites aufrufen, die dem Werbenetzwerk angehören. Auf diesen Seiten können dem Besucher dann Werbeanzeigen präsentiert werden, die sich auf Inhalte beziehen, die er auf Webseiten aufgerufen hat, die die genannte Adserving-Technologie verwenden. Bei der hier eingesetzten Technologie wird eine durch Kürzen und Hashen anonymisierte IP-Adresse sowie eine Cookie-ID zur Verarbeitung bzw. Auswertung folgender Informationen verwendet: Standort nach Land/Region/Bundesland/Stadt, Internetprovider, Zugangsgeschwindigkeit, technische Informationen zum verwendeten Browser und Endgerät, Betriebssystem, präferierte Sprachen gem. Browsereinstellung, HTTP-Referrer, Uhrzeit der Serveranfrage. Bei der gehashten IP-Adresse und der Cookie-ID handelt es sich um Pseudonyme. Die verarbeiteten Daten können daher nicht unmittelbar bestimmten Personen zugeordnet werden.</p><p>Rechtsgrundlage für den Einsatz der hier verwendeten Cookies und die nachfolgende Verarbeitung ist entsprechend Art. 6 Abs. 1 lit. a) DSGVO die hierfür erteilte Einwilligung. Eine Einwilligung zur Verarbeitung personenbezogener Daten - und auch zur Verwendung von Cookies - kann jederzeit widerrufen werden. Die auf Ihrer Einwilligung basierende Verarbeitung der oben genannten Daten und die weitere Nutzung der hierfür verwendeten Cookies können Sie beendigen, indem unter dem folgenden Link Gebrauch von Ihrem Widerrufs- bzw. Widerspruchsrecht machen: <a href="https://ad.ad-srv.net/privacy/kdb0xdq3ls8m/" target="_blank">https://ad.ad-srv.net/privacy/kdb0xdq3ls8m/&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a></p><p><strong>K.)StorifyMe</strong></p><p>StorifyMe GmbH: In einigen Angeboten nutzen wir diese deutsche Plattform, um redaktionelle Stories zu erstellen. Wenn Sie diese Stories öffnen, werden zwar generelle Nutzungsdaten erfasst, nicht aber die IP-Adresse Ihres Geräts. Werden Ihre IP-Adresse, User-Agent-String und Standard-Header an StorifyMe GmbH übertragen und verarbeitet, aber nicht aufgezeichnet.</p><p>Wenn Sie als Besucher unserer Website eine Internetseite mit einem Widget aufrufen, werden Ihre IP-Adresse, User-Agent-String und Standard-Header an StorifyMe übertragen, aber nicht verarbeitet und aufgezeichnet.</p><p>Mehr zum Datenschutz bei StorifyMe finden Sie <a target="_blank" rel="noopener noreferrer" href="https://www.storifyme.com/legal/privacy-policy">hier&nbsp;<svg class="align-middle mr-px mb-4" width="14" height="16"><use xlink:href="#spon-external-flag-m"/></svg></a>.</p>
 </div>
 </div>
 </div>
@@ -2435,10 +2448,10 @@ function closeSuccessAlert() {
 </div>
 <div data-sara-click-el="body_element" data-area="text" data-pos="3">
 <div class="RichText RichText--lastPmb0 RichText--lastInline lg:w-8/12 md:w-10/12 lg:mx-auto md:mx-auto lg:px-24 md:px-24 sm:px-16 break-words word-wrap">
-<h3><strong>Weiterführende Informationen</strong></h3><p><a href="https://www.spiegel.de/extra/allgemeine-nutzungsbedingungen-a-1207633.html">Allgemeine Nutzungsbedingungen</a></p><p><a href="https://www.spiegel.de/extra/besondere-nutzungsbedingungen-fuer-ihre-beitraege-a-1207779.html">Besondere Nutzungsbedingungen für Ihre Beiträge</a></p><p>Versionsnummer: 3.8.0</p>
+<h3><strong>Weiterführende Informationen</strong></h3><p><a href="https://www.spiegel.de/extra/allgemeine-nutzungsbedingungen-a-1207633.html">Allgemeine Nutzungsbedingungen</a></p><p><a href="https://www.spiegel.de/extra/besondere-nutzungsbedingungen-fuer-ihre-beitraege-a-1207779.html">Besondere Nutzungsbedingungen für Ihre Beiträge</a></p><p>Versionsnummer: 3.9.0</p>
 <span class="align-text-bottom inline-flex ml-2 bottom-px relative"><svg id="spon-end-mark-l" class="fill-current" width="10" height="20" viewBox="0 0 10 20" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="l-s-flag-5d27640a-7826-43c0-949a-6cceca942ec0">
-        <path class="fill-current text-black dark:text-shade-lightest" id="vector-5d27640a-7826-43c0-949a-6cceca942ec0" d="M9.85 16.293v-8H3.212V4.667h3.533v2.24h3.212v-3.2C9.85 2.747 8.993 2 8.03 2H1.713C.749 2 0 2.747 0 3.707v7.253h6.638v4.373H3.105v-2.986H0v3.84c0 .96.75 1.706 1.713 1.706H8.03c.963.107 1.82-.64 1.82-1.6z"/>
+    <g id="l-s-flag-9c1383f5-4d9b-4ec5-9d0c-f1a618edfe1b">
+        <path class="fill-current text-black dark:text-shade-lightest" id="vector-9c1383f5-4d9b-4ec5-9d0c-f1a618edfe1b" d="M9.85 16.293v-8H3.212V4.667h3.533v2.24h3.212v-3.2C9.85 2.747 8.993 2 8.03 2H1.713C.749 2 0 2.747 0 3.707v7.253h6.638v4.373H3.105v-2.986H0v3.84c0 .96.75 1.706 1.713 1.706H8.03c.963.107 1.82-.64 1.82-1.6z"/>
     </g>
 </svg>
 </span>
@@ -2486,9 +2499,9 @@ mehr Spiele
 <div class="lazytrigger relative lg:mx-24 md:mx-24 sm:mx-16 font-sansUI lg:mt-32 md:mt-32 sm:mt-24 text-white dark:text-shade-lightest" data-component="SwiperBar" data-settings="{ &#34;freeMode&#34;: false, &#34;loop&#34;: false, &#34;observeFonts&#34;: false, &#34;loadLazy&#34;: true }">
 <div class="absolute top-0 bottom-0 left-0 z-10 flex items-stretch focus:outline-none select-none" data-swiper-el="prevEl">
 <span class="md:hidden sm:hidden bg-shade-darkest text-center pr-8 -ml-8 cursor-pointer pt-32"><svg id="spon-chevron-left-l" class="stroke-current" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="l-chevron-left-2ab51fd6-f504-4185-8ec5-a7c55802df8a">
-        <g id="l-chevron-right-2ab51fd6-f504-4185-8ec5-a7c55802df8a">
-            <path id="vector-2ab51fd6-f504-4185-8ec5-a7c55802df8a" d="M15 6l-6 6 6 6" stroke-width="1.3" stroke-linecap="round"/>
+    <g id="l-chevron-left-2e57b530-45b6-4e47-9925-873bb6d0f76f">
+        <g id="l-chevron-right-2e57b530-45b6-4e47-9925-873bb6d0f76f">
+            <path id="vector-2e57b530-45b6-4e47-9925-873bb6d0f76f" d="M15 6l-6 6 6 6" stroke-width="1.3" stroke-linecap="round"/>
         </g>
     </g>
 </svg>
@@ -2672,8 +2685,8 @@ Trivial Pursuit
 <div class="absolute top-0 right-0 bottom-0 z-10 flex items-stretch focus:outline-none select-none" data-swiper-el="nextEl">
 <span class="bg-gradient-to-l from-shade-darkest w-24"></span>
 <span class="md:hidden sm:hidden bg-shade-darkest text-center pl-8 -mr-8 cursor-pointer pt-32"><svg id="spon-chevron-right-l" class="stroke-current" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="l-chevron-right-b3a382cd-de07-4aea-af46-5f6fdc662fab">
-        <path id="vector-b3a382cd-de07-4aea-af46-5f6fdc662fab" d="M9 6l6 6-6 6" stroke-width="1.3" stroke-linecap="round"/>
+    <g id="l-chevron-right-cfdc459f-4d2c-48d5-9aea-5b14fdba49e3">
+        <path id="vector-cfdc459f-4d2c-48d5-9aea-5b14fdba49e3" d="M9 6l6 6-6 6" stroke-width="1.3" stroke-linecap="round"/>
     </g>
 </svg>
 </span>
@@ -2710,20 +2723,20 @@ Alle Shops
 <span>Auto</span>
 <span class="pr-8 lg:hidden md:hidden">
 <span class="sm:hidden" data-accordion-el="collapseIcon"><svg id="spon-chevron-up-f-s" class="stroke-current" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="s-chevron-up-f-041d76b1-129e-413f-bf5e-ed39470fdf20">
-        <g id="s-chevron-right-f-041d76b1-129e-413f-bf5e-ed39470fdf20">
-            <g id="s-chevron-right-041d76b1-129e-413f-bf5e-ed39470fdf20">
-                <path id="vector-041d76b1-129e-413f-bf5e-ed39470fdf20" d="M2.667 7.667L6 4.333l3.333 3.334" stroke-width="1.5" stroke-linecap="round"/>
+    <g id="s-chevron-up-f-1ca4d832-0b37-4c33-9f4c-964cd9f24f21">
+        <g id="s-chevron-right-f-1ca4d832-0b37-4c33-9f4c-964cd9f24f21">
+            <g id="s-chevron-right-1ca4d832-0b37-4c33-9f4c-964cd9f24f21">
+                <path id="vector-1ca4d832-0b37-4c33-9f4c-964cd9f24f21" d="M2.667 7.667L6 4.333l3.333 3.334" stroke-width="1.5" stroke-linecap="round"/>
             </g>
         </g>
     </g>
 </svg>
 </span>
 <span data-accordion-el="expandIcon"><svg id="spon-chevron-down-f-s" class="stroke-current" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="s-chevron-down-f-46f0a15e-cca3-4d12-bb69-99900c02669f">
-        <g id="s-chevron-right-f-46f0a15e-cca3-4d12-bb69-99900c02669f">
-            <g id="s-chevron-right-46f0a15e-cca3-4d12-bb69-99900c02669f">
-                <path id="vector-46f0a15e-cca3-4d12-bb69-99900c02669f" d="M9.333 4.333L6 7.667 2.667 4.333" stroke-width="1.5" stroke-linecap="round"/>
+    <g id="s-chevron-down-f-3f5fd582-c753-4b4f-ba52-02971647dc68">
+        <g id="s-chevron-right-f-3f5fd582-c753-4b4f-ba52-02971647dc68">
+            <g id="s-chevron-right-3f5fd582-c753-4b4f-ba52-02971647dc68">
+                <path id="vector-3f5fd582-c753-4b4f-ba52-02971647dc68" d="M9.333 4.333L6 7.667 2.667 4.333" stroke-width="1.5" stroke-linecap="round"/>
             </g>
         </g>
     </g>
@@ -2855,6 +2868,9 @@ Alle Shops
 <ul class="font-sansUI font-normal">
 <li>
 <a href="https://spiele.spiegel.de/?utm_campaign=startseite&utm_medium=footer_navigation&utm_source=spiegel_de" target="_self" title="Spiele" class="block text-shade-light hover:text-shade-lightest focus:text-white text-s sm:pb-8 outline-focus">Spiele</a>
+</li>
+<li>
+<a href="https://www.spiegel.de/panorama/taegliches-quiz-beim-spiegel-7-fragen-zum-allgemeinwissen-pro-tag-a-8a9692b2-4462-4192-942c-fd7809c7519c" target="_self" title="Das tägliche Quiz" class="block text-shade-light hover:text-shade-lightest focus:text-white text-s sm:pb-8 outline-focus">Das tägliche Quiz</a>
 </li>
 </ul>
 </div>
@@ -2994,6 +3010,7 @@ SPIEGEL Gruppe
 </div>
 <div class="font-normal font-sansUI lg:text-center md:text-center">
 <a href="https://abo.spiegel.de/?b=SPOHFOOTER&utm_campaign=abbinder&utm_content=SPOHFOOTER&utm_medium=text&utm_source=spon" target="_blank" title="Abo" class="text-shade-light text-s pr-8 hover:text-shade-lightest focus:text-white inline-block sm:pr-16 sm:pb-18">Abo</a>
+<a href="https://gruppenkonto.spiegel.de/kuendigung.html" target="_blank" title="Abo kündigen" class="text-shade-light text-s pr-8 hover:text-shade-lightest focus:text-white inline-block sm:pr-16 sm:pb-18">Abo kündigen</a>
 <a href="https://www.amazon.de/stores/page/9A033B74-B98E-4CE4-BB30-C47BD542801B?_encoding=UTF8&camp=1638&creative=6742&linkCode=ur2&linkId=ddec9c715dda90b1e0d431bb3abc5d3c&tag=wwwspiegelde-21" target="_blank" title="Shop" class="text-shade-light text-s pr-8 hover:text-shade-lightest focus:text-white inline-block sm:pr-16 sm:pb-18">Shop</a>
 <a href="https://www.manager-magazin.de/" target="_blank" title="manager magazin" class="text-shade-light text-s pr-8 hover:text-shade-lightest focus:text-white inline-block sm:pr-16 sm:pb-18">manager magazin</a>
 <a href="http://www.harvardbusinessmanager.de/" target="_blank" title="Harvard Business manager" class="text-shade-light text-s pr-8 hover:text-shade-lightest focus:text-white inline-block sm:pr-16 sm:pb-18">Harvard Business manager</a>
@@ -3031,10 +3048,213 @@ Wo Sie uns noch folgen können
 </a>
 </div>
 </div>
-<div data-app-bottombar-height></div>
+<div style="height: var(--polygon-app-bottombar-height, 0px)"></div>
 </div>
 </div>
 </footer>
+</div>
+</div>
+</div>
+<div x-data="{ isExpanded: false }" x-cloak data-app-hidden data-area="audio-player">
+<div class="fixed w-full bottom-0 sm:mb-8 md:mb-16 lg:mb-16 z-20 pointer-events-none" x-show="$store.WebAudio.clip && !isExpanded" x-transition:enter="transform transition-transform duration-500 ease-out" x-transition:enter-start="translate-y-3/2" x-transition:leave="transform transition-transform duration-500 ease-out" x-transition:leave-end="translate-y-3/2">
+<div class="OffsetContainer justify-center">
+<div class="relative z-20 w-full mx-auto sm:max-w-sm md:max-w-md lg:max-w-lg sm:px-16 md:px-16 lg:px-24">
+<div class="pointer-events-auto">
+<div class="shadow-lg rounded-pill bg-sec2-lightest dark:bg-sec2-darker w-full z-max relative cursor-pointer" @click="isExpanded = true; $focus($refs['audio-player-collapse'])">
+<div class="flex items-center pl-8">
+<button class="flex-shrink-0 mr-12 outline-focus" title="Audio Player maximieren" x-ref="audio-player-expand">
+<div class="relative" aria-hidden="true">
+<img class="lazyload rounded py-8" x-data="{
+                            onSrcChanged() {
+                                $el.classList.remove('loaded');
+                                $el.classList.remove('entered');
+                                $el.removeAttribute('data-ll-status');
+                                $publish('LAZYLOADING_UPDATE');
+                            }
+                        }" x-effect="($store.WebAudio.clip ? $store.WebAudio.clip.posterUrl : '') && onSrcChanged()" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36' width='36' height='36' %3E%3C/svg%3E" :data-src="$store.WebAudio.clip ? $store.WebAudio.clip.posterUrl : ''" width="36" height="36">
+<noscript>
+<img class="absolute inset-0" loading="lazy" src="$store.WebAudio.clip ? $store.WebAudio.clip.posterUrl : ''" width="36" height="36">
+</noscript>
+</div>
+<span class="sr-only">Audio Player maximieren</span>
+</button>
+<div class="flex flex-col overflow-hidden font-sansUI text-xs text-left relative w-full py-8">
+<div x-show="!$store.WebAudio.isRestored">
+<div class="font-bold text-primary-base dark:text-dm-primary-base whitespace-nowrap" x-text="$store.WebAudio.clip ? $store.WebAudio.clip.kicker : ''"></div>
+<div class="font-bold whitespace-nowrap" x-text="$store.WebAudio.clip ? $store.WebAudio.clip.headline : ''"></div>
+</div>
+<div x-show="$store.WebAudio.isRestored">
+<div class="font-bold whitespace-nowrap tracking-wide">
+Die Wiedergabe wurde unterbrochen.
+</div>
+<button class="underline whitespace-nowrap" title="Wiedergabe fortsetzen" @click.stop="$publish('AUDIO_PLAYER_RESUME')">
+Wiedergabe fortsetzen?
+</button>
+</div>
+<div class="absolute right-0 bottom-0 flex-shrink-0 bg-gradient-to-l dark:from-sec2-darker from-sec2-lightest h-full w-16"></div>
+</div>
+<div class="flex items-center ml-18">
+<button class="lg:px-12 md:px-12 sm:px-6 text-sec2-dark dark:text-shade-lighter hover:text-sec2-darker dark:hover:text-shade-lightest" :title="$store.WebAudio.isPlaying ? 'Wiedergabe pausieren' : 'Wiedergabe starten'" x-show="!$store.WebAudio.isLoading" @click.stop="$store.WebAudio.isPlaying ? $publish('AUDIO_PLAYER_PAUSE') : $publish('AUDIO_PLAYER_RESUME')" data-sara-click-el="button">
+<span x-show="!$store.WebAudio.isPlaying" class="flex h-48 items-center"><svg id="spon-play-f-l" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+    <g id="l-play-f-e8476ee7-01d8-4f4d-be6d-2f19f05c0a40">
+        <g id="l-play-e8476ee7-01d8-4f4d-be6d-2f19f05c0a40">
+            <path id="vector-e8476ee7-01d8-4f4d-be6d-2f19f05c0a40" d="M6 5.763a.75.75 0 011.11-.658l11.433 6.237a.75.75 0 010 1.316L7.109 18.895A.75.75 0 016 18.237V5.763z" class="fill-current"/>
+        </g>
+    </g>
+</svg>
+</span>
+<span x-show="$store.WebAudio.isPlaying" class="flex h-48 items-center"><svg id="spon-pause-f-l" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+    <g id="l-pause-f-e71b84bb-714a-41d0-b2fe-0cff8d459186">
+        <rect id="rectangle-e71b84bb-714a-41d0-b2fe-0cff8d459186" x="7" y="4" width="3" height="16" rx="1.5" class="fill-current"/>
+        <rect id="rectangle_2-e71b84bb-714a-41d0-b2fe-0cff8d459186" x="14" y="4" width="3" height="16" rx="1.5" class="fill-current"/>
+    </g>
+</svg>
+</span>
+<span class="sr-only" x-text="$store.WebAudio.isPlaying ? 'Wiedergabe pausieren' : 'Wiedergabe starten'"></span>
+</button>
+<div class="flex h-48 items-center lg:px-12 md:px-12 sm:px-6" x-show="$store.WebAudio.isLoading">
+<span class="rounded-circle w-20 h-20 m-2 border-2 border-shade-base dark:border-shade-light animate-spin" style="border-top-color:transparent;"></span>
+</div>
+<button class="flex h-48 items-center lg:px-12 md:px-12 sm:px-6 text-sec2-dark dark:text-shade-lighter hover:text-sec2-darker dark:hover:text-shade-lightest" title="Wiedergabe beenden" @click.stop="$publish('AUDIO_PLAYER_CLEAR')" data-sara-click-el="button"><svg id="spon-close-f-l" class="stroke-current" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+    <g id="l-close-f-ae1908ba-736f-460b-814e-fea03eea9d79">
+        <g id="l-close-ae1908ba-736f-460b-814e-fea03eea9d79">
+            <path id="vector-ae1908ba-736f-460b-814e-fea03eea9d79" d="M18 18L6 6m12 0L6 18" stroke-width="2.2" stroke-linecap="round"/>
+        </g>
+    </g>
+</svg>
+<span class="sr-only">Wiedergabe beenden</span>
+</button>
+</div>
+</div>
+<div class="absolute bottom-0 left-8 right-8">
+<div class="absolute bottom-0 w-full bg-opacity-slight h-2 bg-sec2-dark dark:bg-shade-lighter"></div>
+<div class="absolute bottom-0 left-0 right-0 h-2 bg-sec2-dark dark:bg-shade-lighter" :style="{ width: ($store.WebAudio.currentTime / $store.WebAudio.duration * 100) + '%' }"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="fixed w-full bottom-0 sm:mb-8 md:mb-16 lg:mb-16 z-20 pointer-events-none" x-show="$store.WebAudio.clip && isExpanded" x-transition:enter="transform transition-transform duration-500 ease-out" x-transition:enter-start="translate-y-3/2" x-transition:leave="transform transition-transform duration-500 ease-out" x-transition:leave-end="translate-y-3/2">
+<div class="OffsetContainer justify-center">
+<div class="relative z-20 w-full mx-auto sm:max-w-sm md:max-w-md lg:max-w-lg sm:px-16 md:px-16 lg:px-24">
+<div class="pointer-events-auto">
+<div class="shadow-lg rounded-pill bg-sec2-lightest dark:bg-sec2-darker lg:pb-16 md:pb-16 sm:pb-16 z-max">
+<button class="text-right pt-16 pb-12 lg:pr-24 md:pr-24 sm:pr-16 w-full outline-focus" title="Audio Player minimieren" @click="isExpanded = false; $focus($refs['audio-player-expand'])" x-ref="audio-player-collapse"><svg id="spon-chevron-down-l" class="stroke-current" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+    <g id="l-chevron-down-b03b31b9-e903-4387-9f88-072c4280c8dd">
+        <g id="l-chevron-right-b03b31b9-e903-4387-9f88-072c4280c8dd">
+            <path id="vector-b03b31b9-e903-4387-9f88-072c4280c8dd" d="M18 9l-6 6-6-6" stroke-width="1.3" stroke-linecap="round"/>
+        </g>
+    </g>
+</svg>
+<span class="sr-only">Audio Player minimieren</span>
+</button>
+<div class="flex items-center justify-between mb-24 sm:flex-col lg:px-24 md:px-24 sm:px-16">
+<div class="w-full flex items-center sm:mb-16">
+<div class="flex-shrink-0 mr-16">
+<div class="relative" aria-hidden="true">
+<img class="lazyload rounded" x-data="{
+                            onSrcChanged() {
+                                $el.classList.remove('loaded');
+                                $el.classList.remove('entered');
+                                $el.removeAttribute('data-ll-status');
+                                $publish('LAZYLOADING_UPDATE');
+                            }
+                        }" x-effect="($store.WebAudio.clip ? $store.WebAudio.clip.posterUrl : '') && onSrcChanged()" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 72 72' width='72' height='72' %3E%3C/svg%3E" :data-src="$store.WebAudio.clip ? $store.WebAudio.clip.posterUrl : ''" width="72" height="72">
+<noscript>
+<img class="absolute inset-0" loading="lazy" src="$store.WebAudio.clip ? $store.WebAudio.clip.posterUrl : ''" width="72" height="72">
+</noscript>
+</div>
+</div>
+<div class="flex flex-col font-bold font-sansUI">
+<div class="text-s text-primary-base dark:text-dm-primary-base lg:mb-4 md:mb-4" x-text="$store.WebAudio.clip ? $store.WebAudio.clip.kicker : ''" x-show="$store.WebAudio.clip && $store.WebAudio.clip.kicker"></div>
+<div class="text-base" x-text="$store.WebAudio.clip ? $store.WebAudio.clip.headline : ''"></div>
+</div>
+</div>
+<div class="flex flex-shrink-0 items-center lg:justify-end md:justify-end sm:justify-between sm:w-full w-5/12">
+<div class="sm:min-w-48 sm:w-full">
+<button x-data="{
+                            playbackRates: [ 0.8, 0.9, 1, 1.1, 1.2, 1.5, 1.7 ],
+                            get nextPlaybackRate() {
+                                const index = this.playbackRates.findIndex((playbackRate) => playbackRate === $store.WebAudio.playbackRate);
+                                const nextIndex = (index + 1) % this.playbackRates.length;
+                                return this.playbackRates[nextIndex];
+                            }
+                        }" class="border font-bold font-sansUI h-24 px-6 rounded-oval text-xs border-sec2-dark dark:border-shade-lighter hover:border-sec2-darker dark:hover:border-shade-lightest text-sec2-dark dark:text-shade-lighter hover:text-sec2-darker dark:hover:text-shade-lightest" title="Wiedergabegeschwindigkeit ändern" @click="$publish('AUDIO_PLAYER_SET_PLAYBACK_RATE', nextPlaybackRate)" data-sara-click-el="button">
+<span x-text="($store.WebAudio.playbackRate).toFixed(1) + 'x'"></span>
+<span class="sr-only">Wiedergabegeschwindigkeit ändern</span>
+</button>
+</div>
+<div class="flex flex-shrink-0 items-stretch">
+<button class="lg:px-12 md:px-12 sm:pr-12 lg:mx-12 md:mx-12 sm:mr-12 text-sec2-dark dark:text-shade-lighter hover:text-sec2-darker dark:hover:text-shade-lightest" title="15 Sekunden zurück" @click="$publish('AUDIO_PLAYER_SET_TIME', $store.WebAudio.currentTime - 15)" data-sara-click-el="button"><svg id="spon-player-backward-l" width="32" height="24" viewBox="0 0 32 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+<path d="M5.65 3.5C11.8333 3.5 12.8167 3.5 19 3.5C24.2467 3.5 28.5 7.75329 28.5 13C28.5 18.2467 24.2467 22.5 19 22.5H15" class="stroke-current" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M2.64507 2.93557L4.75612 1.08839C5.24106 0.664074 6 1.00846 6 1.65283V5.34717C6 5.99154 5.24106 6.33593 4.75612 5.91161L2.64507 4.06443C2.30357 3.76562 2.30357 3.23438 2.64507 2.93557Z" class="fill-current"/>
+<path d="M10.1245 15.62V17H15.4165V15.62H13.7605V9.044H12.2725L10.0765 9.944L10.4845 11.156L12.0445 10.52V15.62H10.1245ZM16.309 13.508C16.597 13.46 17.449 13.424 18.001 13.424C19.441 13.424 20.137 13.736 20.137 14.66C20.137 15.452 19.693 15.86 18.901 15.86C18.073 15.86 17.689 15.476 17.773 14.684H16.045C15.781 16.364 16.633 17.156 18.757 17.156C20.917 17.156 21.901 16.124 21.901 14.528C21.901 12.788 20.797 12.14 18.685 12.14C18.433 12.14 18.157 12.152 17.905 12.164L18.037 10.544H21.349L21.481 9.044H16.597L16.309 13.508Z" class="fill-current"/>
+</svg>
+<span class="sr-only">15 Sekunden zurück</span>
+</button>
+<button class="flex-shrink-0 w-48 h-48 rounded-circle px-12 bg-sec2-dark dark:bg-shade-lighter hover:bg-sec2-darker dark:hover:bg-shade-lightest text-white dark:text-sec2-dark" :title="$store.WebAudio.isPlaying ? 'Wiedergabe pausieren' : 'Wiedergabe starten'" :disabled="$store.WebAudio.isLoading" @click="$store.WebAudio.isPlaying ? $publish('AUDIO_PLAYER_PAUSE') : $publish('AUDIO_PLAYER_RESUME')" data-sara-click-el="button">
+<span x-show="!$store.WebAudio.isPlaying && !$store.WebAudio.isLoading" class="flex items-center justify-around"><svg width="24" height="24"><use xlink:href="#spon-play-f-l"/></svg>
+</span>
+<span x-show="$store.WebAudio.isPlaying && !$store.WebAudio.isLoading" class="flex items-center justify-around"><svg width="24" height="24"><use xlink:href="#spon-pause-f-l"/></svg>
+</span>
+<span x-show="$store.WebAudio.isLoading" class="flex rounded-circle w-20 h-20 m-2 border-2 border-white dark:border-sec2-dark animate-spin" style="border-top-color:transparent;"></span>
+<span class="sr-only" x-text="$store.WebAudio.isPlaying ? 'Wiedergabe pausieren' : 'Wiedergabe starten'"></span>
+</button>
+<button class="lg:pr-12 pl-12 ml-12 text-sec2-dark dark:text-shade-lighter hover:text-sec2-darker dark:hover:text-shade-lightest" title="30 Sekunden vor" @click="$publish('AUDIO_PLAYER_SET_TIME', $store.WebAudio.currentTime + 30)" data-sara-click-el="button"><svg id="spon-player-forward-l" width="32" height="24" viewBox="0 0 32 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+<path d="M26.35 3.5C20.1667 3.5 19.1833 3.5 13 3.5C7.75329 3.5 3.5 7.75329 3.5 13C3.5 18.2467 7.75329 22.5 13 22.5H17" class="stroke-current" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M29.3549 2.93557L27.2439 1.08839C26.7589 0.664074 26 1.00846 26 1.65283V5.34717C26 5.99154 26.7589 6.33593 27.2439 5.91161L29.3549 4.06443C29.6964 3.76562 29.6964 3.23438 29.3549 2.93557Z" class="fill-current"/>
+<path d="M11.9726 13.604C13.1366 13.604 13.4606 14.036 13.4606 14.732C13.4606 15.368 13.1006 15.86 12.1646 15.86C11.2766 15.86 10.8686 15.488 10.9406 14.672H9.20064C8.96064 16.376 9.83664 17.156 12.0686 17.156C14.2406 17.156 15.2246 16.184 15.2246 14.72C15.2246 13.532 14.5886 12.944 13.4966 12.8V12.776C14.3726 12.548 14.9846 11.888 14.9846 10.952C14.9846 9.716 14.2646 8.888 12.2246 8.888C10.3046 8.888 9.21264 9.68 9.28464 11.288H10.9886C10.9646 10.652 11.2526 10.172 12.1166 10.172C12.8606 10.172 13.2206 10.52 13.2206 11.204C13.2206 11.816 12.8726 12.26 11.9726 12.26H10.8806V13.604H11.9726ZM19.2417 17.156C21.1977 17.156 22.5057 15.968 22.5057 12.908C22.5057 9.98 21.4257 8.888 19.3737 8.888C17.4057 8.888 16.0977 10.064 16.0977 13.124C16.0977 16.052 17.1897 17.156 19.2417 17.156ZM19.2897 15.824C18.3657 15.824 17.8737 15.248 17.8737 13.04C17.8737 10.856 18.4017 10.22 19.3137 10.22C20.2377 10.22 20.7417 10.796 20.7417 12.992C20.7417 15.2 20.2017 15.824 19.2897 15.824Z" class="fill-current"/>
+</svg>
+<span class="sr-only">30 Sekunden vor</span>
+</button>
+<button x-data="{ lastVolume: $store.WebAudio.volume }" x-effect="this.lastVolume = $store.WebAudio.volume > 0 ? $store.WebAudio.volume : this.lastVolume" class="md:hidden sm:hidden px-12 text-sec2-dark dark:text-shade-lighter hover:text-sec2-darker dark:hover:text-shade-lightest" :title="$store.WebAudio.volume === 0 ? 'Stummschaltung aufheben' : 'Stummschalten'" @click="$store.WebAudio.volume = $store.WebAudio.volume === 0 ? this.lastVolume : 0" data-sara-click-el="button">
+<span x-show="$store.WebAudio.volume !== 0"><svg id="spon-player-volume-max-l" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+<path d="M17 16C18.1956 15.2016 19 13.7092 19 12C19 10.2908 18.1956 8.79844 17 8" class="stroke-current" stroke-width="1.3" stroke-linecap="round"/>
+<path d="M15 13C15.2989 12.8004 15.5 12.4273 15.5 12C15.5 11.5727 15.2989 11.1996 15 11" class="stroke-current" stroke-width="1.3" stroke-linecap="round"/>
+<path d="M19 18.5C20.8569 17.2025 22.5 14.7775 22.5 12C22.5 9.2225 20.8569 6.79746 19 5.5" class="stroke-current" stroke-width="1.3" stroke-linecap="round"/>
+<path d="M2.65 8.75C2.65 8.69477 2.69477 8.65 2.75 8.65H5.73691C6.05481 8.65 6.36325 8.54181 6.61149 8.34322L11.2006 4.67191C11.2183 4.65773 11.2404 4.65 11.2631 4.65H12.25C12.3052 4.65 12.35 4.69477 12.35 4.75V19.25C12.35 19.3052 12.3052 19.35 12.25 19.35H11.2631C11.2404 19.35 11.2183 19.3423 11.2006 19.3281L6.61149 15.6568C6.36325 15.4582 6.05481 15.35 5.73691 15.35H2.75C2.69477 15.35 2.65 15.3052 2.65 15.25V8.75Z" class="stroke-current" stroke-width="1.3"/>
+</svg>
+<span class="sr-only">Stummschalten</span>
+</span>
+<span x-show="$store.WebAudio.volume === 0"><svg id="spon-player-volume-mute-l" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+<path d="M2.65 8.75C2.65 8.69477 2.69477 8.65 2.75 8.65H5.73691C6.05481 8.65 6.36325 8.54181 6.61149 8.34322L11.2006 4.67191C11.2183 4.65773 11.2404 4.65 11.2631 4.65H12.25C12.3052 4.65 12.35 4.69477 12.35 4.75V19.25C12.35 19.3052 12.3052 19.35 12.25 19.35H11.2631C11.2404 19.35 11.2183 19.3423 11.2006 19.3281L6.61149 15.6568C6.36325 15.4582 6.05481 15.35 5.73691 15.35H2.75C2.69477 15.35 2.65 15.3052 2.65 15.25V8.75Z" class="stroke-current" stroke-width="1.3"/>
+<path d="M15.5 14.5L20.5 9.5" class="stroke-current" stroke-width="1.3" stroke-linecap="round"/>
+<path d="M20.5 14.5L15.5 9.5" class="stroke-current" stroke-width="1.3" stroke-linecap="round"/>
+</svg>
+<span class="sr-only">Stummschaltung aufheben</span>
+</span>
+</button>
+<div x-data="{
+                get progress() {
+                    return ($store.WebAudio.volume - 0) / 1 - 0;
+                }
+            }" class="relative h-2 self-center bottom-px md:hidden sm:hidden w-64" :style="{ '--polygon-range-progress': progress }">
+<input class="audio-player-range-thumb hover:cursor-pointer absolute w-full appearance-none h-2 bg-opacity-slight bg-no-repeat bg-gradient-to-r bg-sec2-dark dark:bg-shade-lightest from-sec2-dark dark:from-sec2-lightest to-sec2-dark dark:to-sec2-lightest" type="range" x-model="$store.WebAudio.volume" :min="0" :max="1" :step="0.01" style="background-size: calc(100% * var(--polygon-range-progress)) 100%;" title="Lautstärke">
+<span class="absolute left-0 bottom-0 top-0 my-auto rounded-pill w-8 h-8 pointer-events-none bg-sec2-dark dark:bg-shade-lightest" style="left: calc(100% * var(--polygon-range-progress) - var(--polygon-range-progress) * 8px);"></span>
+</div>
+</div>
+<div class="sm:min-w-48 sm:w-full">
+</div>
+</div>
+</div>
+<div class="lg:px-24 md:px-24 sm:px-16">
+<div x-data="{
+                get progress() {
+                    return ($store.WebAudio.currentTime - 0) / $store.WebAudio.duration - 0;
+                }
+            }" class="relative h-2 w-full mb-12" :style="{ '--polygon-range-progress': progress }">
+<input class="audio-player-range-thumb hover:cursor-pointer absolute w-full appearance-none h-2 bg-opacity-slight bg-no-repeat bg-gradient-to-r bg-sec2-dark dark:bg-shade-lightest from-sec2-dark dark:from-sec2-lightest to-sec2-dark dark:to-sec2-lightest" type="range" x-model="$store.WebAudio.currentTime" :min="0" :max="$store.WebAudio.duration" :step="1" style="background-size: calc(100% * var(--polygon-range-progress)) 100%;" title="Abspielposition">
+<span class="absolute left-0 bottom-0 top-0 my-auto rounded-pill w-8 h-8 pointer-events-none bg-sec2-dark dark:bg-shade-lightest" style="left: calc(100% * var(--polygon-range-progress) - var(--polygon-range-progress) * 8px);"></span>
+</div>
+<div class="flex justify-between font-sansUI text-s text-sec2-darker dark:text-shade-lightest mb-12">
+<div x-text="$formatTime($store.WebAudio.currentTime)"></div>
+<div x-text="$formatTime($store.WebAudio.duration)"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -3051,7 +3271,7 @@ SPIEGEL+-Zugang wird gerade auf einem anderen Gerät genutzt
 SPIEGEL+ kann nur auf einem Gerät zur selben Zeit genutzt werden.
 </p>
 <figure class="block my-16"><svg id="spon-multi-user" width="248" height="136" viewBox="0 0 248 136" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g clip-path="url(#illustration__clip0-d0fa4529-6ec5-4368-9498-dbda885da7ab)">
+    <g clip-path="url(#illustration__clip0-81160c29-df83-4f4d-9d56-6b940281684c)">
         <path d="M140.972 235.115c57.011 0 103.228-46.938 103.228-104.839 0-57.902-46.217-104.84-103.228-104.84-57.012 0-103.229 46.938-103.229 104.84 0 57.901 46.217 104.839 103.229 104.839z" fill="#E9F1F5"/>
         <path d="M206.952 70.586l-13.738 36.519-24.225-30.69a15.183 15.183 0 00-11.933-5.795h-25.068a17.397 17.397 0 00-16.265 11.262l-23.916 63.547 47 12.67 5.062-12.67 18.38-48.348 26.787 33.974c3.405 4.316 10.316 3.628 12.534-1.41a4.41 4.41 0 00.172-.429l19.188-58.63h-13.978z" fill="#E64415"/>
         <path d="M178.825 82.191l-15.234 45.993c-.051.137-.12.275-.172.43-2.235 5.02-9.129 5.725-12.551 1.392l-26.787-33.957 7.444-19.79 23.521 29.814 9.8-23.882h13.979z" fill="#E64415"/>
@@ -3084,7 +3304,7 @@ SPIEGEL+ kann nur auf einem Gerät zur selben Zeit genutzt werden.
         <path d="M224 24.987V14.92h-7.985v-4.564H220v2.819h4V9.148C224 7.859 222.804 7 221.6 7h-7.459C212.937 7 212 7.94 212 9.148v9.127h7.98v5.504h-4.099V20.02H212v4.832c0 1.208.937 2.148 2.141 2.148h7.579c1.232 0 2.28-.805 2.28-2.013zm7.57-13.701h2.858v4.285h4.285v2.857h-4.285v4.286h-2.858v-4.286h-4.285v-2.857h4.285v-4.285z" fill="#fff"/>
     </g>
     <defs>
-        <clipPath id="illustration__clip0-d0fa4529-6ec5-4368-9498-dbda885da7ab">
+        <clipPath id="illustration__clip0-81160c29-df83-4f4d-9d56-6b940281684c">
             <path fill="#fff" d="M0 0h248v136H0z"/>
         </clipPath>
     </defs>
@@ -3096,8 +3316,8 @@ SPIEGEL+ kann nur auf einem Gerät zur selben Zeit genutzt werden.
 Hier weiterlesen
 </span>
 <span class="flex leading-none items-center ml-12"><svg id="spon-chevron-right-s" class="stroke-current" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="s-chevron-right-6d686a4f-3d7e-4f37-ba54-ae373a4fcccd">
-        <path id="vector-6d686a4f-3d7e-4f37-ba54-ae373a4fcccd" d="M4.333 2.667L7.667 6 4.333 9.333" stroke-linecap="round"/>
+    <g id="s-chevron-right-39f6bc6f-82ee-4400-be57-680b76d64040">
+        <path id="vector-39f6bc6f-82ee-4400-be57-680b76d64040" d="M4.333 2.667L7.667 6 4.333 9.333" stroke-linecap="round"/>
     </g>
 </svg>
 </span>
@@ -3118,15 +3338,15 @@ Warum sehe ich diesen Hinweis?
 <div class="fixed top-0 inset-x-0 z-overlay" data-notification-el="container" data-notification-position="overlay"></div>
 <div class="hidden fixed left-0 top-0 h-full w-full z-overlay transition-opacity duration-300" data-component="BookmarksLoginLayer">
 <div class="bg-black opacity-distinct h-full w-full" data-loginlayer-el="background"></div>
-<div class="absolute inset-0 flex items-center mx-auto sm:max-w-sm md:max-w-md lg:max-w-lg pointer-events-none" data-app-bottombar-offset>
+<div class="absolute inset-0 flex items-center mx-auto sm:max-w-sm md:max-w-md lg:max-w-lg pointer-events-none" style="bottom: var(--polygon-app-bottombar-height, 0px)">
 <div class="bg-white border border-shade-lighter dark:bg-dm-shade-darkest lg:mx-auto md:mx-auto sm:mx-16 lg:p-24 lg:w-8/12 md:p-24 md:w-10/12 rounded shadow sm:p-16 max-h-full overflow-x-hidden overflow-y-auto pointer-events-auto">
 <div class="flex justify-between lg:mb-24 md:mb-24 sm:mb-16">
 <div class="font-brandUI font-extrabold lg:text-2xl md:text-2xl sm:text-xl leading-tight lg:mr-24 md:mr-24 sm:mr-16 sm:pt-px">
 Merkliste
 </div>
 <button class="text-black dark:text-shade-lightest outline-focus cursor-pointer leading-none" data-loginlayer-el="close-icon" data-sara-click-el="button"><svg id="spon-close-l" class="stroke-current" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="l-close-d9cd59aa-9dfd-4d8a-a6a5-c4f4e46cf87f">
-        <path id="vector-d9cd59aa-9dfd-4d8a-a6a5-c4f4e46cf87f" d="M18 18L6 6m12 0L6 18" stroke-width="1.3" stroke-linecap="round"/>
+    <g id="l-close-d2716cb7-8dbf-4004-928a-22a582706ca7">
+        <path id="vector-d2716cb7-8dbf-4004-928a-22a582706ca7" d="M18 18L6 6m12 0L6 18" stroke-width="1.3" stroke-linecap="round"/>
     </g>
 </svg>
 <span class="sr-only">Dialog schließen</span>
@@ -3185,7 +3405,7 @@ Jetzt registrieren
                 });
                 GujAdPositions.push({
                     id: "dmofooter_1",
-                    sitetype: "tablet"
+                    sitetype: "desktop"
                 });
                 GujAdPositions.push({
                     id: "mobile_10",
@@ -3193,17 +3413,17 @@ Jetzt registrieren
                 });
     }
 </script>
-<script defer src="https://cdn.prod.www.spiegel.de/public/shared/generated/js/vendors.19347d0c0591b7a75e26.js"></script>
-<script defer src="https://cdn.prod.www.spiegel.de/public/shared/generated/js/index.c643e3e591a2b613f4e3.js"></script>
+<script defer src="https://cdn.prod.www.spiegel.de/public/shared/generated/js/vendors.214f335cd171ba559f79.js"></script>
+<script defer src="https://cdn.prod.www.spiegel.de/public/shared/generated/js/index.9d46ddf5d55670c8fc17.js"></script>
 <div class="hidden"><svg id="spon-checkbox-f-l" class="stroke-current" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="l-checkbox-f-74619f78-331d-4d4f-9110-5bd0179e693a">
-        <g id="l-checkbox-f_2-74619f78-331d-4d4f-9110-5bd0179e693a">
-            <path id="check-74619f78-331d-4d4f-9110-5bd0179e693a" d="M17 7l-7 9-3-4" stroke-width="2.2" stroke-linecap="round"/>
+    <g id="l-checkbox-f-09877f72-68e5-43d9-baa1-68d51f5c9a39">
+        <g id="l-checkbox-f_2-09877f72-68e5-43d9-baa1-68d51f5c9a39">
+            <path id="check-09877f72-68e5-43d9-baa1-68d51f5c9a39" d="M17 7l-7 9-3-4" stroke-width="2.2" stroke-linecap="round"/>
         </g>
     </g>
 </svg><svg id="spon-close-m" class="stroke-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
-    <g id="m-close-4ddbd933-2ade-4a3f-acd2-328aa10b982c">
-        <path id="vector-4ddbd933-2ade-4a3f-acd2-328aa10b982c" d="M12 12L4 4m8 0l-8 8" stroke-linecap="round"/>
+    <g id="m-close-8a956b7b-c568-4997-aeac-9e2274b0f4cc">
+        <path id="vector-8a956b7b-c568-4997-aeac-9e2274b0f4cc" d="M12 12L4 4m8 0l-8 8" stroke-linecap="round"/>
     </g>
 </svg>
 </div>
