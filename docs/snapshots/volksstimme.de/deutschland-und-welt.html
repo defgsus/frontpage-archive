@@ -1,8 +1,8 @@
 <!DOCTYPE html><html lang="de"><head>
 
-      <link rel="preload prefetch stylesheet" href="/designs/bmg_base_design/1.0.144/styles-vs.css" as="style">
+      <link rel="preload prefetch stylesheet" href="/designs/bmg_base_design/1.0.146/styles-vs.css" as="style">
 
-      <link rel="preload prefetch stylesheet" href="/static/css/styles-delivery-vs-base.f078c8a0.css" as="style">
+      <link rel="preload prefetch stylesheet" href="/static/css/styles-delivery-vs-base.0a123083.css" as="style">
 
     <title>VS - Deutschland &amp; Welt</title>
     <meta charset="UTF-8">
@@ -47,6 +47,12 @@
                 var s = document.getElementsByTagName("script")[0];
                 cre.onload = function(){
                     if (typeof(cre_client) != "undefined") {
+                        cre_client.addListener(function(response){
+                            const userType = response?.data?.action_groups?.cms_snippet?.parameters[0]
+                            if(typeof initiateSourcePoint === "function") {
+                                initiateSourcePoint(userType)
+                            }
+                        });
                         cre_client.set_page_view();
                         cre_client.set_origin("web");
                         cre_client.set_service_id("mv-web");
@@ -84,15 +90,6 @@
 <link rel="preload" href="https://data-9f47bd3ec3.volksstimme.de/iomm/latest/bootstrap/loader.js" as="script">
 <script type="text/javascript" src="https://data-9f47bd3ec3.volksstimme.de/iomm/latest/bootstrap/loader.js"></script>
 <!-- end preload of IOM web manager --><script>
-
-    !function () { var e = function () { var e, t = "__tcfapiLocator", a = [], n = window; for (; n;) { try { if (n.frames[t]) { e = n; break } } catch (e) { } if (n === window.top) break; n = n.parent } e || (!function e() { var a = n.document, r = !!n.frames[t]; if (!r) if (a.body) { var i = a.createElement("iframe"); i.style.cssText = "display:none", i.name = t, a.body.appendChild(i) } else setTimeout(e, 5); return !r }(), n.__tcfapi = function () { for (var e, t = arguments.length, n = new Array(t), r = 0; r < t; r++)n[r] = arguments[r]; if (!n.length) return a; if ("setGdprApplies" === n[0]) n.length > 3 && 2 === parseInt(n[1], 10) && "boolean" == typeof n[3] && (e = n[3], "function" == typeof n[2] && n[2]("set", !0)); else if ("ping" === n[0]) { var i = { gdprApplies: e, cmpLoaded: !1, cmpStatus: "stub" }; "function" == typeof n[2] && n[2](i) } else a.push(n) }, n.addEventListener("message", (function (e) { var t = "string" == typeof e.data, a = {}; try { a = t ? JSON.parse(e.data) : e.data } catch (e) { } var n = a.__tcfapiCall; n && window.__tcfapi(n.command, n.version, (function (a, r) { var i = { __tcfapiReturn: { returnValue: a, success: r, callId: n.callId } }; t && (i = JSON.stringify(i)), e.source.postMessage(i, "*") }), n.parameter) }), !1)) }; "undefined" != typeof module ? module.exports = e : e() }();
-    window._sp_ = {
-        config: {
-            accountId: 1473,
-            baseEndpoint: 'https://cdn.privacy-mgmt.com',
-        }
-    }
-
     var consents = [];
     if (typeof dataLayer == "undefined") {
         var dataLayer = [];
@@ -104,22 +101,39 @@
         dataLayer.push({'consents': consents});
     }
 
-
-    __tcfapi('addEventListener', 2, function (tcData, success) {
-        if (tcData.eventStatus === 'tcloaded' || tcData.eventStatus === 'useractioncomplete') {
-            __tcfapi('getCustomVendorConsents', 2, function (data) {
-                for(var i = 0; i < data.consentedVendors.length; i++) {
-                    addJs(data.consentedVendors[i]._id );
-                }
-            });
+    function initiateSourcePoint(userType) {
+        !function () { var e = function () { var e, t = "__tcfapiLocator", a = [], n = window; for (; n;) { try { if (n.frames[t]) { e = n; break } } catch (e) { } if (n === window.top) break; n = n.parent } e || (!function e() { var a = n.document, r = !!n.frames[t]; if (!r) if (a.body) { var i = a.createElement("iframe"); i.style.cssText = "display:none", i.name = t, a.body.appendChild(i) } else setTimeout(e, 5); return !r }(), n.__tcfapi = function () { for (var e, t = arguments.length, n = new Array(t), r = 0; r < t; r++)n[r] = arguments[r]; if (!n.length) return a; if ("setGdprApplies" === n[0]) n.length > 3 && 2 === parseInt(n[1], 10) && "boolean" == typeof n[3] && (e = n[3], "function" == typeof n[2] && n[2]("set", !0)); else if ("ping" === n[0]) { var i = { gdprApplies: e, cmpLoaded: !1, cmpStatus: "stub" }; "function" == typeof n[2] && n[2](i) } else a.push(n) }, n.addEventListener("message", (function (e) { var t = "string" == typeof e.data, a = {}; try { a = t ? JSON.parse(e.data) : e.data } catch (e) { } var n = a.__tcfapiCall; n && window.__tcfapi(n.command, n.version, (function (a, r) { var i = { __tcfapiReturn: { returnValue: a, success: r, callId: n.callId } }; t && (i = JSON.stringify(i)), e.source.postMessage(i, "*") }), n.parameter) }), !1)) }; "undefined" != typeof module ? module.exports = e : e() }();
+        window._sp_ = {
+            config: {
+                accountId: 1473,
+                baseEndpoint: 'https://cdn.privacy-mgmt.com',
+                ...(!!userType ? { targetingParams: { userType } } : []),
+            }
         }
-    });
 
+        __tcfapi('addEventListener', 2, function(tcData, success) {
+            if (tcData.eventStatus === 'tcloaded' || tcData.eventStatus === 'useractioncomplete') {
+                if (['pur-pur', 'pur-purplus'].includes(window._sp_?.config?.targetingParams?.userType)) {
+                    __tcfapi('postRejectAll', 2, function(postRejectAllResponse, success)
 
-    var script = document.createElement('script');
-    script.src = "https://cdn.privacy-mgmt.com/wrapperMessagingWithoutDetection.js";
-    document.head.appendChild(script);
+                        {}
+                    );
+                } else {
+                    __tcfapi('getCustomVendorConsents', 2, function(data) {
+                        for (var i = 0; i < data.consentedVendors.length; i++)
 
+                        {
+                            addJs(data.consentedVendors[i]._id);
+                        }
+                    });
+                }
+            }
+        });
+
+        var script = document.createElement('script');
+        script.src = "https://cdn.privacy-mgmt.com/wrapperMessagingWithoutDetection.js";
+        document.head.appendChild(script);
+    }
 </script><script src="//cdn.stroeerdigitalgroup.de/metatag/live/OMS_volksstimme_relaunch/metaTag.min.js"></script>
 <script>
 
@@ -139,28 +153,30 @@
     SDG.Publisher.finalizeSlots();
 
 </script><script>
-    (function() {
+    function consentEnableNativendo() {
         var s = document.createElement('script');
         s.async = true;
         s.src = 'https://d.nativendo.de/cds/delivery/init?oms_zone=nationalnews';
         var sc = document.getElementsByTagName('script')[0];
         sc.parentNode.insertBefore(s, sc);
-    })();
+    }
 </script><!-- Facebook Pixel Code -->
 <script>
-    !function(f,b,e,v,n,t,s) {if(f.fbq)return;n=f.fbq=function()
+    function consentEnableFacebook() {
+        !function(f,b,e,v,n,t,s) {if(f.fbq)return;n=f.fbq=function()
 
-    {n.callMethod? n.callMethod.apply(n,arguments):n.queue.push(arguments)}
+        {n.callMethod? n.callMethod.apply(n,arguments):n.queue.push(arguments)}
 
-    ;
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window,document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('consent', 'revoke');
-    fbq('init', '1734066336856104');
-    fbq('track', 'PageView');
+        ;
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window,document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('consent', 'grant');
+        fbq('init', '1734066336856104');
+        fbq('track', 'PageView');
+    }
 </script>
 
       <meta property="og:url" content="https://www.volksstimme.de/deutschland-und-welt">
@@ -299,7 +315,7 @@
 
                     <div class="fp-main-header__links">
                         <ul>                                 <li>
-                                    <a href="/article/volksstimme-e-paper-lesen-1111842" target="_self" class="text-sm-secondary--bold">
+                                    <a href="https://www.volksstimme.de/sachsen-anhalt/volksstimme-e-paper-lesen-1111842" target="_self" class="text-sm-secondary--bold">
                                         E-Paper
                                     </a>
                                 </li>
@@ -386,15 +402,15 @@
                             </a>
                         </div>
     <div class="fp-main-header__weather-widget">
-        <div class="fp-main-header__weather-widget--top wolkig">
+        <div class="fp-main-header__weather-widget--top bedeckt">
             <span class="weather-icon-img">
-                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/wolkig.svg" alt="weather">
+                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/bedeckt.svg" alt="weather">
             </span>
-            <span class="fp-main-header__weather-widget--tooltip">wolkig</span>
+            <span class="fp-main-header__weather-widget--tooltip">bedeckt</span>
             <aside>
-                <span class="fp-main-header__weather-widget--day-temp">18°</span>
+                <span class="fp-main-header__weather-widget--day-temp">3°</span>
                 <span>/</span>
-                <span class="fp-main-header__weather-widget--night-temp">8°</span>
+                <span class="fp-main-header__weather-widget--night-temp">0°</span>
             </aside>
         </div>
         <div class="fp-main-header__weather-widget--bottom">
@@ -790,6 +806,16 @@
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
+                      <a class="text-16--regular" href="/sachsen-anhalt/leseranwaeltin" target="_self">
+                        Leseranwältin
+                      </a>
+                    </li>
+                    <li class="fp-sidebar-menu__nav--item">
+                      <a class="text-16--regular" href="/sachsen-anhalt/regionale-kultur">
+                        Regionale Kultur
+                      </a>
+                    </li>
+                    <li class="fp-sidebar-menu__nav--item">
                       <a class="text-16--regular" href="/sachsen-anhalt/regionale-wirtschaft">
                         Regionale Wirtschaft
                       </a>
@@ -797,11 +823,6 @@
                     <li class="fp-sidebar-menu__nav--item">
                       <a class="text-16--regular" href="/sachsen-anhalt/tourismus">
                         Tourismus
-                      </a>
-                    </li>
-                    <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="/sachsen-anhalt/regionale-kultur">
-                        Regionale Kultur
                       </a>
                     </li>
             </ul>
@@ -1033,6 +1054,11 @@
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
+                      <a class="text-16--regular" href="https://www.volksstimme.de/leben/rezepte">
+                        Rezepte
+                      </a>
+                    </li>
+                    <li class="fp-sidebar-menu__nav--item">
                       <a class="text-16--regular" href="/leben/technik" target="_self">
                         Technik
                       </a>
@@ -1137,7 +1163,7 @@
 
                   <ul class="fp-sidebar-menu__nav--list">
                           <li class="fp-sidebar-menu__nav--item">
-                              <a href="/article/volksstimme-e-paper-lesen-1111842" target="_self" class="text-base-secondary--semibold">E-Paper</a>
+                              <a href="https://www.volksstimme.de/sachsen-anhalt/volksstimme-e-paper-lesen-1111842" target="_self" class="text-base-secondary--semibold">E-Paper</a>
                           </li>
                           <li class="fp-sidebar-menu__nav--item">
                               <a href="https://www.volksstimme.de/general/newsletter-uebersicht-3402582" class="text-base-secondary--semibold">Newsletter</a>
@@ -1165,7 +1191,7 @@
 
                   <ul class="fp-sidebar-menu__nav--list">
                           <li class="fp-sidebar-menu__nav--item">
-                              <a href="/article/volksstimme-e-paper-lesen-1111842" target="_self" class="text-base-secondary--semibold">E-Paper</a>
+                              <a href="https://www.volksstimme.de/sachsen-anhalt/volksstimme-e-paper-lesen-1111842" target="_self" class="text-base-secondary--semibold">E-Paper</a>
                           </li>
                           <li class="fp-sidebar-menu__nav--item">
                               <a href="https://www.volksstimme.de/general/newsletter-uebersicht-3402582" class="text-base-secondary--semibold">Newsletter</a>
@@ -1257,7 +1283,7 @@
                     </div>
                     <ul class="fp-sidebar-menu__nav--list">
                             <li class="fp-sidebar-menu__nav--item">
-                              <a class="text-base-secondary--semibold" href="/vs/general/impressum-195" target="_self">
+                              <a class="text-base-secondary--semibold" href="https://www.volksstimme.de/general/impressum-195" target="_self">
                                   Impressum
                               </a>
                             </li>
@@ -1282,17 +1308,17 @@
                               </a>
                             </li>
                             <li class="fp-sidebar-menu__nav--item">
-                              <a class="text-base-secondary--semibold" href="/vs/general/kontakt-1111909" target="_self">
+                              <a class="text-base-secondary--semibold" href="https://www.volksstimme.de/general/kontakt-1111909" target="_self">
                                   Kontakt
                               </a>
                             </li>
                             <li class="fp-sidebar-menu__nav--item">
-                              <a class="text-base-secondary--semibold" href="https://www.volksstimme.de/servicestellen" target="_self">
+                              <a class="text-base-secondary--semibold" href="https://www.volksstimme.de/general/servicestellen-1111910#" target="_self">
                                   Servicestellen
                               </a>
                             </li>
                             <li class="fp-sidebar-menu__nav--item">
-                              <a class="text-base-secondary--semibold" href="/vs/general/datenschutzerklaerung-198" target="_self">
+                              <a class="text-base-secondary--semibold" href="https://www.volksstimme.de/general/datenschutzerklaerung-198" target="_self">
                                   Datenschutz
                               </a>
                             </li>
@@ -1336,93 +1362,89 @@
 <div><section class="fp-related-articles embed fp-section"><div data-service="category-teasers-list"><!-- Display grid solution  -->
 <div class="fp-article-list">
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/biden-droht-olkonzernen-mit-ubergewinnsteuer-3475623">
+            <a href="/deutschland-und-welt/wirtschaft/elon-musk-begrabt-kriegsbeil-im-konflikt-mit-apple-3496569">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/11/01/f051d054-bea3-4f54-a77a-ec767fec2730.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/01/f051d054-bea3-4f54-a77a-ec767fec2730.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/01/f051d054-bea3-4f54-a77a-ec767fec2730.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/01/f051d054-bea3-4f54-a77a-ec767fec2730.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/01/f051d054-bea3-4f54-a77a-ec767fec2730.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/01/f051d054-bea3-4f54-a77a-ec767fec2730.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/01/f051d054-bea3-4f54-a77a-ec767fec2730.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="US-Präsident Joe Biden spricht im Weißen Haus.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/12/01/8786227f-2dab-4ba1-8ce1-293af3732a07.jpeg?rect=0%2C161%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/12/01/8786227f-2dab-4ba1-8ce1-293af3732a07.jpeg?rect=0%2C161%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/12/01/8786227f-2dab-4ba1-8ce1-293af3732a07.jpeg?rect=0%2C161%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/12/01/8786227f-2dab-4ba1-8ce1-293af3732a07.jpeg?rect=0%2C161%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/12/01/8786227f-2dab-4ba1-8ce1-293af3732a07.jpeg?rect=0%2C161%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/12/01/8786227f-2dab-4ba1-8ce1-293af3732a07.jpeg?rect=0%2C161%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/12/01/8786227f-2dab-4ba1-8ce1-293af3732a07.jpeg?rect=0%2C161%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Elon Musk bei der Verleihung der Axel Springer Awards in Berlin.">
                 </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Internet</h4>
+                <h3 class="fp-article__title text-xl--bold ">Elon Musk begräbt Kriegsbeil im Konflikt mit Apple</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/deutschland-und-welt/wirtschaft/grunder-von-pleite-kryptoborse-weist-betrugsvorwurfe-zuruck-3496566">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/12/01/ae3cd04d-b235-4ff1-8800-cddffcba55f0.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/12/01/ae3cd04d-b235-4ff1-8800-cddffcba55f0.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/12/01/ae3cd04d-b235-4ff1-8800-cddffcba55f0.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/12/01/ae3cd04d-b235-4ff1-8800-cddffcba55f0.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/12/01/ae3cd04d-b235-4ff1-8800-cddffcba55f0.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/12/01/ae3cd04d-b235-4ff1-8800-cddffcba55f0.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/12/01/ae3cd04d-b235-4ff1-8800-cddffcba55f0.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Die angeschlagene Kryptobörse FTX ist offiziell zahlungsunfähig.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> FTX</h4>
+                <h3 class="fp-article__title text-xl--bold ">Gründer von Pleite-Kryptobörse weist Betrugsvorwürfe zurück</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/deutschland-und-welt/wirtschaft/bauziel-der-regierung-droht-absturz-mit-ansage-3496567">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/12/01/784f875f-6eda-4329-9f9b-47437e5150bc.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/12/01/784f875f-6eda-4329-9f9b-47437e5150bc.jpeg?rect=0%2C115%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/12/01/784f875f-6eda-4329-9f9b-47437e5150bc.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/12/01/784f875f-6eda-4329-9f9b-47437e5150bc.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/12/01/784f875f-6eda-4329-9f9b-47437e5150bc.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/12/01/784f875f-6eda-4329-9f9b-47437e5150bc.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/12/01/784f875f-6eda-4329-9f9b-47437e5150bc.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Eine Baustelle in&nbsp;Potsdam.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Gesellschaft</h4>
+                <h3 class="fp-article__title text-xl--bold ">Bauziel der Regierung droht „Absturz mit Ansage“</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser fp-article__no-img" data-ratio="16:9">
+            <a href="/deutschland-und-welt/politik/eu-kommission-bekommt-sonderrechte-fur-brexit-streit-3496556">
+                <h4 class="fp-article__catchline vertical-teasers"> Europa</h4>
+                <h3 class="fp-article__title text-xl--bold ">EU-Kommission bekommt Sonderrechte für Brexit-Streit</h3>
+                    <p class="fp-article__excerpt">Seit dem&nbsp;Austritt Großbritanniens aus der EU liegen&nbsp;Brüssel und London im&nbsp;Clinch. Nun erhält die&nbsp;EU-Kommission weitere Befugnisse.</p>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser fp-article__no-img" data-ratio="16:9">
+            <a href="/deutschland-und-welt/politik/ministerium-stellt-trumps-steuerunterlagen-zur-verfugung-3496557">
                 <h4 class="fp-article__catchline vertical-teasers"> USA</h4>
-                <h3 class="fp-article__title text-xl--bold ">Biden droht Ölkonzernen mit Übergewinnsteuer</h3>
+                <h3 class="fp-article__title text-xl--bold ">Ministerium stellt Trumps Steuerunterlagen zur Verfügung</h3>
+                    <p class="fp-article__excerpt">Bediente Ex-US-Präsident Donald Trump sich als Immobilienunternehmer fragwürdiger Methoden, um den Fiskus zu umgehen? Seine Steuererklärungen sollen jetzt Licht ins Dunkel bringen.</p>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/anklage-nach-angriff-auf-ehemann-von-us-politikerin-pelosi-3475606">
+            <a href="/deutschland-und-welt/deutschland/flughafen-munster-osnabruck-nach-sanierung-wieder-geoffnet-3496543">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/b2eb85f9-f1db-405b-96fd-dd183ce5f038.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/b2eb85f9-f1db-405b-96fd-dd183ce5f038.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/b2eb85f9-f1db-405b-96fd-dd183ce5f038.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/b2eb85f9-f1db-405b-96fd-dd183ce5f038.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/b2eb85f9-f1db-405b-96fd-dd183ce5f038.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/b2eb85f9-f1db-405b-96fd-dd183ce5f038.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/b2eb85f9-f1db-405b-96fd-dd183ce5f038.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Paul Pelosi Jr., Sohn der US-Spitzenpolitikerin und ihrem Mann Paul, geht mit einem Sicherheitsbeamten am Haus seiner Eltern vorbei.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Kriminalität</h4>
-                <h3 class="fp-article__title text-xl--bold ">Anklage nach Angriff auf Ehemann von US-Politikerin Pelosi</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/halles-erfolgsserie-beim-2-3-in-osnabruck-gerissen-3475604">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/4bee6ca7-6c06-405b-b05c-e1fc0e3fdc60.jpeg?rect=0%2C28%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/4bee6ca7-6c06-405b-b05c-e1fc0e3fdc60.jpeg?rect=0%2C28%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/4bee6ca7-6c06-405b-b05c-e1fc0e3fdc60.jpeg?rect=0%2C28%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/4bee6ca7-6c06-405b-b05c-e1fc0e3fdc60.jpeg?rect=0%2C28%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/4bee6ca7-6c06-405b-b05c-e1fc0e3fdc60.jpeg?rect=0%2C28%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/4bee6ca7-6c06-405b-b05c-e1fc0e3fdc60.jpeg?rect=0%2C28%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/4bee6ca7-6c06-405b-b05c-e1fc0e3fdc60.jpeg?rect=0%2C28%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="HFC-Cheftrainer André Meyer im Stadion.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Fußball</h4>
-                <h3 class="fp-article__title text-xl--bold ">Halles Erfolgsserie beim 2:3 in Osnabrück gerissen</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/tausende-menschen-bei-protesten-in-ostdeutschen-stadten-3475601">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/9c18401f-42e1-4b3b-9218-74e0e2fe1e8e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/9c18401f-42e1-4b3b-9218-74e0e2fe1e8e.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/9c18401f-42e1-4b3b-9218-74e0e2fe1e8e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/9c18401f-42e1-4b3b-9218-74e0e2fe1e8e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/9c18401f-42e1-4b3b-9218-74e0e2fe1e8e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/9c18401f-42e1-4b3b-9218-74e0e2fe1e8e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/9c18401f-42e1-4b3b-9218-74e0e2fe1e8e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Teilnehmer einer Demo gegen die Energiepolitik und gegen Coronamaßnahmen laufen durch die Innenstadt.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Kundgebungen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Tausende Menschen bei Protesten in ostdeutschen Städten</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/sieg-im-abstiegskampf-osnabruck-besiegt-halle-3475597">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/e2e7d567-ce25-4056-a65f-74c85832d2d3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/e2e7d567-ce25-4056-a65f-74c85832d2d3.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/e2e7d567-ce25-4056-a65f-74c85832d2d3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/e2e7d567-ce25-4056-a65f-74c85832d2d3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/e2e7d567-ce25-4056-a65f-74c85832d2d3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/e2e7d567-ce25-4056-a65f-74c85832d2d3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/e2e7d567-ce25-4056-a65f-74c85832d2d3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Blick auf das Logo des VfL Osnabrück.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> 3. Liga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Sieg im Abstiegskampf: Osnabrück besiegt Halle</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/motorradfahrer-fahrt-in-gegenverkehr-und-stirbt-3475591">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/ee38027c-5e55-49b2-990f-90ce04642ca8.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/ee38027c-5e55-49b2-990f-90ce04642ca8.jpeg?rect=0%2C105%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/ee38027c-5e55-49b2-990f-90ce04642ca8.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/ee38027c-5e55-49b2-990f-90ce04642ca8.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/ee38027c-5e55-49b2-990f-90ce04642ca8.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/ee38027c-5e55-49b2-990f-90ce04642ca8.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/ee38027c-5e55-49b2-990f-90ce04642ca8.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Ein Streifenwagen der Polizei steht mit Blaulicht an einem Einsatzort.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Uelzen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Motorradfahrer fährt in Gegenverkehr und stirbt</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/wesener-steuereinnahmen-fallen-noch-etwas-hoher-aus-3475582">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/5358235b-bf80-4f95-b288-247e963b469c.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/5358235b-bf80-4f95-b288-247e963b469c.jpeg?rect=0%2C101%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/5358235b-bf80-4f95-b288-247e963b469c.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/5358235b-bf80-4f95-b288-247e963b469c.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/5358235b-bf80-4f95-b288-247e963b469c.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/5358235b-bf80-4f95-b288-247e963b469c.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/5358235b-bf80-4f95-b288-247e963b469c.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Daniel Wesener (Bündnis 90/Die Grünen), Berliner Senator für Finanzen, bei einer Pressekonferenz.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Finanzen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Wesener: Steuereinnahmen fallen noch etwas höher aus</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/taxi-kollidiert-mit-wohnmobil-acht-verletzte-3475577">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/ad00996b-526d-450b-a366-63be196d6b21.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/ad00996b-526d-450b-a366-63be196d6b21.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/ad00996b-526d-450b-a366-63be196d6b21.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/ad00996b-526d-450b-a366-63be196d6b21.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/ad00996b-526d-450b-a366-63be196d6b21.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/ad00996b-526d-450b-a366-63be196d6b21.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/ad00996b-526d-450b-a366-63be196d6b21.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Ein Rettungswagen der Feuerwehr fährt auf einer Straße.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Mecklenburgische Seenplatte</h4>
-                <h3 class="fp-article__title text-xl--bold ">Taxi kollidiert mit Wohnmobil: Acht Verletzte</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/geleakte-nsu-berichte-keine-ermittlungen-gegen-bohmermann-3475565">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/80a41b35-ce56-467f-9519-bf1f5013d0d9.jpeg?rect=0%2C194%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/80a41b35-ce56-467f-9519-bf1f5013d0d9.jpeg?rect=0%2C194%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/80a41b35-ce56-467f-9519-bf1f5013d0d9.jpeg?rect=0%2C194%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/80a41b35-ce56-467f-9519-bf1f5013d0d9.jpeg?rect=0%2C194%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/80a41b35-ce56-467f-9519-bf1f5013d0d9.jpeg?rect=0%2C194%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/80a41b35-ce56-467f-9519-bf1f5013d0d9.jpeg?rect=0%2C194%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/80a41b35-ce56-467f-9519-bf1f5013d0d9.jpeg?rect=0%2C194%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Jan Böhmermann, TV-Entertainer, und Gewinner des Preises für Unterhaltung, bei der Preisverleihung der „Journalistinnen und Journalisten des Jahres 2019“.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Extremismus</h4>
-                <h3 class="fp-article__title text-xl--bold ">Geleakte NSU-Berichte: Keine Ermittlungen gegen Böhmermann</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/lufthansa-eurowings-discover-bekommt-tarifvertrag-3475563">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/501aa8d6-9dff-4c75-9f27-2af0144b3ab5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/501aa8d6-9dff-4c75-9f27-2af0144b3ab5.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/501aa8d6-9dff-4c75-9f27-2af0144b3ab5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/501aa8d6-9dff-4c75-9f27-2af0144b3ab5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/501aa8d6-9dff-4c75-9f27-2af0144b3ab5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/501aa8d6-9dff-4c75-9f27-2af0144b3ab5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/501aa8d6-9dff-4c75-9f27-2af0144b3ab5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Die deutsche Fluggesellschaft Eurowings Discover wurde erst 2021 gegründet.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/24963f6a-e7a7-4e15-b7f0-9f212f88e9b7.jpeg?rect=0%2C25%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/24963f6a-e7a7-4e15-b7f0-9f212f88e9b7.jpeg?rect=0%2C25%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/24963f6a-e7a7-4e15-b7f0-9f212f88e9b7.jpeg?rect=0%2C25%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/24963f6a-e7a7-4e15-b7f0-9f212f88e9b7.jpeg?rect=0%2C25%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/24963f6a-e7a7-4e15-b7f0-9f212f88e9b7.jpeg?rect=0%2C25%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/24963f6a-e7a7-4e15-b7f0-9f212f88e9b7.jpeg?rect=0%2C25%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/24963f6a-e7a7-4e15-b7f0-9f212f88e9b7.jpeg?rect=0%2C25%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Reisegäste gehen an einem Flughafen zum Abflugterminal.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Luftverkehr</h4>
-                <h3 class="fp-article__title text-xl--bold ">Lufthansa: Eurowings Discover bekommt Tarifvertrag</h3>
+                <h3 class="fp-article__title text-xl--bold ">Flughafen Münster/Osnabrück nach Sanierung wieder geöffnet</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/deutschland-und-welt/deutschland/niners-chemnitz-erreichen-nachste-europapokal-runde-3496540">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/a398f2e4-e827-4352-96dd-85185686c39d.jpeg?rect=0%2C83%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/a398f2e4-e827-4352-96dd-85185686c39d.jpeg?rect=0%2C83%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/a398f2e4-e827-4352-96dd-85185686c39d.jpeg?rect=0%2C83%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/a398f2e4-e827-4352-96dd-85185686c39d.jpeg?rect=0%2C83%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/a398f2e4-e827-4352-96dd-85185686c39d.jpeg?rect=0%2C83%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/a398f2e4-e827-4352-96dd-85185686c39d.jpeg?rect=0%2C83%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/a398f2e4-e827-4352-96dd-85185686c39d.jpeg?rect=0%2C83%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Rodrigo Pastore, Trainer des Basketball-Bundesligisten Niners Chemnitz.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Basketball</h4>
+                <h3 class="fp-article__title text-xl--bold ">Niners Chemnitz erreichen nächste Europapokal-Runde</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/deutschland-und-welt/deutschland/eisbaren-berlin-verlieren-bei-schwenninger-wild-wings-2-6-3496537">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/a1fa1361-6d83-4fd3-a835-7e22593fa381.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/a1fa1361-6d83-4fd3-a835-7e22593fa381.jpeg?rect=0%2C91%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/a1fa1361-6d83-4fd3-a835-7e22593fa381.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/a1fa1361-6d83-4fd3-a835-7e22593fa381.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/a1fa1361-6d83-4fd3-a835-7e22593fa381.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/a1fa1361-6d83-4fd3-a835-7e22593fa381.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/a1fa1361-6d83-4fd3-a835-7e22593fa381.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Berlins Zach Boychuk (r) nach seinem Treffer zum 3:0 mit Jan Nijenhuis.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Deutsche Eishockey Liga</h4>
+                <h3 class="fp-article__title text-xl--bold ">Eisbären Berlin verlieren bei Schwenninger Wild Wings 2:6</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/deutschland-und-welt/politik/alternative-nobelpreistrager-geehrt-3496534">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/94fba0b8-184e-49ed-b0a9-aff1a046e724.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/94fba0b8-184e-49ed-b0a9-aff1a046e724.jpeg?rect=0%2C126%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/94fba0b8-184e-49ed-b0a9-aff1a046e724.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/94fba0b8-184e-49ed-b0a9-aff1a046e724.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/94fba0b8-184e-49ed-b0a9-aff1a046e724.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/94fba0b8-184e-49ed-b0a9-aff1a046e724.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/94fba0b8-184e-49ed-b0a9-aff1a046e724.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Olexandra Matwijtschuk ist mit dem Right Livelihood Award ausgezeichnet worden.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Right Livelihood Awards</h4>
+                <h3 class="fp-article__title text-xl--bold ">Alternative Nobelpreisträger geehrt</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/deutschland-und-welt/deutschland/thuringer-hc-verliert-pokal-krimi-in-metzingen-3496526">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/ccbc96c9-6fc3-4dc3-969e-4b8127acc850.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/ccbc96c9-6fc3-4dc3-969e-4b8127acc850.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/ccbc96c9-6fc3-4dc3-969e-4b8127acc850.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/ccbc96c9-6fc3-4dc3-969e-4b8127acc850.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/ccbc96c9-6fc3-4dc3-969e-4b8127acc850.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/ccbc96c9-6fc3-4dc3-969e-4b8127acc850.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/ccbc96c9-6fc3-4dc3-969e-4b8127acc850.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Herbert Müller, Trainer vom Thüringer HC, agiert an der Seitenlinie.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
+                <h3 class="fp-article__title text-xl--bold ">Thüringer HC verliert Pokal-Krimi in Metzingen</h3>
             </a>
         </article>
 </div>
@@ -1434,12 +1456,12 @@
 <h2 class="fp-most-popular-section-title">Meistgelesen</h2>
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/deutschland-und-welt/wirtschaft/biden-droht-olkonzernen-mit-ubergewinnsteuer-3475623">
+      <a href="/deutschland-und-welt/wirtschaft/elon-musk-begrabt-kriegsbeil-im-konflikt-mit-apple-3496569">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">1.</span>
             <header>
-              <h4 class="fp-article__catchline"> USA</h4>
-              <h3 class="fp-article__title text-xxl--bold">Biden droht Ölkonzernen mit Übergewinnsteuer</h3>
+              <h4 class="fp-article__catchline"> Internet</h4>
+              <h3 class="fp-article__title text-xxl--bold">Elon Musk begräbt Kriegsbeil im Konflikt mit Apple</h3>
             </header>
         </div>
       </a>
@@ -1447,12 +1469,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/deutschland-und-welt/politik/anklage-nach-angriff-auf-ehemann-von-us-politikerin-pelosi-3475606">
+      <a href="/deutschland-und-welt/wirtschaft/grunder-von-pleite-kryptoborse-weist-betrugsvorwurfe-zuruck-3496566">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">2.</span>
             <header>
-              <h4 class="fp-article__catchline"> Kriminalität</h4>
-              <h3 class="fp-article__title text-xxl--bold">Anklage nach Angriff auf Ehemann von US-Politikerin Pelosi</h3>
+              <h4 class="fp-article__catchline"> FTX</h4>
+              <h3 class="fp-article__title text-xxl--bold">Gründer von Pleite-Kryptobörse weist Betrugsvorwürfe zurück</h3>
             </header>
         </div>
       </a>
@@ -1460,12 +1482,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/deutschland-und-welt/deutschland/halles-erfolgsserie-beim-2-3-in-osnabruck-gerissen-3475604">
+      <a href="/deutschland-und-welt/wirtschaft/bauziel-der-regierung-droht-absturz-mit-ansage-3496567">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">3.</span>
             <header>
-              <h4 class="fp-article__catchline"> Fußball</h4>
-              <h3 class="fp-article__title text-xxl--bold">Halles Erfolgsserie beim 2:3 in Osnabrück gerissen</h3>
+              <h4 class="fp-article__catchline"> Gesellschaft</h4>
+              <h3 class="fp-article__title text-xxl--bold">Bauziel der Regierung droht „Absturz mit Ansage“</h3>
             </header>
         </div>
       </a>
@@ -1473,12 +1495,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/deutschland-und-welt/deutschland/tausende-menschen-bei-protesten-in-ostdeutschen-stadten-3475601">
+      <a href="/deutschland-und-welt/politik/eu-kommission-bekommt-sonderrechte-fur-brexit-streit-3496556">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">4.</span>
             <header>
-              <h4 class="fp-article__catchline"> Kundgebungen</h4>
-              <h3 class="fp-article__title text-xxl--bold">Tausende Menschen bei Protesten in ostdeutschen Städten</h3>
+              <h4 class="fp-article__catchline"> Europa</h4>
+              <h3 class="fp-article__title text-xxl--bold">EU-Kommission bekommt Sonderrechte für Brexit-Streit</h3>
             </header>
         </div>
       </a>
@@ -1486,12 +1508,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/deutschland-und-welt/deutschland/sieg-im-abstiegskampf-osnabruck-besiegt-halle-3475597">
+      <a href="/deutschland-und-welt/politik/ministerium-stellt-trumps-steuerunterlagen-zur-verfugung-3496557">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">5.</span>
             <header>
-              <h4 class="fp-article__catchline"> 3. Liga</h4>
-              <h3 class="fp-article__title text-xxl--bold">Sieg im Abstiegskampf: Osnabrück besiegt Halle</h3>
+              <h4 class="fp-article__catchline"> USA</h4>
+              <h3 class="fp-article__title text-xxl--bold">Ministerium stellt Trumps Steuerunterlagen zur Verfügung</h3>
             </header>
         </div>
       </a>
@@ -1510,94 +1532,90 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/scholz-zu-klimaprotesten-durfen-andere-nicht-gefahrden-3475559">
+            <a href="/deutschland-und-welt/deutschland/sieg-in-zawiercie-br-volleys-uberraschen-in-konigsklasse-3496518">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/515438d4-ed69-42f8-9bc6-0d59e207ed1d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/515438d4-ed69-42f8-9bc6-0d59e207ed1d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/515438d4-ed69-42f8-9bc6-0d59e207ed1d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/515438d4-ed69-42f8-9bc6-0d59e207ed1d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/515438d4-ed69-42f8-9bc6-0d59e207ed1d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/515438d4-ed69-42f8-9bc6-0d59e207ed1d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/515438d4-ed69-42f8-9bc6-0d59e207ed1d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Bundeskanzler Olaf Scholz (SPD) spricht.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/c8c46fb5-6fec-4898-8e3d-355a27d1aaaf.jpeg?rect=0%2C88%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/c8c46fb5-6fec-4898-8e3d-355a27d1aaaf.jpeg?rect=0%2C88%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/c8c46fb5-6fec-4898-8e3d-355a27d1aaaf.jpeg?rect=0%2C88%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/c8c46fb5-6fec-4898-8e3d-355a27d1aaaf.jpeg?rect=0%2C88%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/c8c46fb5-6fec-4898-8e3d-355a27d1aaaf.jpeg?rect=0%2C88%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/c8c46fb5-6fec-4898-8e3d-355a27d1aaaf.jpeg?rect=0%2C88%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/c8c46fb5-6fec-4898-8e3d-355a27d1aaaf.jpeg?rect=0%2C88%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Berlins Marek Sotola jubelt nach einem Punkt.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Letzte Generation</h4>
-                <h3 class="fp-article__title text-xl--bold ">Scholz zu Klimaprotesten: Dürfen andere nicht gefährden</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Volleyball</h4>
+                <h3 class="fp-article__title text-xl--bold ">Sieg in Zawiercie: BR Volleys überraschen in Königsklasse</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/sturmer-jovetic-fehlt-hertha-gegen-bayern-3475550">
+            <a href="/deutschland-und-welt/deutschland/berliner-messe-chef-hort-auf-3496506">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/6cba35ae-cf90-49ab-861c-c8368b01c82e.jpeg?rect=0%2C169%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/6cba35ae-cf90-49ab-861c-c8368b01c82e.jpeg?rect=0%2C169%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/6cba35ae-cf90-49ab-861c-c8368b01c82e.jpeg?rect=0%2C169%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/6cba35ae-cf90-49ab-861c-c8368b01c82e.jpeg?rect=0%2C169%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/6cba35ae-cf90-49ab-861c-c8368b01c82e.jpeg?rect=0%2C169%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/6cba35ae-cf90-49ab-861c-c8368b01c82e.jpeg?rect=0%2C169%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/6cba35ae-cf90-49ab-861c-c8368b01c82e.jpeg?rect=0%2C169%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Herthas Stevan Jovetic greift sich an den Kopf.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/d2e783c7-b2bc-486b-a6ed-cfc53a28c740.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/d2e783c7-b2bc-486b-a6ed-cfc53a28c740.jpeg?rect=0%2C108%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/d2e783c7-b2bc-486b-a6ed-cfc53a28c740.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/d2e783c7-b2bc-486b-a6ed-cfc53a28c740.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/d2e783c7-b2bc-486b-a6ed-cfc53a28c740.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/d2e783c7-b2bc-486b-a6ed-cfc53a28c740.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/d2e783c7-b2bc-486b-a6ed-cfc53a28c740.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Martin Ecknig, Chef der Berliner Messe.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Stürmer Jovetic fehlt Hertha gegen Bayern</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Personalie</h4>
+                <h3 class="fp-article__title text-xl--bold ">Berliner Messe-Chef hört auf</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/gefakter-notruf-lost-polizei-und-feuerwehreinsatz-aus-3475548">
+            <a href="/deutschland-und-welt/deutschland/metall-tarifpartner-im-land-ubernehmen-pilotabschluss-3496491">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/99cd0519-1675-4c17-bea6-8bbe9143899c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/99cd0519-1675-4c17-bea6-8bbe9143899c.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/99cd0519-1675-4c17-bea6-8bbe9143899c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/99cd0519-1675-4c17-bea6-8bbe9143899c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/99cd0519-1675-4c17-bea6-8bbe9143899c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/99cd0519-1675-4c17-bea6-8bbe9143899c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/99cd0519-1675-4c17-bea6-8bbe9143899c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Der Nummer des Polizeinotrufs 110 steht auf der Scheibe eines Polizeifahrzeugs.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/74e2fb7a-8ce4-431d-becf-0512ecebbc91.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/74e2fb7a-8ce4-431d-becf-0512ecebbc91.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/74e2fb7a-8ce4-431d-becf-0512ecebbc91.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/74e2fb7a-8ce4-431d-becf-0512ecebbc91.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/74e2fb7a-8ce4-431d-becf-0512ecebbc91.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/74e2fb7a-8ce4-431d-becf-0512ecebbc91.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/74e2fb7a-8ce4-431d-becf-0512ecebbc91.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Das Logo der IG Metall auf einem Banner.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Potsdam</h4>
-                <h3 class="fp-article__title text-xl--bold ">Gefakter Notruf löst Polizei- und Feuerwehreinsatz aus</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Tarife</h4>
+                <h3 class="fp-article__title text-xl--bold ">Metall-Tarifpartner im Land übernehmen Pilotabschluss</h3>
             </a>
         </article>
 <div id="nativendo-nativendo-infeed"></div>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/bundeswirtschaftsminister-robert-habeck-besucht-sachsen-3475633">
+            <a href="/deutschland-und-welt/deutschland/luthe-will-beschluss-des-verfassungsgerichts-nicht-hinnehmen-3496485">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/11/01/991c261e-e361-4ee9-a78b-30c19c710b36.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/01/991c261e-e361-4ee9-a78b-30c19c710b36.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/01/991c261e-e361-4ee9-a78b-30c19c710b36.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/01/991c261e-e361-4ee9-a78b-30c19c710b36.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/01/991c261e-e361-4ee9-a78b-30c19c710b36.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/01/991c261e-e361-4ee9-a78b-30c19c710b36.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/01/991c261e-e361-4ee9-a78b-30c19c710b36.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Robert Habeck (Bündnis 90/Die Grünen), Bundesminister für Wirtschaft und Klimaschutz.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/9427a1a7-7387-4548-b41d-67eff3aecf21.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/9427a1a7-7387-4548-b41d-67eff3aecf21.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/9427a1a7-7387-4548-b41d-67eff3aecf21.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/9427a1a7-7387-4548-b41d-67eff3aecf21.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/9427a1a7-7387-4548-b41d-67eff3aecf21.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/9427a1a7-7387-4548-b41d-67eff3aecf21.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/9427a1a7-7387-4548-b41d-67eff3aecf21.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Marcel Luthe (fraktionslos) spricht im Berliner Abgeordnetenhaus.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Regierung</h4>
-                <h3 class="fp-article__title text-xl--bold ">Bundeswirtschaftsminister Robert Habeck besucht Sachsen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Ex-Politiker</h4>
+                <h3 class="fp-article__title text-xl--bold ">Luthe will Beschluss des Verfassungsgerichts nicht hinnehmen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/spd-landtagsfraktion-wahlt-neuen-fraktionsvorsitzenden-3475542">
+            <a href="/deutschland-und-welt/deutschland/berliner-abgeordnetenhaus-berat-uber-schnellere-einburgerung-3496568">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/168d98ec-25bf-4154-905a-56c635193f95.jpeg?rect=0%2C112%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/168d98ec-25bf-4154-905a-56c635193f95.jpeg?rect=0%2C112%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/168d98ec-25bf-4154-905a-56c635193f95.jpeg?rect=0%2C112%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/168d98ec-25bf-4154-905a-56c635193f95.jpeg?rect=0%2C112%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/168d98ec-25bf-4154-905a-56c635193f95.jpeg?rect=0%2C112%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/168d98ec-25bf-4154-905a-56c635193f95.jpeg?rect=0%2C112%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/168d98ec-25bf-4154-905a-56c635193f95.jpeg?rect=0%2C112%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Grant Hendrik Tonne (SPD), Kultusminister Niedersachsen,.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/12/01/cbcbca94-4fd8-42a1-8a44-44a6e664c4c8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/12/01/cbcbca94-4fd8-42a1-8a44-44a6e664c4c8.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/12/01/cbcbca94-4fd8-42a1-8a44-44a6e664c4c8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/12/01/cbcbca94-4fd8-42a1-8a44-44a6e664c4c8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/12/01/cbcbca94-4fd8-42a1-8a44-44a6e664c4c8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/12/01/cbcbca94-4fd8-42a1-8a44-44a6e664c4c8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/12/01/cbcbca94-4fd8-42a1-8a44-44a6e664c4c8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Franziska Giffey (SPD), Regierende Bürgermeisterin von Berlin, hält eine Rede im Berliner Abgeordnetenhaus.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Landtag</h4>
-                <h3 class="fp-article__title text-xl--bold ">SPD-Landtagsfraktion wählt neuen Fraktionsvorsitzenden</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Gesellschaft</h4>
+                <h3 class="fp-article__title text-xl--bold ">Berliner Abgeordnetenhaus berät über schnellere Einbürgerung</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser fp-article__no-img" data-ratio="16:9">
+            <a href="/deutschland-und-welt/deutschland/berliner-denkmalpreis-an-inhaber-der-avus-tribune-und-verein-3496478">
+                <h4 class="fp-article__catchline vertical-teasers"> Auszeichnung</h4>
+                <h3 class="fp-article__title text-xl--bold ">Berliner Denkmalpreis an Inhaber der Avus-Tribüne und Verein</h3>
+                    <p class="fp-article__excerpt"></p>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/mehr-geld-fur-berlin-senat-berat-uber-den-nachtragshaushalt-3475632">
+            <a href="/deutschland-und-welt/deutschland/zwei-frauen-bei-verkehrsunfall-schwer-verletzt-3496456">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/11/01/2e661ee0-5587-4c2f-814a-3b52ff436e3e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/01/2e661ee0-5587-4c2f-814a-3b52ff436e3e.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/01/2e661ee0-5587-4c2f-814a-3b52ff436e3e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/01/2e661ee0-5587-4c2f-814a-3b52ff436e3e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/01/2e661ee0-5587-4c2f-814a-3b52ff436e3e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/01/2e661ee0-5587-4c2f-814a-3b52ff436e3e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/01/2e661ee0-5587-4c2f-814a-3b52ff436e3e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Berlins Regierende Bürgermeisterin Franziska Giffey (SPD) sowie ihre Stellvertreter, Umwelt- und Mobilitätssenatorin Bettina Jarasch (l, Bündnis 90/Die Grünen) und Kultursenator Klaus Lederer (r, Linke).">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/85beb269-1139-41a1-9852-8fadcf53f0cd.jpeg?rect=14%2C0%2C2020%2C1136&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/85beb269-1139-41a1-9852-8fadcf53f0cd.jpeg?rect=14%2C0%2C2020%2C1136&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/85beb269-1139-41a1-9852-8fadcf53f0cd.jpeg?rect=14%2C0%2C2020%2C1136&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/85beb269-1139-41a1-9852-8fadcf53f0cd.jpeg?rect=14%2C0%2C2020%2C1136&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/85beb269-1139-41a1-9852-8fadcf53f0cd.jpeg?rect=14%2C0%2C2020%2C1136&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/85beb269-1139-41a1-9852-8fadcf53f0cd.jpeg?rect=14%2C0%2C2020%2C1136&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/85beb269-1139-41a1-9852-8fadcf53f0cd.jpeg?rect=14%2C0%2C2020%2C1136&amp;width=160 160w" class="lazyload" alt="Ein Leuchtkasten mit einem roten&nbsp;Kreuz hängt vor der Notaufnahme eines Krankenhauses.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Finanzen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Mehr Geld für Berlin: Senat berät über den Nachtragshaushalt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Osterholz</h4>
+                <h3 class="fp-article__title text-xl--bold ">Zwei Frauen bei Verkehrsunfall schwer verletzt</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/beschaftigte-in-metallindustrie-zu-warnstreiks-aufgerufen-3475539">
+            <a href="/deutschland-und-welt/deutschland/mehr-verurteilte-jugendliche-in-berlin-3496449">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/11/01/e70b0075-1a1e-4977-9a2f-4e2e2cf7d3f5.jpeg?rect=0%2C63%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/01/e70b0075-1a1e-4977-9a2f-4e2e2cf7d3f5.jpeg?rect=0%2C63%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/01/e70b0075-1a1e-4977-9a2f-4e2e2cf7d3f5.jpeg?rect=0%2C63%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/01/e70b0075-1a1e-4977-9a2f-4e2e2cf7d3f5.jpeg?rect=0%2C63%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/01/e70b0075-1a1e-4977-9a2f-4e2e2cf7d3f5.jpeg?rect=0%2C63%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/01/e70b0075-1a1e-4977-9a2f-4e2e2cf7d3f5.jpeg?rect=0%2C63%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/01/e70b0075-1a1e-4977-9a2f-4e2e2cf7d3f5.jpeg?rect=0%2C63%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Eine IG Metall-Fahne weht.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/058e1816-800f-4253-9af7-982ddd25d0dc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/058e1816-800f-4253-9af7-982ddd25d0dc.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/058e1816-800f-4253-9af7-982ddd25d0dc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/058e1816-800f-4253-9af7-982ddd25d0dc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/058e1816-800f-4253-9af7-982ddd25d0dc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/058e1816-800f-4253-9af7-982ddd25d0dc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/058e1816-800f-4253-9af7-982ddd25d0dc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Ein Stacheldrahtzaun umzäunt das Gelände einer&nbsp;Justizvollzugsanstalt.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Gewerkschaften</h4>
-                <h3 class="fp-article__title text-xl--bold ">Beschäftigte in Metallindustrie zu Warnstreiks aufgerufen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Justiz</h4>
+                <h3 class="fp-article__title text-xl--bold ">Mehr verurteilte Jugendliche in Berlin</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser fp-article__no-img" data-ratio="16:9">
+            <a href="/deutschland-und-welt/deutschland/offentliche-restaurierung-in-dresdner-gemaldegalerie-3496425">
+                <h4 class="fp-article__catchline vertical-teasers"> Museen</h4>
+                <h3 class="fp-article__title text-xl--bold ">Öffentliche Restaurierung in Dresdner Gemäldegalerie</h3>
+                    <p class="fp-article__excerpt"></p>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/bundeskanzler-scholz-besucht-neue-basf-anlage-in-der-lausitz-3475625">
+            <a href="/deutschland-und-welt/deutschland/brand-nach-gasexplosion-in-werkstatt-165-000-euro-sachaden-3496430">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/11/01/5803599f-bf6c-46dc-8d3e-bbe57fdddc6e.jpeg?rect=0%2C150%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/01/5803599f-bf6c-46dc-8d3e-bbe57fdddc6e.jpeg?rect=0%2C150%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/01/5803599f-bf6c-46dc-8d3e-bbe57fdddc6e.jpeg?rect=0%2C150%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/01/5803599f-bf6c-46dc-8d3e-bbe57fdddc6e.jpeg?rect=0%2C150%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/01/5803599f-bf6c-46dc-8d3e-bbe57fdddc6e.jpeg?rect=0%2C150%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/01/5803599f-bf6c-46dc-8d3e-bbe57fdddc6e.jpeg?rect=0%2C150%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/01/5803599f-bf6c-46dc-8d3e-bbe57fdddc6e.jpeg?rect=0%2C150%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Industrieanlagen auf dem Gelände der BASF Schwarzheide GmbH.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/f4bed90f-992f-4ff3-9597-ffe46de81f42.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/f4bed90f-992f-4ff3-9597-ffe46de81f42.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/f4bed90f-992f-4ff3-9597-ffe46de81f42.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/f4bed90f-992f-4ff3-9597-ffe46de81f42.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/f4bed90f-992f-4ff3-9597-ffe46de81f42.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/f4bed90f-992f-4ff3-9597-ffe46de81f42.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/f4bed90f-992f-4ff3-9597-ffe46de81f42.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Auf dem Einsatzfahrzeug ist in gelber Farbe der Schriftzug „Feuerwehr“ zu lesen.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Bundesregierung</h4>
-                <h3 class="fp-article__title text-xl--bold ">Bundeskanzler Scholz besucht neue BASF-Anlage in der Lausitz</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/behorde-rechnet-mit-storungen-am-schiffshebewerk-3475532">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/7c805081-ed57-47bb-9eaa-8f6d48ab18de.jpeg?rect=0%2C163%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/7c805081-ed57-47bb-9eaa-8f6d48ab18de.jpeg?rect=0%2C163%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/7c805081-ed57-47bb-9eaa-8f6d48ab18de.jpeg?rect=0%2C163%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/7c805081-ed57-47bb-9eaa-8f6d48ab18de.jpeg?rect=0%2C163%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/7c805081-ed57-47bb-9eaa-8f6d48ab18de.jpeg?rect=0%2C163%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/7c805081-ed57-47bb-9eaa-8f6d48ab18de.jpeg?rect=0%2C163%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/7c805081-ed57-47bb-9eaa-8f6d48ab18de.jpeg?rect=0%2C163%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Ein Ausflugsschiff kommt aus dem neuen Schiffshebewerk gefahren (Luftaufnahme mit einer Drohne).">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Barnim</h4>
-                <h3 class="fp-article__title text-xl--bold ">Behörde rechnet mit Störungen am Schiffshebewerk</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/aussage-von-angeklagtem-ehemann-im-mordprozess-erwartet-3475629">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/11/01/f171351d-23f2-4856-a0cf-cae0ad442765.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/01/f171351d-23f2-4856-a0cf-cae0ad442765.jpeg?rect=0%2C86%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/01/f171351d-23f2-4856-a0cf-cae0ad442765.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/01/f171351d-23f2-4856-a0cf-cae0ad442765.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/01/f171351d-23f2-4856-a0cf-cae0ad442765.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/01/f171351d-23f2-4856-a0cf-cae0ad442765.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/01/f171351d-23f2-4856-a0cf-cae0ad442765.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Eine Ausgabe der Strafprozessordnung liegt in einem Gerichtssaal.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Landgericht</h4>
-                <h3 class="fp-article__title text-xl--bold ">Aussage von angeklagtem Ehemann im Mordprozess erwartet</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Harz</h4>
+                <h3 class="fp-article__title text-xl--bold ">Brand nach Gasexplosion in Werkstatt: 165.000 Euro Sachaden</h3>
             </a>
         </article>
 </div>
@@ -1618,93 +1636,91 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/totengebet-fur-mevlude-genc-am-tatort-des-solinger-anschlags-3475478">
+            <a href="/deutschland-und-welt/politik/klimaaktivisten-vor-gericht-geldstrafen-verhangt-3496494">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/57bf7000-6ca7-444e-8297-5a627ef87142.jpeg?rect=0%2C122%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/57bf7000-6ca7-444e-8297-5a627ef87142.jpeg?rect=0%2C122%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/57bf7000-6ca7-444e-8297-5a627ef87142.jpeg?rect=0%2C122%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/57bf7000-6ca7-444e-8297-5a627ef87142.jpeg?rect=0%2C122%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/57bf7000-6ca7-444e-8297-5a627ef87142.jpeg?rect=0%2C122%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/57bf7000-6ca7-444e-8297-5a627ef87142.jpeg?rect=0%2C122%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/57bf7000-6ca7-444e-8297-5a627ef87142.jpeg?rect=0%2C122%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Mevlüde Genc ist im Alter von 79 Jahren gestorben. Sie stand für Toleranz und ein friedliches Miteinander zwischen den Kulturen.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/ecfcfb19-a6f4-40f3-8994-149a82cfd7e1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/ecfcfb19-a6f4-40f3-8994-149a82cfd7e1.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/ecfcfb19-a6f4-40f3-8994-149a82cfd7e1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/ecfcfb19-a6f4-40f3-8994-149a82cfd7e1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/ecfcfb19-a6f4-40f3-8994-149a82cfd7e1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/ecfcfb19-a6f4-40f3-8994-149a82cfd7e1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/ecfcfb19-a6f4-40f3-8994-149a82cfd7e1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Der Angeklagte (r.) neben seinem Anwalt Gregor Gysi.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Extremismus</h4>
-                <h3 class="fp-article__title text-xl--bold ">Totengebet für Mevlüde Genç am Tatort des Solinger Anschlags</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Demonstrationen</h4>
+                <h3 class="fp-article__title text-xl--bold ">Klimaaktivisten vor Gericht - Geldstrafen verhängt</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/spd-und-grune-koalition-in-niedersachsen-steht-3475469">
+            <a href="/deutschland-und-welt/politik/nato-soll-pipelines-und-internetleitungen-im-meer-schutzen-3496481">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/077c9566-296a-43fe-91a2-ac7991d4cf15.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/077c9566-296a-43fe-91a2-ac7991d4cf15.jpeg?rect=0%2C97%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/077c9566-296a-43fe-91a2-ac7991d4cf15.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/077c9566-296a-43fe-91a2-ac7991d4cf15.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/077c9566-296a-43fe-91a2-ac7991d4cf15.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/077c9566-296a-43fe-91a2-ac7991d4cf15.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/077c9566-296a-43fe-91a2-ac7991d4cf15.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Ministerpräsident Stephan Weil und die Grünen-Spitzenkandidatin Julia Willie Hamburg geben ein Pressestatement zu den Koalitionsverhandlungen ab.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/c071989f-29c1-4423-aa9e-49ac88c7aaf2.jpeg?rect=0%2C82%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/c071989f-29c1-4423-aa9e-49ac88c7aaf2.jpeg?rect=0%2C82%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/c071989f-29c1-4423-aa9e-49ac88c7aaf2.jpeg?rect=0%2C82%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/c071989f-29c1-4423-aa9e-49ac88c7aaf2.jpeg?rect=0%2C82%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/c071989f-29c1-4423-aa9e-49ac88c7aaf2.jpeg?rect=0%2C82%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/c071989f-29c1-4423-aa9e-49ac88c7aaf2.jpeg?rect=0%2C82%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/c071989f-29c1-4423-aa9e-49ac88c7aaf2.jpeg?rect=0%2C82%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Bundeskanzler Olaf Scholz und der norwegische Ministerpräsident Jonas Gahr Støre in Berlin.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Regierung</h4>
-                <h3 class="fp-article__title text-xl--bold ">SPD&nbsp;und Grüne: Koalition in Niedersachsen steht</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Berliner Sicherheitskonferenz</h4>
+                <h3 class="fp-article__title text-xl--bold ">Nato soll Pipelines und Internetleitungen im Meer schützen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/klima-sofortprogramm-nur-verkehrssektor-verfehlt-ziele-3475452">
+            <a href="/deutschland-und-welt/politik/bundestag-verurteilt-holodomor-als-volkermord-3496475">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/433124de-1d9c-4a9d-bb89-73d019606495.jpeg?rect=0%2C94%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/433124de-1d9c-4a9d-bb89-73d019606495.jpeg?rect=0%2C94%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/433124de-1d9c-4a9d-bb89-73d019606495.jpeg?rect=0%2C94%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/433124de-1d9c-4a9d-bb89-73d019606495.jpeg?rect=0%2C94%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/433124de-1d9c-4a9d-bb89-73d019606495.jpeg?rect=0%2C94%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/433124de-1d9c-4a9d-bb89-73d019606495.jpeg?rect=0%2C94%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/433124de-1d9c-4a9d-bb89-73d019606495.jpeg?rect=0%2C94%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Autos fahren im Berufsverkehr über den mittleren Ring in München. Von den gesteckten Klimazielen ist vor allem der Verkehrssektor noch weit entfernt.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/6f2d5fee-b935-4a7f-85b4-02e073dccc57.jpeg?rect=0%2C95%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/6f2d5fee-b935-4a7f-85b4-02e073dccc57.jpeg?rect=0%2C95%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/6f2d5fee-b935-4a7f-85b4-02e073dccc57.jpeg?rect=0%2C95%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/6f2d5fee-b935-4a7f-85b4-02e073dccc57.jpeg?rect=0%2C95%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/6f2d5fee-b935-4a7f-85b4-02e073dccc57.jpeg?rect=0%2C95%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/6f2d5fee-b935-4a7f-85b4-02e073dccc57.jpeg?rect=0%2C95%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/6f2d5fee-b935-4a7f-85b4-02e073dccc57.jpeg?rect=0%2C95%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Der Bundestag gedenkt in seiner Sitzung des Holodomor in der Ukraine.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Klimakrise</h4>
-                <h3 class="fp-article__title text-xl--bold ">Klima-Sofortprogramm: Nur Verkehrssektor verfehlt Ziele</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Geschichte</h4>
+                <h3 class="fp-article__title text-xl--bold ">Bundestag verurteilt Holodomor als Völkermord</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/keine-neuen-erkenntnisse-nach-brandanschlag-in-bautzen-3475427">
+            <a href="/deutschland-und-welt/politik/anderungen-an-asyl-reformvorhaben-der-ampel-3496465">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/f61d2ed4-9e5d-49b4-91cc-03c9922d4096.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/f61d2ed4-9e5d-49b4-91cc-03c9922d4096.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/f61d2ed4-9e5d-49b4-91cc-03c9922d4096.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/f61d2ed4-9e5d-49b4-91cc-03c9922d4096.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/f61d2ed4-9e5d-49b4-91cc-03c9922d4096.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/f61d2ed4-9e5d-49b4-91cc-03c9922d4096.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/f61d2ed4-9e5d-49b4-91cc-03c9922d4096.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Unbekannte verübten am frühen Freitagmorgen einen Brandanschlag auf geplante Asylunterkunft in Bautzen. Kommende Woche sollten erste Flüchtlinge in das Haus ziehen.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/a72304ed-ac56-4e05-85e7-7c7f0c9f7d51.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/a72304ed-ac56-4e05-85e7-7c7f0c9f7d51.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/a72304ed-ac56-4e05-85e7-7c7f0c9f7d51.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/a72304ed-ac56-4e05-85e7-7c7f0c9f7d51.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/a72304ed-ac56-4e05-85e7-7c7f0c9f7d51.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/a72304ed-ac56-4e05-85e7-7c7f0c9f7d51.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/a72304ed-ac56-4e05-85e7-7c7f0c9f7d51.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Eine junge Frau aus Afrika mit einem Ausweis für Flüchtlinge: „Aussetzung der Abschiebung (Duldung)“. Darunter ist der Vermerk: „Kein Aufenthaltstitel!“">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Kriminalität</h4>
-                <h3 class="fp-article__title text-xl--bold ">Keine neuen Erkenntnisse nach Brandanschlag in Bautzen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Migration</h4>
+                <h3 class="fp-article__title text-xl--bold ">Änderungen an Asyl-Reformvorhaben der Ampel</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/versohner-eines-gespaltenen-landes-lula-vor-grossen-aufgaben-3475400">
+            <a href="/deutschland-und-welt/politik/nach-pelosi-jeffries-erster-schwarzer-fraktionschef-3496461">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/362f0814-8ee1-4e61-b6f5-953d8582f8b5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/362f0814-8ee1-4e61-b6f5-953d8582f8b5.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/362f0814-8ee1-4e61-b6f5-953d8582f8b5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/362f0814-8ee1-4e61-b6f5-953d8582f8b5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/362f0814-8ee1-4e61-b6f5-953d8582f8b5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/362f0814-8ee1-4e61-b6f5-953d8582f8b5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/362f0814-8ee1-4e61-b6f5-953d8582f8b5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Luiz Inácio Lula da Silva umarmt seine Frau Rosangela.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/b612fac4-60b4-4703-9ae6-cc528429fc11.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/b612fac4-60b4-4703-9ae6-cc528429fc11.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/b612fac4-60b4-4703-9ae6-cc528429fc11.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/b612fac4-60b4-4703-9ae6-cc528429fc11.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/b612fac4-60b4-4703-9ae6-cc528429fc11.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/b612fac4-60b4-4703-9ae6-cc528429fc11.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/b612fac4-60b4-4703-9ae6-cc528429fc11.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Hakeem Jeffries führt die Demokraten im Repräsentantenhaus an.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Brasilien</h4>
-                <h3 class="fp-article__title text-xl--bold ">Versöhner eines gespaltenen Landes: Lula vor großen Aufgaben</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Repräsentantenhaus</h4>
+                <h3 class="fp-article__title text-xl--bold ">Nach Pelosi: Jeffries erster schwarzer Fraktionschef</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/neue-regierungskrise-in-london-innenministerin-unter-druck-3475398">
+            <a href="/deutschland-und-welt/politik/is-terrormiliz-bestatigt-tod-ihres-anfuhrers-3496447">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/760fcccd-87db-4f51-aec0-7a09349e8fe7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/760fcccd-87db-4f51-aec0-7a09349e8fe7.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/760fcccd-87db-4f51-aec0-7a09349e8fe7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/760fcccd-87db-4f51-aec0-7a09349e8fe7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/760fcccd-87db-4f51-aec0-7a09349e8fe7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/760fcccd-87db-4f51-aec0-7a09349e8fe7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/760fcccd-87db-4f51-aec0-7a09349e8fe7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Suella Braverman trifft zur ersten Kabinettssitzung des neuen Premierministers Sunak in der 10 Downing Street ein.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/a0f6a5ad-41b3-4621-bb9e-679d5e4dd01b.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/a0f6a5ad-41b3-4621-bb9e-679d5e4dd01b.jpeg?rect=0%2C64%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/a0f6a5ad-41b3-4621-bb9e-679d5e4dd01b.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/a0f6a5ad-41b3-4621-bb9e-679d5e4dd01b.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/a0f6a5ad-41b3-4621-bb9e-679d5e4dd01b.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/a0f6a5ad-41b3-4621-bb9e-679d5e4dd01b.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/a0f6a5ad-41b3-4621-bb9e-679d5e4dd01b.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="IS-Kämpfer im syrischen Baghus: Der IS kontrollierte über Jahre große Gebiete im Irak und im benachbarten Bürgerkriegsland Syrien (Archivbild).">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Suella Braverman</h4>
-                <h3 class="fp-article__title text-xl--bold ">Neue Regierungskrise in London? Innenministerin unter Druck</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Terrorismus</h4>
+                <h3 class="fp-article__title text-xl--bold ">IS-Terrormiliz&nbsp;bestätigt Tod ihres Anführers</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser fp-article__no-img" data-ratio="16:9">
+            <a href="/deutschland-und-welt/politik/zahlen-sollen-die-anderen-3496418">
+                <h4 class="fp-article__catchline vertical-teasers"> Kommentar</h4>
+                <h3 class="fp-article__title text-xl--bold ">Zahlen sollen die anderen</h3>
+                    <p class="fp-article__excerpt"></p>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/juristin-sieht-in-mutmasslichen-nsu-akten-komplettversagen-3475359">
+            <a href="/deutschland-und-welt/politik/droht-dem-spiegel-neuer-fake-news-skandal-3496421">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/cae3f6f5-faa9-4306-89b3-b6f0b6cc2aec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/cae3f6f5-faa9-4306-89b3-b6f0b6cc2aec.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/cae3f6f5-faa9-4306-89b3-b6f0b6cc2aec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/cae3f6f5-faa9-4306-89b3-b6f0b6cc2aec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/cae3f6f5-faa9-4306-89b3-b6f0b6cc2aec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/cae3f6f5-faa9-4306-89b3-b6f0b6cc2aec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/cae3f6f5-faa9-4306-89b3-b6f0b6cc2aec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Eine Gedenktafel mit dem Abbild des NSU-Opfers Enver Şimşek hängt 2018 am Tatort in Nürnberg an einem Baum.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/3aa69dc4-6dc6-4b59-9ece-e208eaf0eb40.jpeg?rect=0%2C216%2C573%2C322&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/3aa69dc4-6dc6-4b59-9ece-e208eaf0eb40.jpeg?rect=0%2C216%2C573%2C322&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/3aa69dc4-6dc6-4b59-9ece-e208eaf0eb40.jpeg?rect=0%2C216%2C573%2C322&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/3aa69dc4-6dc6-4b59-9ece-e208eaf0eb40.jpeg?rect=0%2C216%2C573%2C322&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/3aa69dc4-6dc6-4b59-9ece-e208eaf0eb40.jpeg?rect=0%2C216%2C573%2C322&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/3aa69dc4-6dc6-4b59-9ece-e208eaf0eb40.jpeg?rect=0%2C216%2C573%2C322&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/3aa69dc4-6dc6-4b59-9ece-e208eaf0eb40.jpeg?rect=0%2C216%2C573%2C322&amp;width=160 160w" class="lazyload" alt="Das Verlagsgebäude des „Spiegel“ in Hamburg.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Hessische NSU-Akten</h4>
-                <h3 class="fp-article__title text-xl--bold ">Juristin sieht in mutmaßlichen NSU-Akten „Komplettversagen“</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Illegale Migration nach Europa</h4>
+                <h3 class="fp-article__title text-xl--bold ">Droht dem „Spiegel“ neuer Fake-News-Skandal?</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/uberlebender-von-hanau-schildert-erlebnisse-am-tatabend-3475312">
+            <a href="/deutschland-und-welt/politik/blanker-hass-auf-den-westen-3496417">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/4a92e751-c0e2-47c4-abb9-71966dc92137.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/4a92e751-c0e2-47c4-abb9-71966dc92137.jpeg?rect=0%2C101%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/4a92e751-c0e2-47c4-abb9-71966dc92137.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/4a92e751-c0e2-47c4-abb9-71966dc92137.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/4a92e751-c0e2-47c4-abb9-71966dc92137.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/4a92e751-c0e2-47c4-abb9-71966dc92137.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/4a92e751-c0e2-47c4-abb9-71966dc92137.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Ein Aktenordner mit der Aufschrift „#SayTheirNames.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/cb10df24-01a1-4727-8945-35afebbd7fa7.jpeg?rect=0%2C50%2C1214%2C683&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/cb10df24-01a1-4727-8945-35afebbd7fa7.jpeg?rect=0%2C50%2C1214%2C683&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/cb10df24-01a1-4727-8945-35afebbd7fa7.jpeg?rect=0%2C50%2C1214%2C683&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/cb10df24-01a1-4727-8945-35afebbd7fa7.jpeg?rect=0%2C50%2C1214%2C683&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/cb10df24-01a1-4727-8945-35afebbd7fa7.jpeg?rect=0%2C50%2C1214%2C683&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/cb10df24-01a1-4727-8945-35afebbd7fa7.jpeg?rect=0%2C50%2C1214%2C683&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/cb10df24-01a1-4727-8945-35afebbd7fa7.jpeg?rect=0%2C50%2C1214%2C683&amp;width=160 160w" class="lazyload" alt="Einsatzkräfte der belgischen Polizei müssen am vergangenen Sonntag gegen Anhänger der Fußballmannschaft Marokkos vorgehen. Die Ausschreitungen haben die belgische Gesellschaft erschüttert. IMAGO/Belga">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Anschlag</h4>
-                <h3 class="fp-article__title text-xl--bold ">Überlebender von Hanau schildert Erlebnisse am Tatabend</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Islam im Westen</h4>
+                <h3 class="fp-article__title text-xl--bold ">Blanker Hass auf den Westen?</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/getreidefrachter-vor-ukraine-in-bewegung-3475249">
+            <a href="/deutschland-und-welt/politik/mehr-menschen-arbeiten-mit-60-3496357">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/f17c441e-17c3-4721-919e-7dcc092679ff.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/f17c441e-17c3-4721-919e-7dcc092679ff.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/f17c441e-17c3-4721-919e-7dcc092679ff.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/f17c441e-17c3-4721-919e-7dcc092679ff.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/f17c441e-17c3-4721-919e-7dcc092679ff.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/f17c441e-17c3-4721-919e-7dcc092679ff.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/f17c441e-17c3-4721-919e-7dcc092679ff.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Russland hatte nach den Drohnenangriffen auf der Krim das Abkommen zum Transport von ukrainischem Getreide aus den Häfen im Schwarzen Meer aufgekündigt.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/c879e256-e533-4916-b9b0-26e2abd61f82.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/c879e256-e533-4916-b9b0-26e2abd61f82.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/c879e256-e533-4916-b9b0-26e2abd61f82.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/c879e256-e533-4916-b9b0-26e2abd61f82.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/c879e256-e533-4916-b9b0-26e2abd61f82.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/c879e256-e533-4916-b9b0-26e2abd61f82.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/c879e256-e533-4916-b9b0-26e2abd61f82.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Arbeiten im Rentenalter: Bei den den 60- bis 64-Jährigen stiegt die Erwerbstätigenquote von 2000 bis 2021 von 20 auf rund 61 Prozent (Symbolbild).">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Schwarzmeer-Küste</h4>
-                <h3 class="fp-article__title text-xl--bold ">Getreidefrachter vor Ukraine in Bewegung</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/kriegsangst-in-polen-burger-trainieren-mit-der-armee-3475235">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/4f47aa50-20ac-482e-869a-5474bc8a4f9b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/4f47aa50-20ac-482e-869a-5474bc8a4f9b.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/4f47aa50-20ac-482e-869a-5474bc8a4f9b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/4f47aa50-20ac-482e-869a-5474bc8a4f9b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/4f47aa50-20ac-482e-869a-5474bc8a4f9b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/4f47aa50-20ac-482e-869a-5474bc8a4f9b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/4f47aa50-20ac-482e-869a-5474bc8a4f9b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Oberfeldwebel Mariusz Starosz (l) erklärt auf einem Übungsplatz der polnischen Armee Bürgern den richtigen Umgang mit einer Handgranate.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Verteidigung</h4>
-                <h3 class="fp-article__title text-xl--bold ">Kriegsangst in Polen: Bürger trainieren mit der Armee</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Arbeitsmarkt</h4>
+                <h3 class="fp-article__title text-xl--bold ">Mehr Menschen arbeiten mit 60</h3>
             </a>
         </article>
 </div>
@@ -1725,93 +1741,93 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/bei-galeria-karstadt-kaufhof-droht-uber-40-filialen-das-aus-3475556">
+            <a href="/deutschland-und-welt/wirtschaft/berliner-messe-chef-hort-auf-3496520">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/8438bdab-2bee-45e1-a763-688afac261bc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/8438bdab-2bee-45e1-a763-688afac261bc.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/8438bdab-2bee-45e1-a763-688afac261bc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/8438bdab-2bee-45e1-a763-688afac261bc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/8438bdab-2bee-45e1-a763-688afac261bc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/8438bdab-2bee-45e1-a763-688afac261bc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/8438bdab-2bee-45e1-a763-688afac261bc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Blick auf das neue Logo des Warenhauskonzerns Galeria Karstadt Kaufhof.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/10ebbc96-1ea6-466b-92eb-728ba8463ca8.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/10ebbc96-1ea6-466b-92eb-728ba8463ca8.jpeg?rect=0%2C108%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/10ebbc96-1ea6-466b-92eb-728ba8463ca8.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/10ebbc96-1ea6-466b-92eb-728ba8463ca8.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/10ebbc96-1ea6-466b-92eb-728ba8463ca8.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/10ebbc96-1ea6-466b-92eb-728ba8463ca8.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/10ebbc96-1ea6-466b-92eb-728ba8463ca8.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Nicht mehr Vorsitzender der Geschäftsführung: Martin Ecknig.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Einzelhandel</h4>
-                <h3 class="fp-article__title text-xl--bold ">Bei Galeria Karstadt Kaufhof droht über 40 Filialen das Aus</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Personalie</h4>
+                <h3 class="fp-article__title text-xl--bold ">Berliner Messe-Chef hört auf</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/alternativrouten-29-millionen-tonnen-aus-ukraine-exportiert-3475546">
+            <a href="/deutschland-und-welt/wirtschaft/eu-kommission-will-verpackungsmull-deutlich-reduzieren-3496455">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/f6acb5a4-2f21-494c-a9d5-b8b0b57ef1d1.jpeg?rect=0%2C58%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/f6acb5a4-2f21-494c-a9d5-b8b0b57ef1d1.jpeg?rect=0%2C58%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/f6acb5a4-2f21-494c-a9d5-b8b0b57ef1d1.jpeg?rect=0%2C58%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/f6acb5a4-2f21-494c-a9d5-b8b0b57ef1d1.jpeg?rect=0%2C58%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/f6acb5a4-2f21-494c-a9d5-b8b0b57ef1d1.jpeg?rect=0%2C58%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/f6acb5a4-2f21-494c-a9d5-b8b0b57ef1d1.jpeg?rect=0%2C58%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/f6acb5a4-2f21-494c-a9d5-b8b0b57ef1d1.jpeg?rect=0%2C58%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Ohne die Solidaritätskorridore hätten viele Waren nicht aus der Ukraine exportiert werden können.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/c7a0053d-fa24-45dd-adf0-661cee88e81b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/c7a0053d-fa24-45dd-adf0-661cee88e81b.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/c7a0053d-fa24-45dd-adf0-661cee88e81b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/c7a0053d-fa24-45dd-adf0-661cee88e81b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/c7a0053d-fa24-45dd-adf0-661cee88e81b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/c7a0053d-fa24-45dd-adf0-661cee88e81b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/c7a0053d-fa24-45dd-adf0-661cee88e81b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="EU-Umweltkommissar Virginijus Sinkevicius hat dem Verpackungsmüll den Kampf angesagt.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Handel</h4>
-                <h3 class="fp-article__title text-xl--bold ">Alternativrouten: 29 Millionen Tonnen aus Ukraine exportiert</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Umweltpolitik</h4>
+                <h3 class="fp-article__title text-xl--bold ">EU-Kommission will Verpackungsmüll deutlich reduzieren</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/hotelkette-motel-one-verbucht-rekordergebnis-3475538">
+            <a href="/deutschland-und-welt/wirtschaft/brexit-mit-folgen-fur-arbeitsmarkt-und-inflation-3496431">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/a77c885b-4ce8-4b0c-bb85-4b4ef1087279.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/a77c885b-4ce8-4b0c-bb85-4b4ef1087279.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/a77c885b-4ce8-4b0c-bb85-4b4ef1087279.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/a77c885b-4ce8-4b0c-bb85-4b4ef1087279.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/a77c885b-4ce8-4b0c-bb85-4b4ef1087279.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/a77c885b-4ce8-4b0c-bb85-4b4ef1087279.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/a77c885b-4ce8-4b0c-bb85-4b4ef1087279.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Motel One möchte noch dieses Jahr das erste Hotel in den USA eröffnen.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/e40b385b-a5c2-4251-8d16-c8602602acdf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/e40b385b-a5c2-4251-8d16-c8602602acdf.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/e40b385b-a5c2-4251-8d16-c8602602acdf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/e40b385b-a5c2-4251-8d16-c8602602acdf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/e40b385b-a5c2-4251-8d16-c8602602acdf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/e40b385b-a5c2-4251-8d16-c8602602acdf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/e40b385b-a5c2-4251-8d16-c8602602acdf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Container am Hafen von Felixstowe in Suffolk.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Bilanz</h4>
-                <h3 class="fp-article__title text-xl--bold ">Hotelkette Motel One verbucht Rekordergebnis</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Bank of England</h4>
+                <h3 class="fp-article__title text-xl--bold ">Brexit mit Folgen für Arbeitsmarkt und Inflation</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/einzelhandel-konsumstimmung-ist-auf-dem-tiefpunkt-3475413">
+            <a href="/deutschland-und-welt/wirtschaft/mehr-als-doppelt-so-viele-fluggaste-im-sommer-3496266">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/60eb344d-80f0-42ed-9d84-9a3d06e9a78c.jpeg?rect=0%2C36%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/60eb344d-80f0-42ed-9d84-9a3d06e9a78c.jpeg?rect=0%2C36%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/60eb344d-80f0-42ed-9d84-9a3d06e9a78c.jpeg?rect=0%2C36%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/60eb344d-80f0-42ed-9d84-9a3d06e9a78c.jpeg?rect=0%2C36%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/60eb344d-80f0-42ed-9d84-9a3d06e9a78c.jpeg?rect=0%2C36%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/60eb344d-80f0-42ed-9d84-9a3d06e9a78c.jpeg?rect=0%2C36%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/60eb344d-80f0-42ed-9d84-9a3d06e9a78c.jpeg?rect=0%2C36%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Im Vergleich zu anderen Branchen machen sich viele Einzelhändler große Sorgen um ihre wirtschaftliche Situation.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/8985718d-4015-45f8-9138-2ba6b0b32c69.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/8985718d-4015-45f8-9138-2ba6b0b32c69.jpeg?rect=0%2C117%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/8985718d-4015-45f8-9138-2ba6b0b32c69.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/8985718d-4015-45f8-9138-2ba6b0b32c69.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/8985718d-4015-45f8-9138-2ba6b0b32c69.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/8985718d-4015-45f8-9138-2ba6b0b32c69.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/8985718d-4015-45f8-9138-2ba6b0b32c69.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Die Zahl der Flüggäste an deutschen Flughäfen hat sich im Sommer im Vergleich zum Vorjahr mehr als verdoppelt.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Inflation</h4>
-                <h3 class="fp-article__title text-xl--bold ">Einzelhandel: Konsumstimmung ist auf dem „Tiefpunkt“</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Luftverkehr</h4>
+                <h3 class="fp-article__title text-xl--bold ">Mehr als doppelt so viele Fluggäste im Sommer</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/kommission-schlagt-mieter-kundigungsschutz-vor-3475394">
+            <a href="/deutschland-und-welt/wirtschaft/habeck-will-einstieg-bei-stromnetzbetreiber-tennet-prufen-3496238">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/4344147f-457f-4bda-be18-aa1dd01287ab.jpeg?rect=0%2C92%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/4344147f-457f-4bda-be18-aa1dd01287ab.jpeg?rect=0%2C92%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/4344147f-457f-4bda-be18-aa1dd01287ab.jpeg?rect=0%2C92%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/4344147f-457f-4bda-be18-aa1dd01287ab.jpeg?rect=0%2C92%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/4344147f-457f-4bda-be18-aa1dd01287ab.jpeg?rect=0%2C92%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/4344147f-457f-4bda-be18-aa1dd01287ab.jpeg?rect=0%2C92%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/4344147f-457f-4bda-be18-aa1dd01287ab.jpeg?rect=0%2C92%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Angesichts der steigenden Energiepreise haben viele Menschen sorgen vor eventuellen Schulden.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/72cc767f-71b2-418f-8031-d79a98be6032.jpeg?rect=0%2C51%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/72cc767f-71b2-418f-8031-d79a98be6032.jpeg?rect=0%2C51%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/72cc767f-71b2-418f-8031-d79a98be6032.jpeg?rect=0%2C51%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/72cc767f-71b2-418f-8031-d79a98be6032.jpeg?rect=0%2C51%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/72cc767f-71b2-418f-8031-d79a98be6032.jpeg?rect=0%2C51%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/72cc767f-71b2-418f-8031-d79a98be6032.jpeg?rect=0%2C51%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/72cc767f-71b2-418f-8031-d79a98be6032.jpeg?rect=0%2C51%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Der niederländische Stromnetzbetreiber Tennet">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Energiekrise</h4>
-                <h3 class="fp-article__title text-xl--bold ">Kommission schlägt Mieter-Kündigungsschutz vor</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Energie</h4>
+                <h3 class="fp-article__title text-xl--bold ">Habeck will Einstieg bei Stromnetzbetreiber Tennet prüfen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/aktuelle-krisen-gefahrden-arbeitsplatze-3475372">
+            <a href="/deutschland-und-welt/wirtschaft/spritpreise-bleiben-auf-talfahrt-3496184">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/cfd7dd74-2e17-4e5d-9ee0-49019b4ccb4d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/cfd7dd74-2e17-4e5d-9ee0-49019b4ccb4d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/cfd7dd74-2e17-4e5d-9ee0-49019b4ccb4d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/cfd7dd74-2e17-4e5d-9ee0-49019b4ccb4d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/cfd7dd74-2e17-4e5d-9ee0-49019b4ccb4d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/cfd7dd74-2e17-4e5d-9ee0-49019b4ccb4d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/cfd7dd74-2e17-4e5d-9ee0-49019b4ccb4d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Nach Erkenntnissen des Nürnberger Instituts für Arbeitsmarkt- und Berufsforschung könnte in Deutschland ein Stellenabbau drohen.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/12/01/f8676ee9-18f3-48b8-93c6-9471c1d87e1e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/12/01/f8676ee9-18f3-48b8-93c6-9471c1d87e1e.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/12/01/f8676ee9-18f3-48b8-93c6-9471c1d87e1e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/12/01/f8676ee9-18f3-48b8-93c6-9471c1d87e1e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/12/01/f8676ee9-18f3-48b8-93c6-9471c1d87e1e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/12/01/f8676ee9-18f3-48b8-93c6-9471c1d87e1e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/12/01/f8676ee9-18f3-48b8-93c6-9471c1d87e1e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Die Preise für Benzin und Diesel an den Tankstellen sinken.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Jobverlust</h4>
-                <h3 class="fp-article__title text-xl--bold ">Aktuelle Krisen gefährden Arbeitsplätze</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Verbraucher</h4>
+                <h3 class="fp-article__title text-xl--bold ">Spritpreise bleiben auf Talfahrt</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/eurozone-inflation-erreicht-rekordwert-von-10-7-prozent-3475343">
+            <a href="/deutschland-und-welt/wirtschaft/zahl-der-arbeitslosen-sinkt-im-november-leicht-3495961">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/3e9d2885-6ff4-463b-8757-68c4dac7d05b.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/3e9d2885-6ff4-463b-8757-68c4dac7d05b.jpeg?rect=0%2C105%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/3e9d2885-6ff4-463b-8757-68c4dac7d05b.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/3e9d2885-6ff4-463b-8757-68c4dac7d05b.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/3e9d2885-6ff4-463b-8757-68c4dac7d05b.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/3e9d2885-6ff4-463b-8757-68c4dac7d05b.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/3e9d2885-6ff4-463b-8757-68c4dac7d05b.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Die Energiepreise sind im Moment um 41,9 Prozent höher als noch im Oktober 2021.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/caf94b7d-6789-4a80-bd2c-8ae7b1364c39.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/caf94b7d-6789-4a80-bd2c-8ae7b1364c39.jpeg?rect=0%2C121%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/caf94b7d-6789-4a80-bd2c-8ae7b1364c39.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/caf94b7d-6789-4a80-bd2c-8ae7b1364c39.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/caf94b7d-6789-4a80-bd2c-8ae7b1364c39.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/caf94b7d-6789-4a80-bd2c-8ae7b1364c39.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/caf94b7d-6789-4a80-bd2c-8ae7b1364c39.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Die Zahl der Arbeitslosen sinkt laut Bundesanstalt für Arbeit leicht.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Konjunktur</h4>
-                <h3 class="fp-article__title text-xl--bold ">Eurozone: Inflation erreicht Rekordwert von 10,7 Prozent</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Arbeitsmarkt</h4>
+                <h3 class="fp-article__title text-xl--bold ">Zahl der Arbeitslosen sinkt im November leicht</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/fracking-spd-und-grune-lehnen-lindner-vorstoss-ab-3475325">
+            <a href="/deutschland-und-welt/wirtschaft/dax-beendet-starken-november-im-plus-3495896">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/8c12f26e-db34-4b0b-8ba3-cbf12d50eaa0.jpeg?rect=0%2C65%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/8c12f26e-db34-4b0b-8ba3-cbf12d50eaa0.jpeg?rect=0%2C65%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/8c12f26e-db34-4b0b-8ba3-cbf12d50eaa0.jpeg?rect=0%2C65%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/8c12f26e-db34-4b0b-8ba3-cbf12d50eaa0.jpeg?rect=0%2C65%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/8c12f26e-db34-4b0b-8ba3-cbf12d50eaa0.jpeg?rect=0%2C65%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/8c12f26e-db34-4b0b-8ba3-cbf12d50eaa0.jpeg?rect=0%2C65%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/8c12f26e-db34-4b0b-8ba3-cbf12d50eaa0.jpeg?rect=0%2C65%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Aufgrund der potentiellen Umweltschäden ist Fracking für Grüne und SPD keine Option.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/988b786a-768c-4bff-95be-098703a0dba4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/988b786a-768c-4bff-95be-098703a0dba4.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/988b786a-768c-4bff-95be-098703a0dba4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/988b786a-768c-4bff-95be-098703a0dba4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/988b786a-768c-4bff-95be-098703a0dba4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/988b786a-768c-4bff-95be-098703a0dba4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/988b786a-768c-4bff-95be-098703a0dba4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Der Dax ist der wichtigste Aktienindex in Deutschland.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Erdgasförderung</h4>
-                <h3 class="fp-article__title text-xl--bold ">Fracking: SPD und Grüne lehnen Lindner-Vorstoß ab</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Börse in Frankfurt</h4>
+                <h3 class="fp-article__title text-xl--bold ">Dax beendet starken November im Plus</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/trotz-krise-nur-wenige-unternehmen-haben-existenzangst-3475295">
+            <a href="/deutschland-und-welt/wirtschaft/49-euro-ticket-landkreise-fordern-ubernahme-von-mehrkosten-3495886">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/a59017fd-2918-4f32-8abc-47da8f3687d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/a59017fd-2918-4f32-8abc-47da8f3687d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/a59017fd-2918-4f32-8abc-47da8f3687d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/a59017fd-2918-4f32-8abc-47da8f3687d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/a59017fd-2918-4f32-8abc-47da8f3687d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/a59017fd-2918-4f32-8abc-47da8f3687d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/a59017fd-2918-4f32-8abc-47da8f3687d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Trotz der vielen Krisen fühlen sich die deutschen Unternehmen gut für die kommenden Monate gewappnet.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/12/01/5bf9dd2e-d448-4a10-91fe-d0cc05fe8c43.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/12/01/5bf9dd2e-d448-4a10-91fe-d0cc05fe8c43.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/12/01/5bf9dd2e-d448-4a10-91fe-d0cc05fe8c43.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/12/01/5bf9dd2e-d448-4a10-91fe-d0cc05fe8c43.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/12/01/5bf9dd2e-d448-4a10-91fe-d0cc05fe8c43.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/12/01/5bf9dd2e-d448-4a10-91fe-d0cc05fe8c43.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/12/01/5bf9dd2e-d448-4a10-91fe-d0cc05fe8c43.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Das 49-Euro-Ticket für öffentliche Verkehrsmittel gibt es wohl erst im Mai.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Statistik</h4>
-                <h3 class="fp-article__title text-xl--bold ">Trotz Krise: Nur wenige Unternehmen haben Existenzangst</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Verkehr</h4>
+                <h3 class="fp-article__title text-xl--bold ">49-Euro-Ticket: Landkreise fordern Übernahme von Mehrkosten</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/experte-wirtschaft-profitiert-von-chinas-hafenbeteiligung-3475277">
+            <a href="/deutschland-und-welt/wirtschaft/foodwatch-pestizid-zulassungen-ohne-risikoprufung-erneuert-3495866">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/6d345963-0175-4c17-bec6-0228b8f19a83.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/6d345963-0175-4c17-bec6-0228b8f19a83.jpeg?rect=0%2C105%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/6d345963-0175-4c17-bec6-0228b8f19a83.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/6d345963-0175-4c17-bec6-0228b8f19a83.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/6d345963-0175-4c17-bec6-0228b8f19a83.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/6d345963-0175-4c17-bec6-0228b8f19a83.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/6d345963-0175-4c17-bec6-0228b8f19a83.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Trotz der Kritik einiger Ministerien darf der chinesische Konzern Cosco am Hamburger Containerterminal Tollerort einsteigen.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/12/01/d74d932e-efdc-4002-b233-8962517051ab.jpeg?rect=0%2C61%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/12/01/d74d932e-efdc-4002-b233-8962517051ab.jpeg?rect=0%2C61%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/12/01/d74d932e-efdc-4002-b233-8962517051ab.jpeg?rect=0%2C61%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/12/01/d74d932e-efdc-4002-b233-8962517051ab.jpeg?rect=0%2C61%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/12/01/d74d932e-efdc-4002-b233-8962517051ab.jpeg?rect=0%2C61%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/12/01/d74d932e-efdc-4002-b233-8962517051ab.jpeg?rect=0%2C61%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/12/01/d74d932e-efdc-4002-b233-8962517051ab.jpeg?rect=0%2C61%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Ein Landwirt versprüht mit einem Spezialgerät Pflanzenschutzmittel über ein Roggenfeld.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Hamburg</h4>
-                <h3 class="fp-article__title text-xl--bold ">Experte: Wirtschaft profitiert von Chinas Hafenbeteiligung</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Umwelt</h4>
+                <h3 class="fp-article__title text-xl--bold ">Foodwatch: Pestizid-Zulassungen ohne Risikoprüfung erneuert</h3>
             </a>
         </article>
 </div>
@@ -2022,15 +2038,19 @@
                       </a>
                     </li>
                     <li>
+                      <a href="/sachsen-anhalt/leseranwaeltin" target="_self">Leseranwältin
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/sachsen-anhalt/regionale-kultur">Regionale Kultur
+                      </a>
+                    </li>
+                    <li>
                       <a href="/sachsen-anhalt/regionale-wirtschaft">Regionale Wirtschaft
                       </a>
                     </li>
                     <li>
                       <a href="/sachsen-anhalt/tourismus">Tourismus
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/sachsen-anhalt/regionale-kultur">Regionale Kultur
                       </a>
                     </li>
                 </ul>
@@ -2238,6 +2258,10 @@
                       </a>
                     </li>
                     <li>
+                      <a href="https://www.volksstimme.de/leben/rezepte">Rezepte
+                      </a>
+                    </li>
+                    <li>
                       <a href="/leben/technik" target="_self">Technik
                       </a>
                     </li>
@@ -2348,7 +2372,7 @@
 
                 <aside class="fp-copyright__links">
             <p class="text-xs--bold">Über uns</p>
-              <a class="text-xs--regular" href="/vs/general/impressum-195">
+              <a class="text-xs--regular" href="https://www.volksstimme.de/general/impressum-195" target="_self">
                 Impressum
               </a>
               <a class="text-xs--regular" href="https://mediengruppe-magdeburg.de/karriere/" target="_blank" rel="noopener noreferrer">
@@ -2363,13 +2387,13 @@
               <a class="text-xs--regular" href="https://service.volksstimme.de/inserieren/start" target="_blank" rel="noopener noreferrer">
                 Kleinanzeige aufgeben
               </a>
-              <a class="text-xs--regular" href="/vs/general/kontakt-1111909">
+              <a class="text-xs--regular" href="https://www.volksstimme.de/general/kontakt-1111909" target="_self">
                 Kontakt
               </a>
-              <a class="text-xs--regular" href="https://www.volksstimme.de/servicestellen" target="_self">
+              <a class="text-xs--regular" href="https://www.volksstimme.de/general/servicestellen-1111910#" target="_self">
                 Servicestellen
               </a>
-              <a class="text-xs--regular" href="/vs/general/datenschutzerklaerung-198">
+              <a class="text-xs--regular" href="https://www.volksstimme.de/general/datenschutzerklaerung-198" target="_self">
                 Datenschutz
               </a>
               <a class="text-xs--regular cookie-einstellungen" href="/" data-cmp-id="197228">
@@ -2424,7 +2448,7 @@
     }
 </script>
 
-            <script src="/static/scripts/scripts.f078c8a0.js" defer=""></script>
+            <script src="/static/scripts/scripts.0a123083.js" defer=""></script>
 
 
 
@@ -2444,7 +2468,7 @@
 </script>
         </div>
     </div>
-    <script src="/static/scripts/adScripts.f078c8a0.js"></script>
+    <script src="/static/scripts/adScripts.0a123083.js"></script>
   
 
 </body></html>

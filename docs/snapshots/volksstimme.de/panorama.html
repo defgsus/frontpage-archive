@@ -1,8 +1,8 @@
 <!DOCTYPE html><html lang="de"><head>
 
-      <link rel="preload prefetch stylesheet" href="/designs/bmg_base_design/1.0.144/styles-vs.css" as="style">
+      <link rel="preload prefetch stylesheet" href="/designs/bmg_base_design/1.0.146/styles-vs.css" as="style">
 
-      <link rel="preload prefetch stylesheet" href="/static/css/styles-delivery-vs-base.f078c8a0.css" as="style">
+      <link rel="preload prefetch stylesheet" href="/static/css/styles-delivery-vs-base.0a123083.css" as="style">
 
     <title>VS - Panorama</title>
     <meta charset="UTF-8">
@@ -47,6 +47,12 @@
                 var s = document.getElementsByTagName("script")[0];
                 cre.onload = function(){
                     if (typeof(cre_client) != "undefined") {
+                        cre_client.addListener(function(response){
+                            const userType = response?.data?.action_groups?.cms_snippet?.parameters[0]
+                            if(typeof initiateSourcePoint === "function") {
+                                initiateSourcePoint(userType)
+                            }
+                        });
                         cre_client.set_page_view();
                         cre_client.set_origin("web");
                         cre_client.set_service_id("mv-web");
@@ -84,15 +90,6 @@
 <link rel="preload" href="https://data-9f47bd3ec3.volksstimme.de/iomm/latest/bootstrap/loader.js" as="script">
 <script type="text/javascript" src="https://data-9f47bd3ec3.volksstimme.de/iomm/latest/bootstrap/loader.js"></script>
 <!-- end preload of IOM web manager --><script>
-
-    !function () { var e = function () { var e, t = "__tcfapiLocator", a = [], n = window; for (; n;) { try { if (n.frames[t]) { e = n; break } } catch (e) { } if (n === window.top) break; n = n.parent } e || (!function e() { var a = n.document, r = !!n.frames[t]; if (!r) if (a.body) { var i = a.createElement("iframe"); i.style.cssText = "display:none", i.name = t, a.body.appendChild(i) } else setTimeout(e, 5); return !r }(), n.__tcfapi = function () { for (var e, t = arguments.length, n = new Array(t), r = 0; r < t; r++)n[r] = arguments[r]; if (!n.length) return a; if ("setGdprApplies" === n[0]) n.length > 3 && 2 === parseInt(n[1], 10) && "boolean" == typeof n[3] && (e = n[3], "function" == typeof n[2] && n[2]("set", !0)); else if ("ping" === n[0]) { var i = { gdprApplies: e, cmpLoaded: !1, cmpStatus: "stub" }; "function" == typeof n[2] && n[2](i) } else a.push(n) }, n.addEventListener("message", (function (e) { var t = "string" == typeof e.data, a = {}; try { a = t ? JSON.parse(e.data) : e.data } catch (e) { } var n = a.__tcfapiCall; n && window.__tcfapi(n.command, n.version, (function (a, r) { var i = { __tcfapiReturn: { returnValue: a, success: r, callId: n.callId } }; t && (i = JSON.stringify(i)), e.source.postMessage(i, "*") }), n.parameter) }), !1)) }; "undefined" != typeof module ? module.exports = e : e() }();
-    window._sp_ = {
-        config: {
-            accountId: 1473,
-            baseEndpoint: 'https://cdn.privacy-mgmt.com',
-        }
-    }
-
     var consents = [];
     if (typeof dataLayer == "undefined") {
         var dataLayer = [];
@@ -104,22 +101,39 @@
         dataLayer.push({'consents': consents});
     }
 
-
-    __tcfapi('addEventListener', 2, function (tcData, success) {
-        if (tcData.eventStatus === 'tcloaded' || tcData.eventStatus === 'useractioncomplete') {
-            __tcfapi('getCustomVendorConsents', 2, function (data) {
-                for(var i = 0; i < data.consentedVendors.length; i++) {
-                    addJs(data.consentedVendors[i]._id );
-                }
-            });
+    function initiateSourcePoint(userType) {
+        !function () { var e = function () { var e, t = "__tcfapiLocator", a = [], n = window; for (; n;) { try { if (n.frames[t]) { e = n; break } } catch (e) { } if (n === window.top) break; n = n.parent } e || (!function e() { var a = n.document, r = !!n.frames[t]; if (!r) if (a.body) { var i = a.createElement("iframe"); i.style.cssText = "display:none", i.name = t, a.body.appendChild(i) } else setTimeout(e, 5); return !r }(), n.__tcfapi = function () { for (var e, t = arguments.length, n = new Array(t), r = 0; r < t; r++)n[r] = arguments[r]; if (!n.length) return a; if ("setGdprApplies" === n[0]) n.length > 3 && 2 === parseInt(n[1], 10) && "boolean" == typeof n[3] && (e = n[3], "function" == typeof n[2] && n[2]("set", !0)); else if ("ping" === n[0]) { var i = { gdprApplies: e, cmpLoaded: !1, cmpStatus: "stub" }; "function" == typeof n[2] && n[2](i) } else a.push(n) }, n.addEventListener("message", (function (e) { var t = "string" == typeof e.data, a = {}; try { a = t ? JSON.parse(e.data) : e.data } catch (e) { } var n = a.__tcfapiCall; n && window.__tcfapi(n.command, n.version, (function (a, r) { var i = { __tcfapiReturn: { returnValue: a, success: r, callId: n.callId } }; t && (i = JSON.stringify(i)), e.source.postMessage(i, "*") }), n.parameter) }), !1)) }; "undefined" != typeof module ? module.exports = e : e() }();
+        window._sp_ = {
+            config: {
+                accountId: 1473,
+                baseEndpoint: 'https://cdn.privacy-mgmt.com',
+                ...(!!userType ? { targetingParams: { userType } } : []),
+            }
         }
-    });
 
+        __tcfapi('addEventListener', 2, function(tcData, success) {
+            if (tcData.eventStatus === 'tcloaded' || tcData.eventStatus === 'useractioncomplete') {
+                if (['pur-pur', 'pur-purplus'].includes(window._sp_?.config?.targetingParams?.userType)) {
+                    __tcfapi('postRejectAll', 2, function(postRejectAllResponse, success)
 
-    var script = document.createElement('script');
-    script.src = "https://cdn.privacy-mgmt.com/wrapperMessagingWithoutDetection.js";
-    document.head.appendChild(script);
+                        {}
+                    );
+                } else {
+                    __tcfapi('getCustomVendorConsents', 2, function(data) {
+                        for (var i = 0; i < data.consentedVendors.length; i++)
 
+                        {
+                            addJs(data.consentedVendors[i]._id);
+                        }
+                    });
+                }
+            }
+        });
+
+        var script = document.createElement('script');
+        script.src = "https://cdn.privacy-mgmt.com/wrapperMessagingWithoutDetection.js";
+        document.head.appendChild(script);
+    }
 </script><script src="//cdn.stroeerdigitalgroup.de/metatag/live/OMS_volksstimme_relaunch/metaTag.min.js"></script>
 <script>
 
@@ -139,28 +153,30 @@
     SDG.Publisher.finalizeSlots();
 
 </script><script>
-    (function() {
+    function consentEnableNativendo() {
         var s = document.createElement('script');
         s.async = true;
         s.src = 'https://d.nativendo.de/cds/delivery/init?oms_zone=entertainment';
         var sc = document.getElementsByTagName('script')[0];
         sc.parentNode.insertBefore(s, sc);
-    })();
+    }
 </script><!-- Facebook Pixel Code -->
 <script>
-    !function(f,b,e,v,n,t,s) {if(f.fbq)return;n=f.fbq=function()
+    function consentEnableFacebook() {
+        !function(f,b,e,v,n,t,s) {if(f.fbq)return;n=f.fbq=function()
 
-    {n.callMethod? n.callMethod.apply(n,arguments):n.queue.push(arguments)}
+        {n.callMethod? n.callMethod.apply(n,arguments):n.queue.push(arguments)}
 
-    ;
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window,document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('consent', 'revoke');
-    fbq('init', '1734066336856104');
-    fbq('track', 'PageView');
+        ;
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window,document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('consent', 'grant');
+        fbq('init', '1734066336856104');
+        fbq('track', 'PageView');
+    }
 </script>
 
       <meta property="og:url" content="https://www.volksstimme.de/panorama">
@@ -299,7 +315,7 @@
 
                     <div class="fp-main-header__links">
                         <ul>                                 <li>
-                                    <a href="/article/volksstimme-e-paper-lesen-1111842" target="_self" class="text-sm-secondary--bold">
+                                    <a href="https://www.volksstimme.de/sachsen-anhalt/volksstimme-e-paper-lesen-1111842" target="_self" class="text-sm-secondary--bold">
                                         E-Paper
                                     </a>
                                 </li>
@@ -386,15 +402,15 @@
                             </a>
                         </div>
     <div class="fp-main-header__weather-widget">
-        <div class="fp-main-header__weather-widget--top wolkig">
+        <div class="fp-main-header__weather-widget--top bedeckt">
             <span class="weather-icon-img">
-                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/wolkig.svg" alt="weather">
+                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/bedeckt.svg" alt="weather">
             </span>
-            <span class="fp-main-header__weather-widget--tooltip">wolkig</span>
+            <span class="fp-main-header__weather-widget--tooltip">bedeckt</span>
             <aside>
-                <span class="fp-main-header__weather-widget--day-temp">18°</span>
+                <span class="fp-main-header__weather-widget--day-temp">3°</span>
                 <span>/</span>
-                <span class="fp-main-header__weather-widget--night-temp">8°</span>
+                <span class="fp-main-header__weather-widget--night-temp">0°</span>
             </aside>
         </div>
         <div class="fp-main-header__weather-widget--bottom">
@@ -790,6 +806,16 @@
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
+                      <a class="text-16--regular" href="/sachsen-anhalt/leseranwaeltin" target="_self">
+                        Leseranwältin
+                      </a>
+                    </li>
+                    <li class="fp-sidebar-menu__nav--item">
+                      <a class="text-16--regular" href="/sachsen-anhalt/regionale-kultur">
+                        Regionale Kultur
+                      </a>
+                    </li>
+                    <li class="fp-sidebar-menu__nav--item">
                       <a class="text-16--regular" href="/sachsen-anhalt/regionale-wirtschaft">
                         Regionale Wirtschaft
                       </a>
@@ -797,11 +823,6 @@
                     <li class="fp-sidebar-menu__nav--item">
                       <a class="text-16--regular" href="/sachsen-anhalt/tourismus">
                         Tourismus
-                      </a>
-                    </li>
-                    <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="/sachsen-anhalt/regionale-kultur">
-                        Regionale Kultur
                       </a>
                     </li>
             </ul>
@@ -1033,6 +1054,11 @@
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
+                      <a class="text-16--regular" href="https://www.volksstimme.de/leben/rezepte">
+                        Rezepte
+                      </a>
+                    </li>
+                    <li class="fp-sidebar-menu__nav--item">
                       <a class="text-16--regular" href="/leben/technik" target="_self">
                         Technik
                       </a>
@@ -1137,7 +1163,7 @@
 
                   <ul class="fp-sidebar-menu__nav--list">
                           <li class="fp-sidebar-menu__nav--item">
-                              <a href="/article/volksstimme-e-paper-lesen-1111842" target="_self" class="text-base-secondary--semibold">E-Paper</a>
+                              <a href="https://www.volksstimme.de/sachsen-anhalt/volksstimme-e-paper-lesen-1111842" target="_self" class="text-base-secondary--semibold">E-Paper</a>
                           </li>
                           <li class="fp-sidebar-menu__nav--item">
                               <a href="https://www.volksstimme.de/general/newsletter-uebersicht-3402582" class="text-base-secondary--semibold">Newsletter</a>
@@ -1165,7 +1191,7 @@
 
                   <ul class="fp-sidebar-menu__nav--list">
                           <li class="fp-sidebar-menu__nav--item">
-                              <a href="/article/volksstimme-e-paper-lesen-1111842" target="_self" class="text-base-secondary--semibold">E-Paper</a>
+                              <a href="https://www.volksstimme.de/sachsen-anhalt/volksstimme-e-paper-lesen-1111842" target="_self" class="text-base-secondary--semibold">E-Paper</a>
                           </li>
                           <li class="fp-sidebar-menu__nav--item">
                               <a href="https://www.volksstimme.de/general/newsletter-uebersicht-3402582" class="text-base-secondary--semibold">Newsletter</a>
@@ -1257,7 +1283,7 @@
                     </div>
                     <ul class="fp-sidebar-menu__nav--list">
                             <li class="fp-sidebar-menu__nav--item">
-                              <a class="text-base-secondary--semibold" href="/vs/general/impressum-195" target="_self">
+                              <a class="text-base-secondary--semibold" href="https://www.volksstimme.de/general/impressum-195" target="_self">
                                   Impressum
                               </a>
                             </li>
@@ -1282,17 +1308,17 @@
                               </a>
                             </li>
                             <li class="fp-sidebar-menu__nav--item">
-                              <a class="text-base-secondary--semibold" href="/vs/general/kontakt-1111909" target="_self">
+                              <a class="text-base-secondary--semibold" href="https://www.volksstimme.de/general/kontakt-1111909" target="_self">
                                   Kontakt
                               </a>
                             </li>
                             <li class="fp-sidebar-menu__nav--item">
-                              <a class="text-base-secondary--semibold" href="https://www.volksstimme.de/servicestellen" target="_self">
+                              <a class="text-base-secondary--semibold" href="https://www.volksstimme.de/general/servicestellen-1111910#" target="_self">
                                   Servicestellen
                               </a>
                             </li>
                             <li class="fp-sidebar-menu__nav--item">
-                              <a class="text-base-secondary--semibold" href="/vs/general/datenschutzerklaerung-198" target="_self">
+                              <a class="text-base-secondary--semibold" href="https://www.volksstimme.de/general/datenschutzerklaerung-198" target="_self">
                                   Datenschutz
                               </a>
                             </li>
@@ -1335,94 +1361,92 @@
 <div class="center" id="middle-ad-s" data-screen="desktop"></div>
 <div><section class="fp-related-articles embed fp-section"><div data-service="category-teasers-list"><!-- Display grid solution  -->
 <div class="fp-article-list">
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/ehemann-von-charles-nichte-tindall-zieht-ins-dschungelcamp-3475627">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/11/01/a344e619-ffe4-4e45-a893-66a281c1d473.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/01/a344e619-ffe4-4e45-a893-66a281c1d473.jpeg?rect=0%2C102%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/01/a344e619-ffe4-4e45-a893-66a281c1d473.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/01/a344e619-ffe4-4e45-a893-66a281c1d473.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/01/a344e619-ffe4-4e45-a893-66a281c1d473.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/01/a344e619-ffe4-4e45-a893-66a281c1d473.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/01/a344e619-ffe4-4e45-a893-66a281c1d473.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Zara Tindall (r)&nbsp;und Ehemann Mike Tindall sehen sich auf der Rennbahn von Epsom ein Rennen an.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Royals</h4>
-                <h3 class="fp-article__title text-xl--bold ">Ehemann von Charles-Nichte Tindall zieht ins Dschungelcamp</h3>
+        <article class="fp-article  ratio secondary-teaser fp-article__no-img" data-ratio="16:9">
+            <a href="/panorama/kriminelle-gang-totet-mindestens-zwolf-dorfbewohner-in-haiti-3496560">
+                <h4 class="fp-article__catchline vertical-teasers"> Gewalt</h4>
+                <h3 class="fp-article__title text-xl--bold ">Kriminelle Gang tötet mindestens zwölf Dorfbewohner in Haiti</h3>
+                    <p class="fp-article__excerpt">Seit über einem Jahr versinkt der&nbsp;Großraum Port-au-Prince in einem Bandenkrieg, Zehntausende sind bereits geflohen. Jetzt haben Gangmitglieder erneut zugeschlagen - auf brutalste Art und Weise.</p>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/schauspieler-tim-roth-trauert-um-sohn-cormac-3475589">
+            <a href="/panorama/weniger-abholzung-im-brasilianischen-amazonasgebiet-3496514">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/4bbc31ec-e1cf-40d3-9636-83da056b19fa.jpeg?rect=0%2C186%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/4bbc31ec-e1cf-40d3-9636-83da056b19fa.jpeg?rect=0%2C186%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/4bbc31ec-e1cf-40d3-9636-83da056b19fa.jpeg?rect=0%2C186%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/4bbc31ec-e1cf-40d3-9636-83da056b19fa.jpeg?rect=0%2C186%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/4bbc31ec-e1cf-40d3-9636-83da056b19fa.jpeg?rect=0%2C186%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/4bbc31ec-e1cf-40d3-9636-83da056b19fa.jpeg?rect=0%2C186%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/4bbc31ec-e1cf-40d3-9636-83da056b19fa.jpeg?rect=0%2C186%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Tim Roth (l), Schauspieler aus Großbritannien, und sein Sohn Cormac Roth bei der Premiere des Films „Bergman Island“ bei den 74. internationalen Filmfestspielen in Cannes.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Film</h4>
-                <h3 class="fp-article__title text-xl--bold ">Schauspieler Tim Roth trauert um Sohn Cormac</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/radlerin-angefahren-aktivisten-blockade-verzogert-rettung-3475579">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/cd063e37-103d-4e85-8d22-4ca929edfcb9.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/cd063e37-103d-4e85-8d22-4ca929edfcb9.jpeg?rect=0%2C192%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/cd063e37-103d-4e85-8d22-4ca929edfcb9.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/cd063e37-103d-4e85-8d22-4ca929edfcb9.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/cd063e37-103d-4e85-8d22-4ca929edfcb9.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/cd063e37-103d-4e85-8d22-4ca929edfcb9.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/cd063e37-103d-4e85-8d22-4ca929edfcb9.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Aktivisten wie hier am Frankfurter Tor in Berlin kleben sich immer wieder aus Protest gegen die Klimapolitik auf der Straße fest, um den Verkehrsfluss zu stören.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Unfälle</h4>
-                <h3 class="fp-article__title text-xl--bold ">Radlerin angefahren - Aktivisten-Blockade verzögert Rettung</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/oktober-einer-der-warmsten-seit-messbeginn-3475485">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/e666a5fb-834d-482d-b0f2-d0df9f9b88c7.jpeg?rect=0%2C65%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/e666a5fb-834d-482d-b0f2-d0df9f9b88c7.jpeg?rect=0%2C65%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/e666a5fb-834d-482d-b0f2-d0df9f9b88c7.jpeg?rect=0%2C65%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/e666a5fb-834d-482d-b0f2-d0df9f9b88c7.jpeg?rect=0%2C65%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/e666a5fb-834d-482d-b0f2-d0df9f9b88c7.jpeg?rect=0%2C65%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/e666a5fb-834d-482d-b0f2-d0df9f9b88c7.jpeg?rect=0%2C65%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/e666a5fb-834d-482d-b0f2-d0df9f9b88c7.jpeg?rect=0%2C65%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Der Oktober war so warm wie selten zuvor.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Klima</h4>
-                <h3 class="fp-article__title text-xl--bold ">Oktober einer der wärmsten seit Messbeginn</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/angeklagter-vor-todlicher-autofahrt-bereits-auffallig-3475473">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/cd5269f3-0915-47b8-92c5-35639213f8c3.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/cd5269f3-0915-47b8-92c5-35639213f8c3.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/cd5269f3-0915-47b8-92c5-35639213f8c3.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/cd5269f3-0915-47b8-92c5-35639213f8c3.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/cd5269f3-0915-47b8-92c5-35639213f8c3.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/cd5269f3-0915-47b8-92c5-35639213f8c3.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/cd5269f3-0915-47b8-92c5-35639213f8c3.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Der Vorsitzende Richter beim Prozessauftakt im Landgericht Kassel.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Prozessauftakt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Angeklagter vor tödlicher Autofahrt bereits auffällig</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/der-november-beginnt-herbstlich-3475460">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/dafd20dc-ce99-4f7a-8b7c-5f859f785930.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/dafd20dc-ce99-4f7a-8b7c-5f859f785930.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/dafd20dc-ce99-4f7a-8b7c-5f859f785930.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/dafd20dc-ce99-4f7a-8b7c-5f859f785930.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/dafd20dc-ce99-4f7a-8b7c-5f859f785930.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/dafd20dc-ce99-4f7a-8b7c-5f859f785930.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/dafd20dc-ce99-4f7a-8b7c-5f859f785930.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Nebel über einer Streuobstwiese und herbstlichen Weinbergen bei Volkach in Unterfranken.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Wetter</h4>
-                <h3 class="fp-article__title text-xl--bold ">Der November beginnt herbstlich</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/israelische-kuste-mit-zwei-tonnen-mikroplastik-verschmutzt-3475404">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/e1d540c2-f8fb-415c-8673-92f3ebbd8a2d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/e1d540c2-f8fb-415c-8673-92f3ebbd8a2d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/e1d540c2-f8fb-415c-8673-92f3ebbd8a2d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/e1d540c2-f8fb-415c-8673-92f3ebbd8a2d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/e1d540c2-f8fb-415c-8673-92f3ebbd8a2d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/e1d540c2-f8fb-415c-8673-92f3ebbd8a2d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/e1d540c2-f8fb-415c-8673-92f3ebbd8a2d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Die israelische Küste ist laut einer Studie mit mehr als zwei Tonnen Mikroplastik verschmutzt.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Studie</h4>
-                <h3 class="fp-article__title text-xl--bold ">Israelische Küste mit zwei Tonnen Mikroplastik verschmutzt</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/bodensee-nebelstunden-nehmen-wegen-klimawandel-ab-3475352">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/eafd2799-1d6b-4a1a-9582-74b412b5da57.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/eafd2799-1d6b-4a1a-9582-74b412b5da57.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/eafd2799-1d6b-4a1a-9582-74b412b5da57.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/eafd2799-1d6b-4a1a-9582-74b412b5da57.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/eafd2799-1d6b-4a1a-9582-74b412b5da57.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/eafd2799-1d6b-4a1a-9582-74b412b5da57.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/eafd2799-1d6b-4a1a-9582-74b412b5da57.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Einen so dichten Nebel sieht man über dem Bodensee immer seltener.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/dbf914f4-8ae8-4bc0-afaf-00dc52d560a0.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/dbf914f4-8ae8-4bc0-afaf-00dc52d560a0.jpeg?rect=0%2C192%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/dbf914f4-8ae8-4bc0-afaf-00dc52d560a0.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/dbf914f4-8ae8-4bc0-afaf-00dc52d560a0.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/dbf914f4-8ae8-4bc0-afaf-00dc52d560a0.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/dbf914f4-8ae8-4bc0-afaf-00dc52d560a0.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/dbf914f4-8ae8-4bc0-afaf-00dc52d560a0.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Eine verbrannte und abgeholzte Fläche im Amazonas-Gebiet (Archivbild).">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Umwelt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Bodensee: Nebelstunden nehmen wegen Klimawandel ab</h3>
+                <h3 class="fp-article__title text-xl--bold ">Weniger Abholzung im brasilianischen Amazonasgebiet</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/mann-klaut-strassenbahn-und-fahrt-durch-kattowitz-3475323">
+            <a href="/panorama/wattenmeer-nachbarn-vereinbaren-mehr-klimaschutz-3496414">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/8e4620f8-c898-48ab-a28e-830a3ebad550.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/8e4620f8-c898-48ab-a28e-830a3ebad550.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/8e4620f8-c898-48ab-a28e-830a3ebad550.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/8e4620f8-c898-48ab-a28e-830a3ebad550.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/8e4620f8-c898-48ab-a28e-830a3ebad550.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/8e4620f8-c898-48ab-a28e-830a3ebad550.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/8e4620f8-c898-48ab-a28e-830a3ebad550.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Im polnischen Kattowitz hat ein Mann eine Straßenbahn gekapert (Symbolbild).">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/0d7c1d0e-b2ee-4538-87db-d20c09265b2b.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/0d7c1d0e-b2ee-4538-87db-d20c09265b2b.jpeg?rect=0%2C0%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/0d7c1d0e-b2ee-4538-87db-d20c09265b2b.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/0d7c1d0e-b2ee-4538-87db-d20c09265b2b.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/0d7c1d0e-b2ee-4538-87db-d20c09265b2b.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/0d7c1d0e-b2ee-4538-87db-d20c09265b2b.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/0d7c1d0e-b2ee-4538-87db-d20c09265b2b.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Das Watt vor dem Strand von Dangast in Nidersachsten. Am 01.12.2022 endet die 14. trilaterale Wattenmeerkonferenz von Deutschland, Dänemark und den Niederlanden.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Kurioses</h4>
-                <h3 class="fp-article__title text-xl--bold ">Mann klaut Straßenbahn und fährt durch Kattowitz</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Umwelt</h4>
+                <h3 class="fp-article__title text-xl--bold ">Wattenmeer-Nachbarn vereinbaren mehr Klimaschutz</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/polizei-raumt-illegalen-rave-mit-tausenden-partygasten-3475293">
+            <a href="/panorama/stars/hugh-grant-erinnert-sich-ungern-an-eine-tanzszene-3496400">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/f4f76a87-534f-4bbf-9b05-957067ed92ad.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/f4f76a87-534f-4bbf-9b05-957067ed92ad.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/f4f76a87-534f-4bbf-9b05-957067ed92ad.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/f4f76a87-534f-4bbf-9b05-957067ed92ad.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/f4f76a87-534f-4bbf-9b05-957067ed92ad.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/f4f76a87-534f-4bbf-9b05-957067ed92ad.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/f4f76a87-534f-4bbf-9b05-957067ed92ad.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Partygäste auf dem Gelände einer leerstehenden Fabrikhalle in Modena.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/dc74b75e-214e-4925-9cad-de1e676e30b5.jpeg?rect=0%2C640%2C1366%2C768&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/dc74b75e-214e-4925-9cad-de1e676e30b5.jpeg?rect=0%2C640%2C1366%2C768&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/dc74b75e-214e-4925-9cad-de1e676e30b5.jpeg?rect=0%2C640%2C1366%2C768&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/dc74b75e-214e-4925-9cad-de1e676e30b5.jpeg?rect=0%2C640%2C1366%2C768&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/dc74b75e-214e-4925-9cad-de1e676e30b5.jpeg?rect=0%2C640%2C1366%2C768&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/dc74b75e-214e-4925-9cad-de1e676e30b5.jpeg?rect=0%2C640%2C1366%2C768&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/dc74b75e-214e-4925-9cad-de1e676e30b5.jpeg?rect=0%2C640%2C1366%2C768&amp;width=160 160w" class="lazyload" alt="Der britische Schauspieler Hugh Grant bei den Critics' Circle Film Awards 2018.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Norditalien</h4>
-                <h3 class="fp-article__title text-xl--bold ">Polizei räumt illegalen Rave mit Tausenden Partygästen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Schauspieler</h4>
+                <h3 class="fp-article__title text-xl--bold ">Hugh Grant erinnert sich ungern an eine Tanzszene</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/die-moor-birke-ist-baum-des-jahres-3496294">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/5fb1021b-a354-4f14-bf90-c4e87232f460.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/5fb1021b-a354-4f14-bf90-c4e87232f460.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/5fb1021b-a354-4f14-bf90-c4e87232f460.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/5fb1021b-a354-4f14-bf90-c4e87232f460.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/5fb1021b-a354-4f14-bf90-c4e87232f460.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/5fb1021b-a354-4f14-bf90-c4e87232f460.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/5fb1021b-a354-4f14-bf90-c4e87232f460.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Moor-Birken in einem&nbsp;Wald im Roten Moor in der Röhn. Die Moor-Birke ist „Baum des Jahres“ 2023.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Natur</h4>
+                <h3 class="fp-article__title text-xl--bold ">Die Moor-Birke ist Baum des Jahres</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/keine-bergung-nach-flugzeugabsturz-in-der-ostsee-3496267">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/22a787ca-1122-4bb1-bb6e-90abed6e313e.jpeg?rect=0%2C51%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/22a787ca-1122-4bb1-bb6e-90abed6e313e.jpeg?rect=0%2C51%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/22a787ca-1122-4bb1-bb6e-90abed6e313e.jpeg?rect=0%2C51%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/22a787ca-1122-4bb1-bb6e-90abed6e313e.jpeg?rect=0%2C51%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/22a787ca-1122-4bb1-bb6e-90abed6e313e.jpeg?rect=0%2C51%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/22a787ca-1122-4bb1-bb6e-90abed6e313e.jpeg?rect=0%2C51%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/22a787ca-1122-4bb1-bb6e-90abed6e313e.jpeg?rect=0%2C51%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Radarbild: Die Flugbahn der Cessna 551 vor ihrem Absturz in die Ostsee.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Unfälle</h4>
+                <h3 class="fp-article__title text-xl--bold ">Keine Bergung nach Flugzeugabsturz in der Ostsee</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/schlagersaengerin-aus-sachsen-anhalt-linda-hesse-schwanger-3496068">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/798b539c-620b-4f16-84e5-1a32ad6a0932.jpeg?rect=0%2C208%2C4000%2C2250&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/798b539c-620b-4f16-84e5-1a32ad6a0932.jpeg?rect=0%2C208%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/798b539c-620b-4f16-84e5-1a32ad6a0932.jpeg?rect=0%2C208%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/798b539c-620b-4f16-84e5-1a32ad6a0932.jpeg?rect=0%2C208%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/798b539c-620b-4f16-84e5-1a32ad6a0932.jpeg?rect=0%2C208%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/798b539c-620b-4f16-84e5-1a32ad6a0932.jpeg?rect=0%2C208%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/798b539c-620b-4f16-84e5-1a32ad6a0932.jpeg?rect=0%2C208%2C4000%2C2250&amp;width=160 160w" class="lazyload" alt="Sängerin Linda Hesse im November 2022 beim RTL-Spendenmarathon &quot;Wir helfen Kindern&quot;. Die Künstlerin aus Sachsen-Anhalt erwartet ein Baby. &amp;nbsp;">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> "erfüllt mich mit Dankbarkeit"</h4>
+                <h3 class="fp-article__title text-xl--bold ">Schlagersängerin Linda Hesse schwanger - nach rund drei Monaten Beziehung</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/minister-keine-entwarnung-fur-die-oder-3496147">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/9a10ca1d-f07f-48f9-b1ef-7e2993924684.jpeg?rect=0%2C113%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/9a10ca1d-f07f-48f9-b1ef-7e2993924684.jpeg?rect=0%2C113%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/9a10ca1d-f07f-48f9-b1ef-7e2993924684.jpeg?rect=0%2C113%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/9a10ca1d-f07f-48f9-b1ef-7e2993924684.jpeg?rect=0%2C113%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/9a10ca1d-f07f-48f9-b1ef-7e2993924684.jpeg?rect=0%2C113%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/9a10ca1d-f07f-48f9-b1ef-7e2993924684.jpeg?rect=0%2C113%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/9a10ca1d-f07f-48f9-b1ef-7e2993924684.jpeg?rect=0%2C113%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Tote Fische treiben im August 2022 im deutsch-polnischen Grenzfluss Oder.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Umwelt</h4>
+                <h3 class="fp-article__title text-xl--bold ">Minister: Keine Entwarnung für die Oder</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/die-warmsten-ersten-elf-monate-seit-1881-3496139">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/53aee8d2-ea1b-4ca7-9c3f-8a027d1c5bdd.jpeg?rect=0%2C85%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/53aee8d2-ea1b-4ca7-9c3f-8a027d1c5bdd.jpeg?rect=0%2C85%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/53aee8d2-ea1b-4ca7-9c3f-8a027d1c5bdd.jpeg?rect=0%2C85%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/53aee8d2-ea1b-4ca7-9c3f-8a027d1c5bdd.jpeg?rect=0%2C85%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/53aee8d2-ea1b-4ca7-9c3f-8a027d1c5bdd.jpeg?rect=0%2C85%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/53aee8d2-ea1b-4ca7-9c3f-8a027d1c5bdd.jpeg?rect=0%2C85%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/53aee8d2-ea1b-4ca7-9c3f-8a027d1c5bdd.jpeg?rect=0%2C85%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Ein Außenthermometer zeigt im Juli die Temperatur von knapp 40 Grad an.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Wetterbilanz</h4>
+                <h3 class="fp-article__title text-xl--bold ">Die wärmsten ersten elf Monate seit 1881</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/aufgespiesst/echte-polizei-kontrolliert-falschen-kontrolleur-3496105">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/94083286-ee90-472d-8390-93d06144630c.jpeg?rect=0%2C217%2C4000%2C2250&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/94083286-ee90-472d-8390-93d06144630c.jpeg?rect=0%2C217%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/94083286-ee90-472d-8390-93d06144630c.jpeg?rect=0%2C217%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/94083286-ee90-472d-8390-93d06144630c.jpeg?rect=0%2C217%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/94083286-ee90-472d-8390-93d06144630c.jpeg?rect=0%2C217%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/94083286-ee90-472d-8390-93d06144630c.jpeg?rect=0%2C217%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/94083286-ee90-472d-8390-93d06144630c.jpeg?rect=0%2C217%2C4000%2C2250&amp;width=160 160w" class="lazyload" alt="Komischer Fahrkarten-Kontrolleur rief Polizei auf den Plan.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Echte Polizei kontrolliert falschen Kontrolleur</h3>
             </a>
         </article>
 </div>
@@ -1434,12 +1458,12 @@
 <h2 class="fp-most-popular-section-title">Meistgelesen</h2>
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/panorama/stars/ehemann-von-charles-nichte-tindall-zieht-ins-dschungelcamp-3475627">
+      <a href="/panorama/kriminelle-gang-totet-mindestens-zwolf-dorfbewohner-in-haiti-3496560">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">1.</span>
             <header>
-              <h4 class="fp-article__catchline"> Royals</h4>
-              <h3 class="fp-article__title text-xxl--bold">Ehemann von Charles-Nichte Tindall zieht ins Dschungelcamp</h3>
+              <h4 class="fp-article__catchline"> Gewalt</h4>
+              <h3 class="fp-article__title text-xxl--bold">Kriminelle Gang tötet mindestens zwölf Dorfbewohner in Haiti</h3>
             </header>
         </div>
       </a>
@@ -1447,12 +1471,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/panorama/stars/schauspieler-tim-roth-trauert-um-sohn-cormac-3475589">
+      <a href="/panorama/weniger-abholzung-im-brasilianischen-amazonasgebiet-3496514">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">2.</span>
             <header>
-              <h4 class="fp-article__catchline"> Film</h4>
-              <h3 class="fp-article__title text-xxl--bold">Schauspieler Tim Roth trauert um Sohn Cormac</h3>
+              <h4 class="fp-article__catchline"> Umwelt</h4>
+              <h3 class="fp-article__title text-xxl--bold">Weniger Abholzung im brasilianischen Amazonasgebiet</h3>
             </header>
         </div>
       </a>
@@ -1460,12 +1484,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/panorama/radlerin-angefahren-aktivisten-blockade-verzogert-rettung-3475579">
+      <a href="/panorama/wattenmeer-nachbarn-vereinbaren-mehr-klimaschutz-3496414">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">3.</span>
             <header>
-              <h4 class="fp-article__catchline"> Unfälle</h4>
-              <h3 class="fp-article__title text-xxl--bold">Radlerin angefahren - Aktivisten-Blockade verzögert Rettung</h3>
+              <h4 class="fp-article__catchline"> Umwelt</h4>
+              <h3 class="fp-article__title text-xxl--bold">Wattenmeer-Nachbarn vereinbaren mehr Klimaschutz</h3>
             </header>
         </div>
       </a>
@@ -1473,12 +1497,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/panorama/oktober-einer-der-warmsten-seit-messbeginn-3475485">
+      <a href="/panorama/stars/hugh-grant-erinnert-sich-ungern-an-eine-tanzszene-3496400">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">4.</span>
             <header>
-              <h4 class="fp-article__catchline"> Klima</h4>
-              <h3 class="fp-article__title text-xxl--bold">Oktober einer der wärmsten seit Messbeginn</h3>
+              <h4 class="fp-article__catchline"> Schauspieler</h4>
+              <h3 class="fp-article__title text-xxl--bold">Hugh Grant erinnert sich ungern an eine Tanzszene</h3>
             </header>
         </div>
       </a>
@@ -1497,94 +1521,94 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/redakteur-arbeitet-funf-stunden-pro-woche-und-verdient-100-000-euro-3474168">
+            <a href="/panorama/aufgespiesst/der-miese-trick-der-mochtegern-gladiatoren-3495358">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/29/ba2ab872-3d0a-424f-8785-d4988496c89a.jpeg?rect=0%2C66%2C862%2C485&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/29/ba2ab872-3d0a-424f-8785-d4988496c89a.jpeg?rect=0%2C66%2C862%2C485&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/29/ba2ab872-3d0a-424f-8785-d4988496c89a.jpeg?rect=0%2C66%2C862%2C485&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/29/ba2ab872-3d0a-424f-8785-d4988496c89a.jpeg?rect=0%2C66%2C862%2C485&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/29/ba2ab872-3d0a-424f-8785-d4988496c89a.jpeg?rect=0%2C66%2C862%2C485&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/29/ba2ab872-3d0a-424f-8785-d4988496c89a.jpeg?rect=0%2C66%2C862%2C485&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/29/ba2ab872-3d0a-424f-8785-d4988496c89a.jpeg?rect=0%2C66%2C862%2C485&amp;width=160 160w" class="lazyload" alt="Jürgen Döschner, langjähriger Redakteur des Westdeutschen Rundfunks, verklagt seinen Sender: Er habe zu wenig zu tun.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/29/c55f3596-41d6-4ec1-bd7b-ca24a30ebe6f.jpeg?rect=0%2C382%2C4000%2C2250&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/29/c55f3596-41d6-4ec1-bd7b-ca24a30ebe6f.jpeg?rect=0%2C382%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/29/c55f3596-41d6-4ec1-bd7b-ca24a30ebe6f.jpeg?rect=0%2C382%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/29/c55f3596-41d6-4ec1-bd7b-ca24a30ebe6f.jpeg?rect=0%2C382%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/29/c55f3596-41d6-4ec1-bd7b-ca24a30ebe6f.jpeg?rect=0%2C382%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/29/c55f3596-41d6-4ec1-bd7b-ca24a30ebe6f.jpeg?rect=0%2C382%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/29/c55f3596-41d6-4ec1-bd7b-ca24a30ebe6f.jpeg?rect=0%2C382%2C4000%2C2250&amp;width=160 160w" class="lazyload" alt="Unechter Gladiator in voller Tarnausrüstung. Zumindest einige der Brüder sind gar nicht nett zu ihrer Umwelt. ">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Redakteur arbeitet fünf Stunden pro Woche - und verdient 100.000 Euro</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Der miese Trick der Möchtegern-Gladiatoren</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/mann-stellt-sich-ein-jahr-lang-tot-als-bewerbung-fur-eine-filmrolle-3473417">
+            <a href="/panorama/aufgespiesst/wohnung-voll-mit-flasche-leer-3494743">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/27/0a4de254-9658-46eb-ac02-75c1b14ee2e9.jpeg?rect=0%2C48%2C601%2C338&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/27/0a4de254-9658-46eb-ac02-75c1b14ee2e9.jpeg?rect=0%2C48%2C601%2C338&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/27/0a4de254-9658-46eb-ac02-75c1b14ee2e9.jpeg?rect=0%2C48%2C601%2C338&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/27/0a4de254-9658-46eb-ac02-75c1b14ee2e9.jpeg?rect=0%2C48%2C601%2C338&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/27/0a4de254-9658-46eb-ac02-75c1b14ee2e9.jpeg?rect=0%2C48%2C601%2C338&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/27/0a4de254-9658-46eb-ac02-75c1b14ee2e9.jpeg?rect=0%2C48%2C601%2C338&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/27/0a4de254-9658-46eb-ac02-75c1b14ee2e9.jpeg?rect=0%2C48%2C601%2C338&amp;width=160 160w" class="lazyload" alt="Sein tägliches Leben als Leiche hat einem 42-jährigen Restaurantbesitzer nun eine Filmrolle eingebracht.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/28/28f04656-12c3-46aa-b534-ad7930772a48.jpeg?rect=0%2C61%2C1182%2C665&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/28/28f04656-12c3-46aa-b534-ad7930772a48.jpeg?rect=0%2C61%2C1182%2C665&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/28/28f04656-12c3-46aa-b534-ad7930772a48.jpeg?rect=0%2C61%2C1182%2C665&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/28/28f04656-12c3-46aa-b534-ad7930772a48.jpeg?rect=0%2C61%2C1182%2C665&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/28/28f04656-12c3-46aa-b534-ad7930772a48.jpeg?rect=0%2C61%2C1182%2C665&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/28/28f04656-12c3-46aa-b534-ad7930772a48.jpeg?rect=0%2C61%2C1182%2C665&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/28/28f04656-12c3-46aa-b534-ad7930772a48.jpeg?rect=0%2C61%2C1182%2C665&amp;width=160 160w" class="lazyload" alt="Reich durch leere Plastikflaschen? Ein Ganove aus Bremen hat es zumindest versucht. ">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Mann stellt sich ein Jahr lang tot - als Bewerbung für eine Filmrolle</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Wohnung voll mit Flasche leer</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/was-max-raabe-gegen-vollpfosten-tut-3472190">
+            <a href="/panorama/aufgespiesst/ja-panik-erdbeben-befreit-zootiere-3492694">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/26/62154299-f0de-4a47-b032-12e3a9d07e29.jpeg?rect=0%2C0%2C1031%2C580&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/26/62154299-f0de-4a47-b032-12e3a9d07e29.jpeg?rect=0%2C0%2C1031%2C580&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/26/62154299-f0de-4a47-b032-12e3a9d07e29.jpeg?rect=0%2C0%2C1031%2C580&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/26/62154299-f0de-4a47-b032-12e3a9d07e29.jpeg?rect=0%2C0%2C1031%2C580&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/26/62154299-f0de-4a47-b032-12e3a9d07e29.jpeg?rect=0%2C0%2C1031%2C580&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/26/62154299-f0de-4a47-b032-12e3a9d07e29.jpeg?rect=0%2C0%2C1031%2C580&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/26/62154299-f0de-4a47-b032-12e3a9d07e29.jpeg?rect=0%2C0%2C1031%2C580&amp;width=160 160w" class="lazyload" alt="Max Raabe sieht sich nicht nur als Sänger, sondern auch als Botschafter guten Benehmens. ">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/25/3f531de3-58bb-42b7-9bd9-d76154c4adfb.jpeg?rect=0%2C159%2C1101%2C619&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/25/3f531de3-58bb-42b7-9bd9-d76154c4adfb.jpeg?rect=0%2C159%2C1101%2C619&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/25/3f531de3-58bb-42b7-9bd9-d76154c4adfb.jpeg?rect=0%2C159%2C1101%2C619&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/25/3f531de3-58bb-42b7-9bd9-d76154c4adfb.jpeg?rect=0%2C159%2C1101%2C619&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/25/3f531de3-58bb-42b7-9bd9-d76154c4adfb.jpeg?rect=0%2C159%2C1101%2C619&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/25/3f531de3-58bb-42b7-9bd9-d76154c4adfb.jpeg?rect=0%2C159%2C1101%2C619&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/25/3f531de3-58bb-42b7-9bd9-d76154c4adfb.jpeg?rect=0%2C159%2C1101%2C619&amp;width=160 160w" class="lazyload" alt="Dieser äußerst gefährliche Löwe hat den tapferen Polizisten außer Gefecht gesetzt. Eigentlich sollte es umgekehrt sein. ">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Was Max Raabe gegen Vollpfosten tut</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Ja, Panik! Erdbeben befreit Zootiere</h3>
             </a>
         </article>
 <div id="nativendo-nativendo-infeed"></div>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/moderator-redet-sich-mit-jugendwort-smash-in-die-peinlichkeit-3472621">
+            <a href="/panorama/aufgespiesst/drogen-ermittlungen-gegen-discounter-3492063">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/26/b719b27d-99e4-4fbe-98be-a1a8e630213c.jpeg?rect=0%2C2%2C873%2C491&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/26/b719b27d-99e4-4fbe-98be-a1a8e630213c.jpeg?rect=0%2C2%2C873%2C491&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/26/b719b27d-99e4-4fbe-98be-a1a8e630213c.jpeg?rect=0%2C2%2C873%2C491&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/26/b719b27d-99e4-4fbe-98be-a1a8e630213c.jpeg?rect=0%2C2%2C873%2C491&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/26/b719b27d-99e4-4fbe-98be-a1a8e630213c.jpeg?rect=0%2C2%2C873%2C491&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/26/b719b27d-99e4-4fbe-98be-a1a8e630213c.jpeg?rect=0%2C2%2C873%2C491&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/26/b719b27d-99e4-4fbe-98be-a1a8e630213c.jpeg?rect=0%2C2%2C873%2C491&amp;width=160 160w" class="lazyload" alt="„Welt“-Moderator Carsten Hädler smasht gerne mit seiner Co-Moderatorin Fanny Fee Werther...">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/24/4031025e-4362-4321-8cfe-cb97a8606477.jpeg?rect=0%2C73%2C1374%2C773&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/24/4031025e-4362-4321-8cfe-cb97a8606477.jpeg?rect=0%2C73%2C1374%2C773&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/24/4031025e-4362-4321-8cfe-cb97a8606477.jpeg?rect=0%2C73%2C1374%2C773&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/24/4031025e-4362-4321-8cfe-cb97a8606477.jpeg?rect=0%2C73%2C1374%2C773&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/24/4031025e-4362-4321-8cfe-cb97a8606477.jpeg?rect=0%2C73%2C1374%2C773&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/24/4031025e-4362-4321-8cfe-cb97a8606477.jpeg?rect=0%2C73%2C1374%2C773&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/24/4031025e-4362-4321-8cfe-cb97a8606477.jpeg?rect=0%2C73%2C1374%2C773&amp;width=160 160w" class="lazyload" alt="Hanfkekse diesen Typs brachten dem bekannten Discounter ein Drogen-Verfahren ein. ">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Moderator redet sich mit Jugendwort „Smash“ in die Peinlichkeit</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Drogen-Ermittlungen gegen Discounter</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/wo-windkraft-der-braunkohle-weicht-3471236">
+            <a href="/panorama/aufgespiesst/warum-fallen-politiker-auf-enkeltrick-rein-3491302">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/24/c84a739f-87aa-4bc4-81a1-a18f497577c5.jpeg?rect=0%2C62%2C1181%2C664&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/24/c84a739f-87aa-4bc4-81a1-a18f497577c5.jpeg?rect=0%2C62%2C1181%2C664&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/24/c84a739f-87aa-4bc4-81a1-a18f497577c5.jpeg?rect=0%2C62%2C1181%2C664&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/24/c84a739f-87aa-4bc4-81a1-a18f497577c5.jpeg?rect=0%2C62%2C1181%2C664&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/24/c84a739f-87aa-4bc4-81a1-a18f497577c5.jpeg?rect=0%2C62%2C1181%2C664&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/24/c84a739f-87aa-4bc4-81a1-a18f497577c5.jpeg?rect=0%2C62%2C1181%2C664&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/24/c84a739f-87aa-4bc4-81a1-a18f497577c5.jpeg?rect=0%2C62%2C1181%2C664&amp;width=160 160w" class="lazyload" alt="Wenn's um Kohle geht, kennt RWE kein Halten: Nicht nur das Dorf Lützerath muss weichen – sogar die Windräder müssen weg.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/23/66d5761d-f329-413c-a9e3-b7699680e358.jpeg?rect=0%2C70%2C1337%2C752&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/23/66d5761d-f329-413c-a9e3-b7699680e358.jpeg?rect=0%2C70%2C1337%2C752&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/23/66d5761d-f329-413c-a9e3-b7699680e358.jpeg?rect=0%2C70%2C1337%2C752&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/23/66d5761d-f329-413c-a9e3-b7699680e358.jpeg?rect=0%2C70%2C1337%2C752&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/23/66d5761d-f329-413c-a9e3-b7699680e358.jpeg?rect=0%2C70%2C1337%2C752&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/23/66d5761d-f329-413c-a9e3-b7699680e358.jpeg?rect=0%2C70%2C1337%2C752&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/23/66d5761d-f329-413c-a9e3-b7699680e358.jpeg?rect=0%2C70%2C1337%2C752&amp;width=160 160w" class="lazyload" alt="Das Komiker-Duo Vovan und Lexus hat zum wiederholten Mal erfolgreich Politiker am Telefon veralbert. ">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Wo Windkraft der Braunkohle weicht</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Warum fallen Politiker auf Enkeltrick rein?</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/der-preis-fur-das-witzigste-tierfoto-ist-ein-grund-zum-heulen-3470483">
+            <a href="/panorama/aufgespiesst/termin-verschlafen-hier-hilft-die-polizei-3490614">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/23/21acb56a-334e-42f0-8744-a3d979802fb1.jpeg?rect=0%2C235%2C1077%2C606&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/23/21acb56a-334e-42f0-8744-a3d979802fb1.jpeg?rect=0%2C235%2C1077%2C606&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/23/21acb56a-334e-42f0-8744-a3d979802fb1.jpeg?rect=0%2C235%2C1077%2C606&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/23/21acb56a-334e-42f0-8744-a3d979802fb1.jpeg?rect=0%2C235%2C1077%2C606&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/23/21acb56a-334e-42f0-8744-a3d979802fb1.jpeg?rect=0%2C235%2C1077%2C606&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/23/21acb56a-334e-42f0-8744-a3d979802fb1.jpeg?rect=0%2C235%2C1077%2C606&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/23/21acb56a-334e-42f0-8744-a3d979802fb1.jpeg?rect=0%2C235%2C1077%2C606&amp;width=160 160w" class="lazyload" alt="Winke, winke – dieser Waschbär gehört zu den Finalisten der „Comedy Wildlife Photography Awards“.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/22/ec123233-9869-490c-bb92-d9a8a2da5dad.jpeg?rect=0%2C104%2C1406%2C791&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/22/ec123233-9869-490c-bb92-d9a8a2da5dad.jpeg?rect=0%2C104%2C1406%2C791&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/22/ec123233-9869-490c-bb92-d9a8a2da5dad.jpeg?rect=0%2C104%2C1406%2C791&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/22/ec123233-9869-490c-bb92-d9a8a2da5dad.jpeg?rect=0%2C104%2C1406%2C791&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/22/ec123233-9869-490c-bb92-d9a8a2da5dad.jpeg?rect=0%2C104%2C1406%2C791&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/22/ec123233-9869-490c-bb92-d9a8a2da5dad.jpeg?rect=0%2C104%2C1406%2C791&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/22/ec123233-9869-490c-bb92-d9a8a2da5dad.jpeg?rect=0%2C104%2C1406%2C791&amp;width=160 160w" class="lazyload" alt="Wenn es mal schnell gehen muss: Freunde und Helfer sind gern zur Stelle.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Der Preis für das witzigste Tierfoto ist ein Grund zum Heulen</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Termin verschlafen? Hier hilft die Polizei</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/rbb-intendantin-schlesinger-arbeitsvertraege-waren-ungueltig-3470254">
+            <a href="/panorama/aufgespiesst/aus-fur-flughafen-den-es-nicht-gibt-3489673">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/23/23f62634-246b-4398-ad84-e120d48f8708.jpeg?rect=0%2C86%2C1095%2C616&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/23/23f62634-246b-4398-ad84-e120d48f8708.jpeg?rect=0%2C86%2C1095%2C616&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/23/23f62634-246b-4398-ad84-e120d48f8708.jpeg?rect=0%2C86%2C1095%2C616&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/23/23f62634-246b-4398-ad84-e120d48f8708.jpeg?rect=0%2C86%2C1095%2C616&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/23/23f62634-246b-4398-ad84-e120d48f8708.jpeg?rect=0%2C86%2C1095%2C616&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/23/23f62634-246b-4398-ad84-e120d48f8708.jpeg?rect=0%2C86%2C1095%2C616&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/23/23f62634-246b-4398-ad84-e120d48f8708.jpeg?rect=0%2C86%2C1095%2C616&amp;width=160 160w" class="lazyload" alt="Bis August dieses Jahres RBB-Chefin: Patricia Schlesinger. Doch jetzt stellt sich heraus: Ihre Arbeitsverträge waren ungültig.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/21/62627090-3ac4-4a8d-bf9d-3953cc605900.jpeg?rect=0%2C20%2C861%2C484&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/21/62627090-3ac4-4a8d-bf9d-3953cc605900.jpeg?rect=0%2C20%2C861%2C484&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/21/62627090-3ac4-4a8d-bf9d-3953cc605900.jpeg?rect=0%2C20%2C861%2C484&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/21/62627090-3ac4-4a8d-bf9d-3953cc605900.jpeg?rect=0%2C20%2C861%2C484&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/21/62627090-3ac4-4a8d-bf9d-3953cc605900.jpeg?rect=0%2C20%2C861%2C484&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/21/62627090-3ac4-4a8d-bf9d-3953cc605900.jpeg?rect=0%2C20%2C861%2C484&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/21/62627090-3ac4-4a8d-bf9d-3953cc605900.jpeg?rect=0%2C20%2C861%2C484&amp;width=160 160w" class="lazyload" alt="Nicholas Whitehead wachsen die Kosten für seinen Nicht-Flughafen langsam über den Kopf. Deshalb ist jetzt Schluss. ">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Gefeuerte RBB-Intendantin Schlesinger war gar nicht angestellt</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Aus für Flughafen, den es nicht gibt</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/aufgespiesst-osterreichische-wirtin-verkuendet-schnitzel-bremse-3468312">
+            <a href="/panorama/aufgespiesst/bier-aus-abwasser-schmeckt-das-3489015">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/20/43d4c389-a9e8-46b1-b9b8-61da0cb88914.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/20/43d4c389-a9e8-46b1-b9b8-61da0cb88914.jpeg?rect=0%2C209%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/20/43d4c389-a9e8-46b1-b9b8-61da0cb88914.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/20/43d4c389-a9e8-46b1-b9b8-61da0cb88914.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/20/43d4c389-a9e8-46b1-b9b8-61da0cb88914.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/20/43d4c389-a9e8-46b1-b9b8-61da0cb88914.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/20/43d4c389-a9e8-46b1-b9b8-61da0cb88914.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=160 160w" class="lazyload" alt="Brutzel-Bremse für Wiener Schnitzel. Schuld sind die gestiegenen Öl- und Energiepreise. ">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/20/cc416174-2d33-493c-9e05-ba3c73161489.jpeg?rect=0%2C70%2C1151%2C647&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/20/cc416174-2d33-493c-9e05-ba3c73161489.jpeg?rect=0%2C70%2C1151%2C647&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/20/cc416174-2d33-493c-9e05-ba3c73161489.jpeg?rect=0%2C70%2C1151%2C647&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/20/cc416174-2d33-493c-9e05-ba3c73161489.jpeg?rect=0%2C70%2C1151%2C647&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/20/cc416174-2d33-493c-9e05-ba3c73161489.jpeg?rect=0%2C70%2C1151%2C647&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/20/cc416174-2d33-493c-9e05-ba3c73161489.jpeg?rect=0%2C70%2C1151%2C647&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/20/cc416174-2d33-493c-9e05-ba3c73161489.jpeg?rect=0%2C70%2C1151%2C647&amp;width=160 160w" class="lazyload" alt="Einem Bier sieht man meist nicht an, woraus es hergestellt wurde. Zum Glück gibt es das Reinheitsgebot, aber das gilt nicht überall.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Österreichische Wirtin verkündet Schnitzel-Bremse</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Bier aus Abwasser – schmeckt das?</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/mandarine-legt-urlaubsflieger-lahm-3467817">
+            <a href="/panorama/aufgespiesst/warum-kinder-aus-braunschweig-mit-dem-taxi-zur-schule-fahren-3487484">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/19/fddcb55b-c239-447d-84a3-5d02de4647b7.jpeg?rect=0%2C69%2C1000%2C562&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/19/fddcb55b-c239-447d-84a3-5d02de4647b7.jpeg?rect=0%2C69%2C1000%2C562&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/19/fddcb55b-c239-447d-84a3-5d02de4647b7.jpeg?rect=0%2C69%2C1000%2C562&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/19/fddcb55b-c239-447d-84a3-5d02de4647b7.jpeg?rect=0%2C69%2C1000%2C562&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/19/fddcb55b-c239-447d-84a3-5d02de4647b7.jpeg?rect=0%2C69%2C1000%2C562&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/19/fddcb55b-c239-447d-84a3-5d02de4647b7.jpeg?rect=0%2C69%2C1000%2C562&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/19/fddcb55b-c239-447d-84a3-5d02de4647b7.jpeg?rect=0%2C69%2C1000%2C562&amp;width=160 160w" class="lazyload" alt="Wegen einer Mandarine konnte ein Swiss-Flieger auf Mallorca nicht rechtzeitig abheben.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/17/e3da4d56-67d8-45ac-9548-a7e6d606d9e6.jpeg?rect=0%2C116%2C1131%2C636&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/17/e3da4d56-67d8-45ac-9548-a7e6d606d9e6.jpeg?rect=0%2C116%2C1131%2C636&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/17/e3da4d56-67d8-45ac-9548-a7e6d606d9e6.jpeg?rect=0%2C116%2C1131%2C636&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/17/e3da4d56-67d8-45ac-9548-a7e6d606d9e6.jpeg?rect=0%2C116%2C1131%2C636&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/17/e3da4d56-67d8-45ac-9548-a7e6d606d9e6.jpeg?rect=0%2C116%2C1131%2C636&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/17/e3da4d56-67d8-45ac-9548-a7e6d606d9e6.jpeg?rect=0%2C116%2C1131%2C636&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/17/e3da4d56-67d8-45ac-9548-a7e6d606d9e6.jpeg?rect=0%2C116%2C1131%2C636&amp;width=160 160w" class="lazyload" alt="Im Braunschweiger Baugebiet „Heinrich der Löwe“ sind inzwischen zwar viele Wohnhäuser entstanden – aber keine Gehwege.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Mandarine legt Urlaubsflieger lahm</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Warum Kinder aus Braunschweig mit dem Taxi zur Schule fahren</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/hausmeister-sagt-fussballtor-ab-3466921">
+            <a href="/panorama/aufgespiesst/oleg-der-pechvogel-3485757">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/18/9d382ee9-58d5-4513-8a5b-b97109bd72b9.png?rect=0%2C69%2C815%2C458&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/18/9d382ee9-58d5-4513-8a5b-b97109bd72b9.png?rect=0%2C69%2C815%2C458&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/18/9d382ee9-58d5-4513-8a5b-b97109bd72b9.png?rect=0%2C69%2C815%2C458&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/18/9d382ee9-58d5-4513-8a5b-b97109bd72b9.png?rect=0%2C69%2C815%2C458&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/18/9d382ee9-58d5-4513-8a5b-b97109bd72b9.png?rect=0%2C69%2C815%2C458&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/18/9d382ee9-58d5-4513-8a5b-b97109bd72b9.png?rect=0%2C69%2C815%2C458&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/18/9d382ee9-58d5-4513-8a5b-b97109bd72b9.png?rect=0%2C69%2C815%2C458&amp;width=160 160w" class="lazyload" alt="Ran mit der Akku-Säge und den zu üppig geratenen Pfosten zack auf das richtige Maß gebracht. So geht Fußball... ">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/15/9ca76b8a-c7e8-41d9-98bb-2ef3574459d2.jpeg?rect=0%2C138%2C714%2C402&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/15/9ca76b8a-c7e8-41d9-98bb-2ef3574459d2.jpeg?rect=0%2C138%2C714%2C402&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/15/9ca76b8a-c7e8-41d9-98bb-2ef3574459d2.jpeg?rect=0%2C138%2C714%2C402&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/15/9ca76b8a-c7e8-41d9-98bb-2ef3574459d2.jpeg?rect=0%2C138%2C714%2C402&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/15/9ca76b8a-c7e8-41d9-98bb-2ef3574459d2.jpeg?rect=0%2C138%2C714%2C402&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/15/9ca76b8a-c7e8-41d9-98bb-2ef3574459d2.jpeg?rect=0%2C138%2C714%2C402&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/15/9ca76b8a-c7e8-41d9-98bb-2ef3574459d2.jpeg?rect=0%2C138%2C714%2C402&amp;width=160 160w" class="lazyload" alt="Auf Youtube und Twitter ist Oleg der &quot;Racoon Rapist&quot;.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Hausmeister sägt Fußballtor ab</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt: Der „Raccoon Rapist“ im Ukraine Krieg</h4>
+                <h3 class="fp-article__title text-xl--bold ">Oleg, der Pechvogel</h3>
             </a>
         </article>
 </div>
@@ -1605,93 +1629,93 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/heidi-klum-bereitet-sich-auf-halloween-party-vor-3475183">
+            <a href="/panorama/stars/londoner-ex-anti-terror-chef-meghan-wurde-ernsthaft-bedroht-3496048">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/81c80279-82e6-4fd8-97ea-705a49c152fb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/81c80279-82e6-4fd8-97ea-705a49c152fb.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/81c80279-82e6-4fd8-97ea-705a49c152fb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/81c80279-82e6-4fd8-97ea-705a49c152fb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/81c80279-82e6-4fd8-97ea-705a49c152fb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/81c80279-82e6-4fd8-97ea-705a49c152fb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/81c80279-82e6-4fd8-97ea-705a49c152fb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Heidi Klum liebt Halloween und extravagante Kostüme.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/27e04811-6977-4962-aefc-13a78d1884f5.jpeg?rect=0%2C156%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/27e04811-6977-4962-aefc-13a78d1884f5.jpeg?rect=0%2C156%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/27e04811-6977-4962-aefc-13a78d1884f5.jpeg?rect=0%2C156%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/27e04811-6977-4962-aefc-13a78d1884f5.jpeg?rect=0%2C156%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/27e04811-6977-4962-aefc-13a78d1884f5.jpeg?rect=0%2C156%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/27e04811-6977-4962-aefc-13a78d1884f5.jpeg?rect=0%2C156%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/27e04811-6977-4962-aefc-13a78d1884f5.jpeg?rect=0%2C156%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Prinz Harrys Frau Meghan soll sich immer wieder rassistischen Drohungen ausgesetzt haben müssen.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Britisches Königshaus</h4>
+                <h3 class="fp-article__title text-xl--bold ">Londoner Ex-Anti-Terror-Chef:&nbsp;Meghan wurde ernsthaft bedroht</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/stars/fee-uber-schweighofer-haben-viel-voneinander-gelernt-3495944">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/3f76e403-597e-4476-98a4-89c1b59c4d19.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/3f76e403-597e-4476-98a4-89c1b59c4d19.jpeg?rect=0%2C105%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/3f76e403-597e-4476-98a4-89c1b59c4d19.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/3f76e403-597e-4476-98a4-89c1b59c4d19.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/3f76e403-597e-4476-98a4-89c1b59c4d19.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/3f76e403-597e-4476-98a4-89c1b59c4d19.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/3f76e403-597e-4476-98a4-89c1b59c4d19.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Das Schauspielerpaar Matthias Schweighöfer und Ruby O. Fee kommt zur Aufführung seines Films „Resistance – Widerstand“ in München (2021).">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Schauspieler</h4>
+                <h3 class="fp-article__title text-xl--bold ">Fee über Schweighöfer: „Haben viel voneinander gelernt“</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/stars/heidi-und-leni-klum-posieren-erneut-zusammen-in-pyjamas-3495913">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/338dad54-1ae1-4f8e-9e3a-5a784d80ec83.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/338dad54-1ae1-4f8e-9e3a-5a784d80ec83.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/338dad54-1ae1-4f8e-9e3a-5a784d80ec83.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/338dad54-1ae1-4f8e-9e3a-5a784d80ec83.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/338dad54-1ae1-4f8e-9e3a-5a784d80ec83.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/338dad54-1ae1-4f8e-9e3a-5a784d80ec83.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/338dad54-1ae1-4f8e-9e3a-5a784d80ec83.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Heidi Klum posiert bei der LACMA Art+Film Gala in Los Angeles für die Fotografen.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Prominente</h4>
+                <h3 class="fp-article__title text-xl--bold ">Heidi und Leni Klum posieren erneut zusammen - in Pyjamas</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/stars/julia-roberts-zeigt-seltenes-foto-ihrer-zwillinge-3495892">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/e6fb2047-8537-4636-8cc6-29cf15c6d469.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/e6fb2047-8537-4636-8cc6-29cf15c6d469.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/e6fb2047-8537-4636-8cc6-29cf15c6d469.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/e6fb2047-8537-4636-8cc6-29cf15c6d469.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/e6fb2047-8537-4636-8cc6-29cf15c6d469.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/e6fb2047-8537-4636-8cc6-29cf15c6d469.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/e6fb2047-8537-4636-8cc6-29cf15c6d469.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Julia Roberts lächelt für die Fotografen bei der Ankunft zur Weltpremiere des Films „Ticket To Paradise“.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Hollywood</h4>
+                <h3 class="fp-article__title text-xl--bold ">Julia Roberts zeigt seltenes Foto ihrer Zwillinge</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/stars/walter-sittler-sieht-sich-als-teamplayer-3495191">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/2c7464cd-9c43-4111-b46e-fb0f471328fb.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/2c7464cd-9c43-4111-b46e-fb0f471328fb.jpeg?rect=0%2C125%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/2c7464cd-9c43-4111-b46e-fb0f471328fb.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/2c7464cd-9c43-4111-b46e-fb0f471328fb.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/2c7464cd-9c43-4111-b46e-fb0f471328fb.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/2c7464cd-9c43-4111-b46e-fb0f471328fb.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/2c7464cd-9c43-4111-b46e-fb0f471328fb.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Schauspieler Walter Sittler im Gespräch mit der dpa.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Schauspieler</h4>
+                <h3 class="fp-article__title text-xl--bold ">Walter Sittler sieht sich als Teamplayer</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/stars/mariah-carey-wird-broadway-produzentin-3495147">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/5d0fe829-e853-4b93-87bb-e1b0dbdcba4d.jpeg?rect=0%2C199%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/5d0fe829-e853-4b93-87bb-e1b0dbdcba4d.jpeg?rect=0%2C199%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/5d0fe829-e853-4b93-87bb-e1b0dbdcba4d.jpeg?rect=0%2C199%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/5d0fe829-e853-4b93-87bb-e1b0dbdcba4d.jpeg?rect=0%2C199%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/5d0fe829-e853-4b93-87bb-e1b0dbdcba4d.jpeg?rect=0%2C199%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/5d0fe829-e853-4b93-87bb-e1b0dbdcba4d.jpeg?rect=0%2C199%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/5d0fe829-e853-4b93-87bb-e1b0dbdcba4d.jpeg?rect=0%2C199%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Mariah Carey wollte bei „Some Like It Hot“ unbedingt mitwirken.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> „Some Like It Hot“</h4>
+                <h3 class="fp-article__title text-xl--bold ">Mariah Carey wird Broadway-Produzentin</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/stars/berben-solidaritat-mit-protesten-im-iran-ist-unverzichtbar-3495021">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/8eea4ab6-c7a2-4c07-a555-12096ab6ed69.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/8eea4ab6-c7a2-4c07-a555-12096ab6ed69.jpeg?rect=0%2C115%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/8eea4ab6-c7a2-4c07-a555-12096ab6ed69.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/8eea4ab6-c7a2-4c07-a555-12096ab6ed69.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/8eea4ab6-c7a2-4c07-a555-12096ab6ed69.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/8eea4ab6-c7a2-4c07-a555-12096ab6ed69.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/8eea4ab6-c7a2-4c07-a555-12096ab6ed69.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Schauspielerin Iris Berben sprach bei einer Veranstaltung im Berliner Ensemble anlässlich der Proteste im Iran.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Schauspielerin</h4>
+                <h3 class="fp-article__title text-xl--bold ">Berben: Solidarität mit Protesten im Iran ist unverzichtbar</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/stars/tom-kaulitz-vermisst-die-deutschen-schmalzkuchen-3494471">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/24a48336-d850-484b-bc79-4b954eb55543.jpeg?rect=0%2C581%2C1574%2C885&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/24a48336-d850-484b-bc79-4b954eb55543.jpeg?rect=0%2C581%2C1574%2C885&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/24a48336-d850-484b-bc79-4b954eb55543.jpeg?rect=0%2C581%2C1574%2C885&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/24a48336-d850-484b-bc79-4b954eb55543.jpeg?rect=0%2C581%2C1574%2C885&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/24a48336-d850-484b-bc79-4b954eb55543.jpeg?rect=0%2C581%2C1574%2C885&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/24a48336-d850-484b-bc79-4b954eb55543.jpeg?rect=0%2C581%2C1574%2C885&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/24a48336-d850-484b-bc79-4b954eb55543.jpeg?rect=0%2C581%2C1574%2C885&amp;width=160 160w" class="lazyload" alt="Tom Kaulitz hat einen Traum: Einen deutschen Weihnachtsmarkt in Los Angeles.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Leute</h4>
-                <h3 class="fp-article__title text-xl--bold ">Heidi Klum bereitet sich auf Halloween-Party vor</h3>
+                <h3 class="fp-article__title text-xl--bold ">Tom Kaulitz vermisst die deutschen Schmalzkuchen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/memoiren-von-harry-sorgen-fur-zoff-im-konigreich-3475148">
+            <a href="/panorama/stars/torten-und-briefe-was-von-den-royals-unter-den-hammer-kam-3494406">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/75854320-eeee-429d-b2ef-1258d2ad7905.jpeg?rect=0%2C72%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/75854320-eeee-429d-b2ef-1258d2ad7905.jpeg?rect=0%2C72%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/75854320-eeee-429d-b2ef-1258d2ad7905.jpeg?rect=0%2C72%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/75854320-eeee-429d-b2ef-1258d2ad7905.jpeg?rect=0%2C72%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/75854320-eeee-429d-b2ef-1258d2ad7905.jpeg?rect=0%2C72%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/75854320-eeee-429d-b2ef-1258d2ad7905.jpeg?rect=0%2C72%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/75854320-eeee-429d-b2ef-1258d2ad7905.jpeg?rect=0%2C72%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Prinz Harrys Memoiren „Reserve“ sorgt für Aufregung in seiner Heimat Großbritannien.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/6a346b30-4f72-49fb-bb8a-4b530bbc1307.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/6a346b30-4f72-49fb-bb8a-4b530bbc1307.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/6a346b30-4f72-49fb-bb8a-4b530bbc1307.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/6a346b30-4f72-49fb-bb8a-4b530bbc1307.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/6a346b30-4f72-49fb-bb8a-4b530bbc1307.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/6a346b30-4f72-49fb-bb8a-4b530bbc1307.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/6a346b30-4f72-49fb-bb8a-4b530bbc1307.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Ein Brief von Königin Elizabeth II. ist für 8300 Euro versteigert worden. Die Unterschrift der Queen ist auf einer Kopie der Rückseite zu sehen, welche dem eingerahmten Brief beiliegt.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Großbritannien</h4>
-                <h3 class="fp-article__title text-xl--bold ">Memoiren von Harry sorgen für Zoff im Königreich</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Auktionen</h4>
+                <h3 class="fp-article__title text-xl--bold ">Torten und Briefe - Was von den Royals unter den Hammer kam</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/pietro-lombardi-und-laura-maria-rypa-sind-verlobt-3475052">
+            <a href="/panorama/stars/uk-popstar-dua-lipa-bekommt-albanische-staatsburgerschaft-3494182">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/009e2fea-7353-4397-aeca-8c7822eef7bd.jpeg?rect=0%2C88%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/009e2fea-7353-4397-aeca-8c7822eef7bd.jpeg?rect=0%2C88%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/009e2fea-7353-4397-aeca-8c7822eef7bd.jpeg?rect=0%2C88%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/009e2fea-7353-4397-aeca-8c7822eef7bd.jpeg?rect=0%2C88%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/009e2fea-7353-4397-aeca-8c7822eef7bd.jpeg?rect=0%2C88%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/009e2fea-7353-4397-aeca-8c7822eef7bd.jpeg?rect=0%2C88%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/009e2fea-7353-4397-aeca-8c7822eef7bd.jpeg?rect=0%2C88%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Pietro Lombardi hat seiner Freundin einen Hochzeitsantrag gemacht.">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/6d8011c5-45aa-48df-a4e1-2fa3157e1135.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/6d8011c5-45aa-48df-a4e1-2fa3157e1135.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/6d8011c5-45aa-48df-a4e1-2fa3157e1135.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/6d8011c5-45aa-48df-a4e1-2fa3157e1135.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/6d8011c5-45aa-48df-a4e1-2fa3157e1135.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/6d8011c5-45aa-48df-a4e1-2fa3157e1135.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/6d8011c5-45aa-48df-a4e1-2fa3157e1135.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Die britische Sängerin Dua Lipa tritt mit Tänzern beim Lovestream-Musikfestival im Fußballstadion auf.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Sänger</h4>
-                <h3 class="fp-article__title text-xl--bold ">Pietro Lombardi und Laura Maria Rypa sind verlobt</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/werner-herzogs-besondere-beziehung-zu-l-a-3474991">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/e4ee5d3c-98e0-4188-9b7f-1f37eeb71276.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/e4ee5d3c-98e0-4188-9b7f-1f37eeb71276.jpeg?rect=0%2C179%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/e4ee5d3c-98e0-4188-9b7f-1f37eeb71276.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/e4ee5d3c-98e0-4188-9b7f-1f37eeb71276.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/e4ee5d3c-98e0-4188-9b7f-1f37eeb71276.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/e4ee5d3c-98e0-4188-9b7f-1f37eeb71276.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/e4ee5d3c-98e0-4188-9b7f-1f37eeb71276.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Regisseur Werner Herzog lebt seit vielen Jahren in Kalifornien.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Regisseur</h4>
-                <h3 class="fp-article__title text-xl--bold ">Werner Herzogs besondere Beziehung zu L.A.</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/werner-herzog-3474989">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/30/4dc43c08-be74-45e1-9d53-2e6a03e7f2b5.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/30/4dc43c08-be74-45e1-9d53-2e6a03e7f2b5.jpeg?rect=0%2C179%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/30/4dc43c08-be74-45e1-9d53-2e6a03e7f2b5.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/30/4dc43c08-be74-45e1-9d53-2e6a03e7f2b5.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/30/4dc43c08-be74-45e1-9d53-2e6a03e7f2b5.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/30/4dc43c08-be74-45e1-9d53-2e6a03e7f2b5.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/30/4dc43c08-be74-45e1-9d53-2e6a03e7f2b5.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Regisseur Werner Herzog lebt seit vielen Jahren in Kalifornien.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Film</h4>
-                <h3 class="fp-article__title text-xl--bold ">Werner Herzog</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/prinzessin-kate-bittet-um-empathie-fur-suchtkranke-3474785">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/99b423ba-3e91-434f-aaa7-b7830105cb0c.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/99b423ba-3e91-434f-aaa7-b7830105cb0c.jpeg?rect=0%2C135%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/99b423ba-3e91-434f-aaa7-b7830105cb0c.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/99b423ba-3e91-434f-aaa7-b7830105cb0c.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/99b423ba-3e91-434f-aaa7-b7830105cb0c.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/99b423ba-3e91-434f-aaa7-b7830105cb0c.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/99b423ba-3e91-434f-aaa7-b7830105cb0c.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Prinzesin Kate setzt sich für Suchtkranke ein.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Britische Royals</h4>
-                <h3 class="fp-article__title text-xl--bold ">Prinzessin Kate bittet um Empathie für Suchtkranke</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/armin-rohde-als-goldi-bei-masked-singer-enttarnt-3474666">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/ac4acb64-8738-4a3e-a2e4-5956a1c88761.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/ac4acb64-8738-4a3e-a2e4-5956a1c88761.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/ac4acb64-8738-4a3e-a2e4-5956a1c88761.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/ac4acb64-8738-4a3e-a2e4-5956a1c88761.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/ac4acb64-8738-4a3e-a2e4-5956a1c88761.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/ac4acb64-8738-4a3e-a2e4-5956a1c88761.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/ac4acb64-8738-4a3e-a2e4-5956a1c88761.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Armin Rohde als „Goldi“ neben Moderator Matthias Opdenhövel auf der Bühne.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Gesangsshow</h4>
-                <h3 class="fp-article__title text-xl--bold ">Armin Rohde als Goldi bei „Masked Singer“ enttarnt</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/spitzenkoch-heinz-winkler-gestorben-3474517">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/4a87fc9a-0b97-4870-b49a-ed0011c9eb5b.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/4a87fc9a-0b97-4870-b49a-ed0011c9eb5b.jpeg?rect=0%2C105%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/4a87fc9a-0b97-4870-b49a-ed0011c9eb5b.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/4a87fc9a-0b97-4870-b49a-ed0011c9eb5b.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/4a87fc9a-0b97-4870-b49a-ed0011c9eb5b.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/4a87fc9a-0b97-4870-b49a-ed0011c9eb5b.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/4a87fc9a-0b97-4870-b49a-ed0011c9eb5b.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Der Sternekoch Heinz Winkler ist tot.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Gastgewerbe</h4>
-                <h3 class="fp-article__title text-xl--bold ">Spitzenkoch Heinz Winkler gestorben</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/cathy-hummels-bestatigt-trennung-von-mats-hummels-3474434">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/68fa8b79-57b5-4123-a881-f0fd29fb3af0.jpeg?rect=0%2C199%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/68fa8b79-57b5-4123-a881-f0fd29fb3af0.jpeg?rect=0%2C199%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/68fa8b79-57b5-4123-a881-f0fd29fb3af0.jpeg?rect=0%2C199%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/68fa8b79-57b5-4123-a881-f0fd29fb3af0.jpeg?rect=0%2C199%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/68fa8b79-57b5-4123-a881-f0fd29fb3af0.jpeg?rect=0%2C199%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/68fa8b79-57b5-4123-a881-f0fd29fb3af0.jpeg?rect=0%2C199%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/68fa8b79-57b5-4123-a881-f0fd29fb3af0.jpeg?rect=0%2C199%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Der Fußballspieler Mats Hummels kommt mit seiner damaligen Frau Cathy Hummels in das Käferzelt auf dem Oktoberfest auf der Theresienwiese (2017).">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Bestseller-Autorin</h4>
-                <h3 class="fp-article__title text-xl--bold ">Cathy Hummels bestätigt Trennung von Mats Hummels</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/kennste-kennste-mario-barth-wird-50-3475618">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/10/31/4dd48ae3-1c7f-4f35-a3b7-d6dcc1ad6e3f.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/10/31/4dd48ae3-1c7f-4f35-a3b7-d6dcc1ad6e3f.jpeg?rect=0%2C102%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/10/31/4dd48ae3-1c7f-4f35-a3b7-d6dcc1ad6e3f.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/10/31/4dd48ae3-1c7f-4f35-a3b7-d6dcc1ad6e3f.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/10/31/4dd48ae3-1c7f-4f35-a3b7-d6dcc1ad6e3f.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/10/31/4dd48ae3-1c7f-4f35-a3b7-d6dcc1ad6e3f.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/10/31/4dd48ae3-1c7f-4f35-a3b7-d6dcc1ad6e3f.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Der Komiker Mario Barth wird 50.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Comedian</h4>
-                <h3 class="fp-article__title text-xl--bold ">Kennste? Kennste - Mario Barth wird 50</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Leute</h4>
+                <h3 class="fp-article__title text-xl--bold ">UK-Popstar Dua Lipa bekommt albanische Staatsbürgerschaft</h3>
             </a>
         </article>
 </div>
@@ -1711,6 +1735,42 @@
             </a>
         </aside>
     </header>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/vermischtes/permafrost-arktis-zombie-virus-im-ewigen-eis-entdeckt-forscher-warnen-vor-uraltem-erreger-3495942">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/30/ffb715d6-965e-4bea-b93e-02a9c5b7461d.jpeg?rect=0%2C269%2C2909%2C1636&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/30/ffb715d6-965e-4bea-b93e-02a9c5b7461d.jpeg?rect=0%2C269%2C2909%2C1636&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/30/ffb715d6-965e-4bea-b93e-02a9c5b7461d.jpeg?rect=0%2C269%2C2909%2C1636&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/30/ffb715d6-965e-4bea-b93e-02a9c5b7461d.jpeg?rect=0%2C269%2C2909%2C1636&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/30/ffb715d6-965e-4bea-b93e-02a9c5b7461d.jpeg?rect=0%2C269%2C2909%2C1636&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/30/ffb715d6-965e-4bea-b93e-02a9c5b7461d.jpeg?rect=0%2C269%2C2909%2C1636&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/30/ffb715d6-965e-4bea-b93e-02a9c5b7461d.jpeg?rect=0%2C269%2C2909%2C1636&amp;width=160 160w" class="lazyload" alt="Ein internationales Wissenschaftler-Team untersucht am 23.10.2007 im russischen Salechard (Jakutien) die Überreste des Mammut-Babys Ljuba, das in der Nähe des Ortes im Permafrostboden entdeckt wurde. Funde wie diese könnten unbekannte Viren freisetzen.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Kadaver in der Arktis</h4>
+                <h3 class="fp-article__title text-xl--bold ">"Zombie-Virus" im ewigen Eis entdeckt: Forscher warnen vor uraltem Erreger</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/vermischtes/am-flughafen-von-new-york-lebendige-katze-im-koffer-entdeckt-3491076">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/23/2541a213-e795-4fef-bd5f-4c37258c88af.jpeg?rect=0%2C308%2C3258%2C1833&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/23/2541a213-e795-4fef-bd5f-4c37258c88af.jpeg?rect=0%2C308%2C3258%2C1833&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/23/2541a213-e795-4fef-bd5f-4c37258c88af.jpeg?rect=0%2C308%2C3258%2C1833&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/23/2541a213-e795-4fef-bd5f-4c37258c88af.jpeg?rect=0%2C308%2C3258%2C1833&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/23/2541a213-e795-4fef-bd5f-4c37258c88af.jpeg?rect=0%2C308%2C3258%2C1833&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/23/2541a213-e795-4fef-bd5f-4c37258c88af.jpeg?rect=0%2C308%2C3258%2C1833&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/23/2541a213-e795-4fef-bd5f-4c37258c88af.jpeg?rect=0%2C308%2C3258%2C1833&amp;width=160 160w" class="lazyload" alt="Beamte des John F. Kennedy Flughafens in New York entdeckten eine lebendige Katze in einem Koffer.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Kurioser Flughafen-Fund</h4>
+                <h3 class="fp-article__title text-xl--bold ">Beamte entdecken Katze im Koffer - Doch Passagier ist nicht der Besitzer</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/vermischtes/weltraum-schwarzes-loch-in-der-naehe-der-erde-entdeckt-3479753">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/07/71614bc0-fa66-459f-aed7-4e93c7d2c1e0.jpeg?rect=0%2C240%2C2560%2C1440&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/07/71614bc0-fa66-459f-aed7-4e93c7d2c1e0.jpeg?rect=0%2C240%2C2560%2C1440&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/07/71614bc0-fa66-459f-aed7-4e93c7d2c1e0.jpeg?rect=0%2C240%2C2560%2C1440&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/07/71614bc0-fa66-459f-aed7-4e93c7d2c1e0.jpeg?rect=0%2C240%2C2560%2C1440&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/07/71614bc0-fa66-459f-aed7-4e93c7d2c1e0.jpeg?rect=0%2C240%2C2560%2C1440&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/07/71614bc0-fa66-459f-aed7-4e93c7d2c1e0.jpeg?rect=0%2C240%2C2560%2C1440&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/07/71614bc0-fa66-459f-aed7-4e93c7d2c1e0.jpeg?rect=0%2C240%2C2560%2C1440&amp;width=160 160w" class="lazyload" alt="Illustration eines Schwarzes Lochs.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Weltraum-Phänomen</h4>
+                <h3 class="fp-article__title text-xl--bold ">Schwarzes Loch in der Nähe der Erde entdeckt</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/vermischtes/hirntod-einer-radfahrerin-keine-schuld-letzte-generation-sieht-sich-zu-unrecht-kritisiert-und-greift-die-medien-an-3478047">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2022/11/04/f6a47df0-ba3d-4baa-bff8-7e057d7e875d.jpeg?rect=0%2C1%2C1518%2C854&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/11/04/f6a47df0-ba3d-4baa-bff8-7e057d7e875d.jpeg?rect=0%2C1%2C1518%2C854&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/11/04/f6a47df0-ba3d-4baa-bff8-7e057d7e875d.jpeg?rect=0%2C1%2C1518%2C854&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/11/04/f6a47df0-ba3d-4baa-bff8-7e057d7e875d.jpeg?rect=0%2C1%2C1518%2C854&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/11/04/f6a47df0-ba3d-4baa-bff8-7e057d7e875d.jpeg?rect=0%2C1%2C1518%2C854&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/11/04/f6a47df0-ba3d-4baa-bff8-7e057d7e875d.jpeg?rect=0%2C1%2C1518%2C854&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/11/04/f6a47df0-ba3d-4baa-bff8-7e057d7e875d.jpeg?rect=0%2C1%2C1518%2C854&amp;width=160 160w" class="lazyload" alt="Aktivisten der Letzten Generation sehen offenbar keine Schuld an dem Vorfall mit einer Radfahrerin in Berlin. Aber sie haben einen anscheinend einen neuen Gegner ausgemacht: die kritische Berichterstattung durch Journalisten. Symbolbild:">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Hirntod einer Radfahrerin</h4>
+                <h3 class="fp-article__title text-xl--bold ">Keine Schuld? Letzte Generation sieht sich zu Unrecht kritisiert - und greift die Medien an</h3>
+            </a>
+        </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
             <a href="/panorama/vermischtes/der-mann-der-weltgeschichte-sammelt-3428699">
                 <picture class="fp-article__image">
@@ -1763,42 +1823,6 @@
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Mord-Anklage</h4>
                 <h3 class="fp-article__title text-xl--bold ">Vater lässt Baby absichtlich fünf Stunden im Auto allein – Kind tot</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/vermischtes/schmuck-aus-sperma-kanadische-juwelierin-stellt-perlen-aus-ejakulat-her-3435632">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/08/31/dfe16590-93da-47c2-a8b4-18466dd9e2a8.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/08/31/dfe16590-93da-47c2-a8b4-18466dd9e2a8.jpeg?rect=0%2C209%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/08/31/dfe16590-93da-47c2-a8b4-18466dd9e2a8.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/08/31/dfe16590-93da-47c2-a8b4-18466dd9e2a8.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/08/31/dfe16590-93da-47c2-a8b4-18466dd9e2a8.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/08/31/dfe16590-93da-47c2-a8b4-18466dd9e2a8.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/08/31/dfe16590-93da-47c2-a8b4-18466dd9e2a8.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=160 160w" class="lazyload" alt="Eine junge Frau aus Kanada stellt Schmuck aus Sperma her. In den sozialen Netzwerken brachte ihr das viel Aufmerksamkeit ein.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Genial oder Eklig?</h4>
-                <h3 class="fp-article__title text-xl--bold ">Perlen aus Sperma: Juwelierin fertigt Schmuckstücke aus Ejakulat</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/vermischtes/streik-der-muellabfuhr-schottlands-staedte-versinken-im-muell-3434840">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/08/30/1b7337d0-ff55-402a-ba2f-1c5ae5a605dc.jpeg?rect=0%2C208%2C4000%2C2250&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/08/30/1b7337d0-ff55-402a-ba2f-1c5ae5a605dc.jpeg?rect=0%2C208%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/08/30/1b7337d0-ff55-402a-ba2f-1c5ae5a605dc.jpeg?rect=0%2C208%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/08/30/1b7337d0-ff55-402a-ba2f-1c5ae5a605dc.jpeg?rect=0%2C208%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/08/30/1b7337d0-ff55-402a-ba2f-1c5ae5a605dc.jpeg?rect=0%2C208%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/08/30/1b7337d0-ff55-402a-ba2f-1c5ae5a605dc.jpeg?rect=0%2C208%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/08/30/1b7337d0-ff55-402a-ba2f-1c5ae5a605dc.jpeg?rect=0%2C208%2C4000%2C2250&amp;width=160 160w" class="lazyload" alt="Ein langanhaltender Streik der schottischen Müllabfuhr führt zu überquellenden Containern und sich stapelnden Müllsäcken. In Großstädten wie Edinburgh oder Glasgow ist die Situation angespannt.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Dreck und Gestank</h4>
-                <h3 class="fp-article__title text-xl--bold ">Streik bei der Müllabfuhr: Schottische Städte versinken im Müll</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/vermischtes/entfernung-berechnen-blitz-und-donner-wie-weit-ist-das-gewitter-entfernt--3431374">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/08/24/bd6e833d-235e-4345-b792-b1f766db602b.jpeg?rect=0%2C97%2C2500%2C1406&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/08/24/bd6e833d-235e-4345-b792-b1f766db602b.jpeg?rect=0%2C97%2C2500%2C1406&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/08/24/bd6e833d-235e-4345-b792-b1f766db602b.jpeg?rect=0%2C97%2C2500%2C1406&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/08/24/bd6e833d-235e-4345-b792-b1f766db602b.jpeg?rect=0%2C97%2C2500%2C1406&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/08/24/bd6e833d-235e-4345-b792-b1f766db602b.jpeg?rect=0%2C97%2C2500%2C1406&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/08/24/bd6e833d-235e-4345-b792-b1f766db602b.jpeg?rect=0%2C97%2C2500%2C1406&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/08/24/bd6e833d-235e-4345-b792-b1f766db602b.jpeg?rect=0%2C97%2C2500%2C1406&amp;width=160 160w" class="lazyload" alt="Erst erscheint der Blitz, dann ertönt der Donner. Gewitter sind beeindruckende Naturschauspiele.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Entfernung berechnen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Blitz und Donner:  Wie weit ist das Gewitter entfernt?</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/vermischtes/ischgl-tod-beim-fotografieren-deutscher-stuerzt-60-meter-in-die-tiefe-3431271">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2022/08/24/d449d410-c775-4588-89f6-b64c8d69c607.jpeg?rect=0%2C63%2C2048%2C1152&amp;width=100" data-sizes="auto" data-src="https://bmg-images.forward-publishing.io/2022/08/24/d449d410-c775-4588-89f6-b64c8d69c607.jpeg?rect=0%2C63%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2022/08/24/d449d410-c775-4588-89f6-b64c8d69c607.jpeg?rect=0%2C63%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2022/08/24/d449d410-c775-4588-89f6-b64c8d69c607.jpeg?rect=0%2C63%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2022/08/24/d449d410-c775-4588-89f6-b64c8d69c607.jpeg?rect=0%2C63%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2022/08/24/d449d410-c775-4588-89f6-b64c8d69c607.jpeg?rect=0%2C63%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2022/08/24/d449d410-c775-4588-89f6-b64c8d69c607.jpeg?rect=0%2C63%2C2048%2C1152&amp;width=160 160w" class="lazyload" alt="Schneelanzen sorgen für Schnee auf den  Pisten im Skigebiet Ischgl. Foto: Karl-Josef Hildenbrand/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Ischgl</h4>
-                <h3 class="fp-article__title text-xl--bold ">Tod beim Fotografieren: Deutscher stürzt 60 Meter in die Tiefe</h3>
             </a>
         </article>
 </div>
@@ -2009,15 +2033,19 @@
                       </a>
                     </li>
                     <li>
+                      <a href="/sachsen-anhalt/leseranwaeltin" target="_self">Leseranwältin
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/sachsen-anhalt/regionale-kultur">Regionale Kultur
+                      </a>
+                    </li>
+                    <li>
                       <a href="/sachsen-anhalt/regionale-wirtschaft">Regionale Wirtschaft
                       </a>
                     </li>
                     <li>
                       <a href="/sachsen-anhalt/tourismus">Tourismus
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/sachsen-anhalt/regionale-kultur">Regionale Kultur
                       </a>
                     </li>
                 </ul>
@@ -2225,6 +2253,10 @@
                       </a>
                     </li>
                     <li>
+                      <a href="https://www.volksstimme.de/leben/rezepte">Rezepte
+                      </a>
+                    </li>
+                    <li>
                       <a href="/leben/technik" target="_self">Technik
                       </a>
                     </li>
@@ -2335,7 +2367,7 @@
 
                 <aside class="fp-copyright__links">
             <p class="text-xs--bold">Über uns</p>
-              <a class="text-xs--regular" href="/vs/general/impressum-195">
+              <a class="text-xs--regular" href="https://www.volksstimme.de/general/impressum-195" target="_self">
                 Impressum
               </a>
               <a class="text-xs--regular" href="https://mediengruppe-magdeburg.de/karriere/" target="_blank" rel="noopener noreferrer">
@@ -2350,13 +2382,13 @@
               <a class="text-xs--regular" href="https://service.volksstimme.de/inserieren/start" target="_blank" rel="noopener noreferrer">
                 Kleinanzeige aufgeben
               </a>
-              <a class="text-xs--regular" href="/vs/general/kontakt-1111909">
+              <a class="text-xs--regular" href="https://www.volksstimme.de/general/kontakt-1111909" target="_self">
                 Kontakt
               </a>
-              <a class="text-xs--regular" href="https://www.volksstimme.de/servicestellen" target="_self">
+              <a class="text-xs--regular" href="https://www.volksstimme.de/general/servicestellen-1111910#" target="_self">
                 Servicestellen
               </a>
-              <a class="text-xs--regular" href="/vs/general/datenschutzerklaerung-198">
+              <a class="text-xs--regular" href="https://www.volksstimme.de/general/datenschutzerklaerung-198" target="_self">
                 Datenschutz
               </a>
               <a class="text-xs--regular cookie-einstellungen" href="/" data-cmp-id="197228">
@@ -2411,7 +2443,7 @@
     }
 </script>
 
-            <script src="/static/scripts/scripts.f078c8a0.js" defer=""></script>
+            <script src="/static/scripts/scripts.0a123083.js" defer=""></script>
 
 
 
@@ -2431,7 +2463,7 @@
 </script>
         </div>
     </div>
-    <script src="/static/scripts/adScripts.f078c8a0.js"></script>
+    <script src="/static/scripts/adScripts.0a123083.js"></script>
   
 
 </body></html>

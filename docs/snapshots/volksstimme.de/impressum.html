@@ -1,8 +1,8 @@
 <!DOCTYPE html><html lang="de"><head>
 
-      <link rel="preload prefetch stylesheet" href="/designs/bmg_base_design/1.0.144/styles-vs.css" as="style">
+      <link rel="preload prefetch stylesheet" href="/designs/bmg_base_design/1.0.146/styles-vs.css" as="style">
 
-      <link rel="preload prefetch stylesheet" href="/static/css/styles-delivery-vs-base.f078c8a0.css" as="style">
+      <link rel="preload prefetch stylesheet" href="/static/css/styles-delivery-vs-base.0a123083.css" as="style">
 
     <title>Volksstimme Impressum</title>
     <meta charset="UTF-8">
@@ -45,6 +45,12 @@
                 var s = document.getElementsByTagName("script")[0];
                 cre.onload = function(){
                     if (typeof(cre_client) != "undefined") {
+                        cre_client.addListener(function(response){
+                            const userType = response?.data?.action_groups?.cms_snippet?.parameters[0]
+                            if(typeof initiateSourcePoint === "function") {
+                                initiateSourcePoint(userType)
+                            }
+                        });
                         cre_client.set_page_view();
                         cre_client.set_origin("web");
                         cre_client.set_service_id("mv-web");
@@ -82,15 +88,6 @@
 <link rel="preload" href="https://data-9f47bd3ec3.volksstimme.de/iomm/latest/bootstrap/loader.js" as="script">
 <script type="text/javascript" src="https://data-9f47bd3ec3.volksstimme.de/iomm/latest/bootstrap/loader.js"></script>
 <!-- end preload of IOM web manager --><script>
-
-    !function () { var e = function () { var e, t = "__tcfapiLocator", a = [], n = window; for (; n;) { try { if (n.frames[t]) { e = n; break } } catch (e) { } if (n === window.top) break; n = n.parent } e || (!function e() { var a = n.document, r = !!n.frames[t]; if (!r) if (a.body) { var i = a.createElement("iframe"); i.style.cssText = "display:none", i.name = t, a.body.appendChild(i) } else setTimeout(e, 5); return !r }(), n.__tcfapi = function () { for (var e, t = arguments.length, n = new Array(t), r = 0; r < t; r++)n[r] = arguments[r]; if (!n.length) return a; if ("setGdprApplies" === n[0]) n.length > 3 && 2 === parseInt(n[1], 10) && "boolean" == typeof n[3] && (e = n[3], "function" == typeof n[2] && n[2]("set", !0)); else if ("ping" === n[0]) { var i = { gdprApplies: e, cmpLoaded: !1, cmpStatus: "stub" }; "function" == typeof n[2] && n[2](i) } else a.push(n) }, n.addEventListener("message", (function (e) { var t = "string" == typeof e.data, a = {}; try { a = t ? JSON.parse(e.data) : e.data } catch (e) { } var n = a.__tcfapiCall; n && window.__tcfapi(n.command, n.version, (function (a, r) { var i = { __tcfapiReturn: { returnValue: a, success: r, callId: n.callId } }; t && (i = JSON.stringify(i)), e.source.postMessage(i, "*") }), n.parameter) }), !1)) }; "undefined" != typeof module ? module.exports = e : e() }();
-    window._sp_ = {
-        config: {
-            accountId: 1473,
-            baseEndpoint: 'https://cdn.privacy-mgmt.com',
-        }
-    }
-
     var consents = [];
     if (typeof dataLayer == "undefined") {
         var dataLayer = [];
@@ -102,22 +99,39 @@
         dataLayer.push({'consents': consents});
     }
 
-
-    __tcfapi('addEventListener', 2, function (tcData, success) {
-        if (tcData.eventStatus === 'tcloaded' || tcData.eventStatus === 'useractioncomplete') {
-            __tcfapi('getCustomVendorConsents', 2, function (data) {
-                for(var i = 0; i < data.consentedVendors.length; i++) {
-                    addJs(data.consentedVendors[i]._id );
-                }
-            });
+    function initiateSourcePoint(userType) {
+        !function () { var e = function () { var e, t = "__tcfapiLocator", a = [], n = window; for (; n;) { try { if (n.frames[t]) { e = n; break } } catch (e) { } if (n === window.top) break; n = n.parent } e || (!function e() { var a = n.document, r = !!n.frames[t]; if (!r) if (a.body) { var i = a.createElement("iframe"); i.style.cssText = "display:none", i.name = t, a.body.appendChild(i) } else setTimeout(e, 5); return !r }(), n.__tcfapi = function () { for (var e, t = arguments.length, n = new Array(t), r = 0; r < t; r++)n[r] = arguments[r]; if (!n.length) return a; if ("setGdprApplies" === n[0]) n.length > 3 && 2 === parseInt(n[1], 10) && "boolean" == typeof n[3] && (e = n[3], "function" == typeof n[2] && n[2]("set", !0)); else if ("ping" === n[0]) { var i = { gdprApplies: e, cmpLoaded: !1, cmpStatus: "stub" }; "function" == typeof n[2] && n[2](i) } else a.push(n) }, n.addEventListener("message", (function (e) { var t = "string" == typeof e.data, a = {}; try { a = t ? JSON.parse(e.data) : e.data } catch (e) { } var n = a.__tcfapiCall; n && window.__tcfapi(n.command, n.version, (function (a, r) { var i = { __tcfapiReturn: { returnValue: a, success: r, callId: n.callId } }; t && (i = JSON.stringify(i)), e.source.postMessage(i, "*") }), n.parameter) }), !1)) }; "undefined" != typeof module ? module.exports = e : e() }();
+        window._sp_ = {
+            config: {
+                accountId: 1473,
+                baseEndpoint: 'https://cdn.privacy-mgmt.com',
+                ...(!!userType ? { targetingParams: { userType } } : []),
+            }
         }
-    });
 
+        __tcfapi('addEventListener', 2, function(tcData, success) {
+            if (tcData.eventStatus === 'tcloaded' || tcData.eventStatus === 'useractioncomplete') {
+                if (['pur-pur', 'pur-purplus'].includes(window._sp_?.config?.targetingParams?.userType)) {
+                    __tcfapi('postRejectAll', 2, function(postRejectAllResponse, success)
 
-    var script = document.createElement('script');
-    script.src = "https://cdn.privacy-mgmt.com/wrapperMessagingWithoutDetection.js";
-    document.head.appendChild(script);
+                        {}
+                    );
+                } else {
+                    __tcfapi('getCustomVendorConsents', 2, function(data) {
+                        for (var i = 0; i < data.consentedVendors.length; i++)
 
+                        {
+                            addJs(data.consentedVendors[i]._id);
+                        }
+                    });
+                }
+            }
+        });
+
+        var script = document.createElement('script');
+        script.src = "https://cdn.privacy-mgmt.com/wrapperMessagingWithoutDetection.js";
+        document.head.appendChild(script);
+    }
 </script><script src="//cdn.stroeerdigitalgroup.de/metatag/live/OMS_volksstimme_relaunch/metaTag.min.js"></script>
 <script>
 
@@ -137,28 +151,30 @@
     SDG.Publisher.finalizeSlots();
 
 </script><script>
-    (function() {
+    function consentEnableNativendo() {
         var s = document.createElement('script');
         s.async = true;
         s.src = 'https://d.nativendo.de/cds/delivery/init?oms_zone=localnews';
         var sc = document.getElementsByTagName('script')[0];
         sc.parentNode.insertBefore(s, sc);
-    })();
+    }
 </script><!-- Facebook Pixel Code -->
 <script>
-    !function(f,b,e,v,n,t,s) {if(f.fbq)return;n=f.fbq=function()
+    function consentEnableFacebook() {
+        !function(f,b,e,v,n,t,s) {if(f.fbq)return;n=f.fbq=function()
 
-    {n.callMethod? n.callMethod.apply(n,arguments):n.queue.push(arguments)}
+        {n.callMethod? n.callMethod.apply(n,arguments):n.queue.push(arguments)}
 
-    ;
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window,document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('consent', 'revoke');
-    fbq('init', '1734066336856104');
-    fbq('track', 'PageView');
+        ;
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window,document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('consent', 'grant');
+        fbq('init', '1734066336856104');
+        fbq('track', 'PageView');
+    }
 </script>
 
       <meta property="og:url" content="https://www.volksstimme.de/general/impressum-195">
@@ -295,7 +311,7 @@
 
                     <div class="fp-main-header__links">
                         <ul>                                 <li>
-                                    <a href="/article/volksstimme-e-paper-lesen-1111842" target="_self" class="text-sm-secondary--bold">
+                                    <a href="https://www.volksstimme.de/sachsen-anhalt/volksstimme-e-paper-lesen-1111842" target="_self" class="text-sm-secondary--bold">
                                         E-Paper
                                     </a>
                                 </li>
@@ -382,15 +398,15 @@
                             </a>
                         </div>
     <div class="fp-main-header__weather-widget">
-        <div class="fp-main-header__weather-widget--top wolkig">
+        <div class="fp-main-header__weather-widget--top bedeckt">
             <span class="weather-icon-img">
-                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/wolkig.svg" alt="weather">
+                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/bedeckt.svg" alt="weather">
             </span>
-            <span class="fp-main-header__weather-widget--tooltip">wolkig</span>
+            <span class="fp-main-header__weather-widget--tooltip">bedeckt</span>
             <aside>
-                <span class="fp-main-header__weather-widget--day-temp">18°</span>
+                <span class="fp-main-header__weather-widget--day-temp">6°</span>
                 <span>/</span>
-                <span class="fp-main-header__weather-widget--night-temp">8°</span>
+                <span class="fp-main-header__weather-widget--night-temp">1°</span>
             </aside>
         </div>
         <div class="fp-main-header__weather-widget--bottom">
@@ -784,6 +800,16 @@
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
+                      <a class="text-16--regular" href="/sachsen-anhalt/leseranwaeltin" target="_self">
+                        Leseranwältin
+                      </a>
+                    </li>
+                    <li class="fp-sidebar-menu__nav--item">
+                      <a class="text-16--regular" href="/sachsen-anhalt/regionale-kultur">
+                        Regionale Kultur
+                      </a>
+                    </li>
+                    <li class="fp-sidebar-menu__nav--item">
                       <a class="text-16--regular" href="/sachsen-anhalt/regionale-wirtschaft">
                         Regionale Wirtschaft
                       </a>
@@ -791,11 +817,6 @@
                     <li class="fp-sidebar-menu__nav--item">
                       <a class="text-16--regular" href="/sachsen-anhalt/tourismus">
                         Tourismus
-                      </a>
-                    </li>
-                    <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="/sachsen-anhalt/regionale-kultur">
-                        Regionale Kultur
                       </a>
                     </li>
             </ul>
@@ -1027,6 +1048,11 @@
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
+                      <a class="text-16--regular" href="https://www.volksstimme.de/leben/rezepte">
+                        Rezepte
+                      </a>
+                    </li>
+                    <li class="fp-sidebar-menu__nav--item">
                       <a class="text-16--regular" href="/leben/technik" target="_self">
                         Technik
                       </a>
@@ -1131,7 +1157,7 @@
 
                   <ul class="fp-sidebar-menu__nav--list">
                           <li class="fp-sidebar-menu__nav--item">
-                              <a href="/article/volksstimme-e-paper-lesen-1111842" target="_self" class="text-base-secondary--semibold">E-Paper</a>
+                              <a href="https://www.volksstimme.de/sachsen-anhalt/volksstimme-e-paper-lesen-1111842" target="_self" class="text-base-secondary--semibold">E-Paper</a>
                           </li>
                           <li class="fp-sidebar-menu__nav--item">
                               <a href="https://www.volksstimme.de/general/newsletter-uebersicht-3402582" class="text-base-secondary--semibold">Newsletter</a>
@@ -1159,7 +1185,7 @@
 
                   <ul class="fp-sidebar-menu__nav--list">
                           <li class="fp-sidebar-menu__nav--item">
-                              <a href="/article/volksstimme-e-paper-lesen-1111842" target="_self" class="text-base-secondary--semibold">E-Paper</a>
+                              <a href="https://www.volksstimme.de/sachsen-anhalt/volksstimme-e-paper-lesen-1111842" target="_self" class="text-base-secondary--semibold">E-Paper</a>
                           </li>
                           <li class="fp-sidebar-menu__nav--item">
                               <a href="https://www.volksstimme.de/general/newsletter-uebersicht-3402582" class="text-base-secondary--semibold">Newsletter</a>
@@ -1251,7 +1277,7 @@
                     </div>
                     <ul class="fp-sidebar-menu__nav--list">
                             <li class="fp-sidebar-menu__nav--item">
-                              <a class="text-base-secondary--semibold" href="/vs/general/impressum-195" target="_self">
+                              <a class="text-base-secondary--semibold" href="https://www.volksstimme.de/general/impressum-195" target="_self">
                                   Impressum
                               </a>
                             </li>
@@ -1276,17 +1302,17 @@
                               </a>
                             </li>
                             <li class="fp-sidebar-menu__nav--item">
-                              <a class="text-base-secondary--semibold" href="/vs/general/kontakt-1111909" target="_self">
+                              <a class="text-base-secondary--semibold" href="https://www.volksstimme.de/general/kontakt-1111909" target="_self">
                                   Kontakt
                               </a>
                             </li>
                             <li class="fp-sidebar-menu__nav--item">
-                              <a class="text-base-secondary--semibold" href="https://www.volksstimme.de/servicestellen" target="_self">
+                              <a class="text-base-secondary--semibold" href="https://www.volksstimme.de/general/servicestellen-1111910#" target="_self">
                                   Servicestellen
                               </a>
                             </li>
                             <li class="fp-sidebar-menu__nav--item">
-                              <a class="text-base-secondary--semibold" href="/vs/general/datenschutzerklaerung-198" target="_self">
+                              <a class="text-base-secondary--semibold" href="https://www.volksstimme.de/general/datenschutzerklaerung-198" target="_self">
                                   Datenschutz
                               </a>
                             </li>
@@ -1327,7 +1353,7 @@
   <main class="fp-page-content general-page" id="general-page-main">
       <div class="fp-container fp-container-2"><div id="ad-top-banner-s-mobile" data-screen="mobile"></div><div id="ad-out-of-page-s-mobile" data-screen="mobile"></div><div id="ad-top-banner-s" data-screen="desktop"></div><div id="ad-out-of-page-s" data-screen="desktop"></div><div class="fp-page__header fp-breaking-news" data-t-name="Minifeature" data-fp-container-name="breaking-news-header"></div><div id="page-header" class="fp-page__header"></div><div class="fp-page__body"><header class="fp-category-name-header fp-page-title"><aside class="fp-category-name-header__content"><h2 class="text-xxl--bold fp-category-name-header__text">Impressum Volksstimme.de</h2></aside></header><p class="fp-paragraph">Dieses Gesamtangebot besteht aus verschiedenen Teilangeboten. Diensteanbieter ist die</p><div class="center" id="middle-ad-s-mobile" data-screen="mobile"></div>
 <div class="center" id="middle-ad-s" data-screen="desktop"></div>
-<p class="fp-paragraph">Mitteldeutsche Verlags- und Druckhaus GmbH<br>Bahnhofstr. 17<br> 39104 Magdeburg<br>Tel. 0391/59 99-0<br> E-Mail <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="09647f6d49646c6d606c676e7b7c79796c2464686e6d6c6b7c7b6e276d6c">[email&#160;protected]</a><br> Geschäftsführer: Marco Fehrecke</p><p class="fp-paragraph">HR-Nr.:  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HR B 100552<br> UST-ID:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;DE 152410552</p><p class="fp-paragraph">Inhaltlich verantwortlich für das Teilangebot Volksstimme: Alois Kösters, Chefredakteur</p><p class="fp-paragraph">Inhaltlich verantwortlich für alle mit dem Kürzel DUR gekennzeichneten Beiträge ist die Redaktion der</p><p class="fp-paragraph">MGM Digital GmbH<br> Bahnhofstr. 17<br> 39104 Magdeburg<br> Tel. 0391/5999-0 <br>E-Mail <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3f5258525b5658564b5e537f5d5e4a5a4d525a5b565e115c5052">[email&#160;protected]</a><br> Geschäftsführer: Simon Kaatz</p><p class="fp-paragraph"><a target="_blank" rel="null" href="https://www.media-mitteldeutschland.de"></a>Werbevermarktung:<br>Media Mitteldeutschland GmbH<br>Bahnhofstr. 17, 39104 Magdeburg<br>Geschäftsführung: Heinz Alt, Sebastian Mühlenkamp (Verantwortliche für Anzeigen)<br>Tel. 0391/5999-900<br>E-Mail <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7d1c130718141a18133d0b1211160e0e0914101018531918">[email&#160;protected]</a><br>Es gilt die aktuelle Anzeigenpreisliste. <br><a target="_blank" rel="null" href="https://www.media-mitteldeutschland.de">Werben in der Volksstimme</a></p><p class="fp-paragraph">Den Datenschutzbeauftragten erreichen Sie unter: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="34505540515a47575c41404e74425b585f4747405d5959511a5051">[email&#160;protected]</a></p><p class="fp-paragraph"><strong>Verwendung von Inhalten</strong></p><p class="fp-paragraph">Grundsätzlich sind sämtliche Inhalte (Content) wie Texte, Fotos, Grafiken, Video- und Audiosequenzen, die auf diesen Webseiten veröffentlicht werden, Eigentum der Mitteldeutsche Verlags- und Druckhaus GmbH und dürfen ohne Rücksprache mit ihr nicht nachgenutzt oder verwendet werden. Der Verlag gestattet jedoch die Übernahme von Content, sofern dieser ausdrücklich für den privaten Gebrauch eines Nutzers bestimmt ist. Voraussetzung dafür ist ein eindeutiger Quellenverweis auf den jeweiligen Print- oder Online-Titel der Mitteldeutsche Verlags- und Druckhaus GmbH sowie eine direkte Referenzierung (Verlinkung) dorthin.&nbsp;</p><p class="fp-paragraph"><strong>Haftungsausschluss</strong></p><p class="fp-paragraph">Der Autor übernimmt keinerlei Gewähr für die Aktualität, Korrektheit, Vollständigkeit oder Qualität der bereitgestellten Informationen. Haftungsansprüche gegen den Autor, welche sich auf Schäden materieller oder ideeller Art beziehen, die durch die Nutzung oder Nichtnutzung der dargebotenen Informationen bzw. durch die Nutzung fehlerhafter und unvollständiger Informationen verursacht wurden, sind grundsätzlich ausgeschlossen, sofern seitens des Autors kein nachweislich vorsätzliches oder grob fahrlässiges Verschulden vorliegt. Alle Angebote sind freibleibend und unverbindlich. Der Autor behält es sich ausdrücklich vor, Teile der Seiten oder das gesamte Angebot ohne gesonderte Ankündigung zu verändern, zu ergänzen, zu löschen oder die Veröffentlichung zeitweise oder endgültig einzustellen.</p><p class="fp-paragraph"><strong>Streitbeilegung</strong></p><p class="fp-paragraph">Gemäß § 36 VSBG (Verbraucherstreitbeilegungsgesetz – Gesetz über die alternative Streitbeilegung in Verbrauchersachen) erklärt der Betreiber dieser Website: Wir sind weder bereit noch verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen. Die Europäische Kommission stellt unter <a href="http://ec.europa.eu/consumers/odr/" target="_blank">http://ec.europa.eu/consumers/odr/</a> eine Plattform zur außerge-richtlichen Online-Streitbeilegung (sog. OS-Plattform) bereit.</p></div>
+<p class="fp-paragraph">Mitteldeutsche Verlags- und Druckhaus GmbH<br>Bahnhofstr. 17<br> 39104 Magdeburg<br>Tel. 0391/59 99-0<br> E-Mail <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="bbd6cddffbd6dedfd2ded5dcc9cecbcbde96d6dadcdfded9cec9dc95dfde">[email&#160;protected]</a><br> Geschäftsführer: Marco Fehrecke</p><p class="fp-paragraph">HR-Nr.:  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HR B 100552<br> UST-ID:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;DE 152410552</p><p class="fp-paragraph">Inhaltlich verantwortlich für das Teilangebot Volksstimme: Alois Kösters, Chefredakteur</p><p class="fp-paragraph">Inhaltlich verantwortlich für alle mit dem Kürzel DUR gekennzeichneten Beiträge ist die Redaktion der</p><p class="fp-paragraph">MGM Digital GmbH<br> Bahnhofstr. 17<br> 39104 Magdeburg<br> Tel. 0391/5999-0 <br>E-Mail <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2b464c464f424c425f4a476b494a5e4e59464e4f424a05484446">[email&#160;protected]</a><br> Geschäftsführer: Simon Kaatz</p><p class="fp-paragraph"><a target="_blank" rel="null" href="https://www.media-mitteldeutschland.de"></a>Werbevermarktung:<br>Media Mitteldeutschland GmbH<br>Bahnhofstr. 17, 39104 Magdeburg<br>Geschäftsführung: Heinz Alt, Sebastian Mühlenkamp (Verantwortliche für Anzeigen)<br>Tel. 0391/5999-900<br>E-Mail <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d0b1beaab5b9b7b5be90a6bfbcbba3a3a4b9bdbdb5feb4b5">[email&#160;protected]</a><br>Es gilt die aktuelle Anzeigenpreisliste. <br><a target="_blank" rel="null" href="https://www.media-mitteldeutschland.de">Werben in der Volksstimme</a></p><p class="fp-paragraph">Den Datenschutzbeauftragten erreichen Sie unter: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="583c392c3d362b3b302d2c22182e3734332b2b2c3135353d763c3d">[email&#160;protected]</a></p><p class="fp-paragraph"><strong>Verwendung von Inhalten</strong></p><p class="fp-paragraph">Grundsätzlich sind sämtliche Inhalte (Content) wie Texte, Fotos, Grafiken, Video- und Audiosequenzen, die auf diesen Webseiten veröffentlicht werden, Eigentum der Mitteldeutsche Verlags- und Druckhaus GmbH und dürfen ohne Rücksprache mit ihr nicht nachgenutzt oder verwendet werden. Der Verlag gestattet jedoch die Übernahme von Content, sofern dieser ausdrücklich für den privaten Gebrauch eines Nutzers bestimmt ist. Voraussetzung dafür ist ein eindeutiger Quellenverweis auf den jeweiligen Print- oder Online-Titel der Mitteldeutsche Verlags- und Druckhaus GmbH sowie eine direkte Referenzierung (Verlinkung) dorthin.&nbsp;</p><p class="fp-paragraph"><strong>Haftungsausschluss</strong></p><p class="fp-paragraph">Der Autor übernimmt keinerlei Gewähr für die Aktualität, Korrektheit, Vollständigkeit oder Qualität der bereitgestellten Informationen. Haftungsansprüche gegen den Autor, welche sich auf Schäden materieller oder ideeller Art beziehen, die durch die Nutzung oder Nichtnutzung der dargebotenen Informationen bzw. durch die Nutzung fehlerhafter und unvollständiger Informationen verursacht wurden, sind grundsätzlich ausgeschlossen, sofern seitens des Autors kein nachweislich vorsätzliches oder grob fahrlässiges Verschulden vorliegt. Alle Angebote sind freibleibend und unverbindlich. Der Autor behält es sich ausdrücklich vor, Teile der Seiten oder das gesamte Angebot ohne gesonderte Ankündigung zu verändern, zu ergänzen, zu löschen oder die Veröffentlichung zeitweise oder endgültig einzustellen.</p><p class="fp-paragraph"><strong>Streitbeilegung</strong></p><p class="fp-paragraph">Gemäß § 36 VSBG (Verbraucherstreitbeilegungsgesetz – Gesetz über die alternative Streitbeilegung in Verbrauchersachen) erklärt der Betreiber dieser Website: Wir sind weder bereit noch verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen. Die Europäische Kommission stellt unter <a href="http://ec.europa.eu/consumers/odr/" target="_blank">http://ec.europa.eu/consumers/odr/</a> eine Plattform zur außerge-richtlichen Online-Streitbeilegung (sog. OS-Plattform) bereit.</p></div>
 <div id="nativendo-nativendo-infeed"></div></div>
   </main>
 
@@ -1531,15 +1557,19 @@
                       </a>
                     </li>
                     <li>
+                      <a href="/sachsen-anhalt/leseranwaeltin" target="_self">Leseranwältin
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/sachsen-anhalt/regionale-kultur">Regionale Kultur
+                      </a>
+                    </li>
+                    <li>
                       <a href="/sachsen-anhalt/regionale-wirtschaft">Regionale Wirtschaft
                       </a>
                     </li>
                     <li>
                       <a href="/sachsen-anhalt/tourismus">Tourismus
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/sachsen-anhalt/regionale-kultur">Regionale Kultur
                       </a>
                     </li>
                 </ul>
@@ -1747,6 +1777,10 @@
                       </a>
                     </li>
                     <li>
+                      <a href="https://www.volksstimme.de/leben/rezepte">Rezepte
+                      </a>
+                    </li>
+                    <li>
                       <a href="/leben/technik" target="_self">Technik
                       </a>
                     </li>
@@ -1857,7 +1891,7 @@
 
                 <aside class="fp-copyright__links">
             <p class="text-xs--bold">Über uns</p>
-              <a class="text-xs--regular" href="/vs/general/impressum-195">
+              <a class="text-xs--regular" href="https://www.volksstimme.de/general/impressum-195" target="_self">
                 Impressum
               </a>
               <a class="text-xs--regular" href="https://mediengruppe-magdeburg.de/karriere/" target="_blank" rel="noopener noreferrer">
@@ -1872,13 +1906,13 @@
               <a class="text-xs--regular" href="https://service.volksstimme.de/inserieren/start" target="_blank" rel="noopener noreferrer">
                 Kleinanzeige aufgeben
               </a>
-              <a class="text-xs--regular" href="/vs/general/kontakt-1111909">
+              <a class="text-xs--regular" href="https://www.volksstimme.de/general/kontakt-1111909" target="_self">
                 Kontakt
               </a>
-              <a class="text-xs--regular" href="https://www.volksstimme.de/servicestellen" target="_self">
+              <a class="text-xs--regular" href="https://www.volksstimme.de/general/servicestellen-1111910#" target="_self">
                 Servicestellen
               </a>
-              <a class="text-xs--regular" href="/vs/general/datenschutzerklaerung-198">
+              <a class="text-xs--regular" href="https://www.volksstimme.de/general/datenschutzerklaerung-198" target="_self">
                 Datenschutz
               </a>
               <a class="text-xs--regular cookie-einstellungen" href="/" data-cmp-id="197228">
@@ -1924,7 +1958,7 @@
     }
 </script>
 
-            <script src="/static/scripts/scripts.f078c8a0.js" defer=""></script>
+            <script src="/static/scripts/scripts.0a123083.js" defer=""></script>
 
 
 
@@ -1944,7 +1978,7 @@
 </script>
         </div>
     </div>
-    <script src="/static/scripts/adScripts.f078c8a0.js"></script>
+    <script src="/static/scripts/adScripts.0a123083.js"></script>
   
 
 </body></html>
