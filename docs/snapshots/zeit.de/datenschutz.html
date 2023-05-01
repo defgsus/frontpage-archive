@@ -7,7 +7,6 @@
         <meta charset="UTF-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
         <style>
             html {
                 --dsecms-primaryColor: #EEEEEE;
@@ -19,142 +18,36 @@
 
 
                 <script>
-                      if ((document.cookie.indexOf('consentUUID') === -1)) {
-  ! function () {
-    var e = function () {
-      var e, t = "__tcfapiLocator",
-        a = [],
-        n = window;
-      for (; n;) {
-        try {
-          if (n.frames[t]) {
-            e = n;
-            break
-          }
-        } catch (e) {}
-        if (n === window.top) break;
-        n = n.parent
-      }
-      e || (! function e() {
-        var a = n.document,
-          r = !!n.frames[t];
-        if (!r)
-          if (a.body) {
-            var i = a.createElement("iframe");
-            i.style.cssText = "display:none", i.name = t, a.body.appendChild(i)
-          } else setTimeout(e, 5);
-        return !r
-      }(), n.__tcfapi = function () {
-        for (var e, t = arguments.length, n = new Array(t), r = 0; r < t; r++)n[r] = arguments[r];
-        if (!n.length) return a;
-        if ("setGdprApplies" === n[0]) n.length > 3 && 2 === parseInt(n[1], 10) && "boolean" == typeof n[3] && (e = n[3], "function" == typeof n[2] && n[2]("set", !0));
-        else if ("ping" === n[0]) {
-          var i = {
-            gdprApplies: e,
-            cmpLoaded: !1,
-            cmpStatus: "stub"
-          };
-          "function" == typeof n[2] && n[2](i)
-        } else a.push(n)
-      }, n.addEventListener("message", (function (e) {
-        var t = "string" == typeof e.data,
-          a = {};
-        try {
-          a = t ? JSON.parse(e.data) : e.data
-        } catch (e) {}
-        var n = a.__tcfapiCall;
-        n && window.__tcfapi(n.command, n.version, (function (a, r) {
-          var i = {
-            __tcfapiReturn: {
-              returnValue: a,
-              success: r,
-              callId: n.callId
-            }
-          };
-          t && (i = JSON.stringify(i)), e.source.postMessage(i, "*")
-        }), n.parameter)
-      }), !1))
-    };
-    "undefined" != typeof module ? module.exports = e : e()
-  }();
-  var targetingParams = {
-    debug: window.location.href.indexOf('cmp-debug') > -1,
-    theme: 'zeit'
-  };
-  window._sp_ = {
-    config: {
-      targetingParams: targetingParams,
-      accountId: 692,
-      baseEndpoint: "https://consent-cdn.zeit.de",
-      events: {
-        onMessageChoiceSelect: function (choice_id, choice_type_id) {
-          var name = "zonconsent",
-            date = new Date(),
-            timestamp = date.toISOString(),
-            expires = '';
-          if (choice_type_id === 11) {
-            // 11: The user has chosen the "Accept All" option in a consent message
-            var days = 90;
-            if (days) {
-              date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-              expires = '; expires=' + date.toUTCString();
-            }
-            var cookietext = name + '=' + timestamp + expires + '; path=/; domain=.zeit.de' + ';samesite=Lax';
-            document.cookie = cookietext += ';secure';
-          } else if (choice_type_id == 13) {
-            // 13: The user has chosen the "Reject All" message from a consent message
-            // delete cookie
-            date.setTime(date.getTime() + (-1 * 24 * 60 * 60 * 1000));
-            expires = '; expires=' + date.toUTCString();
-            var cookietextdelete = name + '=' + timestamp + expires + '; path=/; domain=.zeit.de' + ';samesite=Lax';
-            document.cookie = cookietextdelete += ';secure';
-          }
-          tcfPageReload = true;
-        },
-        onPrivacyManagerAction: function (pmData) {
-          if (window.Zeit && window.console.log) {
-            window.console.log('onPrivacyManagerAction', pmData);
-          }
-          if (pmData && pmData !== 'ACCEPT_ALL') {
-            window.location.reload();
-          }
-        },
-        onConsentReady: function (consentUUID, euconsent) {
-          if (console.log) {
-            console.log('consentReady', consentUUID, euconsent);
-          }
-          // redirect if applicable
-          if (tcfPageReload) {
-            window.location.reload();
-          }
+                    document.addEventListener("DOMContentLoaded", function() {
+    window._sp_ = {
+        config: {
+            accountId: 692,
+            baseEndpoint: "https://consent-cdn.zeit.de"
         }
-      }
+    };
+    const script = document.createElement('script');
+    script.src =
+        "https://consent-cdn.zeit.de/wrapperMessagingWithoutDetection.js";
+    document.body.appendChild(script);
+    const consentButton = document.getElementById("consentbutton");
+    if ((document.cookie.indexOf('consentUUID') === -1)) {
+        consentButton.innerHTML = "<button title='Werbe-Tracking akzeptieren' aria-label='Werbe-Tracking akzeptieren' style='padding: 10px 15px; margin: 0px 10px 10px 0px; border-width: 0px; border-color: rgb(0, 0, 0); border-radius: 5px; border-style: solid; font-size: 15px; font-weight: 700; color: rgb(255, 255, 255); font-family: arial, helvetica, sans-serif; width: 241px; background: rgb(24, 126, 67); cursor: pointer;'>Werbe-Tracking akzeptieren</button>"            
+        document.getElementById("consentbutton").onclick = function() {window.location.href = "https://www.zeit.de";};
+    } else {
+        consentButton.innerHTML = "<button title='Zustimmung widerrufen' aria-label='Zustimmung widerrufen' style='padding: 10px 15px; margin: 0px 10px 10px 0px; border-width: 0px; border-color: rgb(0, 0, 0); border-radius: 5px; border-style: solid; font-size: 15px; font-weight: 700; color: rgb(255, 255, 255); font-family: arial, helvetica, sans-serif; width: 241px; background: rgb(186, 18, 10); cursor: pointer;'>Zustimmung widerrufen</button>"
+        document.getElementById("consentbutton").onclick = function() {rejectConsent()};
+        //function that executes postRejectAll command
+        function rejectConsent() {
+        __tcfapi('postRejectAll', 2, function (postRejectAllResponse, success) {
+                document.cookie = "consentUUID=; expires = Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=zeit.de;";
+                document.cookie = "zonconsent=; expires = Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=zeit.de;";
+                console.log("postRejectAllResponse: ", postRejectAllResponse);
+                console.log('postRejectAllResponse was successful: ' + success)
+                window.location.reload();
+            });
+        }
     }
-  };
-
-  window.addEventListener('load', function (e) {
-    console.log('spLoad', e);
-    var spScript = document.createElement('script');
-    spScript.src = "https://consent-cdn.zeit.de/wrapperMessagingWithoutDetection.js";
-    document.head.appendChild(spScript);
-    document.getElementById('consentall').innerHTML = '';
-  });
-
-  document.addEventListener("DOMContentLoaded", function() {
-    document.querySelector('#rejectall a').style.display = 'none';
-  });
-} else {
-  document.addEventListener("DOMContentLoaded", function() {
-    document.querySelector('#consentall a').style.display = 'none';
-    const rejectBtn = document.getElementById("rejectall");
-    rejectBtn.innerHTML = "<button title='Zustimmung widerrufen' aria-label='Zustimmung widerrufen' class='message-component message-button no-children focusable sp_choice_type_11' style='padding: 10px 15px; margin: 0px 10px 10px 0px; border-width: 0px; border-color: rgb(0, 0, 0); border-radius: 5px; border-style: solid; font-size: 15px; font-weight: 700; color: rgb(255, 255, 255); font-family: arial, helvetica, sans-serif; width: 241px; background: rgb(186, 18, 10); cursor: pointer;'>Zustimmung widerrufen</button>";
-    rejectBtn.addEventListener("click", function(){
-      document.cookie = "consentUUID=; expires = Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=zeit.de;";
-      document.cookie = "zonconsent=; expires = Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=zeit.de;";
-      location.reload();
-    });
-  });
-}
+});
                 </script>
 
     </head>
@@ -184,36 +77,36 @@
                         </div>
                         <nav>
                             <ul class="menu" id="sticky_menu_ul">
-                                    <li>
-                                        <a class="sticky-menu-href" href="#allgemeines">
-                                            <span class="sticky-span">TEIL I. Allgemeines</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="sticky-menu-href" href="#TechnischoderorganisatorischnotwendigeDaten">
-                                            <span class="sticky-span">TEIL II: Technisch oder organisatorisch notwendige Daten</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="sticky-menu-href" href="#automatischErhobeneDaten">
-                                            <span class="sticky-span">TEIL III: Bei der Nutzung unserer Website automatisch erhobene Daten</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="sticky-menu-href" href="#ihreRechte">
-                                            <span class="sticky-span">TEIL IV. Ihre Rechte</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="sticky-menu-href" href="#gemeinsame_Verantwortung">
-                                            <span class="sticky-span">TEIL V. Gemeinsame Verantwortung</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="sticky-menu-href" href="#privacyEinstellungen">
-                                            <span class="sticky-span">TEIL VI. Privacy Einstellungen</span>
-                                        </a>
-                                    </li>
+                                            <li>
+                                                <a class="sticky-menu-href" href="#allgemeines">
+                                                    <span class="sticky-span">TEIL I. Allgemeines</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="sticky-menu-href" href="#TechnischoderorganisatorischnotwendigeDaten">
+                                                    <span class="sticky-span">TEIL II: Technisch oder organisatorisch notwendige Daten</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="sticky-menu-href" href="#automatischErhobeneDaten">
+                                                    <span class="sticky-span">TEIL III: Bei der Nutzung unserer Website automatisch erhobene Daten</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="sticky-menu-href" href="#ihreRechte">
+                                                    <span class="sticky-span">TEIL IV. Ihre Rechte</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="sticky-menu-href" href="#gemeinsame_Verantwortung">
+                                                    <span class="sticky-span">TEIL V. Gemeinsame Verantwortung</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="sticky-menu-href" href="#privacyEinstellungen">
+                                                    <span class="sticky-span">TEIL VI. Privacy Einstellungen</span>
+                                                </a>
+                                            </li>
                             </ul>
                         </nav>
                         <svg class="nav-arrow" width="16px" height="10px" viewBox="0 0 16 10" xmlns="http://www.w3.org/2000/svg">
@@ -235,16 +128,16 @@
                                 <div class="data-declaration-logo ">
                                     <img src="//images.ctfassets.net/9q531vlek15f/22l1WrI5So1znPNOJr2IwA/7cc9193e19396441c14f65a9d87900d4/ZON.svg" alt="ZEIT Online">
                                 </div>
-                                <h1 class="declaration-title">DatenschutzerklÃ¤rung</h1>
+                                    <h1 class="declaration-title" id="datenschutzerklaerung">DatenschutzerklÃ¤rung</h1>
                             <div class="data-declaration-date">19.09.2022</div>
                             <div class="data-declaration-intro"><p>Dies sind die Datenschutzbestimmungen der <strong>ZEIT Online GmbH</strong>, vertreten durch die GeschÃ¤ftsfÃ¼hrer:</p>
                     <p>Dr. Rainer Esser, Christian RÃ¶pke, Enrique Tarragona.</p>
-                    <p>ZEIT Online GmbH,<br>BuceriusstraÃe - Eingang Speersort 1,<br>20095 Hamburg,<br>Telefon: 040 / 32 80-0,<br>E-mail:<a href="mailto:&#101;&#109;&#97;&#x69;&#x6c;&#x40;&#x7a;&#101;&#105;&#116;&#46;&#x64;&#101;">&#101;&#109;&#97;&#x69;&#x6c;&#x40;&#x7a;&#101;&#105;&#116;&#46;&#x64;&#101;</a></p>
+                    <p>ZEIT Online GmbH,<br>BuceriusstraÃe - Eingang Speersort 1,<br>20095 Hamburg,<br>Telefon: 040 / 32 80-0,<br>E-mail:<a href="mailto:&#x65;&#x6d;&#x61;&#x69;&#x6c;&#x40;&#122;&#101;&#105;&#x74;&#46;&#100;&#x65;">&#x65;&#x6d;&#x61;&#x69;&#x6c;&#x40;&#122;&#101;&#105;&#x74;&#46;&#100;&#x65;</a></p>
                     <hr>
                     <p>Der Schutz Ihrer Daten ist uns ein besonderes Anliegen, selbstverstÃ¤ndlich beachten wir sÃ¤mtliche fÃ¼r Deutschland geltende Datenschutzbestimmungen. </p>
                     <p>Im Folgenden informieren wir Sie im Einzelnen darÃ¼ber, welche personenbezogenen Daten (also Daten, die einen Bezug zu Ihrer Person mÃ¶glich machen, wie Name, Adresse oder aber auch IP-Adresse) wir auf unserer Internetseite zu welchem Zweck erheben und wie lange diese Daten gespeichert werden. Darauffolgend informieren wir Sie ausfÃ¼hrlich darÃ¼ber, welche Rechte Ihnen in Bezug auf die Datenverarbeitung zustehen und wie Sie diese Rechte geltend machen.</p>
                     <p>Im Folgenden finden Sie eine Ãbersicht Ã¼ber die von uns erhobenen Daten. Unter Ziffer IV. erfahren Sie, welche Rechte Ihnen zustehen.</p>
-                    <p>Sollten Sie Fragen oder Anmerkungen zum Datenschutz auf unserer Internetseite haben, wenden Sie sich jederzeit gerne an uns. Eine entsprechende Kontaktaufnahme kann beispielsweise per E-Mail an <a href="mailto:&#100;&#x61;&#x74;&#101;&#110;&#x73;&#x63;&#104;&#x75;&#x74;&#x7a;&#x40;&#x7a;&#x65;&#105;&#x74;&#x2e;&#x64;&#101;">&#100;&#x61;&#x74;&#101;&#110;&#x73;&#x63;&#104;&#x75;&#x74;&#x7a;&#x40;&#x7a;&#x65;&#105;&#x74;&#x2e;&#x64;&#101;</a> erfolgen.</p>
+                    <p>Sollten Sie Fragen oder Anmerkungen zum Datenschutz auf unserer Internetseite haben, wenden Sie sich jederzeit gerne an uns. Eine entsprechende Kontaktaufnahme kann beispielsweise per E-Mail an <a href="mailto:&#x64;&#97;&#x74;&#x65;&#110;&#x73;&#99;&#104;&#x75;&#116;&#122;&#x40;&#122;&#101;&#x69;&#116;&#x2e;&#x64;&#101;">&#x64;&#97;&#x74;&#x65;&#110;&#x73;&#99;&#104;&#x75;&#116;&#122;&#x40;&#122;&#101;&#x69;&#116;&#x2e;&#x64;&#101;</a> erfolgen.</p>
                     </div>
                                 <a href="/zon/1.3/zon.pdf" class="save-as-pdf-button" target="_blank">als PDF speichern</a>
                         </div>
@@ -553,24 +446,24 @@
                                     <p>Die von Ihnen bei uns gespeicherten persÃ¶nlichen Daten verwenden wir zur Werbung fÃ¼r eigene Ã¤hnliche Angebote der ZEIT-Verlagsgrupe. FÃ¼r Werbung via E-Mail bzw. Telefon gelten zusÃ¤tzlich die nachfolgenden Bedingungen: </p>
                                     <p>E-Mail-Werbung:<br>Erhalten wir Ihre E-Mailadresse im Zusammenhang mit einem Vertragsabschluss im weiteren Sinne (Abonnement, Bestellung im Shop, Registrierung fÃ¼r einen Newsletter, fÃ¼r Z+, SIT, BOA oder einen Ã¤hnlichen Dienst), ist es uns gestattet, Ihnen an Ihre E-Mailadresse Angebote fÃ¼r Waren und Dienstleistungen aus unserem Haus zuzusenden, die den von Ihnen in Anspruch genommenen Dienstleistungen Ã¤hnlich sind. An der entsprechenden Zusendung von Werbeangeboten haben wir ein unternehmerisches Interesse. Die Verarbeitung Ihrer E-Mailadresse beruht insoweit auf einem berechtigten Interesse. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f) DSGVO i.V.m. Â§ 7 Abs. 3 UWG.</p>
                                     <p><strong>Einer Verarbeitung Ihrer Daten zum Zwecke der Direktwerbung kÃ¶nnen Sie jederzeit widersprechen.</strong></p>
-                                    <p>Haben Sie uns eine Einwilligung in die Zusendung von Werbeemails erteilt, beruht die entsprechende Verarbeitung zudem auf Art. 6 Abs. 1 lit a) DSGVO. Eine erteilte Einwilligung kÃ¶nnen Sie jederzeit, beispielsweise per E-Mail an <a href="mailto:&#x64;&#97;&#x74;&#x65;&#110;&#115;&#99;&#x68;&#117;&#116;&#122;&#x40;&#122;&#101;&#105;&#116;&#x2e;&#x64;&#101;">&#x64;&#97;&#x74;&#x65;&#110;&#115;&#99;&#x68;&#117;&#116;&#122;&#x40;&#122;&#101;&#105;&#116;&#x2e;&#x64;&#101;</a> widerrufen.</p>
+                                    <p>Haben Sie uns eine Einwilligung in die Zusendung von Werbeemails erteilt, beruht die entsprechende Verarbeitung zudem auf Art. 6 Abs. 1 lit a) DSGVO. Eine erteilte Einwilligung kÃ¶nnen Sie jederzeit, beispielsweise per E-Mail an <a href="mailto:&#100;&#x61;&#116;&#x65;&#110;&#x73;&#99;&#x68;&#x75;&#x74;&#x7a;&#64;&#x7a;&#x65;&#105;&#116;&#x2e;&#100;&#x65;">&#100;&#x61;&#116;&#x65;&#110;&#x73;&#99;&#x68;&#x75;&#x74;&#x7a;&#64;&#x7a;&#x65;&#105;&#116;&#x2e;&#100;&#x65;</a> widerrufen.</p>
                                     <p>Telefon-Werbung:<br>Wenn Sie uns hierzu Ihre ausdrÃ¼ckliche Einwilligung erteilt haben, nutzen wir Ihre Telefonnummern, um Sie wÃ¤hrend einer laufenden Kundenbeziehung und danach bis zum Ablauf von zwei Jahren Angebote und Neuigkeiten zu Publikationen der ZEIT-Verlagsgruppe zu informieren. Nach Ablauf von zwei Jahren nach dem Ende Ihres letzten aktiven Abonnements erlischt Ihre Einwilligung automatisch. Sie werden dann nicht mehr zu den vorgenannten Zwecken angerufen.</p>
                                     <p>FÃ¼r unsere Telefonwerbung setzen wir Dienstleister (Callcenter) mit Sitz in Deutschland ein. Die Callcenter verarbeiten Ihre personenbezogenen Daten in ausschlieÃlich in unserem Auftrag. Wir haben hierÃ¼ber einen Auftragsverarbeitungsvertrag abgeschlossen.</p>
                                     <p>Die Verarbeitung Ihrer personenbezogenen Daten erfolgt in diesem Fall aufgrund Ihrer Einwilligung und beruht damit auf Art. 6 Abs. 1 lit a) DSGVO, Art. 7a Abs. 1 UWG. </p>
-                                    <p>Eine erteilte Einwilligung kÃ¶nnen Sie jederzeit, beispielsweise per E-Mail an <a href="mailto:&#100;&#x61;&#116;&#x65;&#x6e;&#x73;&#x63;&#104;&#117;&#116;&#x7a;&#64;&#x7a;&#x65;&#105;&#x74;&#46;&#x64;&#101;">&#100;&#x61;&#116;&#x65;&#x6e;&#x73;&#x63;&#104;&#117;&#116;&#x7a;&#64;&#x7a;&#x65;&#105;&#x74;&#46;&#x64;&#101;</a> widerrufen. Ihre Daten werden dann anschlieÃend nicht mehr fÃ¼r die Telefonwerbung genutzt.</p>
+                                    <p>Eine erteilte Einwilligung kÃ¶nnen Sie jederzeit, beispielsweise per E-Mail an <a href="mailto:&#100;&#97;&#116;&#101;&#x6e;&#115;&#x63;&#x68;&#117;&#116;&#122;&#64;&#x7a;&#101;&#105;&#x74;&#46;&#x64;&#101;">&#100;&#97;&#116;&#101;&#x6e;&#115;&#x63;&#x68;&#117;&#116;&#122;&#64;&#x7a;&#101;&#105;&#x74;&#46;&#x64;&#101;</a> widerrufen. Ihre Daten werden dann anschlieÃend nicht mehr fÃ¼r die Telefonwerbung genutzt.</p>
                                     <p>Wir sind gesetzlich nach Â§ 7 a UWG verpflichtet, Ihre Einwilligung in die Telefonwerbung zu dokumentieren und fÃ¼r fÃ¼nf Jahre ab Erteilung der Einwilligung sowie nach jeder Verwendung der Einwilligung aufzubewahren. Dies gilt unabhÃ¤ngig davon, ob Sie uns Ihre Einwilligung online, schriftlich, per E-Mail, telefonisch oder auf anderem Wege gegebenen haben. Im Falle der telefonischen Einwilligung fertigen wir mit Ihrer Zustimmung eine Aufnahme (Voicefile) von der Erteilung Ihrer Einwilligung an und speichern diese zusammen mit Ihren Kontaktdaten und Informationen zu Ihren Abonnements ab. Die Speicherung dient damit der ErfÃ¼llung einer rechtlichen Verpflichtung gemÃ¤Ã Art. 17 Abs. 3 lit. b) DSGVO. In jedem Fall speichern wir die vorgenannten personenbezogenen Daten nach Vertragsende bis zum Ablauf der dreijÃ¤hrigen regelmÃ¤Ãigen VerjÃ¤hrungsfrist auf. Hierzu sind wir nach Art. 17 Abs. 3 lit. e) DSGVO berechtigt.<br>Die Aufbewahrung endet spÃ¤testens 7 Jahre nach Ende Ihres letzten aktiven Abonnements. AnschlieÃend werden die Daten gelÃ¶scht.</p>
                                     <p>Wir speichern Ihre Daten zu Werbezwecken solange uns kein entsprechender Widerruf / Widerspruch vorliegt. </p>
                                     <h4 id="weitergabe-ihrer-daten-zum-zwecke-der-werbung-durch-dritte"><a href="#datenweitergabeWerbung">Weitergabe Ihrer Daten zum Zwecke der Werbung durch Dritte</a></h4>
                                     <p>Neben der Werbung fÃ¼r eigene Produkte vergeben wir die bei uns gespeicherten postalischen Kontaktdaten auch an einen Marketingdienstleister, welcher Ihre Daten nutzt, um Ihnen interessante Werbeangebote von Dritten zuzusenden. Sollte Ihre Adresse von dem Marketingdienstleister zum Zwecke der Werbung fÃ¼r Drittangebote verwendet werden, werden Sie in dem Postmailing darauf hingewiesen, dass Ihre Adresse von uns an den Marketingdienstleister weitergegeben wurde.</p>
                                     <p>An der Weitergabe von persÃ¶nlichen Daten an den Marketingdienstleister zum Zwecke der Werbung durch Dritte haben wir ein unternehmerisches Interesse. Die Datenverarbeitung beruht insoweit auf Art. 6 Abs. 1 lit. f) DSGVO.</p>
                                     <p>Sie kÃ¶nnen sich gerne jederzeit an uns wenden und erfragen, ob wir Ihre Adresse zu Werbezwecken weitergegeben haben. Haben Sie in den Erhalt der Werbung von Dritten eingewilligt, beruht die entsprechende Verarbeitung zudem auf Art. 6 Abs. 1 lit a) DSGVO. </p>
-                                    <p><strong>Der Weitergabe und der Verarbeitung Ihrer Daten zum Zwecke der Direktwerbung kÃ¶nnen Sie jederzeit widersprechen,</strong> beispielsweise per E-Mail an <a href="mailto:&#100;&#97;&#x74;&#101;&#110;&#x73;&#x63;&#104;&#x75;&#x74;&#122;&#x40;&#x7a;&#101;&#105;&#x74;&#46;&#100;&#101;">&#100;&#97;&#x74;&#101;&#110;&#x73;&#x63;&#104;&#x75;&#x74;&#122;&#x40;&#x7a;&#101;&#105;&#x74;&#46;&#100;&#101;</a></p>
+                                    <p><strong>Der Weitergabe und der Verarbeitung Ihrer Daten zum Zwecke der Direktwerbung kÃ¶nnen Sie jederzeit widersprechen,</strong> beispielsweise per E-Mail an <a href="mailto:&#100;&#97;&#x74;&#x65;&#x6e;&#x73;&#99;&#x68;&#117;&#x74;&#x7a;&#x40;&#122;&#101;&#x69;&#116;&#46;&#100;&#101;">&#100;&#97;&#x74;&#x65;&#x6e;&#x73;&#99;&#x68;&#117;&#x74;&#x7a;&#x40;&#122;&#101;&#x69;&#116;&#46;&#100;&#101;</a></p>
                                     <p>Solange uns jedoch kein entsprechender Widerspruch vorliegt und unser Interesse an einer entsprechenden Verarbeitung Ihrer Daten fortbesteht, speichern wir Ihre Daten zu Werbezwecken. </p>
                                     <h4 id="speicherung-der-daten-in-unserem-data-warehouse"><a href="#dwhSpeicherung">Speicherung der Daten in unserem Data Warehouse</a></h4>
                                     <p>Zur Analyse und Kontrolle unserer WerbemaÃnahmen speichern wir Ihre Daten in einer separaten Datenbank, Data Warehouse genannt. Hier werden Ihre personenbezogenen Daten gespeichert und strikt von den Auftragsdaten getrennt. Letztere stehen fÃ¼r Analyse- und Reportingzwecke pseudonymisiert zur VerfÃ¼gung. Auf Basis der Auftragsdaten nutzen wir die Informationen zur Kontrolle und Optimierung der WerbemaÃnahmen. Nur fÃ¼r spezielle Fragestellungen werden die Daten zur Gruppen-Profilbildung sowie zur Erstellung von Engagement und Propensity Score genutzt.</p>
                                     <p>Die getrennten personenbezogenen Daten unterliegen bei uns einem besonderen Schutz und werden nur fÃ¼r die Selektion fÃ¼r Werbezwecke genutzt.</p>
                                     <p>Die Datenverarbeitung im Data Warehouse findet in gemeinsamer Verantwortlichkeit mit anderen Unternehmen der ZEIT Verlagsgruppe statt. NÃ¤heres dazu finden Sie in TEIL V.</p>
-                                    <p>Die Verarbeitung Ihrer Daten beruht insoweit auf einem berechtigten Interesse und damit auf Art. 6 Abs. 1 lit. f) DSGVO. Der Verarbeitung kÃ¶nnen Sie jederzeit, beispielsweise per E-Mail an <a href="mailto:&#100;&#97;&#116;&#x65;&#110;&#115;&#99;&#x68;&#117;&#x74;&#x7a;&#64;&#x7a;&#x65;&#105;&#116;&#x2e;&#100;&#101;">&#100;&#97;&#116;&#x65;&#110;&#115;&#99;&#x68;&#117;&#x74;&#x7a;&#64;&#x7a;&#x65;&#105;&#116;&#x2e;&#100;&#101;</a> widersprechen. </p>
+                                    <p>Die Verarbeitung Ihrer Daten beruht insoweit auf einem berechtigten Interesse und damit auf Art. 6 Abs. 1 lit. f) DSGVO. Der Verarbeitung kÃ¶nnen Sie jederzeit, beispielsweise per E-Mail an <a href="mailto:&#x64;&#97;&#x74;&#x65;&#x6e;&#115;&#x63;&#104;&#x75;&#116;&#x7a;&#x40;&#x7a;&#x65;&#105;&#116;&#46;&#100;&#101;">&#x64;&#97;&#x74;&#x65;&#x6e;&#115;&#x63;&#104;&#x75;&#116;&#x7a;&#x40;&#x7a;&#x65;&#105;&#116;&#46;&#100;&#101;</a> widersprechen. </p>
                                     </div>
                                                             <a href="#nutzungWerbezwecken" class="back-to-anchor">Zum Abschnittsanfang</a>
                                     </div>
@@ -632,7 +525,7 @@
                                     <p>D&quot;as CHE Hochschulranking ist Teil der Angebote zur Studienorientierung (HeyStudium). Im Rahmen dieser haben Sie die MÃ¶glichkeit z.B. ein eigenes Nutzerprofil zu erstellen und Dienste wie Merklisten, Testergebnisse und personalisierte Trefferlisten zu nutzen.</p>
                                     <p>Die Erfassung der Daten wird von ZEIT ONLINE in Zusammenarbeit mit den Dienstleistern Folge 3 GmbH und Google Irland Ltd. durchgefÃ¼hrt. Die entsprechende Weitergabe ist zur VertragserfÃ¼llung erforderlich (Art. 6 Abs. 1 lit. b) DSGVO). </p>
                                     <p>Wir speichern Ihre personenbezogenen Daten zu den genannten Zwecken fÃ¼r die Dauer des Bestehen Ihres SSO-Accounts. </p>
-                                    <p>FÃ¼r Supportanfragen stellen wir ein Postfach unter der E-Mailadresseâ¯<a href="mailto:&#x72;&#97;&#110;&#107;&#105;&#110;&#103;&#64;&#122;&#101;&#105;&#x74;&#46;&#100;&#x65;">&#x72;&#97;&#110;&#107;&#105;&#110;&#103;&#64;&#122;&#101;&#105;&#x74;&#46;&#100;&#x65;</a>â¯zur VerfÃ¼gung. Dieses Postfach wird sowohl von ZEIT ONLINE als auch von Centrum fÃ¼r Hochschulentwicklung GmbH<br>Verler StraÃe 6,<br>33332 GÃ¼tersloh,<br>Telefon 05241 97 61 0,<br>Telefax 05241 9761 40,<br>E-Mailâ¯<a href="mailto:&#x69;&#110;&#x66;&#x6f;&#64;&#99;&#x68;&#101;&#x2e;&#100;&#x65;">&#x69;&#110;&#x66;&#x6f;&#64;&#99;&#x68;&#101;&#x2e;&#100;&#x65;</a>,<br>Internet:â¯<a href="http://www.che.de">www.che.de</a><br>verwaltet, um Anfragen rund um das Thema Hochschulranking sachkundig beantworten zu kÃ¶nnen. Zur Beantwortung Ihre Anfrage werden Ihre E-Mailadresse sowie alle weiteren in Ihrer Anfrage freiwillig angegebenen personenbezogenen Daten verarbeitet. Rechtsgrundlage fÃ¼r die Datenverarbeitung ist Art. 6 Abs. 1 lit. b) DSGVO. Die im Rahmen Ihrer Anfrage Ã¼bermittelten personenbezogenen Daten werden von uns zur Bearbeitung der Anfrage und fÃ¼r den Fall von Anschlussfragen in der Regel fÃ¼r die Dauer von sechs Monaten gespeichert. Haben wir Ihre personenbezogenen Daten bereits im Zuge Ihrer Registrierung fÃ¼r einen unserer Dienste (z.B. SSO-Account) erhalten, werden diese Daten weiterhin fÃ¼r die Dauer des Bestehens Ihrer Registrierung gespeichert. </p>
+                                    <p>FÃ¼r Supportanfragen stellen wir ein Postfach unter der E-Mailadresseâ¯<a href="mailto:&#x72;&#x61;&#110;&#107;&#105;&#x6e;&#103;&#64;&#x7a;&#101;&#x69;&#x74;&#46;&#x64;&#101;">&#x72;&#x61;&#110;&#107;&#105;&#x6e;&#103;&#64;&#x7a;&#101;&#x69;&#x74;&#46;&#x64;&#101;</a>â¯zur VerfÃ¼gung. Dieses Postfach wird sowohl von ZEIT ONLINE als auch von Centrum fÃ¼r Hochschulentwicklung GmbH<br>Verler StraÃe 6,<br>33332 GÃ¼tersloh,<br>Telefon 05241 97 61 0,<br>Telefax 05241 9761 40,<br>E-Mailâ¯<a href="mailto:&#105;&#110;&#102;&#111;&#64;&#x63;&#104;&#101;&#46;&#x64;&#x65;">&#105;&#110;&#102;&#111;&#64;&#x63;&#104;&#101;&#46;&#x64;&#x65;</a>,<br>Internet:â¯<a href="http://www.che.de">www.che.de</a><br>verwaltet, um Anfragen rund um das Thema Hochschulranking sachkundig beantworten zu kÃ¶nnen. Zur Beantwortung Ihre Anfrage werden Ihre E-Mailadresse sowie alle weiteren in Ihrer Anfrage freiwillig angegebenen personenbezogenen Daten verarbeitet. Rechtsgrundlage fÃ¼r die Datenverarbeitung ist Art. 6 Abs. 1 lit. b) DSGVO. Die im Rahmen Ihrer Anfrage Ã¼bermittelten personenbezogenen Daten werden von uns zur Bearbeitung der Anfrage und fÃ¼r den Fall von Anschlussfragen in der Regel fÃ¼r die Dauer von sechs Monaten gespeichert. Haben wir Ihre personenbezogenen Daten bereits im Zuge Ihrer Registrierung fÃ¼r einen unserer Dienste (z.B. SSO-Account) erhalten, werden diese Daten weiterhin fÃ¼r die Dauer des Bestehens Ihrer Registrierung gespeichert. </p>
                                     </div>
                                                             <a href="#hochschulranking" class="back-to-anchor">Zum Abschnittsanfang</a>
                                     </div>
@@ -725,7 +618,7 @@
                                     <p>Die genannten Daten benÃ¶tigen wir, um Ihnen den Newsletter zusenden zu kÃ¶nnen. Die entsprechende Verarbeitung Ihrer Daten  beruht auf der von Ihnen entsprechend erteilten Einwilligung und damit auf Art. 6 Abs. 1 lit. a) DSGVO.</p>
                                     <p>Registrieren Sie sich fÃ¼r unseren Newsletter, so geben wir Ihre Daten zum Zwecke der Abwicklung weiter die  Mailjet GmbH, Berliner Allee 26, 40212 DÃ¼sseldorf.</p>
                                     <p>Rechtsgrundlage fÃ¼r die Datenverarbeitung ist Art. 6 Abs. 1 lit. f) DSGVO</p>
-                                    <p>Ihre Einwilligung in die Zusendung des Newsletters kÃ¶nnen Sie jederzeit, beispielsweise via E-Mail an <a href="mailto:&#100;&#97;&#116;&#101;&#110;&#115;&#99;&#104;&#x75;&#116;&#x7a;&#x40;&#x7a;&#x65;&#x69;&#x74;&#x2e;&#100;&#101;">&#100;&#97;&#116;&#101;&#110;&#115;&#99;&#104;&#x75;&#116;&#x7a;&#x40;&#x7a;&#x65;&#x69;&#x74;&#x2e;&#100;&#101;</a> widerrufen. Eine Abmeldung vom Newsletter ist zudem jederzeit durch einen Klick auf den in jedem Newsletter enthaltenen Abmelde-Link mÃ¶glich.</p>
+                                    <p>Ihre Einwilligung in die Zusendung des Newsletters kÃ¶nnen Sie jederzeit, beispielsweise via E-Mail an <a href="mailto:&#100;&#97;&#116;&#x65;&#x6e;&#115;&#99;&#x68;&#117;&#x74;&#x7a;&#64;&#x7a;&#x65;&#x69;&#116;&#46;&#x64;&#x65;">&#100;&#97;&#116;&#x65;&#x6e;&#115;&#99;&#x68;&#117;&#x74;&#x7a;&#64;&#x7a;&#x65;&#x69;&#116;&#46;&#x64;&#x65;</a> widerrufen. Eine Abmeldung vom Newsletter ist zudem jederzeit durch einen Klick auf den in jedem Newsletter enthaltenen Abmelde-Link mÃ¶glich.</p>
                                     <p>Wir speichern Ihre Daten zu diesem Zweck solange uns kein Widerruf Ihrer Einwilligung oder ein Widerspruch gegen die Verarbeitung Ihrer Daten zu Werbezwecken vorliegt.</p>
                                     <p><strong>Newslettererfolgsmessung:</strong><br>Die Newsletter enthalten einen sog. &quot;web-beacon&quot;, d.h. eine pixelgroÃe Datei, die beim Ãffnen des Newsletters von unserem Server, bzw. sofern wir einen Versanddienstleister einsetzen, von dessen Server abgerufen wird. Im Rahmen dieses Abrufs werden zunÃ¤chst technische Informationen, wie Informationen zum Browser und Ihrem System, als auch Ihre IP-Adresse und Zeitpunkt des Abrufs erhoben.</p>
                                     <p>Diese Informationen werden zur technischen Verbesserung der Services anhand der technischen Daten oder der Zielgruppen und ihres Leseverhaltens anhand derer Abruforte (die mit Hilfe der IP-Adresse bestimmbar sind) oder der Zugriffszeiten genutzt. Zu den statistischen Erhebungen gehÃ¶rt ebenfalls die Feststellung, ob die Newsletter geÃ¶ffnet werden, wann sie geÃ¶ffnet werden und welche Links geklickt werden. Diese Informationen kÃ¶nnen aus technischen GrÃ¼nden zwar den einzelnen NewsletterempfÃ¤ngern zugeordnet werden. Es ist jedoch weder unser Bestreben, noch, sofern eingesetzt, das des Versanddienstleisters, einzelne Nutzer zu beobachten. Die Auswertungen dienen uns viel mehr dazu, die Lesegewohnheiten unserer Nutzer zu erkennen und unsere Inhalte auf sie anzupassen oder unterschiedliche Inhalte entsprechend den Interessen unserer Nutzer zu versenden. Rechtsgrundlage der Datenverarbeitung zur Newslettererfolgsmessung ist somit Art. 6 Abs. 1 lit. f) DSGVO</p>
@@ -744,7 +637,7 @@
                                     <p>Die genannten Daten benÃ¶tigen wir, um Ihnen den Newsletter zusenden zu kÃ¶nnen. Die entsprechende Verarbeitung Ihrer Daten  beruht auf der von Ihnen entsprechend erteilten Einwilligung und damit auf Art. 6 Abs. 1 lit. a) DSGVO.</p>
                                     <p>Registrieren Sie sich fÃ¼r unseren Newsletter, so geben wir Ihre Daten zum Zwecke der Abwicklung weiter an die Episerver GmbH, Wallstr. 16, 10179 Berlin.</p>
                                     <p>Rechtsgrundlage fÃ¼r die Datenverarbeitung ist Art. 6 Abs. 1 lit. f) DSGVO</p>
-                                    <p>Ihre Einwilligung in die Zusendung des Newsletters kÃ¶nnen Sie jederzeit, beispielsweise via E-Mail an <a href="mailto:&#100;&#x61;&#x74;&#101;&#x6e;&#x73;&#x63;&#x68;&#117;&#x74;&#122;&#x40;&#x7a;&#101;&#105;&#x74;&#x2e;&#100;&#101;">&#100;&#x61;&#x74;&#101;&#x6e;&#x73;&#x63;&#x68;&#117;&#x74;&#122;&#x40;&#x7a;&#101;&#105;&#x74;&#x2e;&#100;&#101;</a> widerrufen. Eine Abmeldung vom Newsletter ist zudem jederzeit durch einen Klick auf den in jedem Newsletter enthaltenen Abmelde-Link mÃ¶glich.</p>
+                                    <p>Ihre Einwilligung in die Zusendung des Newsletters kÃ¶nnen Sie jederzeit, beispielsweise via E-Mail an <a href="mailto:&#100;&#x61;&#x74;&#x65;&#110;&#115;&#x63;&#104;&#117;&#x74;&#122;&#64;&#x7a;&#x65;&#x69;&#x74;&#x2e;&#x64;&#101;">&#100;&#x61;&#x74;&#x65;&#110;&#115;&#x63;&#104;&#117;&#x74;&#122;&#64;&#x7a;&#x65;&#x69;&#x74;&#x2e;&#x64;&#101;</a> widerrufen. Eine Abmeldung vom Newsletter ist zudem jederzeit durch einen Klick auf den in jedem Newsletter enthaltenen Abmelde-Link mÃ¶glich.</p>
                                     <p>Wir speichern Ihre Daten zu diesem Zweck solange uns kein Widerruf Ihrer Einwilligung oder ein Widerspruch gegen die Verarbeitung Ihrer Daten zu Werbezwecken vorliegt.</p>
                                     <p><strong>Newslettererfolgsmessung:</strong><br>Die Newsletter enthalten einen sog. &quot;web-beacon&quot;, d.h. eine pixelgroÃe Datei, die beim Ãffnen des Newsletters von unserem Server, bzw. sofern wir einen Versanddienstleister einsetzen, von dessen Server abgerufen wird. Im Rahmen dieses Abrufs werden zunÃ¤chst technische Informationen, wie Informationen zum Browser und Ihrem System, als auch Ihre IP-Adresse und Zeitpunkt des Abrufs erhoben.</p>
                                     <p>Diese Informationen werden zur technischen Verbesserung der Services anhand der technischen Daten oder der Zielgruppen und ihres Leseverhaltens anhand derer Abruforte (die mit Hilfe der IP-Adresse bestimmbar sind) oder der Zugriffszeiten genutzt. Zu den statistischen Erhebungen gehÃ¶rt ebenfalls die Feststellung, ob die Newsletter geÃ¶ffnet werden, wann sie geÃ¶ffnet werden und welche Links geklickt werden. Diese Informationen kÃ¶nnen aus technischen GrÃ¼nden zwar den einzelnen NewsletterempfÃ¤ngern zugeordnet werden. Es ist jedoch weder unser Bestreben, noch, sofern eingesetzt, das des Versanddienstleisters, einzelne Nutzer zu beobachten. Die Auswertungen dienen uns viel mehr dazu, die Lesegewohnheiten unserer Nutzer zu erkennen und unsere Inhalte auf sie anzupassen oder unterschiedliche Inhalte entsprechend den Interessen unserer Nutzer zu versenden. Rechtsgrundlage der Datenverarbeitung zur Newslettererfolgsmessung ist somit Art. 6 Abs. 1 lit. f) DSGVO</p>
@@ -855,15 +748,12 @@
                                                 Google Tag Manager
                                             </h3>
                                     <div class="declaration-chapter-p" data-collapsible="true">
-                                        <div><p>Wir verwenden auf unserer Webseite &quot;Google Tag Manager&quot;, einen Dienst der Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland (nachfolgend bezeichnet als: &quot;Google&quot;). Google Tag Manager ermÃ¶glicht uns als Vermarkter Webseiten-Tags Ã¼ber eine OberflÃ¤che verwalten zu kÃ¶nnen.</p>
-                                    <p>Das Tool Google Tag Manager, welches die Tags implementiert, ist eine cookielose Domain und erfasst selbst keine personenbezogenen Daten. Google Tag Manager sorgt fÃ¼r die AuslÃ¶sung anderer Tags, die ihrerseits unter UmstÃ¤nden Daten erfassen. Google Tag Manager greift nicht auf diese Daten zu. Wenn auf Domain- oder Cookie-Ebene eine Deaktivierung vorgenommen wurde, bleibt diese fÃ¼r alle Tracking-Tags bestehen, die mit Google Tag Manager implementiert werden.</p>
-                                    <p>Hierin liegt unser berechtigtes Interesse. Sofern Ã¼berhaupt von einer personenbezogenen Datenverarbeitung beim Einsatz von Google Tag Manager ausgegangen werden kÃ¶nnte beruht diese auf Art. 6 Abs. 1 lit. f) DSGVO.</p>
+                                        <div><p>Wir verwenden auf unserer Webseite &quot;Google Tag Manager&quot;, einen Dienst der Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland.</p>
+                                    <p>Der Dienst Google Tag Manager ist ein Organisationstool und ermÃ¶glicht es uns, Dienste zu steuern. Das Tool nutzt lediglich die IP-Adresse, um die Verbindung zum Server herzustellen und technisch funktionieren zu kÃ¶nnen. Ansonsten werden mit dem Tool selbst keine personenbezogenen Daten verarbeitet.<br>Der Tag Manager sorgt dafÃ¼r, dass andere Dienste nur dann ausgefÃ¼hrt werden, wenn die im Tag Manager festgelegten Bedingungen (Tags) dafÃ¼r erfÃ¼llt sind. </p>
+                                    <p>So stellen wir sicher, dass beispielsweise einwilligungspflichtige Tools erst nach Ihrer Einwilligung geladen werden. Der Tag Manager greift nicht auf die durch die Tools verarbeiteten Daten zu.</p>
+                                    <p>Die Einbindung des Google Tag Managers ist technisch notwendig. Hierin liegt unser berechtigtes Interesse. Sofern Ã¼berhaupt von einer personenbezogenen Datenverarbeitung beim Einsatz von Google Tag Manager ausgegangen werden kÃ¶nnte beruht diese auf Art. 6 Abs. 1 lit. f) DSGVO.</p>
                                     <p>Weitere Informationen zum Datenschutz kÃ¶nnen Sie den nachfolgenden Webseiten von Google entnehmen:</p>
-                                    <ul>
-                                    <li>DatenschutzerklÃ¤rung: <a href="http://www.google.de/intl/de/policies/privacy">http://www.google.de/intl/de/policies/privacy</a></li>
-                                    <li>FAQ Google Tag Manager: <a href="https://www.google.com/intl/de/tagmanager/faq.html">https://www.google.com/intl/de/tagmanager/faq.html</a></li>
-                                    <li>Nutzungsbedingungen Google Tag Manager: <a href="https://www.google.com/intl/de/tagmanager/use-policy.html">https://www.google.com/intl/de/tagmanager/use-policy.html</a></li>
-                                    </ul>
+                                    <p>DatenschutzerklÃ¤rung: <a href="http://www.google.de/intl/de/policies/privacy">http://www.google.de/intl/de/policies/privacy</a><br>FAQ Google Tag Manager: <a href="https://www.google.com/intl/de/tagmanager/faq.html">https://www.google.com/intl/de/tagmanager/faq.html</a><br>Nutzungsbedingungen Google Tag Manager: <a href="https://www.google.com/intl/de/tagmanager/use-policy.html">https://www.google.com/intl/de/tagmanager/use-policy.html</a></p>
                                     </div>
                                                             <a href="#googleTagManager" class="back-to-anchor">Zum Abschnittsanfang</a>
                                     </div>
@@ -894,8 +784,8 @@
                                     <li>Opt-out-Cookie (bei Widerspruch gegen das Tracking: 60 Monate)</li>
                                     </ul>
                                     <p>Wir verwenden Webtrekk zu Marketing- und Optimierungszwecken, insbesondere um die Nutzung unserer Website zu analysieren und um einzelne Funktionen und Angebote sowie das Nutzungserlebnis fortlaufend verbessern zu kÃ¶nnen. </p>
-                                    <p>Durch die anonymisierte statistische Auswertung des Nutzerverhaltens kÃ¶nnen wir unser Angebot verbessern und fÃ¼r Sie als Nutzer interessanter ausgestalten. Hierin liegt auch unser berechtigtes Interesse an der Verarbeitung der vorstehenden Daten durch Webtrekk und MAPP. Die Datenverarbeitung beruht auf Art. 6 Abs. 1 lit. f) DSGVO. Aus wirtschaftlichen GrÃ¼nden ist das Setzen eines Cookies unbedingt erforderlich (TTDSG).</p>
-                                    <p>Die Bildung von pseudonymisierten Profildaten findet nur mit ihrer Einwilligung statt bzw. auf der Rechtsgrundlage Art. 6 Abs. 1 lit. a) DSGVO. Sie kÃ¶nnen der Datenspeicherung ihrer pseudonymisiert erfassten Besucherdaten widersprechen, so dass sie in Zukunft nicht mehr erfasst werden.<br>Sie kÃ¶nnen Ihre Einwilligung jederzeit widerrufen Ã¼ber den Aufruf der Privacy Einstellungen im <a href="#privacyEinstellungen">Kapitel VI</a></p>
+                                    <p><strong>FÃ¼r ZEIT-PUR-Abo-Nutzer findet eine anonymisierte Erhebung statt.</strong><br>Durch die anonymisierte statistische Auswertung des Aufrufverhaltens unserer Inhzalte kÃ¶nnen wir unser Angebot verbessern und fÃ¼r Sie als Nutzer interessanter ausgestalten. Hierin liegt auch unser berechtigtes Interesse an der Verarbeitung der vorstehenden Daten durch Webtrekk und MAPP. Die Datenverarbeitung beruht auf Art. 6 Abs. 1 lit. f) DSGVO. Aus wirtschaftlichen GrÃ¼nden ist das Setzen eines Cookies unbedingt erforderlich (TTDSG).</p>
+                                    <p><strong>FÃ¼r nicht PUR-ABO-Nutzer gilt:</strong><br>Die Bildung von pseudonymisierten Profildaten findet nur mit ihrer Einwilligung statt bzw. auf der Rechtsgrundlage Art. 6 Abs. 1 lit. a) DSGVO. Sie kÃ¶nnen der Datenspeicherung ihrer pseudonymisiert erfassten Besucherdaten widersprechen, so dass sie in Zukunft nicht mehr erfasst werden.</p>
                                     <p>Die Installation von Cookies kÃ¶nnen Sie verhindern, indem Sie vorhandene Cookies lÃ¶schen und eine Speicherung von Cookies in den Einstellungen Ihres Webbrowsers deaktivieren. Wir weisen darauf hin, dass Sie in diesem Fall mÃ¶glicherweise nicht alle Funktionen unserer Webseite vollumfÃ¤nglich nutzen kÃ¶nnen. Sie kÃ¶nnen die Erfassung der der vorgenannten Informationen durch MAPP auch dadurch verhindern, indem Sie auf der nachfolgend verlinkten Webseite ein Opt-Out-Cookie setzen:<br>Klicken Sie dazu den Button &quot;INSTALL OPT-OUT COOKIE&quot; unter <a href="https://mapp.com/privacy/">https://mapp.com/privacy/</a> </p>
                                     <p>Wir weisen Sie darauf hin, dass diese Einstellung gelÃ¶scht wird, wenn Sie Ihre Cookies lÃ¶schen.</p>
                                     </div>
@@ -959,7 +849,7 @@
                                             </h3>
                                     <div class="declaration-chapter-p" data-collapsible="true">
                                         <div><p>Zudem wird ein Dienst der CeleraOne GmbH, Usedomer StraÃe 4, 13355 Berlin genutzt, mit dem Cookies in den Browsern der Nutzer gespeichert werden. So kann festgestellt werden, wie oft einzelne Nutzer welche unserer Internetseiten besuchen. Die Daten werden ausschlieÃlich auf Servern in der EU oder dem EuropÃ¤ischen Wirtschaftsraum gespeichert und analysiert, auf die nur ZEIT ONLINE zugreifen kann. Sie kÃ¶nnen die Speicherung der Cookies durch eine entsprechende Einstellung Ihrer Browser-Software verhindern; wir weisen Sie jedoch darauf hin, dass Sie in diesem Fall gegebenenfalls nicht sÃ¤mtliche Funktionen dieser Website vollumfÃ¤nglich werden nutzen kÃ¶nnen.</p>
-                                    <p>Sofern Sie registrierter Nutzer sind und sich bei ZEIT ONLINE angemeldet haben, wird an CeleraOne eine User ID Ã¼bermittelt, die fÃ¼r CeleraOne keinen RÃ¼ckschluss auf Ihre personenbezogenen Daten ermÃ¶glicht. Sie kÃ¶nnen die Ãbermittlung dieser User ID beenden, indem Sie die LÃ¶schung Ihres Benutzerkontos per E-Mail an <a href="mailto:&#100;&#97;&#116;&#x65;&#x6e;&#x73;&#99;&#x68;&#117;&#x74;&#122;&#64;&#122;&#101;&#x69;&#x74;&#x2e;&#100;&#x65;">&#100;&#97;&#116;&#x65;&#x6e;&#x73;&#99;&#x68;&#117;&#x74;&#122;&#64;&#122;&#101;&#x69;&#x74;&#x2e;&#100;&#x65;</a> beantragen. Mit der LÃ¶schung Ihres Kontos verzichten Sie auf die Nutzung der registrierungspflichtigen Angebote.</p>
+                                    <p>Sofern Sie registrierter Nutzer sind und sich bei ZEIT ONLINE angemeldet haben, wird an CeleraOne eine User ID Ã¼bermittelt, die fÃ¼r CeleraOne keinen RÃ¼ckschluss auf Ihre personenbezogenen Daten ermÃ¶glicht. Sie kÃ¶nnen die Ãbermittlung dieser User ID beenden, indem Sie die LÃ¶schung Ihres Benutzerkontos per E-Mail an <a href="mailto:&#100;&#x61;&#x74;&#x65;&#x6e;&#115;&#99;&#104;&#117;&#116;&#122;&#64;&#122;&#x65;&#x69;&#x74;&#x2e;&#x64;&#101;">&#100;&#x61;&#x74;&#x65;&#x6e;&#115;&#99;&#104;&#117;&#116;&#122;&#64;&#122;&#x65;&#x69;&#x74;&#x2e;&#x64;&#101;</a> beantragen. Mit der LÃ¶schung Ihres Kontos verzichten Sie auf die Nutzung der registrierungspflichtigen Angebote.</p>
                                     <p>An der Erlangung dieser Daten haben wir ein unternehmerisches Interessen, weil die Erlangung dieser Daten uns hilft, unser Internetangebot auf Ihre BedÃ¼rfnisse angepasst auszuspielen. Die Datenverarbeitung beruht auf Art. 6 Abs. 1 lit. b) DSGVO. Die Speicherdauer betrÃ¤gt 10 Jahre. </p>
                                     </div>
                                                             <a href="#celeraOne" class="back-to-anchor">Zum Abschnittsanfang</a>
@@ -1347,13 +1237,12 @@
                                     <p>Um Google zur Auftragsverarbeitung der Ã¼bermittelten Daten nur entsprechend unserer Weisungen und zur Einhaltung der geltenden Datenschutzvorschriften zu verpflichten, haben wir mit Google einen Auftragsverarbeitungsvertrag abgeschlossen. Weitere Details zur DatenÃ¼bermittlung in DrittlÃ¤nder finden Sie im TEIL I: Allgemeines. </p>
                                     <p>Weitere Informationen des Drittanbieters zum Datenschutz kÃ¶nnen Sie der nachfolgenden Webseite entnehmen: <a href="https://www.google.com/intl/de/policies/">https://www.google.com/intl/de/policies/</a></p>
                                     <h4 id="google-tag-manager"><a href="#GoogleTagManager">Google Tag Manager</a></h4>
-                                    <p>Wir verwenden auf unserer Webseite &quot;Google Tag Manager&quot;, einen Dienst der Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland (nachfolgend bezeichnet als: &quot;Google&quot;). Google Tag Manager ermÃ¶glicht uns als Vermarkter Webseiten-Tags Ã¼ber eine OberflÃ¤che verwalten zu kÃ¶nnen.</p>
-                                    <p>Das Tool Google Tag Manager, welches die Tags implementiert, ist eine cookielose Domain und erfasst selbst keine personenbezogenen Daten. Google Tag Manager sorgt fÃ¼r die AuslÃ¶sung anderer Tags, die ihrerseits unter UmstÃ¤nden Daten erfassen. Google Tag Manager greift nicht auf diese Daten zu. Wenn auf Domain- oder Cookie-Ebene eine Deaktivierung vorgenommen wurde, bleibt diese fÃ¼r alle Tracking-Tags bestehen, die mit Google Tag Manager implementiert werden.</p>
-                                    <p>Hierin liegt unser berechtigtes Interesse. Sofern Ã¼berhaupt von einer personenbezogenen Datenverarbeitung beim Einsatz von Google Tag Manager ausgegangen werden kÃ¶nnte beruht diese auf Art. 6 Abs. 1 lit. f) DSGVO.</p>
+                                    <p>Wir verwenden auf unserer Webseite &quot;Google Tag Manager&quot;, einen Dienst der Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland.</p>
+                                    <p>Der Dienst Google Tag Manager ist ein Organisationstool und ermÃ¶glicht es uns, Dienste zu steuern. Das Tool nutzt lediglich die IP-Adresse, um die Verbindung zum Server herzustellen und technisch funktionieren zu kÃ¶nnen. Ansonsten werden mit dem Tool selbst keine personenbezogenen Daten verarbeitet.<br>Der Tag Manager sorgt dafÃ¼r, dass andere Dienste nur dann ausgefÃ¼hrt werden, wenn die im Tag Manager festgelegten Bedingungen (Tags) dafÃ¼r erfÃ¼llt sind. </p>
+                                    <p>So stellen wir sicher, dass beispielsweise einwilligungspflichtige Tools erst nach Ihrer Einwilligung geladen werden. Der Tag Manager greift nicht auf die durch die Tools verarbeiteten Daten zu.</p>
+                                    <p>Die Einbindung des Google Tag Managers ist technisch notwendig. Hierin liegt unser berechtigtes Interesse. Sofern Ã¼berhaupt von einer personenbezogenen Datenverarbeitung beim Einsatz von Google Tag Manager ausgegangen werden kÃ¶nnte beruht diese auf Art. 6 Abs. 1 lit. f) DSGVO.</p>
                                     <p>Weitere Informationen zum Datenschutz kÃ¶nnen Sie den nachfolgenden Webseiten von Google entnehmen:</p>
-                                    <p>â DatenschutzerklÃ¤rung: <a href="http://www.google.de/intl/de/policies/privacy">http://www.google.de/intl/de/policies/privacy</a></p>
-                                    <p>â FAQ Google Tag Manager: <a href="https://www.google.com/intl/de/tagmanager/faq.html">https://www.google.com/intl/de/tagmanager/faq.html</a></p>
-                                    <p>â Nutzungsbedingungen Google Tag Manager: <a href="https://www.google.com/intl/de/tagmanager/use-policy.html">https://www.google.com/intl/de/tagmanager/use-policy.html</a></p>
+                                    <p>DatenschutzerklÃ¤rung: <a href="http://www.google.de/intl/de/policies/privacy">http://www.google.de/intl/de/policies/privacy</a><br>FAQ Google Tag Manager: <a href="https://www.google.com/intl/de/tagmanager/faq.html">https://www.google.com/intl/de/tagmanager/faq.html</a><br>Nutzungsbedingungen Google Tag Manager: <a href="https://www.google.com/intl/de/tagmanager/use-policy.html">https://www.google.com/intl/de/tagmanager/use-policy.html</a></p>
                                     <h4 id="google-invisible-recaptcha"><a href="googlerecaptch">Google (Invisible) reCAPTCHA</a></h4>
                                     <p>Wir verwenden auf unserem Internetauftritt &quot;Google (Invisible) reCAPTCHA&quot;, einen Dienst der Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland (nachfolgend bezeichnet als: &quot;Google&quot;). Google (Invisible) reCAPTCHA speichert und verarbeitet Informationen Ã¼ber Ihr Nutzerverhalten auf unserem Internetauftritt.<br>Google (Invisible) reCAPTCHA verwendet hierfÃ¼r unter anderem Cookies,  also kleine Textdateien, die lokal im Zwischenspeicher Ihres Webbrowsers auf Ihrem EndgerÃ¤t gespeichert werden und die eine Analyse der Benutzung unseres Internetauftritts durch Sie ermÃ¶glichen. Wir verwenden Google (Invisible) reCAPTCHA zur PrÃ¼fung, ob die Eingabe durch einen Menschen oder missbrÃ¤uchlich durch automatisierte,  maschinelle Verarbeitung erfolgt.</p>
                                     <p>Hierin liegt auch unser berechtigtes Interesse an der Verarbeitung der vorstehenden Daten durch den  Drittanbieter. Rechtsgrundlage ist Art. 6 Abs. 1 S. 1 lit. f) DSGVO.</p>
@@ -1485,9 +1374,9 @@
                                     <li>Online-Publishern und Partnern, die ihren Lesern relevanten Content empfehlen wollen (dabei handelt es sich um Outbrain Engage); und</li>
                                     <li>Werbetreibenden, die erreichen wollen, dass Leser ihren Content ansehen (hierbei handelt es sich um Outbrain Amplify).</li>
                                     </ul>
-                                    <p>Kontaktanfragen richten Sie  bitte an <a href="mailto:&#x50;&#x72;&#105;&#x76;&#97;&#99;&#x79;&#81;&#117;&#101;&#115;&#116;&#105;&#111;&#110;&#115;&#64;&#x6f;&#117;&#116;&#98;&#114;&#x61;&#105;&#x6e;&#46;&#99;&#x6f;&#x6d;">&#x50;&#x72;&#105;&#x76;&#97;&#99;&#x79;&#81;&#117;&#101;&#115;&#116;&#105;&#111;&#110;&#115;&#64;&#x6f;&#117;&#116;&#98;&#114;&#x61;&#105;&#x6e;&#46;&#99;&#x6f;&#x6d;</a> oder auf postalischem Weg an Outbrain Inc., 39 West 13th Street, 3rd floor, New York, NY 10011, Attn: Privacy Questions / Datenschutzanfrage.<br>Sollte Outbrain Ihre Fragen oder Anliegen nicht zu Ihrer Zufriedenheit beantworten, kÃ¶nnen Sie sich auch an folgende Ansprechpartner wenden, um Rat oder UnterstÃ¼tzung zu erhalten bzw. Beschwerden vorzubringen:</p>
+                                    <p>Kontaktanfragen richten Sie  bitte an <a href="mailto:&#x50;&#x72;&#x69;&#x76;&#x61;&#99;&#x79;&#x51;&#117;&#101;&#115;&#116;&#x69;&#x6f;&#x6e;&#x73;&#x40;&#111;&#117;&#x74;&#x62;&#114;&#x61;&#x69;&#110;&#x2e;&#x63;&#x6f;&#109;">&#x50;&#x72;&#x69;&#x76;&#x61;&#99;&#x79;&#x51;&#117;&#101;&#115;&#116;&#x69;&#x6f;&#x6e;&#x73;&#x40;&#111;&#117;&#x74;&#x62;&#114;&#x61;&#x69;&#110;&#x2e;&#x63;&#x6f;&#109;</a> oder auf postalischem Weg an Outbrain Inc., 39 West 13th Street, 3rd floor, New York, NY 10011, Attn: Privacy Questions / Datenschutzanfrage.<br>Sollte Outbrain Ihre Fragen oder Anliegen nicht zu Ihrer Zufriedenheit beantworten, kÃ¶nnen Sie sich auch an folgende Ansprechpartner wenden, um Rat oder UnterstÃ¼tzung zu erhalten bzw. Beschwerden vorzubringen:</p>
                                     <ul>
-                                    <li>Outbrains externen Datenschutzbeauftragten: ePrivacy GmbH, vertreten durch Prof. Dr. Christoph Bauer. Die ePrivacy GmbH kÃ¶nnen Sie direkt erreichen unter <a href="mailto:&#112;&#x72;&#105;&#x76;&#97;&#99;&#121;&#x40;&#x65;&#112;&#x72;&#x69;&#x76;&#97;&#99;&#x79;&#46;&#x65;&#117;">&#112;&#x72;&#105;&#x76;&#97;&#99;&#121;&#x40;&#x65;&#112;&#x72;&#x69;&#x76;&#97;&#99;&#x79;&#46;&#x65;&#117;</a> und/oder</li>
+                                    <li>Outbrains externen Datenschutzbeauftragten: ePrivacy GmbH, vertreten durch Prof. Dr. Christoph Bauer. Die ePrivacy GmbH kÃ¶nnen Sie direkt erreichen unter <a href="mailto:&#112;&#114;&#105;&#118;&#x61;&#x63;&#121;&#64;&#x65;&#x70;&#x72;&#105;&#x76;&#x61;&#99;&#x79;&#46;&#101;&#117;">&#112;&#114;&#105;&#118;&#x61;&#x63;&#121;&#64;&#x65;&#x70;&#x72;&#105;&#x76;&#x61;&#99;&#x79;&#46;&#101;&#117;</a> und/oder</li>
                                     <li>den Information Commissionerâs Officer, die fÃ¼r Outbrain zustÃ¤ndige federfÃ¼hrende AufsichtsbehÃ¶rde in den europÃ¤ischen LÃ¤ndern.</li>
                                     </ul>
                                     <p>Betroffene Personen: Nutzer die mit dem Outbrain-Widget Ã¼ber Outbrains netzwerk von Publishern interagieren. </p>
@@ -1519,7 +1408,7 @@
                                     <li>Kontaktaufnahme mit Ihrem Datenschutzbeauftragten bei Fragen, Anmerkungen, Beschwerden oder Anfragen im Zusammenhang mit unserer DatenschutzerklÃ¤rung und der Verarbeitung Ihrer personenbezogenen Daten.</li>
                                     <li>das Recht auf Beschwerde bei der zustÃ¤ndigen AufsichtsbehÃ¶rde, falls Sie der Auffassung sind, dass die Verarbeitung Ihrer personenbezogenen Daten gesetzeswidrig ist.</li>
                                     </ul>
-                                    <p>Neben dem oben Genannten weist Outbrain in diesen Datenschutzbestimmungen auf bestimmte Rechte fÃ¼r BÃ¼rger des europÃ¤ischen Gebiets hin. Laut der DSGVO bezeichnet die Formulierung âBÃ¼rger aus europÃ¤ischen Gebietenâ den EuropÃ¤ischen Wirtschaftsraum (EWR) und die Schweiz. Im Sinne dieser Datenschutzbestimmungen umfasst der Begriff âeuropÃ¤ische Gebieteâ weiterhin das Vereinigte KÃ¶nigreich, auch nachdem dieses den EuropÃ¤ischen Wirtschaftsraum im Anschluss an den Austritt (Brexit) verlÃ¤sst.<br>Bitte senden Sie eine Nachricht an <a href="mailto:&#x50;&#x72;&#x69;&#x76;&#97;&#99;&#x79;&#x51;&#x75;&#101;&#115;&#116;&#105;&#111;&#110;&#x73;&#x40;&#x6f;&#x75;&#116;&#98;&#x72;&#x61;&#x69;&#110;&#x2e;&#x63;&#111;&#109;">&#x50;&#x72;&#x69;&#x76;&#97;&#99;&#x79;&#x51;&#x75;&#101;&#115;&#116;&#105;&#111;&#110;&#x73;&#x40;&#x6f;&#x75;&#116;&#98;&#x72;&#x61;&#x69;&#110;&#x2e;&#x63;&#111;&#109;</a>, wenn Sie Fragen zur AusÃ¼bung dieser Rechte haben.</p>
+                                    <p>Neben dem oben Genannten weist Outbrain in diesen Datenschutzbestimmungen auf bestimmte Rechte fÃ¼r BÃ¼rger des europÃ¤ischen Gebiets hin. Laut der DSGVO bezeichnet die Formulierung âBÃ¼rger aus europÃ¤ischen Gebietenâ den EuropÃ¤ischen Wirtschaftsraum (EWR) und die Schweiz. Im Sinne dieser Datenschutzbestimmungen umfasst der Begriff âeuropÃ¤ische Gebieteâ weiterhin das Vereinigte KÃ¶nigreich, auch nachdem dieses den EuropÃ¤ischen Wirtschaftsraum im Anschluss an den Austritt (Brexit) verlÃ¤sst.<br>Bitte senden Sie eine Nachricht an <a href="mailto:&#x50;&#x72;&#105;&#118;&#97;&#x63;&#121;&#81;&#117;&#x65;&#115;&#116;&#105;&#x6f;&#110;&#x73;&#64;&#x6f;&#x75;&#116;&#98;&#114;&#x61;&#105;&#x6e;&#x2e;&#99;&#x6f;&#x6d;">&#x50;&#x72;&#105;&#118;&#97;&#x63;&#121;&#81;&#117;&#x65;&#115;&#116;&#105;&#x6f;&#110;&#x73;&#64;&#x6f;&#x75;&#116;&#98;&#114;&#x61;&#105;&#x6e;&#x2e;&#99;&#x6f;&#x6d;</a>, wenn Sie Fragen zur AusÃ¼bung dieser Rechte haben.</p>
                                     </div>
                                                             <a href="#Outbrain" class="back-to-anchor">Zum Abschnittsanfang</a>
                                     </div>
@@ -1700,7 +1589,7 @@
                                     <div class="declaration-chapter-p" data-collapsible="true">
                                         <div><p>Nach Art. 21 DSGVO haben Sie, sofern Ihre personenbezogenen Daten auf Grundlage von berechtigten Interessen gemÃ¤Ã Art. 6 Abs. 1 S. 1 lit. f DSGVO verarbeitet werden, das Recht, gemÃ¤Ã Art. 21 DSGVO Widerspruch gegen die Verarbeitung Ihrer personenbezogenen Daten einzulegen, soweit dafÃ¼r GrÃ¼nde vorliegen, die sich aus Ihrer besonderen Situation ergeben.</p>
                                     <p>Gegen die Verarbeitung Ihrer Daten zum Zwecke der Direktwerbung haben Sie das Recht, dieser Verarbeitung ohne Angabe einer besonderen Situation jederzeit zu widersprechen.</p>
-                                    <p>MÃ¶chten Sie von Ihrem Widerrufs- oder Widerspruchsrecht Gebrauch machen, genÃ¼gt eine E-Mail an <a href="mailto:&#x64;&#x61;&#116;&#x65;&#110;&#x73;&#99;&#104;&#117;&#116;&#122;&#64;&#x7a;&#101;&#105;&#116;&#46;&#x64;&#101;">&#x64;&#x61;&#116;&#x65;&#110;&#x73;&#99;&#104;&#117;&#116;&#122;&#64;&#x7a;&#101;&#105;&#116;&#46;&#x64;&#101;</a>.</p>
+                                    <p>MÃ¶chten Sie von Ihrem Widerrufs- oder Widerspruchsrecht Gebrauch machen, genÃ¼gt eine E-Mail an <a href="mailto:&#100;&#97;&#x74;&#101;&#x6e;&#115;&#x63;&#104;&#117;&#116;&#x7a;&#64;&#122;&#101;&#105;&#116;&#46;&#x64;&#x65;">&#100;&#97;&#x74;&#101;&#x6e;&#115;&#x63;&#104;&#117;&#116;&#x7a;&#64;&#122;&#101;&#105;&#116;&#46;&#x64;&#x65;</a>.</p>
                                     </div>
                                                             <a href="#widerspruchsrecht" class="back-to-anchor">Zum Abschnittsanfang</a>
                                     </div>
@@ -1714,8 +1603,8 @@
                                     <p>Sie erreichen uns unter folgenden Kontaktdaten:</p>
                                     <p>Zeit Online GmbH</p>
                                     <p>BuceriusstraÃe, Eingang Speersort 1<br>20095 Hamburg</p>
-                                    <p>Telefon: 040 / 32 80-0<br>Fax: 040 / 32 71 11<br>E-Mail: <a href="mailto:&#101;&#109;&#x61;&#105;&#x6c;&#x40;&#122;&#101;&#105;&#116;&#46;&#100;&#101;">&#101;&#109;&#x61;&#105;&#x6c;&#x40;&#122;&#101;&#105;&#116;&#46;&#100;&#101;</a></p>
-                                    <p>Unseren Datenschutzbeauftragten erreichen Sie unter <a href="mailto:&#100;&#x73;&#98;&#x40;&#122;&#x65;&#x69;&#116;&#x2e;&#100;&#101;">&#100;&#x73;&#98;&#x40;&#122;&#x65;&#x69;&#116;&#x2e;&#100;&#101;</a> </p>
+                                    <p>Telefon: 040 / 32 80-0<br>Fax: 040 / 32 71 11<br>E-Mail: <a href="mailto:&#x65;&#x6d;&#x61;&#x69;&#x6c;&#64;&#x7a;&#x65;&#105;&#116;&#x2e;&#100;&#x65;">&#x65;&#x6d;&#x61;&#x69;&#x6c;&#64;&#x7a;&#x65;&#105;&#116;&#x2e;&#100;&#x65;</a></p>
+                                    <p>Unseren Datenschutzbeauftragten erreichen Sie unter <a href="mailto:&#x64;&#x73;&#98;&#x40;&#x7a;&#101;&#x69;&#116;&#x2e;&#x64;&#101;">&#x64;&#x73;&#98;&#x40;&#x7a;&#101;&#x69;&#116;&#x2e;&#x64;&#101;</a> </p>
                                     </div>
                                                             <a href="#kontakt" class="back-to-anchor">Zum Abschnittsanfang</a>
                                     </div>
@@ -1725,7 +1614,7 @@
                                                 Kontaktdaten des Datenschutzbeauftragten
                                             </h3>
                                     <div class="declaration-chapter-p" data-collapsible="true">
-                                        <div><p>E-Mail: <a href="mailto:&#100;&#x73;&#x62;&#64;&#x7a;&#101;&#x69;&#x74;&#x2e;&#100;&#x65;">&#100;&#x73;&#x62;&#64;&#x7a;&#101;&#x69;&#x74;&#x2e;&#100;&#x65;</a></p>
+                                        <div><p>E-Mail: <a href="mailto:&#100;&#x73;&#98;&#64;&#122;&#101;&#105;&#x74;&#46;&#x64;&#x65;">&#100;&#x73;&#98;&#64;&#122;&#101;&#105;&#x74;&#46;&#x64;&#x65;</a></p>
                                     <p>Herting Oberbeck Datenschutz GmbH<br>Hallerstr. 76, 20146 Hamburg</p>
                                     <p><a href="https://www.datenschutzkanzlei.de">https://www.datenschutzkanzlei.de</a>   </p>
                                     </div>
@@ -1815,19 +1704,9 @@
                                         <div></div>
                                     </div>
                                     
-                                            <div class="dsecms-btn wrapper rejectbtn" id="rejectall">
+                                            <div class="dsecms-btn wrapper" id="consentbutton">
                                                 <a class="button">
-                                                        Reject Button - ZON Widerruf
-                                                </a>
-                                            </div>
-                                    
-                                    <div class="declaration-chapter-p" data-collapsible="">
-                                        <div></div>
-                                    </div>
-                                    
-                                            <div class="dsecms-btn wrapper" id="consentall">
-                                                <a class="button">
-                                                        Consent Button
+                                                        Toggle Zustimmung/Widerspruch
                                                 </a>
                                             </div>
                                     

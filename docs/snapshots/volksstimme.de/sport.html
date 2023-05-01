@@ -1,8 +1,8 @@
 <!DOCTYPE html><html lang="de"><head>
 
-      <link rel="preload prefetch stylesheet" href="/designs/bmg_base_design/1.0.153/styles-vs.css" as="style">
+      <link rel="preload prefetch stylesheet" href="/designs/bmg_base_design/1.0.154/styles-vs.css" as="style">
 
-      <link rel="preload prefetch stylesheet" href="/static/css/styles-delivery-vs-base.edc8f467.css" as="style">
+      <link rel="preload prefetch stylesheet" href="/static/css/styles-delivery-vs-base.93eed1e1.css" as="style">
 
     <title>Sport: Nachrichten Ergebnisse Berichte</title>
     <meta charset="UTF-8">
@@ -48,11 +48,27 @@
                 cre.onload = function(){
                     if (typeof(cre_client) != "undefined") {
                         cre_client.addListener(function(response){
-                            const userType = response?.data?.action_groups?.cms_snippet?.parameters[0]
+                            let userType = response?.data?.action_groups?.cms_snippet?.parameters[0]
+
+                            if (!userType) {
+                                console.error('Could not load C1 user type!')
+                                userType = "pur-anon"
+                            }
+
                             if(typeof initiateSourcePoint === "function") {
                                 initiateSourcePoint(userType)
                             }
+
+                            // Store user type for later use
+                            localStorage.setItem("C1_USER_TYPE", userType)
+
+                            // Dispatch event about user type storage
+                            var userTypeStorageEvent = new Event("USER_TYPE_STORAGE", {
+                                bubbles: true,
+                            })
+                            window.dispatchEvent(userTypeStorageEvent)
                         });
+
                         cre_client.set_page_view();
                         cre_client.set_origin("web");
                         cre_client.set_service_id("mv-web");
@@ -68,8 +84,10 @@
                         cre_client.set_kicker("Sport%3A%20Nachrichten%20Ergebnisse%20Berichte");
                         cre_client.request();
 
-                        var trackingLoadedEvent = new Event("TRACKING_LOADED", {bubbles: true});
-                        cre.dispatchEvent(trackingLoadedEvent);
+                        var c1TrackingLoadedEvent = new Event("C1_TRACKING_LOADED", {
+                            bubbles: true,
+                        });
+                        cre.dispatchEvent(c1TrackingLoadedEvent);
                     }
                 };
                 s.parentNode.insertBefore(cre, s);
@@ -251,7 +269,7 @@
                         </a>
                     </li>
                     <li class="fp-top-nav__list-item">
-                        <a class="text-sm-secondary--bold" href="https://trauer.volksstimme.de/" target="_blank" rel="noopener noreferrer">
+                        <a class="text-sm-secondary--bold" href="https://www.abschied-nehmen.de" target="_blank" rel="noopener noreferrer">
                                 Trauer
                         </a>
                     </li>
@@ -389,15 +407,15 @@
                             </a>
                         </div>
     <div class="fp-main-header__weather-widget">
-        <div class="fp-main-header__weather-widget--top regen">
+        <div class="fp-main-header__weather-widget--top wolkig">
             <span class="weather-icon-img">
-                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/regen.svg" alt="weather">
+                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/wolkig.svg" alt="weather">
             </span>
-            <span class="fp-main-header__weather-widget--tooltip">regen</span>
+            <span class="fp-main-header__weather-widget--tooltip">wolkig</span>
             <aside>
-                <span class="fp-main-header__weather-widget--day-temp">12°</span>
+                <span class="fp-main-header__weather-widget--day-temp">18°</span>
                 <span>/</span>
-                <span class="fp-main-header__weather-widget--night-temp">2°</span>
+                <span class="fp-main-header__weather-widget--night-temp">8°</span>
             </aside>
         </div>
         <div class="fp-main-header__weather-widget--bottom">
@@ -465,6 +483,12 @@
 ">
                     <a class="text-14--bold" href="/blaulicht" target="_self">
                       Blaulicht
+                    </a>
+                  </li>
+                  <li class="fp-main-nav__list-item
+">
+                    <a class="text-14--bold" href="/video" target="_self">
+                      Video
                     </a>
                   </li>
             </ul>
@@ -594,6 +618,12 @@
 ">
                     <a class="text-14--bold" href="/blaulicht" target="_self">
                       Blaulicht
+                    </a>
+                  </li>
+                  <li class="fp-main-nav__list-item
+">
+                    <a class="text-14--bold" href="/video" target="_self">
+                      Video
                     </a>
                   </li>
             </ul>
@@ -1139,6 +1169,14 @@
                       </a>
                     </li>
             </ul>
+            <div class="fp-sidebar-menu__nav--header">
+              <h4>
+                  <a href="/video" target="_self">Video
+                  </a>
+              </h4>
+            </div>
+            <ul class="fp-sidebar-menu__nav--list">
+            </ul>
         </nav>
 
 
@@ -1224,7 +1262,7 @@
                             </a>
                           </li>
                           <li class="fp-sidebar-menu__nav--item">
-                            <a class="text-base-secondary--semibold" href="https://trauer.volksstimme.de/" target="_blank" rel="noopener noreferrer">
+                            <a class="text-base-secondary--semibold" href="https://www.abschied-nehmen.de" target="_blank" rel="noopener noreferrer">
                               Trauer
                             </a>
                           </li>
@@ -1393,94 +1431,94 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/1-fc-magdeburg/fcm-das-wunscht-sich-trainer-christian-titz-zum-geburtstag-von-seinem-team-3579565">
+            <a href="/sport/1-fc-magdeburg/fcm-besiegt-den-hsv-das-sagen-die-trainer-nach-der-partie-3599062">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/31/a1f9705c-7407-4e72-8c84-4dfa66a06c5d.jpeg?rect=5%2C10%2C1711%2C1212&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/31/a1f9705c-7407-4e72-8c84-4dfa66a06c5d.jpeg?rect=5%2C10%2C1711%2C1212&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/31/a1f9705c-7407-4e72-8c84-4dfa66a06c5d.jpeg?rect=5%2C10%2C1711%2C1212&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/31/a1f9705c-7407-4e72-8c84-4dfa66a06c5d.jpeg?rect=5%2C10%2C1711%2C1212&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/31/a1f9705c-7407-4e72-8c84-4dfa66a06c5d.jpeg?rect=5%2C10%2C1711%2C1212&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/31/a1f9705c-7407-4e72-8c84-4dfa66a06c5d.jpeg?rect=5%2C10%2C1711%2C1212&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/31/a1f9705c-7407-4e72-8c84-4dfa66a06c5d.jpeg?rect=5%2C10%2C1711%2C1212&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bestritt in seiner Trainerkarriere bislang nur zwei Spiele gegen Hansa Rostock: Christian Titz. Beide Partien, in denen er einmal gewann und einmal verlor, absolvierte er als FCM-Trainer.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/29/ca5e8222-8df4-46dc-baf1-45797b84517d.jpeg?rect=0%2C0%2C4000%2C2667&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/29/ca5e8222-8df4-46dc-baf1-45797b84517d.jpeg?rect=0%2C0%2C4000%2C2667&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/29/ca5e8222-8df4-46dc-baf1-45797b84517d.jpeg?rect=0%2C0%2C4000%2C2667&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/29/ca5e8222-8df4-46dc-baf1-45797b84517d.jpeg?rect=0%2C0%2C4000%2C2667&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/29/ca5e8222-8df4-46dc-baf1-45797b84517d.jpeg?rect=0%2C0%2C4000%2C2667&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/29/ca5e8222-8df4-46dc-baf1-45797b84517d.jpeg?rect=0%2C0%2C4000%2C2667&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/29/ca5e8222-8df4-46dc-baf1-45797b84517d.jpeg?rect=0%2C0%2C4000%2C2667&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Während HSV-Trainer Tim Walter haderte, war Magdeburgs Trainer Christian Titz die Begeisterung über den Sieg förmlich anzusehen.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> 2. Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">FCM: Das wünscht sich Trainer Christian Titz zum Geburtstag von seinem Team</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">FCM besiegt den HSV: Das sagen die Trainer nach der Partie</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/1-fc-magdeburg/fcm-darauf-ist-blau-weiss-vor-dem-duell-mit-hansa-rostock-gefasst-3578672">
+            <a href="/sport/1-fc-magdeburg/frenetischer-jubel-der-fcm-besiegt-den-hsv-3599024">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/30/50caac24-d8e1-4d9c-851f-b66af23e4348.jpeg?rect=100%2C3%2C3896%2C2600&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/30/50caac24-d8e1-4d9c-851f-b66af23e4348.jpeg?rect=100%2C3%2C3896%2C2600&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/30/50caac24-d8e1-4d9c-851f-b66af23e4348.jpeg?rect=100%2C3%2C3896%2C2600&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/30/50caac24-d8e1-4d9c-851f-b66af23e4348.jpeg?rect=100%2C3%2C3896%2C2600&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/30/50caac24-d8e1-4d9c-851f-b66af23e4348.jpeg?rect=100%2C3%2C3896%2C2600&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/30/50caac24-d8e1-4d9c-851f-b66af23e4348.jpeg?rect=100%2C3%2C3896%2C2600&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/30/50caac24-d8e1-4d9c-851f-b66af23e4348.jpeg?rect=100%2C3%2C3896%2C2600&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Feierte zuletzt seine Rückkehr im Trikot des 1. FC Magdeburg: Leon Bell Bell (r.). Der Verteidiger trifft mit Blau-Weiß auf  Kai Pröger und Hansa Rostock. Im Hinspiel gab es eine 1:3-Niederlage.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/29/bcc23623-9d10-4ea5-b307-64c2dd63b412.jpeg?rect=0%2C0%2C4000%2C2544&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/29/bcc23623-9d10-4ea5-b307-64c2dd63b412.jpeg?rect=0%2C0%2C4000%2C2544&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/29/bcc23623-9d10-4ea5-b307-64c2dd63b412.jpeg?rect=0%2C0%2C4000%2C2544&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/29/bcc23623-9d10-4ea5-b307-64c2dd63b412.jpeg?rect=0%2C0%2C4000%2C2544&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/29/bcc23623-9d10-4ea5-b307-64c2dd63b412.jpeg?rect=0%2C0%2C4000%2C2544&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/29/bcc23623-9d10-4ea5-b307-64c2dd63b412.jpeg?rect=0%2C0%2C4000%2C2544&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/29/bcc23623-9d10-4ea5-b307-64c2dd63b412.jpeg?rect=0%2C0%2C4000%2C2544&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Moritz-Broni Kwarteng traf zum 1:0 für den 1. FC Magdeburg und jubelte schließlich mit seinen Teamkollegen über den Heimsieg. ">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> 2. Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">FCM: Darauf ist Blau-Weiß vor dem Duell mit Hansa Rostock gefasst</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Frenetischer Jubel: Der FCM besiegt den HSV</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/1-fc-magdeburg/gegnercheck-fcm-gegner-fc-hansa-rostock-die-angeschlagenen-3578024">
+            <a href="/sport/1-fc-magdeburg/kwarteng-steht-tatsachlich-in-der-fcm-startelf-3598953">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/30/18f30de7-debc-4b42-8f62-3149fcf6b812.jpeg?rect=668%2C0%2C2665%2C2665&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/30/18f30de7-debc-4b42-8f62-3149fcf6b812.jpeg?rect=668%2C0%2C2665%2C2665&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/30/18f30de7-debc-4b42-8f62-3149fcf6b812.jpeg?rect=668%2C0%2C2665%2C2665&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/30/18f30de7-debc-4b42-8f62-3149fcf6b812.jpeg?rect=668%2C0%2C2665%2C2665&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/30/18f30de7-debc-4b42-8f62-3149fcf6b812.jpeg?rect=668%2C0%2C2665%2C2665&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/30/18f30de7-debc-4b42-8f62-3149fcf6b812.jpeg?rect=668%2C0%2C2665%2C2665&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/30/18f30de7-debc-4b42-8f62-3149fcf6b812.jpeg?rect=668%2C0%2C2665%2C2665&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Am 2. April spielt der 1. FC Magdeburg im Heimspiel gegen Hansa Rostock.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/29/7c144622-f6e8-442f-8e5f-4566c229f3cd.jpeg?rect=0%2C0%2C3156%2C2222&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/29/7c144622-f6e8-442f-8e5f-4566c229f3cd.jpeg?rect=0%2C0%2C3156%2C2222&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/29/7c144622-f6e8-442f-8e5f-4566c229f3cd.jpeg?rect=0%2C0%2C3156%2C2222&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/29/7c144622-f6e8-442f-8e5f-4566c229f3cd.jpeg?rect=0%2C0%2C3156%2C2222&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/29/7c144622-f6e8-442f-8e5f-4566c229f3cd.jpeg?rect=0%2C0%2C3156%2C2222&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/29/7c144622-f6e8-442f-8e5f-4566c229f3cd.jpeg?rect=0%2C0%2C3156%2C2222&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/29/7c144622-f6e8-442f-8e5f-4566c229f3cd.jpeg?rect=0%2C0%2C3156%2C2222&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="In Braunschweig erzielte Moritz-Broni Kwarteng den Führungstreffer für den 1. FC Magdeburg.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Gegnercheck</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">FCM-Gegner FC Hansa Rostock – Die Angeschlagenen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> 2. Bundesliga</h4>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Kwarteng steht tatsächlich in der FCM-Startelf</h3>
             </a>
         </article>
 <div id="nativendo-nativendo-infeed"></div>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/1-fc-magdeburg/fcm-gegen-hansa-so-konnte-magdeburg-aufstellen-3577700">
+            <a href="/sport/1-fc-magdeburg/fcm-alles-wichtige-vor-dem-kracher-gegen-den-hsv-3598705">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/29/64a86473-b9e2-44ee-9efa-957fb882d583.jpeg?rect=0%2C0%2C1667%2C1112&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/29/64a86473-b9e2-44ee-9efa-957fb882d583.jpeg?rect=0%2C0%2C1667%2C1112&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/29/64a86473-b9e2-44ee-9efa-957fb882d583.jpeg?rect=0%2C0%2C1667%2C1112&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/29/64a86473-b9e2-44ee-9efa-957fb882d583.jpeg?rect=0%2C0%2C1667%2C1112&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/29/64a86473-b9e2-44ee-9efa-957fb882d583.jpeg?rect=0%2C0%2C1667%2C1112&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/29/64a86473-b9e2-44ee-9efa-957fb882d583.jpeg?rect=0%2C0%2C1667%2C1112&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/29/64a86473-b9e2-44ee-9efa-957fb882d583.jpeg?rect=0%2C0%2C1667%2C1112&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wie wird FCM-Cheftrainer Christian Titz gegen Hansa Rostock aufstellen?">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/28/3fd0088f-9f9c-4137-a65b-9c92c7cf2452.jpeg?rect=98%2C229%2C2905%2C1146&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/28/3fd0088f-9f9c-4137-a65b-9c92c7cf2452.jpeg?rect=98%2C229%2C2905%2C1146&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/28/3fd0088f-9f9c-4137-a65b-9c92c7cf2452.jpeg?rect=98%2C229%2C2905%2C1146&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/28/3fd0088f-9f9c-4137-a65b-9c92c7cf2452.jpeg?rect=98%2C229%2C2905%2C1146&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/28/3fd0088f-9f9c-4137-a65b-9c92c7cf2452.jpeg?rect=98%2C229%2C2905%2C1146&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/28/3fd0088f-9f9c-4137-a65b-9c92c7cf2452.jpeg?rect=98%2C229%2C2905%2C1146&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/28/3fd0088f-9f9c-4137-a65b-9c92c7cf2452.jpeg?rect=98%2C229%2C2905%2C1146&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Mehr als 9000 mitgereiste Fans des 1. FC Magdeburg sorgten im Hinspiel in Hamburg für Gänsehaut-Stimmung. Verdammt laut wird es sicherlich auch an diesem Sonnabend in der MDCC-Arena. ">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> 2. Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">FCM gegen Hansa: So könnte Magdeburg aufstellen</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">FCM: Alles Wichtige vor dem Kracher gegen den HSV</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/1-fc-magdeburg/tatsuya-ito-mochte-beim-fcm-bleiben-3577752">
+            <a href="/sport/1-fc-magdeburg/das-sagt-trainer-christian-titz-zum-restprogramm-des-fcm-3597758">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/29/76308806-cc8e-4865-b2e1-34d7d371a228.jpeg?rect=13%2C71%2C1077%2C698&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/29/76308806-cc8e-4865-b2e1-34d7d371a228.jpeg?rect=13%2C71%2C1077%2C698&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/29/76308806-cc8e-4865-b2e1-34d7d371a228.jpeg?rect=13%2C71%2C1077%2C698&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/29/76308806-cc8e-4865-b2e1-34d7d371a228.jpeg?rect=13%2C71%2C1077%2C698&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/29/76308806-cc8e-4865-b2e1-34d7d371a228.jpeg?rect=13%2C71%2C1077%2C698&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/29/76308806-cc8e-4865-b2e1-34d7d371a228.jpeg?rect=13%2C71%2C1077%2C698&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/29/76308806-cc8e-4865-b2e1-34d7d371a228.jpeg?rect=13%2C71%2C1077%2C698&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Auch künftig will Tatsuya Ito für Blau-Weiß dribbeln. ">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/27/dfc55a5d-fb4a-4148-b875-fd13e3fe6c42.jpeg?rect=0%2C3%2C4000%2C2470&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/27/dfc55a5d-fb4a-4148-b875-fd13e3fe6c42.jpeg?rect=0%2C3%2C4000%2C2470&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/27/dfc55a5d-fb4a-4148-b875-fd13e3fe6c42.jpeg?rect=0%2C3%2C4000%2C2470&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/27/dfc55a5d-fb4a-4148-b875-fd13e3fe6c42.jpeg?rect=0%2C3%2C4000%2C2470&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/27/dfc55a5d-fb4a-4148-b875-fd13e3fe6c42.jpeg?rect=0%2C3%2C4000%2C2470&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/27/dfc55a5d-fb4a-4148-b875-fd13e3fe6c42.jpeg?rect=0%2C3%2C4000%2C2470&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/27/dfc55a5d-fb4a-4148-b875-fd13e3fe6c42.jpeg?rect=0%2C3%2C4000%2C2470&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Trifft mit dem 1. FC Magdeburg auf seinen ehemaligen Verein, den heute Trainerkollege Tim Walter (l.) betreut: Christian Titz. Für den 52-Jährigen und den FCM geht es gegen den Hamburger SV.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> 2. Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Tatsuya Ito möchte beim FCM bleiben</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Das sagt Trainer Christian Titz zum Restprogramm des FCM</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/1-fc-magdeburg/die-hintergrunde-zu-atiks-vertragsverlangerung-3576942">
+            <a href="/sport/1-fc-magdeburg/2-bundesliga-fcm-gegen-hsv-titz-freut-sich-auf-rekordkulisse-in-magdeburg-3595584">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/29/72fb2536-c281-4632-a3a4-440f9d78204b.jpeg?rect=207%2C0%2C2382%2C2000&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/29/72fb2536-c281-4632-a3a4-440f9d78204b.jpeg?rect=207%2C0%2C2382%2C2000&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/29/72fb2536-c281-4632-a3a4-440f9d78204b.jpeg?rect=207%2C0%2C2382%2C2000&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/29/72fb2536-c281-4632-a3a4-440f9d78204b.jpeg?rect=207%2C0%2C2382%2C2000&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/29/72fb2536-c281-4632-a3a4-440f9d78204b.jpeg?rect=207%2C0%2C2382%2C2000&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/29/72fb2536-c281-4632-a3a4-440f9d78204b.jpeg?rect=207%2C0%2C2382%2C2000&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/29/72fb2536-c281-4632-a3a4-440f9d78204b.jpeg?rect=207%2C0%2C2382%2C2000&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Offensivspieler Baris Atik hat seine Unterschrift unter einen neuen Kontrakt beim 1. FC Magdeburg gesetzt. Dies ist gerade zu diesem Zeitpunkt ein echtes Zeichen. ">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/25/eda755a7-d667-4ac1-80d5-ef9de61152c7.jpeg?rect=0%2C173%2C3000%2C1687&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/25/eda755a7-d667-4ac1-80d5-ef9de61152c7.jpeg?rect=0%2C173%2C3000%2C1687&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/25/eda755a7-d667-4ac1-80d5-ef9de61152c7.jpeg?rect=0%2C173%2C3000%2C1687&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/25/eda755a7-d667-4ac1-80d5-ef9de61152c7.jpeg?rect=0%2C173%2C3000%2C1687&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/25/eda755a7-d667-4ac1-80d5-ef9de61152c7.jpeg?rect=0%2C173%2C3000%2C1687&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/25/eda755a7-d667-4ac1-80d5-ef9de61152c7.jpeg?rect=0%2C173%2C3000%2C1687&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/25/eda755a7-d667-4ac1-80d5-ef9de61152c7.jpeg?rect=0%2C173%2C3000%2C1687&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Christian Titz freut sich auf das Spiel seines 1. FC Magdeburgs. Es geht gegen den Favoriten Hamburger SV.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> 2. Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Die Hintergründe zu Atiks Vertragsverlängerung</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">FCM gegen HSV: Titz freut sich auf Rekordkulisse in Magdeburg</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/1-fc-magdeburg/baris-atik-vertragsverlaengerung-mit-fcm-magdeburg-bindet-offensiv-star-3576452">
+            <a href="/sport/1-fc-magdeburg/2-bundesliga-fcm-gegner-hamburger-sv-der-grosse-favorit-3595567">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/28/693e4001-8662-4c0c-a781-0a468032a8d4.jpeg?rect=502%2C1%2C3000%2C1687&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/28/693e4001-8662-4c0c-a781-0a468032a8d4.jpeg?rect=502%2C1%2C3000%2C1687&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/28/693e4001-8662-4c0c-a781-0a468032a8d4.jpeg?rect=502%2C1%2C3000%2C1687&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/28/693e4001-8662-4c0c-a781-0a468032a8d4.jpeg?rect=502%2C1%2C3000%2C1687&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/28/693e4001-8662-4c0c-a781-0a468032a8d4.jpeg?rect=502%2C1%2C3000%2C1687&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/28/693e4001-8662-4c0c-a781-0a468032a8d4.jpeg?rect=502%2C1%2C3000%2C1687&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/28/693e4001-8662-4c0c-a781-0a468032a8d4.jpeg?rect=502%2C1%2C3000%2C1687&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Magdeburgs Trainer Christian Titz mit Baris Atik und FCM-Sportchef Otmar Schork.&amp;nbsp;">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/25/6641dad3-6aa2-48a9-8f6f-752eb523b3cf.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/25/6641dad3-6aa2-48a9-8f6f-752eb523b3cf.jpeg?rect=0%2C209%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/25/6641dad3-6aa2-48a9-8f6f-752eb523b3cf.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/25/6641dad3-6aa2-48a9-8f6f-752eb523b3cf.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/25/6641dad3-6aa2-48a9-8f6f-752eb523b3cf.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/25/6641dad3-6aa2-48a9-8f6f-752eb523b3cf.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/25/6641dad3-6aa2-48a9-8f6f-752eb523b3cf.jpeg?rect=0%2C209%2C4000%2C2250&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Tim Walter (l.), muss mit seinem HSV gegen den 1. FC Magdeburg auswärts antreten - FCM-Cheftrainer Christian Titz wird sich seinen Gegner genau angeschaut haben.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Fußball</h4>
-                <h3 class="fp-article__title text-xl--bold ">FCM: Baris Atik verlängert Vertrag beim 1. FC Magdeburg</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> 2. Bundesliga</h4>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">FCM-Gegner Hamburger SV – Der große Favorit</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/1-fc-magdeburg/so-ist-derzeit-die-personelle-lage-beim-fcm-3576185">
+            <a href="/sport/1-fc-magdeburg/fcm-gegen-den-hsv-so-konnte-magdeburg-aufstellen-3596775">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/27/cd00ec2a-1d66-4a7b-a746-252ad723acc7.jpeg?rect=86%2C87%2C2801%2C1434&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/27/cd00ec2a-1d66-4a7b-a746-252ad723acc7.jpeg?rect=86%2C87%2C2801%2C1434&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/27/cd00ec2a-1d66-4a7b-a746-252ad723acc7.jpeg?rect=86%2C87%2C2801%2C1434&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/27/cd00ec2a-1d66-4a7b-a746-252ad723acc7.jpeg?rect=86%2C87%2C2801%2C1434&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/27/cd00ec2a-1d66-4a7b-a746-252ad723acc7.jpeg?rect=86%2C87%2C2801%2C1434&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/27/cd00ec2a-1d66-4a7b-a746-252ad723acc7.jpeg?rect=86%2C87%2C2801%2C1434&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/27/cd00ec2a-1d66-4a7b-a746-252ad723acc7.jpeg?rect=86%2C87%2C2801%2C1434&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nach drei Tagen, an denen die Profis individuell arbeiteten, kehrten sie am Montag auf den Trainingsplatz zurück. ">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/26/206c60f1-6120-4edc-adbd-d208f0e1fcf4.jpeg?rect=0%2C87%2C1667%2C938&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/26/206c60f1-6120-4edc-adbd-d208f0e1fcf4.jpeg?rect=0%2C87%2C1667%2C938&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/26/206c60f1-6120-4edc-adbd-d208f0e1fcf4.jpeg?rect=0%2C87%2C1667%2C938&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/26/206c60f1-6120-4edc-adbd-d208f0e1fcf4.jpeg?rect=0%2C87%2C1667%2C938&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/26/206c60f1-6120-4edc-adbd-d208f0e1fcf4.jpeg?rect=0%2C87%2C1667%2C938&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/26/206c60f1-6120-4edc-adbd-d208f0e1fcf4.jpeg?rect=0%2C87%2C1667%2C938&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/26/206c60f1-6120-4edc-adbd-d208f0e1fcf4.jpeg?rect=0%2C87%2C1667%2C938&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wie wird FCM-Cheftrainer gegen den Hamburger SV aufstellen?">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> 2. Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">So ist derzeit die personelle Lage beim FCM</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">FCM gegen den HSV: So könnte Magdeburg aufstellen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/1-fc-magdeburg/nach-der-degradierung-beim-fcm-so-lief-scienzas-erster-auftritt-bei-der-u23-3575444">
+            <a href="/sport/1-fc-magdeburg/ito-ist-der-dauerbrenner-des-fcm-3596809">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/26/57e2e3a2-76c5-4323-91cf-151c5993eead.jpeg?rect=996%2C161%2C3000%2C1721&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/26/57e2e3a2-76c5-4323-91cf-151c5993eead.jpeg?rect=996%2C161%2C3000%2C1721&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/26/57e2e3a2-76c5-4323-91cf-151c5993eead.jpeg?rect=996%2C161%2C3000%2C1721&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/26/57e2e3a2-76c5-4323-91cf-151c5993eead.jpeg?rect=996%2C161%2C3000%2C1721&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/26/57e2e3a2-76c5-4323-91cf-151c5993eead.jpeg?rect=996%2C161%2C3000%2C1721&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/26/57e2e3a2-76c5-4323-91cf-151c5993eead.jpeg?rect=996%2C161%2C3000%2C1721&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/26/57e2e3a2-76c5-4323-91cf-151c5993eead.jpeg?rect=996%2C161%2C3000%2C1721&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wechselte im vergangenen Sommer vom FC Schalke 04 II zum FCM: Leonardo Scienza.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/26/fb0a218f-0e35-44ae-9c62-ad99fcb8c66b.jpeg?rect=0%2C200%2C3783%2C1889&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/26/fb0a218f-0e35-44ae-9c62-ad99fcb8c66b.jpeg?rect=0%2C200%2C3783%2C1889&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/26/fb0a218f-0e35-44ae-9c62-ad99fcb8c66b.jpeg?rect=0%2C200%2C3783%2C1889&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/26/fb0a218f-0e35-44ae-9c62-ad99fcb8c66b.jpeg?rect=0%2C200%2C3783%2C1889&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/26/fb0a218f-0e35-44ae-9c62-ad99fcb8c66b.jpeg?rect=0%2C200%2C3783%2C1889&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/26/fb0a218f-0e35-44ae-9c62-ad99fcb8c66b.jpeg?rect=0%2C200%2C3783%2C1889&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/26/fb0a218f-0e35-44ae-9c62-ad99fcb8c66b.jpeg?rect=0%2C200%2C3783%2C1889&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Offensivakteur Tatsuya Ito trug mit seinem Traumtor am Sonnabend maßgeblich zum Sieg des 1. FC Magdeburg  in Braunschweig bei. ">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> 2. Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Nach der Degradierung beim FCM: So lief Scienzas erster Auftritt bei der U23</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Ito ist der Dauerbrenner des FCM</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/1-fc-magdeburg/fcm-otmar-schork-bastelt-am-kunfigen-kader-des-1-fc-magdeburg-3574509">
+            <a href="/sport/1-fc-magdeburg/scienza-nach-suspendierung-zuruck-im-fcm-training-3596812">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/24/71f1a2d1-b6b9-4fc1-a71f-d80b01b25de6.jpeg?rect=0%2C58%2C1812%2C1299&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/24/71f1a2d1-b6b9-4fc1-a71f-d80b01b25de6.jpeg?rect=0%2C58%2C1812%2C1299&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/24/71f1a2d1-b6b9-4fc1-a71f-d80b01b25de6.jpeg?rect=0%2C58%2C1812%2C1299&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/24/71f1a2d1-b6b9-4fc1-a71f-d80b01b25de6.jpeg?rect=0%2C58%2C1812%2C1299&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/24/71f1a2d1-b6b9-4fc1-a71f-d80b01b25de6.jpeg?rect=0%2C58%2C1812%2C1299&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/24/71f1a2d1-b6b9-4fc1-a71f-d80b01b25de6.jpeg?rect=0%2C58%2C1812%2C1299&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/24/71f1a2d1-b6b9-4fc1-a71f-d80b01b25de6.jpeg?rect=0%2C58%2C1812%2C1299&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Seit dem 7. November 2020 beim FCM tätig: Otmar Schork. Der 65-Jährige fungierte als Sportdirektor, nun ist er Geschäftsführer.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/26/8c0481ee-3539-4ce9-bcab-c03e2609f239.jpeg?rect=16%2C3%2C3980%2C2169&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/26/8c0481ee-3539-4ce9-bcab-c03e2609f239.jpeg?rect=16%2C3%2C3980%2C2169&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/26/8c0481ee-3539-4ce9-bcab-c03e2609f239.jpeg?rect=16%2C3%2C3980%2C2169&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/26/8c0481ee-3539-4ce9-bcab-c03e2609f239.jpeg?rect=16%2C3%2C3980%2C2169&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/26/8c0481ee-3539-4ce9-bcab-c03e2609f239.jpeg?rect=16%2C3%2C3980%2C2169&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/26/8c0481ee-3539-4ce9-bcab-c03e2609f239.jpeg?rect=16%2C3%2C3980%2C2169&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/26/8c0481ee-3539-4ce9-bcab-c03e2609f239.jpeg?rect=16%2C3%2C3980%2C2169&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="In den vergangenen Wochen nahm Leonardo Scienza nicht mehr an den Einheiten der Zweitliga-Mannschaft des 1. FC Magdeburg teil. ">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> 2. Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">FCM: Otmar Schork bastelt am künfigen Kader des 1. FC Magdeburg</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Scienza nach Suspendierung zurück im FCM-Training</h3>
             </a>
         </article>
 </div>
@@ -1501,93 +1539,93 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/sc-magdeburg/warum-damgaard-den-scm-fur-die-weitere-titeljagd-gerustet-sieht-3579573">
+            <a href="/sport/sc-magdeburg/sc-magdeburg-mit-torewerfen-gegen-den-frust-3595494">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/31/ae9f73e0-513d-4efa-b733-f178370788a6.jpeg?rect=0%2C132%2C1939%2C1418&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/31/ae9f73e0-513d-4efa-b733-f178370788a6.jpeg?rect=0%2C132%2C1939%2C1418&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/31/ae9f73e0-513d-4efa-b733-f178370788a6.jpeg?rect=0%2C132%2C1939%2C1418&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/31/ae9f73e0-513d-4efa-b733-f178370788a6.jpeg?rect=0%2C132%2C1939%2C1418&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/31/ae9f73e0-513d-4efa-b733-f178370788a6.jpeg?rect=0%2C132%2C1939%2C1418&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/31/ae9f73e0-513d-4efa-b733-f178370788a6.jpeg?rect=0%2C132%2C1939%2C1418&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/31/ae9f73e0-513d-4efa-b733-f178370788a6.jpeg?rect=0%2C132%2C1939%2C1418&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Michael Damgaard (am Ball/gegen Tom Kiesler vom VfL Gummersbach) ist längst nicht titelsatt. Drei Chancen auf eine Trophäe winken ihm und dem SCM noch in dieser Saison.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/25/5c1ab3a4-f2cc-4231-a58b-bc1036e4e6da.jpeg?rect=0%2C13%2C1504%2C1190&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/25/5c1ab3a4-f2cc-4231-a58b-bc1036e4e6da.jpeg?rect=0%2C13%2C1504%2C1190&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/25/5c1ab3a4-f2cc-4231-a58b-bc1036e4e6da.jpeg?rect=0%2C13%2C1504%2C1190&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/25/5c1ab3a4-f2cc-4231-a58b-bc1036e4e6da.jpeg?rect=0%2C13%2C1504%2C1190&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/25/5c1ab3a4-f2cc-4231-a58b-bc1036e4e6da.jpeg?rect=0%2C13%2C1504%2C1190&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/25/5c1ab3a4-f2cc-4231-a58b-bc1036e4e6da.jpeg?rect=0%2C13%2C1504%2C1190&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/25/5c1ab3a4-f2cc-4231-a58b-bc1036e4e6da.jpeg?rect=0%2C13%2C1504%2C1190&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Gisli Kristjansson hat in der aktuellen Bundesliga-Saison bisher 137 Tore und 93 Assists auf dem Konto. ">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Warum Damgaard den SCM für die weitere Titeljagd gerüstet sieht</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SC Magdeburg mit Torewerfen gegen den Frust</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/sc-magdeburg/melsungen-als-schwere-auswartshurde-fur-den-sc-magdeburg-3579057">
+            <a href="/sport/sc-magdeburg/sieben-scm-spieler-bei-ihren-nationalteams-3596019">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/31/e4a82899-1744-4009-9705-16ade0d1db51.jpeg?rect=0%2C135%2C2139%2C1048&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/31/e4a82899-1744-4009-9705-16ade0d1db51.jpeg?rect=0%2C135%2C2139%2C1048&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/31/e4a82899-1744-4009-9705-16ade0d1db51.jpeg?rect=0%2C135%2C2139%2C1048&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/31/e4a82899-1744-4009-9705-16ade0d1db51.jpeg?rect=0%2C135%2C2139%2C1048&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/31/e4a82899-1744-4009-9705-16ade0d1db51.jpeg?rect=0%2C135%2C2139%2C1048&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/31/e4a82899-1744-4009-9705-16ade0d1db51.jpeg?rect=0%2C135%2C2139%2C1048&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/31/e4a82899-1744-4009-9705-16ade0d1db51.jpeg?rect=0%2C135%2C2139%2C1048&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Beim 27:23-Sieg des SCM in der Hinrunde wird  Melsungens Kai Häfner hier von Marko Bezjak abgeblockt. Christian O’Sullivan und Mike Jensen im Tor stehen bereit, um einzugreifen. ">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/25/9171c38f-b034-4c25-8834-e56f5b56998e.jpeg?rect=0%2C145%2C3392%2C1832&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/25/9171c38f-b034-4c25-8834-e56f5b56998e.jpeg?rect=0%2C145%2C3392%2C1832&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/25/9171c38f-b034-4c25-8834-e56f5b56998e.jpeg?rect=0%2C145%2C3392%2C1832&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/25/9171c38f-b034-4c25-8834-e56f5b56998e.jpeg?rect=0%2C145%2C3392%2C1832&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/25/9171c38f-b034-4c25-8834-e56f5b56998e.jpeg?rect=0%2C145%2C3392%2C1832&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/25/9171c38f-b034-4c25-8834-e56f5b56998e.jpeg?rect=0%2C145%2C3392%2C1832&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/25/9171c38f-b034-4c25-8834-e56f5b56998e.jpeg?rect=0%2C145%2C3392%2C1832&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="SCM-Linksaußen Lukas Mertens will am Donnerstagabend im DHB-Trikot gegen Schweden jubeln.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Melsungen als schwere Auswärtshürde für den SC Magdeburg</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Sieben SCM-Spieler bei ihren Nationalteams</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/sc-magdeburg/sc-magdeburg-im-viertelfinale-gegen-plock-3577822">
+            <a href="/sport/sc-magdeburg/jensen-uberragt-im-tor-des-sc-magdeburg-3594391">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/29/df11f818-ee8d-4120-b36f-b138011a6f22.jpeg?rect=1%2C89%2C726%2C450&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/29/df11f818-ee8d-4120-b36f-b138011a6f22.jpeg?rect=1%2C89%2C726%2C450&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/29/df11f818-ee8d-4120-b36f-b138011a6f22.jpeg?rect=1%2C89%2C726%2C450&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/29/df11f818-ee8d-4120-b36f-b138011a6f22.jpeg?rect=1%2C89%2C726%2C450&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/29/df11f818-ee8d-4120-b36f-b138011a6f22.jpeg?rect=1%2C89%2C726%2C450&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/29/df11f818-ee8d-4120-b36f-b138011a6f22.jpeg?rect=1%2C89%2C726%2C450&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/29/df11f818-ee8d-4120-b36f-b138011a6f22.jpeg?rect=1%2C89%2C726%2C450&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Matthias Musche beim Wurf im letzten Gruppenspiel des SC Magdeburg gegen Dinamo  Bukarest. ">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/23/eaa3f40e-c115-4626-8892-fa2e971575c7.jpeg?rect=0%2C161%2C2193%2C1105&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/23/eaa3f40e-c115-4626-8892-fa2e971575c7.jpeg?rect=0%2C161%2C2193%2C1105&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/23/eaa3f40e-c115-4626-8892-fa2e971575c7.jpeg?rect=0%2C161%2C2193%2C1105&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/23/eaa3f40e-c115-4626-8892-fa2e971575c7.jpeg?rect=0%2C161%2C2193%2C1105&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/23/eaa3f40e-c115-4626-8892-fa2e971575c7.jpeg?rect=0%2C161%2C2193%2C1105&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/23/eaa3f40e-c115-4626-8892-fa2e971575c7.jpeg?rect=0%2C161%2C2193%2C1105&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/23/eaa3f40e-c115-4626-8892-fa2e971575c7.jpeg?rect=0%2C161%2C2193%2C1105&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Mike Jensen war beim Sieg gegen Hannover ein großer Rückhalt im SCM-Tor. Hier macht er sich gegen Justus Fischer breit.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SC Magdeburg im Viertelfinale gegen Plock</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Jensen überragt im Tor des SC Magdeburg</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/sc-magdeburg/warum-gisli-kristjansson-beim-scm-bis-2028-verlangert-hat-3576223">
+            <a href="/sport/sc-magdeburg/sc-magdeburg-muss-sich-gegen-die-recken-richtig-strecken-3593805">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/27/2d1fac8d-6c65-4984-8187-03adf76e6abd.jpeg?rect=0%2C0%2C4000%2C2705&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/27/2d1fac8d-6c65-4984-8187-03adf76e6abd.jpeg?rect=0%2C0%2C4000%2C2705&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/27/2d1fac8d-6c65-4984-8187-03adf76e6abd.jpeg?rect=0%2C0%2C4000%2C2705&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/27/2d1fac8d-6c65-4984-8187-03adf76e6abd.jpeg?rect=0%2C0%2C4000%2C2705&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/27/2d1fac8d-6c65-4984-8187-03adf76e6abd.jpeg?rect=0%2C0%2C4000%2C2705&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/27/2d1fac8d-6c65-4984-8187-03adf76e6abd.jpeg?rect=0%2C0%2C4000%2C2705&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/27/2d1fac8d-6c65-4984-8187-03adf76e6abd.jpeg?rect=0%2C0%2C4000%2C2705&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wechselte 2020 vom THW Kiel zum SC Magdeburg: Gisli Kristjansson.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/22/4716f104-7eae-4134-b6d9-a1af8a96f519.jpeg?rect=7%2C183%2C2185%2C1234&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/22/4716f104-7eae-4134-b6d9-a1af8a96f519.jpeg?rect=7%2C183%2C2185%2C1234&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/22/4716f104-7eae-4134-b6d9-a1af8a96f519.jpeg?rect=7%2C183%2C2185%2C1234&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/22/4716f104-7eae-4134-b6d9-a1af8a96f519.jpeg?rect=7%2C183%2C2185%2C1234&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/22/4716f104-7eae-4134-b6d9-a1af8a96f519.jpeg?rect=7%2C183%2C2185%2C1234&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/22/4716f104-7eae-4134-b6d9-a1af8a96f519.jpeg?rect=7%2C183%2C2185%2C1234&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/22/4716f104-7eae-4134-b6d9-a1af8a96f519.jpeg?rect=7%2C183%2C2185%2C1234&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="So wollen die SCM-Fans  Daniel Pettersson, Bennet Wiegert, Matthias Musche (v. l.) und Co.  morgen gegen Hannover-Burgdorf wieder  jubeln sehen. ">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Warum Gisli Kristjansson beim SCM bis 2028 verlängert hat</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SC Magdeburg muss sich gegen die Recken richtig strecken</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/sc-magdeburg/scm-fegt-gummersbach-aus-der-getec-arena-3575377">
+            <a href="/sport/sc-magdeburg/scm-legt-fokus-nach-pokal-auf-die-bundesliga-und-champions-league-3592525">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/26/bb50e4b2-2b84-4128-94e9-9cb2e903358b.jpeg?rect=0%2C273%2C4000%2C2432&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/26/bb50e4b2-2b84-4128-94e9-9cb2e903358b.jpeg?rect=0%2C273%2C4000%2C2432&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/26/bb50e4b2-2b84-4128-94e9-9cb2e903358b.jpeg?rect=0%2C273%2C4000%2C2432&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/26/bb50e4b2-2b84-4128-94e9-9cb2e903358b.jpeg?rect=0%2C273%2C4000%2C2432&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/26/bb50e4b2-2b84-4128-94e9-9cb2e903358b.jpeg?rect=0%2C273%2C4000%2C2432&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/26/bb50e4b2-2b84-4128-94e9-9cb2e903358b.jpeg?rect=0%2C273%2C4000%2C2432&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/26/bb50e4b2-2b84-4128-94e9-9cb2e903358b.jpeg?rect=0%2C273%2C4000%2C2432&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Gisli Kristjansson hatte nach dem Spiel noch eine frohe Botschaft zu verkünden.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/20/20846743-4a23-4316-94cd-72415b5c53e0.jpeg?rect=467%2C204%2C2172%2C1222&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/20/20846743-4a23-4316-94cd-72415b5c53e0.jpeg?rect=467%2C204%2C2172%2C1222&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/20/20846743-4a23-4316-94cd-72415b5c53e0.jpeg?rect=467%2C204%2C2172%2C1222&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/20/20846743-4a23-4316-94cd-72415b5c53e0.jpeg?rect=467%2C204%2C2172%2C1222&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/20/20846743-4a23-4316-94cd-72415b5c53e0.jpeg?rect=467%2C204%2C2172%2C1222&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/20/20846743-4a23-4316-94cd-72415b5c53e0.jpeg?rect=467%2C204%2C2172%2C1222&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/20/20846743-4a23-4316-94cd-72415b5c53e0.jpeg?rect=467%2C204%2C2172%2C1222&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der SC Magdeburg hat die Pokalniederlage gegen die Rhein-Neckar Löwen verarbeitet. Künftig wollen die Grün-Roten nach den Spielen wieder jubeln.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SCM fegt Gummersbach aus der Getec-Arena</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SCM legt Fokus nach Pokal auf die Bundesliga und Champions League</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/sc-magdeburg/der-scm-ist-vor-dem-vfl-gummersbach-gewarnt-3574518">
+            <a href="/sport/sc-magdeburg/scm-kreislaufer-meister-ruckt-in-neue-rolle-3590807">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/24/5a7c3c04-1a41-4261-8604-064a47f0414c.jpeg?rect=160%2C11%2C3840%2C2318&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/24/5a7c3c04-1a41-4261-8604-064a47f0414c.jpeg?rect=160%2C11%2C3840%2C2318&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/24/5a7c3c04-1a41-4261-8604-064a47f0414c.jpeg?rect=160%2C11%2C3840%2C2318&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/24/5a7c3c04-1a41-4261-8604-064a47f0414c.jpeg?rect=160%2C11%2C3840%2C2318&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/24/5a7c3c04-1a41-4261-8604-064a47f0414c.jpeg?rect=160%2C11%2C3840%2C2318&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/24/5a7c3c04-1a41-4261-8604-064a47f0414c.jpeg?rect=160%2C11%2C3840%2C2318&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/24/5a7c3c04-1a41-4261-8604-064a47f0414c.jpeg?rect=160%2C11%2C3840%2C2318&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Seit 2015 Trainer des SC Magdeburg: Bennet Wiegert.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/18/82b076b8-7290-454c-8a69-208bd87fa155.jpeg?rect=732%2C0%2C2560%2C1440&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/18/82b076b8-7290-454c-8a69-208bd87fa155.jpeg?rect=732%2C0%2C2560%2C1440&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/18/82b076b8-7290-454c-8a69-208bd87fa155.jpeg?rect=732%2C0%2C2560%2C1440&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/18/82b076b8-7290-454c-8a69-208bd87fa155.jpeg?rect=732%2C0%2C2560%2C1440&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/18/82b076b8-7290-454c-8a69-208bd87fa155.jpeg?rect=732%2C0%2C2560%2C1440&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/18/82b076b8-7290-454c-8a69-208bd87fa155.jpeg?rect=732%2C0%2C2560%2C1440&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/18/82b076b8-7290-454c-8a69-208bd87fa155.jpeg?rect=732%2C0%2C2560%2C1440&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Lucas Meister überzeugte im DHB-Pokalfinale gegen die Rhein-Neckar Löwen. Auf dem Kreisläufer wird in den kommenden Spielen viel Verantwortung lasten.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Der SCM ist vor dem VfL Gummersbach gewarnt</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SCM-Kreisläufer Meister rückt in neue Rolle</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/sc-magdeburg/diesen-wunsch-will-sich-piotr-chrapkowski-mit-dem-scm-erfullen-3572789">
+            <a href="/sport/sc-magdeburg/scm-handballer-o-sullivan-weiter-ohne-gluck-im-dhb-pokal-3590285">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/23/3b6230f4-ad65-4405-b441-fc4b812b0109.jpeg?rect=137%2C94%2C2075%2C1372&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/23/3b6230f4-ad65-4405-b441-fc4b812b0109.jpeg?rect=137%2C94%2C2075%2C1372&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/23/3b6230f4-ad65-4405-b441-fc4b812b0109.jpeg?rect=137%2C94%2C2075%2C1372&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/23/3b6230f4-ad65-4405-b441-fc4b812b0109.jpeg?rect=137%2C94%2C2075%2C1372&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/23/3b6230f4-ad65-4405-b441-fc4b812b0109.jpeg?rect=137%2C94%2C2075%2C1372&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/23/3b6230f4-ad65-4405-b441-fc4b812b0109.jpeg?rect=137%2C94%2C2075%2C1372&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/23/3b6230f4-ad65-4405-b441-fc4b812b0109.jpeg?rect=137%2C94%2C2075%2C1372&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Piotr Chrapkowski (l.) wird die Getec-Arena vermissen. Doch bis es so weit ist, kämpft der 35-jährige Abwehrrecke mit dem SCM noch um drei Titel in dieser Saison.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/18/437d8cba-3197-46fe-bffb-8ea50be8fa6a.jpeg?rect=0%2C80%2C4000%2C1944&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/18/437d8cba-3197-46fe-bffb-8ea50be8fa6a.jpeg?rect=0%2C80%2C4000%2C1944&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/18/437d8cba-3197-46fe-bffb-8ea50be8fa6a.jpeg?rect=0%2C80%2C4000%2C1944&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/18/437d8cba-3197-46fe-bffb-8ea50be8fa6a.jpeg?rect=0%2C80%2C4000%2C1944&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/18/437d8cba-3197-46fe-bffb-8ea50be8fa6a.jpeg?rect=0%2C80%2C4000%2C1944&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/18/437d8cba-3197-46fe-bffb-8ea50be8fa6a.jpeg?rect=0%2C80%2C4000%2C1944&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/18/437d8cba-3197-46fe-bffb-8ea50be8fa6a.jpeg?rect=0%2C80%2C4000%2C1944&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Christian O’Sullivan schiebt beim SCM zum vierten Mal Pokal-Frust.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Final 4</h4>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SCM-Handballer O'Sullivan weiter ohne Glück im DHB-Pokal</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/sc-magdeburg/scm-scheitert-im-nerven-krimi-3589330">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/17/70dd643a-3da3-419f-926c-babbb2a95e87.jpeg?rect=50%2C50%2C1374%2C787&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/17/70dd643a-3da3-419f-926c-babbb2a95e87.jpeg?rect=50%2C50%2C1374%2C787&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/17/70dd643a-3da3-419f-926c-babbb2a95e87.jpeg?rect=50%2C50%2C1374%2C787&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/17/70dd643a-3da3-419f-926c-babbb2a95e87.jpeg?rect=50%2C50%2C1374%2C787&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/17/70dd643a-3da3-419f-926c-babbb2a95e87.jpeg?rect=50%2C50%2C1374%2C787&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/17/70dd643a-3da3-419f-926c-babbb2a95e87.jpeg?rect=50%2C50%2C1374%2C787&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/17/70dd643a-3da3-419f-926c-babbb2a95e87.jpeg?rect=50%2C50%2C1374%2C787&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Kay Smits (r.) war beim Final 4 in Köln mit 21 Treffern der beste Torschüze.  Zudem traf er im Siebenmeterwerfen.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> DHB-Pokal</h4>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SCM scheitert im Nerven-Krimi</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/sc-magdeburg/handball-sc-magdeburg-gegen-rhein-necker-loewen-im-dhb-pokal-finale-3588851">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/16/443f1ce6-16d6-4a46-a5b2-1eab57b26a23.jpeg?rect=0%2C201%2C4000%2C2250&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/16/443f1ce6-16d6-4a46-a5b2-1eab57b26a23.jpeg?rect=0%2C201%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/16/443f1ce6-16d6-4a46-a5b2-1eab57b26a23.jpeg?rect=0%2C201%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/16/443f1ce6-16d6-4a46-a5b2-1eab57b26a23.jpeg?rect=0%2C201%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/16/443f1ce6-16d6-4a46-a5b2-1eab57b26a23.jpeg?rect=0%2C201%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/16/443f1ce6-16d6-4a46-a5b2-1eab57b26a23.jpeg?rect=0%2C201%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/16/443f1ce6-16d6-4a46-a5b2-1eab57b26a23.jpeg?rect=0%2C201%2C4000%2C2250&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Spieler des SC Magdeburg feiern den Einzug ins Finale des DHB-Pokals. Gegen die Rhein-Neckar Löwen soll am Sonntag auch der dritte Pokal-Triumph her. ">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Diesen Wunsch will sich Piotr Chrapkowski mit dem SCM erfüllen</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SC Magdeburg trotz Mini-Pause bereit für die Löwen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/sc-magdeburg/scm-landet-pflichtsieg-mit-torefest-3570539">
+            <a href="/sport/sc-magdeburg/scm-spielt-im-finale-gegen-rhein-neckar-lowen-um-den-dhb-pokal-3588803">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/19/f6786411-15d1-4c39-bb58-f2f8058a15e7.jpeg?rect=160%2C38%2C1967%2C1322&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/19/f6786411-15d1-4c39-bb58-f2f8058a15e7.jpeg?rect=160%2C38%2C1967%2C1322&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/19/f6786411-15d1-4c39-bb58-f2f8058a15e7.jpeg?rect=160%2C38%2C1967%2C1322&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/19/f6786411-15d1-4c39-bb58-f2f8058a15e7.jpeg?rect=160%2C38%2C1967%2C1322&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/19/f6786411-15d1-4c39-bb58-f2f8058a15e7.jpeg?rect=160%2C38%2C1967%2C1322&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/19/f6786411-15d1-4c39-bb58-f2f8058a15e7.jpeg?rect=160%2C38%2C1967%2C1322&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/19/f6786411-15d1-4c39-bb58-f2f8058a15e7.jpeg?rect=160%2C38%2C1967%2C1322&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Kay Smits war von Hamms Abwehr kaum zu stoppen und warf neun Tore beim Sieg des SCM. ">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Handball-Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SCM landet Pflichtsieg mit Torefest</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/sc-magdeburg/scm-handballer-fahren-mit-wut-im-bauch-zum-asv-hamm-westfalen-3569542">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/17/ad046d08-7a43-4342-9a8d-dd0af546d3b5.jpeg?rect=1%2C167%2C1339%2C833&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/17/ad046d08-7a43-4342-9a8d-dd0af546d3b5.jpeg?rect=1%2C167%2C1339%2C833&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/17/ad046d08-7a43-4342-9a8d-dd0af546d3b5.jpeg?rect=1%2C167%2C1339%2C833&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/17/ad046d08-7a43-4342-9a8d-dd0af546d3b5.jpeg?rect=1%2C167%2C1339%2C833&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/17/ad046d08-7a43-4342-9a8d-dd0af546d3b5.jpeg?rect=1%2C167%2C1339%2C833&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/17/ad046d08-7a43-4342-9a8d-dd0af546d3b5.jpeg?rect=1%2C167%2C1339%2C833&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/17/ad046d08-7a43-4342-9a8d-dd0af546d3b5.jpeg?rect=1%2C167%2C1339%2C833&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Enttäuscht waren die SCM-Profis  – wie Torwart Nikola Portner (2. v. l.) – nach ihrer schwachen Leistung in Hannover.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SCM-Handballer fahren mit Wut im Bauch zum ASV Hamm-Westfalen</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/sc-magdeburg/sc-magdeburg-stolpert-in-hannover-3568742">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/16/dab5cc25-24cf-4f0a-a2e5-1bbe0b30dc87.jpeg?rect=2%2C99%2C2282%2C1232&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/16/dab5cc25-24cf-4f0a-a2e5-1bbe0b30dc87.jpeg?rect=2%2C99%2C2282%2C1232&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/16/dab5cc25-24cf-4f0a-a2e5-1bbe0b30dc87.jpeg?rect=2%2C99%2C2282%2C1232&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/16/dab5cc25-24cf-4f0a-a2e5-1bbe0b30dc87.jpeg?rect=2%2C99%2C2282%2C1232&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/16/dab5cc25-24cf-4f0a-a2e5-1bbe0b30dc87.jpeg?rect=2%2C99%2C2282%2C1232&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/16/dab5cc25-24cf-4f0a-a2e5-1bbe0b30dc87.jpeg?rect=2%2C99%2C2282%2C1232&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/16/dab5cc25-24cf-4f0a-a2e5-1bbe0b30dc87.jpeg?rect=2%2C99%2C2282%2C1232&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Gisli Kristjansson (M.) musste mit dem SC Magdeburg eine schmerzhafte Niederlage einstecken. Bei Hannover-Burgdorf – hier Evgeni Pevnov (l.) und Petar Juric – verloren die Grün-Roten 31:34.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/15/bef28da6-c4a7-411e-862f-2fc71ecea236.jpeg?rect=248%2C0%2C3740%2C2110&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/15/bef28da6-c4a7-411e-862f-2fc71ecea236.jpeg?rect=248%2C0%2C3740%2C2110&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/15/bef28da6-c4a7-411e-862f-2fc71ecea236.jpeg?rect=248%2C0%2C3740%2C2110&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/15/bef28da6-c4a7-411e-862f-2fc71ecea236.jpeg?rect=248%2C0%2C3740%2C2110&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/15/bef28da6-c4a7-411e-862f-2fc71ecea236.jpeg?rect=248%2C0%2C3740%2C2110&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/15/bef28da6-c4a7-411e-862f-2fc71ecea236.jpeg?rect=248%2C0%2C3740%2C2110&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/15/bef28da6-c4a7-411e-862f-2fc71ecea236.jpeg?rect=248%2C0%2C3740%2C2110&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Philipp Weber meldete sich rechtzeitig zum Final 4 fit. Im Halbfinale gegen Lemgo erzielte er fünf Tore.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SC Magdeburg stolpert in Hannover</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SCM spielt im Finale gegen Rhein-Neckar Löwen um den DHB-Pokal</h3>
             </a>
         </article>
 </div>
@@ -1608,91 +1646,93 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/fussball/eintracht-auch-gegen-bochum-sieglos-3579620">
+            <a href="/sport/fussball/brych-verurteilt-anfeindungen-gegen-schiedsrichter-stegemann-3599575">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/31/f274a125-3924-4a7c-813d-b281cdb3f24a.jpeg?rect=0%2C80%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/31/f274a125-3924-4a7c-813d-b281cdb3f24a.jpeg?rect=0%2C80%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/31/f274a125-3924-4a7c-813d-b281cdb3f24a.jpeg?rect=0%2C80%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/31/f274a125-3924-4a7c-813d-b281cdb3f24a.jpeg?rect=0%2C80%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/31/f274a125-3924-4a7c-813d-b281cdb3f24a.jpeg?rect=0%2C80%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/31/f274a125-3924-4a7c-813d-b281cdb3f24a.jpeg?rect=0%2C80%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/31/f274a125-3924-4a7c-813d-b281cdb3f24a.jpeg?rect=0%2C80%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Mario Götze und die Eintracht kamen nicht über ein 1:1 gegen Bochum hinaus.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/30/bf1315e6-c34e-43c9-98c3-e94bd549c23f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/30/bf1315e6-c34e-43c9-98c3-e94bd549c23f.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/30/bf1315e6-c34e-43c9-98c3-e94bd549c23f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/30/bf1315e6-c34e-43c9-98c3-e94bd549c23f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/30/bf1315e6-c34e-43c9-98c3-e94bd549c23f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/30/bf1315e6-c34e-43c9-98c3-e94bd549c23f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/30/bf1315e6-c34e-43c9-98c3-e94bd549c23f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Schiedsrichter Felix Brych verurteilt die Anfeindungen gegen Sascha Stegemann.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> 26. Spieltag</h4>
-                <h3 class="fp-article__title text-xl--bold ">Eintracht auch gegen Bochum sieglos</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Bundesliga</h4>
+                <h3 class="fp-article__title text-xl--bold ">Brych verurteilt Anfeindungen gegen Schiedsrichter Stegemann</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/fussball/trainer-roger-schmidt-verlangert-vertrag-bei-benfica-3579616">
+            <a href="/sport/fussball/wolfsburg-stoppt-mainzer-serie-und-bleibt-im-europa-rennen-3599559">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/31/a67afed3-8746-4c74-ac6e-66276a8d9ff2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/31/a67afed3-8746-4c74-ac6e-66276a8d9ff2.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/31/a67afed3-8746-4c74-ac6e-66276a8d9ff2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/31/a67afed3-8746-4c74-ac6e-66276a8d9ff2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/31/a67afed3-8746-4c74-ac6e-66276a8d9ff2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/31/a67afed3-8746-4c74-ac6e-66276a8d9ff2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/31/a67afed3-8746-4c74-ac6e-66276a8d9ff2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Hat seinen Vertrag bei Benfica verlängert: Trainer Roger Schmidt.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/30/ab3a3d61-402d-45cf-9f73-346cf1fa5753.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/30/ab3a3d61-402d-45cf-9f73-346cf1fa5753.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/30/ab3a3d61-402d-45cf-9f73-346cf1fa5753.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/30/ab3a3d61-402d-45cf-9f73-346cf1fa5753.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/30/ab3a3d61-402d-45cf-9f73-346cf1fa5753.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/30/ab3a3d61-402d-45cf-9f73-346cf1fa5753.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/30/ab3a3d61-402d-45cf-9f73-346cf1fa5753.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wolfsburgs Jonas Wind (r) traf gegen Mainz doppelt.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> 30. Spieltag</h4>
+                <h3 class="fp-article__title text-xl--bold ">Wolfsburg stoppt Mainzer Serie und bleibt im Europa-Rennen</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/fussball/liverpool-gewinnt-wildes-spiel-gegen-tottenham-mit-4-3-3599563">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/30/8336bdc3-c326-43ed-83ba-a9cffbc5dc69.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/30/8336bdc3-c326-43ed-83ba-a9cffbc5dc69.jpeg?rect=0%2C125%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/30/8336bdc3-c326-43ed-83ba-a9cffbc5dc69.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/30/8336bdc3-c326-43ed-83ba-a9cffbc5dc69.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/30/8336bdc3-c326-43ed-83ba-a9cffbc5dc69.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/30/8336bdc3-c326-43ed-83ba-a9cffbc5dc69.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/30/8336bdc3-c326-43ed-83ba-a9cffbc5dc69.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Holte mit Liverpool einen wichtigen Sieg gegen Tottenham: Trainer Jürgen Klopp.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Premier League</h4>
+                <h3 class="fp-article__title text-xl--bold ">Liverpool gewinnt wildes Spiel gegen Tottenham mit 4:3</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/fussball/bayern-muhen-sich-an-die-tabellenspitze-zuruck-3599522">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/30/c5cb241f-1a36-4043-bb6b-447f29ebf63b.jpeg?rect=0%2C60%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/30/c5cb241f-1a36-4043-bb6b-447f29ebf63b.jpeg?rect=0%2C60%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/30/c5cb241f-1a36-4043-bb6b-447f29ebf63b.jpeg?rect=0%2C60%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/30/c5cb241f-1a36-4043-bb6b-447f29ebf63b.jpeg?rect=0%2C60%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/30/c5cb241f-1a36-4043-bb6b-447f29ebf63b.jpeg?rect=0%2C60%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/30/c5cb241f-1a36-4043-bb6b-447f29ebf63b.jpeg?rect=0%2C60%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/30/c5cb241f-1a36-4043-bb6b-447f29ebf63b.jpeg?rect=0%2C60%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Brachte die Bayern mit einem Kopfball in Führung: Serge Gnabry.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> 30. Spieltag</h4>
+                <h3 class="fp-article__title text-xl--bold ">Bayern mühen sich an die Tabellenspitze zurück</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/fussball/kurioses-mbappe-tor-zu-wenig-bei-psg-niederlage-3599557">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/30/b968307b-5173-409d-b17d-66e004eb1b9e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/30/b968307b-5173-409d-b17d-66e004eb1b9e.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/30/b968307b-5173-409d-b17d-66e004eb1b9e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/30/b968307b-5173-409d-b17d-66e004eb1b9e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/30/b968307b-5173-409d-b17d-66e004eb1b9e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/30/b968307b-5173-409d-b17d-66e004eb1b9e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/30/b968307b-5173-409d-b17d-66e004eb1b9e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Lorient feierte einen überraschenden Auswärtssieg in Paris.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Ligue 1</h4>
+                <h3 class="fp-article__title text-xl--bold ">Kurioses Mbappé-Tor zu wenig bei PSG-Niederlage</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/fussball/freiburg-und-leipzig-siegen-schalke-dreht-partie-3599097">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/30/3c1a50f3-b688-444c-9be2-1faf0ffa1903.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/30/3c1a50f3-b688-444c-9be2-1faf0ffa1903.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/30/3c1a50f3-b688-444c-9be2-1faf0ffa1903.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/30/3c1a50f3-b688-444c-9be2-1faf0ffa1903.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/30/3c1a50f3-b688-444c-9be2-1faf0ffa1903.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/30/3c1a50f3-b688-444c-9be2-1faf0ffa1903.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/30/3c1a50f3-b688-444c-9be2-1faf0ffa1903.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ritsu Doan erzielte Freiburgs Tor des Tages in Köln.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Bundesliga</h4>
+                <h3 class="fp-article__title text-xl--bold ">Freiburg und Leipzig siegen - Schalke dreht Partie</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/fussball/bayern-boss-hainer-konzentrieren-uns-auf-das-sportliche-3599548">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/30/bf830ce0-901d-4c71-91c7-a953caaf5b02.jpeg?rect=0%2C23%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/30/bf830ce0-901d-4c71-91c7-a953caaf5b02.jpeg?rect=0%2C23%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/30/bf830ce0-901d-4c71-91c7-a953caaf5b02.jpeg?rect=0%2C23%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/30/bf830ce0-901d-4c71-91c7-a953caaf5b02.jpeg?rect=0%2C23%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/30/bf830ce0-901d-4c71-91c7-a953caaf5b02.jpeg?rect=0%2C23%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/30/bf830ce0-901d-4c71-91c7-a953caaf5b02.jpeg?rect=0%2C23%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/30/bf830ce0-901d-4c71-91c7-a953caaf5b02.jpeg?rect=0%2C23%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="FCB-Präsident Herbert Hainer (vorne) und Vorstandschef Oliver Kahn.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Bundesliga</h4>
+                <h3 class="fp-article__title text-xl--bold ">Bayern-Boss Hainer: „Konzentrieren uns auf das Sportliche“</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/fussball/young-boys-bern-zum-16-mal-schweizer-meister-3599546">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/30/c5723798-b9ed-42d8-ba26-f7069cebc59d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/30/c5723798-b9ed-42d8-ba26-f7069cebc59d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/30/c5723798-b9ed-42d8-ba26-f7069cebc59d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/30/c5723798-b9ed-42d8-ba26-f7069cebc59d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/30/c5723798-b9ed-42d8-ba26-f7069cebc59d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/30/c5723798-b9ed-42d8-ba26-f7069cebc59d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/30/c5723798-b9ed-42d8-ba26-f7069cebc59d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Young Boys Bern sind nach einem Sieg gegen Luzern vorzeitig Schweizer Meister.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Fußball</h4>
-                <h3 class="fp-article__title text-xl--bold ">Trainer Roger Schmidt verlängert Vertrag bei Benfica</h3>
+                <h3 class="fp-article__title text-xl--bold ">Young Boys Bern zum 16. Mal Schweizer Meister</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/fussball/klarers-eigentor-beschert-hsv-2-2-bei-fortuna-dusseldorf-3579594">
+            <a href="/sport/fussball/ex-rb-leipzig-demme-muss-warten-napoli-verpasst-meister-party-3599529">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/31/83d7a7d3-f352-4793-a954-0963bbc22959.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/31/83d7a7d3-f352-4793-a954-0963bbc22959.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/31/83d7a7d3-f352-4793-a954-0963bbc22959.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/31/83d7a7d3-f352-4793-a954-0963bbc22959.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/31/83d7a7d3-f352-4793-a954-0963bbc22959.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/31/83d7a7d3-f352-4793-a954-0963bbc22959.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/31/83d7a7d3-f352-4793-a954-0963bbc22959.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Hamburgs Sonny Kittel (l) im Zweikampf mit Düsseldorfs Marcel Sobottka.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/30/3ee56fdd-73ba-48e7-abf7-d3fd9cb5a63c.jpeg?rect=172%2C206%2C2499%2C1405&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/30/3ee56fdd-73ba-48e7-abf7-d3fd9cb5a63c.jpeg?rect=172%2C206%2C2499%2C1405&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/30/3ee56fdd-73ba-48e7-abf7-d3fd9cb5a63c.jpeg?rect=172%2C206%2C2499%2C1405&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/30/3ee56fdd-73ba-48e7-abf7-d3fd9cb5a63c.jpeg?rect=172%2C206%2C2499%2C1405&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/30/3ee56fdd-73ba-48e7-abf7-d3fd9cb5a63c.jpeg?rect=172%2C206%2C2499%2C1405&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/30/3ee56fdd-73ba-48e7-abf7-d3fd9cb5a63c.jpeg?rect=172%2C206%2C2499%2C1405&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/30/3ee56fdd-73ba-48e7-abf7-d3fd9cb5a63c.jpeg?rect=172%2C206%2C2499%2C1405&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Diego Demme bei seinem letzten Einsatz für Neapel vor zwei Wochen gegen Hellas Verona.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> 2. Liga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Klarers Eigentor beschert HSV 2:2 bei Fortuna Düsseldorf</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Demme muss warten</h4>
+                <h3 class="fp-article__title text-xl--bold ">Napoli verpasst frühe Meister-Party</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/fussball/kein-pokalschub-fur-nurnberg-darmstadt-jubelt-nach-eigentor-3579591">
+            <a href="/sport/fussball/wolfsburg-setzt-gegen-arsenal-auf-einsatz-von-popp-3599534">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/31/012208e3-8885-4045-b740-5e91182e3d5f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/31/012208e3-8885-4045-b740-5e91182e3d5f.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/31/012208e3-8885-4045-b740-5e91182e3d5f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/31/012208e3-8885-4045-b740-5e91182e3d5f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/31/012208e3-8885-4045-b740-5e91182e3d5f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/31/012208e3-8885-4045-b740-5e91182e3d5f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/31/012208e3-8885-4045-b740-5e91182e3d5f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Darmstädter bleiben auch nach dem 26. Spieltag an der Tabellenspitze.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/30/b9109c63-59bd-4538-83f1-2ffe583497ec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/30/b9109c63-59bd-4538-83f1-2ffe583497ec.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/30/b9109c63-59bd-4538-83f1-2ffe583497ec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/30/b9109c63-59bd-4538-83f1-2ffe583497ec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/30/b9109c63-59bd-4538-83f1-2ffe583497ec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/30/b9109c63-59bd-4538-83f1-2ffe583497ec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/30/b9109c63-59bd-4538-83f1-2ffe583497ec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wolfsburgs Alexandra Popp hatte das Hinspiel gegen Arsenal verpasst.">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> 2. Liga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Kein Pokalschub für Nürnberg: Darmstadt jubelt nach Eigentor</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser fp-article__no-img" data-ratio="16:9">
-            <a href="/sport/fussball/fullkrug-uber-moglichen-wechsel-bin-da-total-entspannt-3579558">
-                <h4 class="fp-article__catchline vertical-teasers"> Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Füllkrug über möglichen Wechsel: „Bin da total entspannt“</h3>
-                    <p class="fp-article__excerpt"></p>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/fussball/carolin-simon-sagt-fur-landerspiele-ab-3579535">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/31/b18218c5-10ba-41b3-9b2b-d699938dbe83.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/31/b18218c5-10ba-41b3-9b2b-d699938dbe83.jpeg?rect=0%2C78%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/31/b18218c5-10ba-41b3-9b2b-d699938dbe83.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/31/b18218c5-10ba-41b3-9b2b-d699938dbe83.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/31/b18218c5-10ba-41b3-9b2b-d699938dbe83.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/31/b18218c5-10ba-41b3-9b2b-d699938dbe83.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/31/b18218c5-10ba-41b3-9b2b-d699938dbe83.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Verpasst wegen muskulärer Probleme die Länderspiele gegen die Niederlande und Brasilien: Carolin Simon.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Fußball</h4>
-                <h3 class="fp-article__title text-xl--bold ">Carolin Simon sagt für Länderspiele ab</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/fussball/vuskovic-zu-seiner-sperre-werde-mich-nicht-brechen-lassen-3579400">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/31/0bfbb80f-1e8b-461d-96f5-88e7d99bb395.jpeg?rect=0%2C262%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/31/0bfbb80f-1e8b-461d-96f5-88e7d99bb395.jpeg?rect=0%2C262%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/31/0bfbb80f-1e8b-461d-96f5-88e7d99bb395.jpeg?rect=0%2C262%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/31/0bfbb80f-1e8b-461d-96f5-88e7d99bb395.jpeg?rect=0%2C262%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/31/0bfbb80f-1e8b-461d-96f5-88e7d99bb395.jpeg?rect=0%2C262%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/31/0bfbb80f-1e8b-461d-96f5-88e7d99bb395.jpeg?rect=0%2C262%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/31/0bfbb80f-1e8b-461d-96f5-88e7d99bb395.jpeg?rect=0%2C262%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Das DFB-Sportgericht hat Mario Vuskovic vom Hamburger SV wegen Epo-Dopings für zwei Jahre gesperrt.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> 2. Liga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Vuskovic zu seiner Sperre: „Werde mich nicht brechen lassen“</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/fussball/tuchels-bayern-knallstart-mit-signalwirkung-3579262">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/31/eb621de0-a5e9-473e-ba75-b834923e6224.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/31/eb621de0-a5e9-473e-ba75-b834923e6224.jpeg?rect=0%2C97%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/31/eb621de0-a5e9-473e-ba75-b834923e6224.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/31/eb621de0-a5e9-473e-ba75-b834923e6224.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/31/eb621de0-a5e9-473e-ba75-b834923e6224.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/31/eb621de0-a5e9-473e-ba75-b834923e6224.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/31/eb621de0-a5e9-473e-ba75-b834923e6224.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bayern-Coach Thomas Tuchel will mit seiner Mannschaft die Tabellenführung zurückerobern.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Tuchels Bayern-Knallstart mit „Signalwirkung“</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/fussball/tuchels-versprechen-an-hoeness-passe-gut-auf-deinen-club-auf-3579366">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/31/a6e3e5c2-a746-4fd9-a3ed-d1e6e2d476f5.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/31/a6e3e5c2-a746-4fd9-a3ed-d1e6e2d476f5.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/31/a6e3e5c2-a746-4fd9-a3ed-d1e6e2d476f5.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/31/a6e3e5c2-a746-4fd9-a3ed-d1e6e2d476f5.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/31/a6e3e5c2-a746-4fd9-a3ed-d1e6e2d476f5.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/31/a6e3e5c2-a746-4fd9-a3ed-d1e6e2d476f5.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/31/a6e3e5c2-a746-4fd9-a3ed-d1e6e2d476f5.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Trainer Thomas Tuchel hatte bereits in der ersten Arbeitswoche beim FC&nbsp;Bayern Kontakt mit Uli Hoeneß.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Tuchels Versprechen an Hoeneß: Passe gut auf deinen Club auf</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/fussball/bayern-vorganger-kovac-zeigt-mitgefuhl-fur-nagelsmann-3579353">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/31/f195e9a6-0f9f-4c3b-b4be-1ce303ab16f1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/31/f195e9a6-0f9f-4c3b-b4be-1ce303ab16f1.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/31/f195e9a6-0f9f-4c3b-b4be-1ce303ab16f1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/31/f195e9a6-0f9f-4c3b-b4be-1ce303ab16f1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/31/f195e9a6-0f9f-4c3b-b4be-1ce303ab16f1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/31/f195e9a6-0f9f-4c3b-b4be-1ce303ab16f1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/31/f195e9a6-0f9f-4c3b-b4be-1ce303ab16f1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Niko Kovac (l)&nbsp;hat Mitgefühl mit Julian Nagelsmann nach dessen Rauswurf in München.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Bayern-Vorgänger Kovac zeigt Mitgefühl für Nagelsmann</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Champions League</h4>
+                <h3 class="fp-article__title text-xl--bold ">Wolfsburg setzt gegen Arsenal auf Einsatz von Popp</h3>
             </a>
         </article>
 </div>
@@ -1713,93 +1753,93 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/handball/rhein-neckar-lowen-patzen-erneut-im-titelkampf-3578708">
+            <a href="/sport/handball/erster-sieg-im-euro-cup-dhb-team-glanzt-gegen-spanien-3599517">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/30/2a4b1a4c-d806-4a1d-8a84-e357bbc6b52f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/30/2a4b1a4c-d806-4a1d-8a84-e357bbc6b52f.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/30/2a4b1a4c-d806-4a1d-8a84-e357bbc6b52f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/30/2a4b1a4c-d806-4a1d-8a84-e357bbc6b52f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/30/2a4b1a4c-d806-4a1d-8a84-e357bbc6b52f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/30/2a4b1a4c-d806-4a1d-8a84-e357bbc6b52f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/30/2a4b1a4c-d806-4a1d-8a84-e357bbc6b52f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Konnte bei der Niederlage in Lemgo nur wenig Impulse setzen: Löwen-Regisseur Juri Knorr.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/30/f0f2ec35-77d4-48f9-8922-1ff5665cd0ef.jpeg?rect=0%2C68%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/30/f0f2ec35-77d4-48f9-8922-1ff5665cd0ef.jpeg?rect=0%2C68%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/30/f0f2ec35-77d4-48f9-8922-1ff5665cd0ef.jpeg?rect=0%2C68%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/30/f0f2ec35-77d4-48f9-8922-1ff5665cd0ef.jpeg?rect=0%2C68%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/30/f0f2ec35-77d4-48f9-8922-1ff5665cd0ef.jpeg?rect=0%2C68%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/30/f0f2ec35-77d4-48f9-8922-1ff5665cd0ef.jpeg?rect=0%2C68%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/30/f0f2ec35-77d4-48f9-8922-1ff5665cd0ef.jpeg?rect=0%2C68%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Juri Knorr (r) und die DHB-Auswahl setzten sich gegen Spanien durch.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
-                <h3 class="fp-article__title text-xl--bold ">Rhein-Neckar Löwen patzen erneut im Titelkampf</h3>
+                <h3 class="fp-article__title text-xl--bold ">Erster Sieg im Euro-Cup: DHB-Team glänzt gegen Spanien</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/handball/kiel-trotz-niederlage-im-viertelfinale-der-champions-league-3577784">
+            <a href="/sport/handball/drux-verletzung-schockt-dhb-team-vor-spanien-spiel-3597931">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/29/4458d4d6-14de-4d31-aaa3-a3dcbe71f8a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/29/4458d4d6-14de-4d31-aaa3-a3dcbe71f8a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/29/4458d4d6-14de-4d31-aaa3-a3dcbe71f8a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/29/4458d4d6-14de-4d31-aaa3-a3dcbe71f8a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/29/4458d4d6-14de-4d31-aaa3-a3dcbe71f8a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/29/4458d4d6-14de-4d31-aaa3-a3dcbe71f8a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/29/4458d4d6-14de-4d31-aaa3-a3dcbe71f8a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Trainer Filip Jicha und seine Kieler stehen trotz der Niederlage im Rückspiel gegen Dinamo Bukarest im Champions-League-Viertelfinale.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/28/cdc0d697-3bf9-4640-82af-f2d77263be10.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/28/cdc0d697-3bf9-4640-82af-f2d77263be10.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/28/cdc0d697-3bf9-4640-82af-f2d77263be10.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/28/cdc0d697-3bf9-4640-82af-f2d77263be10.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/28/cdc0d697-3bf9-4640-82af-f2d77263be10.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/28/cdc0d697-3bf9-4640-82af-f2d77263be10.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/28/cdc0d697-3bf9-4640-82af-f2d77263be10.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Verletzte sich in Schweden schwer: Paul Drux (liegend).">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
-                <h3 class="fp-article__title text-xl--bold ">Kiel trotz Niederlage im Viertelfinale der Champions League</h3>
+                <h3 class="fp-article__title text-xl--bold ">Drux-Verletzung schockt DHB-Team vor Spanien-Spiel</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/handball/starkes-statement-thw-kiel-gewinnt-topspiel-gegen-berlin-3575318">
+            <a href="/sport/handball/vor-landerspiel-doppel-gislason-nimmt-team-in-die-pflicht-3596365">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/26/d58ceff2-2ad1-4121-a201-7c7039244311.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/26/d58ceff2-2ad1-4121-a201-7c7039244311.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/26/d58ceff2-2ad1-4121-a201-7c7039244311.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/26/d58ceff2-2ad1-4121-a201-7c7039244311.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/26/d58ceff2-2ad1-4121-a201-7c7039244311.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/26/d58ceff2-2ad1-4121-a201-7c7039244311.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/26/d58ceff2-2ad1-4121-a201-7c7039244311.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Kieler Handballer feiern den Sieg gegen die Füchse Berlin.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/27/87f59819-7a43-4dd6-8baf-5830a5bd0aea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/27/87f59819-7a43-4dd6-8baf-5830a5bd0aea.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/27/87f59819-7a43-4dd6-8baf-5830a5bd0aea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/27/87f59819-7a43-4dd6-8baf-5830a5bd0aea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/27/87f59819-7a43-4dd6-8baf-5830a5bd0aea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/27/87f59819-7a43-4dd6-8baf-5830a5bd0aea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/27/87f59819-7a43-4dd6-8baf-5830a5bd0aea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Bundestrainer der deutschen Handballer: Alfred Gislason.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
+                <h3 class="fp-article__title text-xl--bold ">Vor Länderspiel-Doppel: Gislason nimmt Team in die Pflicht</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/handball/handballer-gegen-schweden-chancenlos-drux-schwer-verletzt-3597745">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/28/d583ad83-66ea-49dc-af20-982a9f2fb792.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/28/d583ad83-66ea-49dc-af20-982a9f2fb792.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/28/d583ad83-66ea-49dc-af20-982a9f2fb792.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/28/d583ad83-66ea-49dc-af20-982a9f2fb792.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/28/d583ad83-66ea-49dc-af20-982a9f2fb792.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/28/d583ad83-66ea-49dc-af20-982a9f2fb792.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/28/d583ad83-66ea-49dc-af20-982a9f2fb792.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Deutschlands Renars Uscins (M) im Zweikampf mit den Schweden Emil Mellegard (l) und Jim Gottfridsson.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Länderspiel</h4>
+                <h3 class="fp-article__title text-xl--bold ">Handballer gegen Schweden chancenlos - Drux schwer verletzt</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/handball/tag-des-handballs-mit-zwei-landerspielen-in-munchen-3596299">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/26/f83db94e-4434-45fc-a80d-0f36bc50ba9a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/26/f83db94e-4434-45fc-a80d-0f36bc50ba9a.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/26/f83db94e-4434-45fc-a80d-0f36bc50ba9a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/26/f83db94e-4434-45fc-a80d-0f36bc50ba9a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/26/f83db94e-4434-45fc-a80d-0f36bc50ba9a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/26/f83db94e-4434-45fc-a80d-0f36bc50ba9a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/26/f83db94e-4434-45fc-a80d-0f36bc50ba9a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Im November trifft Lukas Mertens mit dem DHB-Team auf Ägypten.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
+                <h3 class="fp-article__title text-xl--bold ">„Tag des Handballs“ mit zwei Länderspielen in München</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/handball/nationalspieler-semper-wechselt-von-flensburg-nach-leipzig-3596271">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/26/20c7b019-1823-4de9-b1a2-3b6f794e6b1c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/26/20c7b019-1823-4de9-b1a2-3b6f794e6b1c.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/26/20c7b019-1823-4de9-b1a2-3b6f794e6b1c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/26/20c7b019-1823-4de9-b1a2-3b6f794e6b1c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/26/20c7b019-1823-4de9-b1a2-3b6f794e6b1c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/26/20c7b019-1823-4de9-b1a2-3b6f794e6b1c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/26/20c7b019-1823-4de9-b1a2-3b6f794e6b1c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Kehrt zurück:&nbsp;Flensburgs Franz Semper schließt sich seinem ehemaligen Arbeitgeber SC DHfK Leipzig an.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
+                <h3 class="fp-article__title text-xl--bold ">Nationalspieler Semper wechselt von Flensburg nach Leipzig</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/handball/dhb-team-gegen-schweden-und-spanien-ohne-hafner-3596253">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/26/cf9ac1cc-8efd-4d48-aa04-899d1bf9bda3.jpeg?rect=0%2C67%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/26/cf9ac1cc-8efd-4d48-aa04-899d1bf9bda3.jpeg?rect=0%2C67%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/26/cf9ac1cc-8efd-4d48-aa04-899d1bf9bda3.jpeg?rect=0%2C67%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/26/cf9ac1cc-8efd-4d48-aa04-899d1bf9bda3.jpeg?rect=0%2C67%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/26/cf9ac1cc-8efd-4d48-aa04-899d1bf9bda3.jpeg?rect=0%2C67%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/26/cf9ac1cc-8efd-4d48-aa04-899d1bf9bda3.jpeg?rect=0%2C67%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/26/cf9ac1cc-8efd-4d48-aa04-899d1bf9bda3.jpeg?rect=0%2C67%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Routinier Kai Häfner fällt für die Länderspiele gegen Schweden und Spanien aus.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Handball-Nationalmannschaft</h4>
+                <h3 class="fp-article__title text-xl--bold ">DHB-Team gegen Schweden und Spanien ohne Häfner</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/handball/glandorf-verteidigt-machulla-aus-in-flensburg-3595902">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/25/138a6122-cc3f-4c10-88a0-e223b5b6c825.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/25/138a6122-cc3f-4c10-88a0-e223b5b6c825.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/25/138a6122-cc3f-4c10-88a0-e223b5b6c825.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/25/138a6122-cc3f-4c10-88a0-e223b5b6c825.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/25/138a6122-cc3f-4c10-88a0-e223b5b6c825.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/25/138a6122-cc3f-4c10-88a0-e223b5b6c825.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/25/138a6122-cc3f-4c10-88a0-e223b5b6c825.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="„Wir müssen jetzt Impulse setzen“, sagt Flensburgs Geschäftsführer Holger Glandorf.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
+                <h3 class="fp-article__title text-xl--bold ">Glandorf verteidigt Machulla-Aus in Flensburg</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/handball/trainer-machulla-muss-bei-sg-flensburg-handewitt-gehen-3595004">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/24/27d20668-788e-48ab-839e-bcea5d60a175.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/24/27d20668-788e-48ab-839e-bcea5d60a175.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/24/27d20668-788e-48ab-839e-bcea5d60a175.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/24/27d20668-788e-48ab-839e-bcea5d60a175.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/24/27d20668-788e-48ab-839e-bcea5d60a175.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/24/27d20668-788e-48ab-839e-bcea5d60a175.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/24/27d20668-788e-48ab-839e-bcea5d60a175.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="2018 und 2019 führte Maik&nbsp;Machulla die SG Flensburg-Handewitt zur deutschen Meisterschaft, jetzt wurde der Übungsleiter freigestellt.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Handball-Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Starkes Statement: THW Kiel gewinnt Topspiel gegen Berlin</h3>
+                <h3 class="fp-article__title text-xl--bold ">Trainer Machulla muss bei SG Flensburg-Handewitt gehen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/handball/lowen-kassieren-heimniederlage-gegen-den-hsv-hamburg-3573690">
+            <a href="/sport/handball/handball-titelkampf-spitzt-sich-zu-trio-darf-traumen-3594222">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/23/bf1fc48e-0d95-4f06-80d6-9d9b3103bd8b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/23/bf1fc48e-0d95-4f06-80d6-9d9b3103bd8b.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/23/bf1fc48e-0d95-4f06-80d6-9d9b3103bd8b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/23/bf1fc48e-0d95-4f06-80d6-9d9b3103bd8b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/23/bf1fc48e-0d95-4f06-80d6-9d9b3103bd8b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/23/bf1fc48e-0d95-4f06-80d6-9d9b3103bd8b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/23/bf1fc48e-0d95-4f06-80d6-9d9b3103bd8b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Löwen-Kreisläufer Jannik Kohlbacher (l) im Zweikampf mit dem Hamburger Dani Baijens.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/23/cb16040c-9606-4a9c-8282-1b2eb0c72a99.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/23/cb16040c-9606-4a9c-8282-1b2eb0c72a99.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/23/cb16040c-9606-4a9c-8282-1b2eb0c72a99.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/23/cb16040c-9606-4a9c-8282-1b2eb0c72a99.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/23/cb16040c-9606-4a9c-8282-1b2eb0c72a99.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/23/cb16040c-9606-4a9c-8282-1b2eb0c72a99.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/23/cb16040c-9606-4a9c-8282-1b2eb0c72a99.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Kieler Niclas Ekberg (M.) beim Torabschluss.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Handball-Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Löwen kassieren Heimniederlage gegen den HSV Hamburg</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/handball/bitter-bundestrainer-muss-wissen-woran-er-ist-3572905">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/23/1e1a4e73-79bd-4ad4-971f-799e9d6262d1.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/23/1e1a4e73-79bd-4ad4-971f-799e9d6262d1.jpeg?rect=0%2C97%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/23/1e1a4e73-79bd-4ad4-971f-799e9d6262d1.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/23/1e1a4e73-79bd-4ad4-971f-799e9d6262d1.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/23/1e1a4e73-79bd-4ad4-971f-799e9d6262d1.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/23/1e1a4e73-79bd-4ad4-971f-799e9d6262d1.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/23/1e1a4e73-79bd-4ad4-971f-799e9d6262d1.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Handball-Nationaltorwart Johannes Bitter appelliert an seine Kollegen.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
-                <h3 class="fp-article__title text-xl--bold ">Bitter: „Bundestrainer muss wissen, woran er ist“</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/handball/thw-kiel-macht-grossen-schritt-richtung-viertelfinale-3572812">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/22/e9a9cadf-aef3-4f4b-81c6-dce369318dea.jpeg?rect=0%2C45%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/22/e9a9cadf-aef3-4f4b-81c6-dce369318dea.jpeg?rect=0%2C45%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/22/e9a9cadf-aef3-4f4b-81c6-dce369318dea.jpeg?rect=0%2C45%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/22/e9a9cadf-aef3-4f4b-81c6-dce369318dea.jpeg?rect=0%2C45%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/22/e9a9cadf-aef3-4f4b-81c6-dce369318dea.jpeg?rect=0%2C45%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/22/e9a9cadf-aef3-4f4b-81c6-dce369318dea.jpeg?rect=0%2C45%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/22/e9a9cadf-aef3-4f4b-81c6-dce369318dea.jpeg?rect=0%2C45%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Sander Sagosen erzielte sechs Treffer für die Kieler.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Champions League</h4>
-                <h3 class="fp-article__title text-xl--bold ">THW Kiel macht großen Schritt Richtung Viertelfinale</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/handball/hbl-chef-bohmann-talente-mehr-einbinden-3572304">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/22/f9ea92d9-780b-4886-8bbe-8f56aff87ca7.jpeg?rect=0%2C35%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/22/f9ea92d9-780b-4886-8bbe-8f56aff87ca7.jpeg?rect=0%2C35%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/22/f9ea92d9-780b-4886-8bbe-8f56aff87ca7.jpeg?rect=0%2C35%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/22/f9ea92d9-780b-4886-8bbe-8f56aff87ca7.jpeg?rect=0%2C35%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/22/f9ea92d9-780b-4886-8bbe-8f56aff87ca7.jpeg?rect=0%2C35%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/22/f9ea92d9-780b-4886-8bbe-8f56aff87ca7.jpeg?rect=0%2C35%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/22/f9ea92d9-780b-4886-8bbe-8f56aff87ca7.jpeg?rect=0%2C35%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Handball-Ligachef Frank Bohmann will Nachwuchstalente mehr einbinden.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
-                <h3 class="fp-article__title text-xl--bold ">HBL-Chef Bohmann: Talente mehr einbinden</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/handball/lasst-sich-nicht-in-worte-fassen-rolf-brack-ist-tot-3571573">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/21/71aafe13-1e26-4f29-b1c2-520c57ee36b1.jpeg?rect=0%2C163%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/21/71aafe13-1e26-4f29-b1c2-520c57ee36b1.jpeg?rect=0%2C163%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/21/71aafe13-1e26-4f29-b1c2-520c57ee36b1.jpeg?rect=0%2C163%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/21/71aafe13-1e26-4f29-b1c2-520c57ee36b1.jpeg?rect=0%2C163%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/21/71aafe13-1e26-4f29-b1c2-520c57ee36b1.jpeg?rect=0%2C163%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/21/71aafe13-1e26-4f29-b1c2-520c57ee36b1.jpeg?rect=0%2C163%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/21/71aafe13-1e26-4f29-b1c2-520c57ee36b1.jpeg?rect=0%2C163%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Verstarb im Alter von 69 Jahren: Rolf Brack.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Handball-Ikone</h4>
-                <h3 class="fp-article__title text-xl--bold ">„Lässt sich nicht in Worte fassen“: Rolf Brack ist tot</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/handball/wochen-der-wahrheit-kiel-in-konigsklasse-und-liga-gefordert-3571610">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/21/5fcd8e4d-121d-4cdd-987d-e2e8672c660d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/21/5fcd8e4d-121d-4cdd-987d-e2e8672c660d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/21/5fcd8e4d-121d-4cdd-987d-e2e8672c660d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/21/5fcd8e4d-121d-4cdd-987d-e2e8672c660d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/21/5fcd8e4d-121d-4cdd-987d-e2e8672c660d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/21/5fcd8e4d-121d-4cdd-987d-e2e8672c660d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/21/5fcd8e4d-121d-4cdd-987d-e2e8672c660d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Steht mit dem THW Kiel vor wegweisenden Partien: Trainer Filip Jicha.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
-                <h3 class="fp-article__title text-xl--bold ">Wochen der Wahrheit: Kiel in Königsklasse und Liga gefordert</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/handball/hc-erlangen-holt-ehemaligen-weltmeister-guardiola-3571577">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/21/ec98c227-2109-4642-8127-3f4a3d660e68.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/21/ec98c227-2109-4642-8127-3f4a3d660e68.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/21/ec98c227-2109-4642-8127-3f4a3d660e68.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/21/ec98c227-2109-4642-8127-3f4a3d660e68.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/21/ec98c227-2109-4642-8127-3f4a3d660e68.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/21/ec98c227-2109-4642-8127-3f4a3d660e68.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/21/ec98c227-2109-4642-8127-3f4a3d660e68.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wechselt nach Erlangen: Gedeon Guardiola (r).">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Handball-Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold ">HC Erlangen holt ehemaligen Weltmeister Guardiola</h3>
+                <h3 class="fp-article__title text-xl--bold ">Handball-Titelkampf spitzt sich zu: Trio darf träumen</h3>
             </a>
         </article>
 </div>
@@ -1820,93 +1860,93 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/regionalsport/ses-boxer-tom-dzemski-mit-veilchen-in-den-ring-3579624">
+            <a href="/sport/regionalsport/scm-auf-dem-weg-zur-wm-wer-lost-das-zweite-ticket-im-freiwasser-3596985">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/31/5760d00a-ae9d-461e-b5db-cc31b244c095.jpeg?rect=115%2C67%2C1202%2C650&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/31/5760d00a-ae9d-461e-b5db-cc31b244c095.jpeg?rect=115%2C67%2C1202%2C650&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/31/5760d00a-ae9d-461e-b5db-cc31b244c095.jpeg?rect=115%2C67%2C1202%2C650&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/31/5760d00a-ae9d-461e-b5db-cc31b244c095.jpeg?rect=115%2C67%2C1202%2C650&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/31/5760d00a-ae9d-461e-b5db-cc31b244c095.jpeg?rect=115%2C67%2C1202%2C650&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/31/5760d00a-ae9d-461e-b5db-cc31b244c095.jpeg?rect=115%2C67%2C1202%2C650&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/31/5760d00a-ae9d-461e-b5db-cc31b244c095.jpeg?rect=115%2C67%2C1202%2C650&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Tom Dzemski beim Wiegen mit Gegner Daniel Blenda Dos Santos und einem kleinen Veilchen unter dem rechten Auge.  ">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Boxen</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SES-Boxer Tom Dzemski mit Veilchen in den Ring</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/regionalsport/florian-wellbrock-vom-scm-krault-an-die-spitze-der-welt-3579575">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/31/a379b775-ad48-4a80-9b37-09c18b26b1f5.jpeg?rect=0%2C0%2C2937%2C1880&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/31/a379b775-ad48-4a80-9b37-09c18b26b1f5.jpeg?rect=0%2C0%2C2937%2C1880&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/31/a379b775-ad48-4a80-9b37-09c18b26b1f5.jpeg?rect=0%2C0%2C2937%2C1880&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/31/a379b775-ad48-4a80-9b37-09c18b26b1f5.jpeg?rect=0%2C0%2C2937%2C1880&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/31/a379b775-ad48-4a80-9b37-09c18b26b1f5.jpeg?rect=0%2C0%2C2937%2C1880&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/31/a379b775-ad48-4a80-9b37-09c18b26b1f5.jpeg?rect=0%2C0%2C2937%2C1880&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/31/a379b775-ad48-4a80-9b37-09c18b26b1f5.jpeg?rect=0%2C0%2C2937%2C1880&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Starker Saisoneinstieg: Wenige Tage nach der Rückkehr aus dem Trainingslager in der Sierra Nevada (Spanien) glänzte Florian Wellbrock mit einer absoluten Spitzenzeit.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/27/8a7e3a2a-9fb6-4ede-9fe9-b1d772a77b42.jpeg?rect=20%2C75%2C3964%2C2587&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/27/8a7e3a2a-9fb6-4ede-9fe9-b1d772a77b42.jpeg?rect=20%2C75%2C3964%2C2587&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/27/8a7e3a2a-9fb6-4ede-9fe9-b1d772a77b42.jpeg?rect=20%2C75%2C3964%2C2587&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/27/8a7e3a2a-9fb6-4ede-9fe9-b1d772a77b42.jpeg?rect=20%2C75%2C3964%2C2587&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/27/8a7e3a2a-9fb6-4ede-9fe9-b1d772a77b42.jpeg?rect=20%2C75%2C3964%2C2587&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/27/8a7e3a2a-9fb6-4ede-9fe9-b1d772a77b42.jpeg?rect=20%2C75%2C3964%2C2587&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/27/8a7e3a2a-9fb6-4ede-9fe9-b1d772a77b42.jpeg?rect=20%2C75%2C3964%2C2587&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Kämpft um den WM-Start in Fukuoka: Oliver Klemet (r.).">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Schwimmen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Florian Wellbrock vom SCM krault an die Spitze der Welt</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SCM auf dem Weg zur WM: Wer löst das zweite Ticket im Freiwasser?</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/regionalsport/marius-zobel-vom-sc-magdeburg-nimmt-den-staffelstart-ins-visier-3578671">
+            <a href="/sport/regionalsport/play-offs-aus-funf-grunden-ist-wolmirstedts-trainer-optimistisch-3595954">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/30/81ace5d3-fc96-4713-b9f3-443ee0d0a5cf.jpeg?rect=0%2C1%2C1198%2C566&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/30/81ace5d3-fc96-4713-b9f3-443ee0d0a5cf.jpeg?rect=0%2C1%2C1198%2C566&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/30/81ace5d3-fc96-4713-b9f3-443ee0d0a5cf.jpeg?rect=0%2C1%2C1198%2C566&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/30/81ace5d3-fc96-4713-b9f3-443ee0d0a5cf.jpeg?rect=0%2C1%2C1198%2C566&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/30/81ace5d3-fc96-4713-b9f3-443ee0d0a5cf.jpeg?rect=0%2C1%2C1198%2C566&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/30/81ace5d3-fc96-4713-b9f3-443ee0d0a5cf.jpeg?rect=0%2C1%2C1198%2C566&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/30/81ace5d3-fc96-4713-b9f3-443ee0d0a5cf.jpeg?rect=0%2C1%2C1198%2C566&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bei der vergangenen EM noch über 400 Meter Lagen am Start konzentriert sich Marius Zobel nun voll auf die Kraul-Distanzen. ">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/25/6c289b40-99e6-49b4-b603-950c6d59ed26.jpeg?rect=75%2C1%2C1248%2C712&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/25/6c289b40-99e6-49b4-b603-950c6d59ed26.jpeg?rect=75%2C1%2C1248%2C712&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/25/6c289b40-99e6-49b4-b603-950c6d59ed26.jpeg?rect=75%2C1%2C1248%2C712&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/25/6c289b40-99e6-49b4-b603-950c6d59ed26.jpeg?rect=75%2C1%2C1248%2C712&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/25/6c289b40-99e6-49b4-b603-950c6d59ed26.jpeg?rect=75%2C1%2C1248%2C712&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/25/6c289b40-99e6-49b4-b603-950c6d59ed26.jpeg?rect=75%2C1%2C1248%2C712&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/25/6c289b40-99e6-49b4-b603-950c6d59ed26.jpeg?rect=75%2C1%2C1248%2C712&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Maximilian Begue (am Ball) überragte in den Achtelfinal-Spielen. Mit insgesamt 35 Punkten war er bester Werfer seines Teams. ">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Schwimmen</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Marius Zobel vom SC Magdeburg nimmt den Staffelstart ins Visier</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Basketball</h4>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Play-offs: Aus fünf Gründen ist Wolmirstedts Trainer optimistisch</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/regionalsport/scm-die-jagd-nach-der-wm-norm-beginnt-3578180">
+            <a href="/sport/regionalsport/wie-josefine-landt-vom-scm-noch-in-den-u-23-kader-paddeln-kann-3595337">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/30/f92a4dfd-7b9d-4cdf-8f01-1d6c902908d1.jpeg?rect=0%2C0%2C4000%2C2667&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/30/f92a4dfd-7b9d-4cdf-8f01-1d6c902908d1.jpeg?rect=0%2C0%2C4000%2C2667&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/30/f92a4dfd-7b9d-4cdf-8f01-1d6c902908d1.jpeg?rect=0%2C0%2C4000%2C2667&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/30/f92a4dfd-7b9d-4cdf-8f01-1d6c902908d1.jpeg?rect=0%2C0%2C4000%2C2667&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/30/f92a4dfd-7b9d-4cdf-8f01-1d6c902908d1.jpeg?rect=0%2C0%2C4000%2C2667&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/30/f92a4dfd-7b9d-4cdf-8f01-1d6c902908d1.jpeg?rect=0%2C0%2C4000%2C2667&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/30/f92a4dfd-7b9d-4cdf-8f01-1d6c902908d1.jpeg?rect=0%2C0%2C4000%2C2667&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Isabel Gose hat viel vor im Becken der Elbehalle.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Schwimmen</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SCM: Die Jagd nach der WM-Norm beginnt</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/regionalsport/paris-team-fur-sachsen-anhalt-nominiert-mannschaft-mit-guter-aussicht-3578169">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/30/59776b45-60f3-45c4-84fa-5051d23d972a.jpeg?rect=29%2C104%2C2391%2C1445&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/30/59776b45-60f3-45c4-84fa-5051d23d972a.jpeg?rect=29%2C104%2C2391%2C1445&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/30/59776b45-60f3-45c4-84fa-5051d23d972a.jpeg?rect=29%2C104%2C2391%2C1445&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/30/59776b45-60f3-45c4-84fa-5051d23d972a.jpeg?rect=29%2C104%2C2391%2C1445&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/30/59776b45-60f3-45c4-84fa-5051d23d972a.jpeg?rect=29%2C104%2C2391%2C1445&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/30/59776b45-60f3-45c4-84fa-5051d23d972a.jpeg?rect=29%2C104%2C2391%2C1445&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/30/59776b45-60f3-45c4-84fa-5051d23d972a.jpeg?rect=29%2C104%2C2391%2C1445&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Athleten aus dem Team, ihre Trainer sowie ihre Gäste aus anderen Vereinen oder gar Nationen, die am Bundesstützpunkt in Magdeburg für ihre sportlichen Ziele arbeiten, kamen gestern im Palais am Fürstenwall zusammen (von oben 1. Reihe  v. l.): OSP-Chef Helmut Kurrat, Mark Zabel, Philipp Becker, Michael Müller, Lukas Mertens, Philipp Weber, (2. Reihe v. l.) Timo Hoffmann, Lars Levsen, Moritz Florstedt, Katja Schreiber, Shanice Craft, (3. Reihe v. l.) Erik Thiele, Rob Muffels, Laura Riedemann, Schwimmerin Celine Rieder (Neckarsulm), Florian Wellbrock,  Norbert Warnatzsch, Bernd Berkhahn (4. Reihe v. l.) Sebastian Vollmer, Lukas Märtens, Miriam Buttgereit, (5. Reihe v. l.)  Sportministerin Tamara Zieschang, LSB Präsidentin  Silke Renk-Lange, Moritz Wesemann, Timo Barthel,  Leichtathletin Maryna Bekh-Romantschuk, Schwimmer Mychajlo Romantschuk (beide Ukraine), Sharon van Rouwendaal (Niederlande), Isabel Gose sowie (u. v. l.) Para-Kanute Anas Al Khalifa, Anja Adler, Johanna Pflügner, Daniela Cierpka und Jens Sauerbier. ">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Olympia</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Paris-Team für Sachsen-Anhalt nominiert: Mannschaft mit guter Aussicht</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/regionalsport/ses-kampfer-haben-titel-im-visier-3577825">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/29/8c50b490-4d36-4428-8c44-ec7eaf97587c.jpeg?rect=13%2C53%2C1907%2C917&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/29/8c50b490-4d36-4428-8c44-ec7eaf97587c.jpeg?rect=13%2C53%2C1907%2C917&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/29/8c50b490-4d36-4428-8c44-ec7eaf97587c.jpeg?rect=13%2C53%2C1907%2C917&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/29/8c50b490-4d36-4428-8c44-ec7eaf97587c.jpeg?rect=13%2C53%2C1907%2C917&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/29/8c50b490-4d36-4428-8c44-ec7eaf97587c.jpeg?rect=13%2C53%2C1907%2C917&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/29/8c50b490-4d36-4428-8c44-ec7eaf97587c.jpeg?rect=13%2C53%2C1907%2C917&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/29/8c50b490-4d36-4428-8c44-ec7eaf97587c.jpeg?rect=13%2C53%2C1907%2C917&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="SES-Halbschwergewichtler Tom Dzemski und sein Gegner Daniel Blenda Dos Santos aus Frankreich.">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Boxen</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SES-Kämpfer haben Titel im Visier</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/regionalsport/jasmin-fritz-greift-nach-schwierigen-jahren-wieder-an-3574510">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/24/e4697af2-d0f6-4702-ae7c-2c785f19ab36.jpeg?rect=4%2C0%2C3988%2C2344&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/24/e4697af2-d0f6-4702-ae7c-2c785f19ab36.jpeg?rect=4%2C0%2C3988%2C2344&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/24/e4697af2-d0f6-4702-ae7c-2c785f19ab36.jpeg?rect=4%2C0%2C3988%2C2344&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/24/e4697af2-d0f6-4702-ae7c-2c785f19ab36.jpeg?rect=4%2C0%2C3988%2C2344&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/24/e4697af2-d0f6-4702-ae7c-2c785f19ab36.jpeg?rect=4%2C0%2C3988%2C2344&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/24/e4697af2-d0f6-4702-ae7c-2c785f19ab36.jpeg?rect=4%2C0%2C3988%2C2344&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/24/e4697af2-d0f6-4702-ae7c-2c785f19ab36.jpeg?rect=4%2C0%2C3988%2C2344&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Jasmin Fritz vom SC Magdeburg, hier bei der Deutschen Meisterschaft 2020 in Duisburg.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/25/4448ad49-a997-4825-ba48-d776ccc99cde.jpeg?rect=0%2C0%2C3630%2C2322&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/25/4448ad49-a997-4825-ba48-d776ccc99cde.jpeg?rect=0%2C0%2C3630%2C2322&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/25/4448ad49-a997-4825-ba48-d776ccc99cde.jpeg?rect=0%2C0%2C3630%2C2322&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/25/4448ad49-a997-4825-ba48-d776ccc99cde.jpeg?rect=0%2C0%2C3630%2C2322&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/25/4448ad49-a997-4825-ba48-d776ccc99cde.jpeg?rect=0%2C0%2C3630%2C2322&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/25/4448ad49-a997-4825-ba48-d776ccc99cde.jpeg?rect=0%2C0%2C3630%2C2322&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/25/4448ad49-a997-4825-ba48-d776ccc99cde.jpeg?rect=0%2C0%2C3630%2C2322&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Josefine Landt hat noch eine Chance auf das U-23-Team.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Kanu</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Jasmin Fritz greift nach schwierigen Jahren wieder an</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Wie Josefine Landt vom SCM noch in den U-23-Kader paddeln kann</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/regionalsport/ses-kampfer-eifert-sorgt-mit-seinem-triumph-fur-viele-schlagzeilen-3570538">
+            <a href="/sport/regionalsport/achtungszeichen-von-gose-wellbrock-und-martens-die-vielstarter-des-scm-glanzen-in-berlin-3594366">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/19/58559647-03fa-49af-a151-60d08c43c6e2.jpeg?rect=179%2C131%2C1077%2C653&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/19/58559647-03fa-49af-a151-60d08c43c6e2.jpeg?rect=179%2C131%2C1077%2C653&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/19/58559647-03fa-49af-a151-60d08c43c6e2.jpeg?rect=179%2C131%2C1077%2C653&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/19/58559647-03fa-49af-a151-60d08c43c6e2.jpeg?rect=179%2C131%2C1077%2C653&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/19/58559647-03fa-49af-a151-60d08c43c6e2.jpeg?rect=179%2C131%2C1077%2C653&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/19/58559647-03fa-49af-a151-60d08c43c6e2.jpeg?rect=179%2C131%2C1077%2C653&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/19/58559647-03fa-49af-a151-60d08c43c6e2.jpeg?rect=179%2C131%2C1077%2C653&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Michael Eifert und Coach Ali Celik zeigen stolz auf den großen Bericht in der Sonnabend-Ausgabe der Volksstimme. ">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Boxen</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">SES-Kämpfer Eifert sorgt mit seinem Triumph für viele Schlagzeilen</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/regionalsport/wie-sich-ses-kampfer-eifert-seinen-wm-traum-erfullte-3569754">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/18/52154974-bcff-4d65-a94a-932597471daa.jpeg?rect=7%2C38%2C2255%2C1417&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/18/52154974-bcff-4d65-a94a-932597471daa.jpeg?rect=7%2C38%2C2255%2C1417&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/18/52154974-bcff-4d65-a94a-932597471daa.jpeg?rect=7%2C38%2C2255%2C1417&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/18/52154974-bcff-4d65-a94a-932597471daa.jpeg?rect=7%2C38%2C2255%2C1417&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/18/52154974-bcff-4d65-a94a-932597471daa.jpeg?rect=7%2C38%2C2255%2C1417&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/18/52154974-bcff-4d65-a94a-932597471daa.jpeg?rect=7%2C38%2C2255%2C1417&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/18/52154974-bcff-4d65-a94a-932597471daa.jpeg?rect=7%2C38%2C2255%2C1417&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="SES-Halbschwergewichtler Michael Eifert bestimmte den Kampf gegen Ex-Weltmeister Jean Pascal ganz klar und landete immer wieder entscheidende Treffer. ">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Boxen</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Wie sich SES-Kämpfer Eifert seinen WM-Traum erfüllte</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/sport/regionalsport/sarah-wellbrock-kampft-sich-zuruck-3569561">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2023/03/17/fa4dfe0a-f74c-4901-939d-e309c048e2ec.jpeg?rect=2%2C0%2C1896%2C1049&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/03/17/fa4dfe0a-f74c-4901-939d-e309c048e2ec.jpeg?rect=2%2C0%2C1896%2C1049&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/03/17/fa4dfe0a-f74c-4901-939d-e309c048e2ec.jpeg?rect=2%2C0%2C1896%2C1049&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/03/17/fa4dfe0a-f74c-4901-939d-e309c048e2ec.jpeg?rect=2%2C0%2C1896%2C1049&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/03/17/fa4dfe0a-f74c-4901-939d-e309c048e2ec.jpeg?rect=2%2C0%2C1896%2C1049&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/03/17/fa4dfe0a-f74c-4901-939d-e309c048e2ec.jpeg?rect=2%2C0%2C1896%2C1049&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/03/17/fa4dfe0a-f74c-4901-939d-e309c048e2ec.jpeg?rect=2%2C0%2C1896%2C1049&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Sie hat lange pausiert, hat sich auf ihre Karriere nach dem Leistungssport konzentriert, hatte mit Schulterproblemen zu kämpfen: Doch den Traum von ihrer dritten Olympiateilnahme hat Sarah Wellbrock nicht aufgegeben.">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/23/dfb695d1-44ea-4043-8187-cc1eff718f83.jpeg?rect=9%2C106%2C700%2C427&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/23/dfb695d1-44ea-4043-8187-cc1eff718f83.jpeg?rect=9%2C106%2C700%2C427&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/23/dfb695d1-44ea-4043-8187-cc1eff718f83.jpeg?rect=9%2C106%2C700%2C427&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/23/dfb695d1-44ea-4043-8187-cc1eff718f83.jpeg?rect=9%2C106%2C700%2C427&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/23/dfb695d1-44ea-4043-8187-cc1eff718f83.jpeg?rect=9%2C106%2C700%2C427&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/23/dfb695d1-44ea-4043-8187-cc1eff718f83.jpeg?rect=9%2C106%2C700%2C427&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/23/dfb695d1-44ea-4043-8187-cc1eff718f83.jpeg?rect=9%2C106%2C700%2C427&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Knackte auch die vierte WM-Norm: Lukas Märtens.">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Schwimmen</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Sarah Wellbrock kämpft sich zurück</h3>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Achtungszeichen von Gose, Wellbrock und Märtens: Die Vielstarter des SCM glänzen in Berlin</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/regionalsport/selbst-ubertroffen-moritz-florstedt-vom-scm-beendet-rangliste-als-starkster-kajak-fahrer-3594370">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/23/3da59a2a-41f9-45bf-9865-d0be25dd3ffb.jpeg?rect=236%2C520%2C3518%2C1958&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/23/3da59a2a-41f9-45bf-9865-d0be25dd3ffb.jpeg?rect=236%2C520%2C3518%2C1958&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/23/3da59a2a-41f9-45bf-9865-d0be25dd3ffb.jpeg?rect=236%2C520%2C3518%2C1958&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/23/3da59a2a-41f9-45bf-9865-d0be25dd3ffb.jpeg?rect=236%2C520%2C3518%2C1958&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/23/3da59a2a-41f9-45bf-9865-d0be25dd3ffb.jpeg?rect=236%2C520%2C3518%2C1958&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/23/3da59a2a-41f9-45bf-9865-d0be25dd3ffb.jpeg?rect=236%2C520%2C3518%2C1958&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/23/3da59a2a-41f9-45bf-9865-d0be25dd3ffb.jpeg?rect=236%2C520%2C3518%2C1958&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Moritz Florstedt hat zum Abschluss der Rangliste in Duisburg ein fulminantes Rennen geliefert. ">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Kanu</h4>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">„Selbst übertroffen“: Moritz Florstedt vom SCM beendet Rangliste als stärkster Kajak-Fahrer</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/regionalsport/wie-der-aufgalopp-lust-auf-mehr-gemacht-hat-3594326">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/23/5cf812a9-e501-4459-ae5f-ee6b75662597.jpeg?rect=0%2C26%2C2192%2C1205&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/23/5cf812a9-e501-4459-ae5f-ee6b75662597.jpeg?rect=0%2C26%2C2192%2C1205&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/23/5cf812a9-e501-4459-ae5f-ee6b75662597.jpeg?rect=0%2C26%2C2192%2C1205&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/23/5cf812a9-e501-4459-ae5f-ee6b75662597.jpeg?rect=0%2C26%2C2192%2C1205&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/23/5cf812a9-e501-4459-ae5f-ee6b75662597.jpeg?rect=0%2C26%2C2192%2C1205&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/23/5cf812a9-e501-4459-ae5f-ee6b75662597.jpeg?rect=0%2C26%2C2192%2C1205&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/23/5cf812a9-e501-4459-ae5f-ee6b75662597.jpeg?rect=0%2C26%2C2192%2C1205&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Packendes Duell um den Sieg im Hauptrennen: „Cover Girl“ mit Maxim Pecheur (r.) gewinnt vor „Mataby“ mit  Dastan Sabatbekov. ">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Pferdesport</h4>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Wie der Aufgalopp Lust auf mehr gemacht hat</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/regionalsport/moritz-florstedt-vom-scm-erobert-die-spitze-zuruck-3593742">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/22/fd444f7a-996f-4189-bc6e-d4b61b343bb7.jpeg?rect=0%2C233%2C4000%2C2104&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/22/fd444f7a-996f-4189-bc6e-d4b61b343bb7.jpeg?rect=0%2C233%2C4000%2C2104&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/22/fd444f7a-996f-4189-bc6e-d4b61b343bb7.jpeg?rect=0%2C233%2C4000%2C2104&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/22/fd444f7a-996f-4189-bc6e-d4b61b343bb7.jpeg?rect=0%2C233%2C4000%2C2104&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/22/fd444f7a-996f-4189-bc6e-d4b61b343bb7.jpeg?rect=0%2C233%2C4000%2C2104&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/22/fd444f7a-996f-4189-bc6e-d4b61b343bb7.jpeg?rect=0%2C233%2C4000%2C2104&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/22/fd444f7a-996f-4189-bc6e-d4b61b343bb7.jpeg?rect=0%2C233%2C4000%2C2104&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="An der Spitze: Moritz Florstedt beendet die nationale Rangliste als bester deutscher Kajakfahrer.">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Kanu</h4>
+                <h3 class="fp-article__title text-xl--bold ">Moritz Florstedt vom SCM erobert die Spitze zurück</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/regionalsport/florian-wellbrock-vom-scm-krault-zum-deutschen-rekord-3593337">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/21/ba96b04d-ed89-4ddb-a7c5-7524d85492b6.jpeg?rect=80%2C113%2C1077%2C562&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/21/ba96b04d-ed89-4ddb-a7c5-7524d85492b6.jpeg?rect=80%2C113%2C1077%2C562&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/21/ba96b04d-ed89-4ddb-a7c5-7524d85492b6.jpeg?rect=80%2C113%2C1077%2C562&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/21/ba96b04d-ed89-4ddb-a7c5-7524d85492b6.jpeg?rect=80%2C113%2C1077%2C562&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/21/ba96b04d-ed89-4ddb-a7c5-7524d85492b6.jpeg?rect=80%2C113%2C1077%2C562&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/21/ba96b04d-ed89-4ddb-a7c5-7524d85492b6.jpeg?rect=80%2C113%2C1077%2C562&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/21/ba96b04d-ed89-4ddb-a7c5-7524d85492b6.jpeg?rect=80%2C113%2C1077%2C562&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Neuer Wahnsinn von Wellbrock: Der 25-Jährige verbesserte seinen deutschen Rekord um 1,26 Sekunden,">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Schwimmen</h4>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Florian Wellbrock vom SCM krault zum deutschen Rekord</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/regionalsport/magdeburger-renn-verein-putzt-sich-fur-saison-auftakt-heraus-3592493">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/20/c56166e9-752d-4178-86b8-d13c872a1096.jpeg?rect=118%2C79%2C1076%2C652&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/20/c56166e9-752d-4178-86b8-d13c872a1096.jpeg?rect=118%2C79%2C1076%2C652&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/20/c56166e9-752d-4178-86b8-d13c872a1096.jpeg?rect=118%2C79%2C1076%2C652&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/20/c56166e9-752d-4178-86b8-d13c872a1096.jpeg?rect=118%2C79%2C1076%2C652&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/20/c56166e9-752d-4178-86b8-d13c872a1096.jpeg?rect=118%2C79%2C1076%2C652&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/20/c56166e9-752d-4178-86b8-d13c872a1096.jpeg?rect=118%2C79%2C1076%2C652&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/20/c56166e9-752d-4178-86b8-d13c872a1096.jpeg?rect=118%2C79%2C1076%2C652&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Zur neuen Saison sollen sich die vielen Zuschauer an den Renntagen im Herrenkrug noch wohler fühlen. ">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Galopp</h4>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Magdeburger Renn-Verein putzt sich für Saison-Auftakt heraus</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/sport/regionalsport/magdeburger-renn-verein-freut-sich-auf-ersten-von-vier-renntagen-3592498">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2023/04/20/ee1c3586-496b-427d-b188-931fa8c9f3e9.jpeg?rect=14%2C321%2C3522%2C1979&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2023/04/20/ee1c3586-496b-427d-b188-931fa8c9f3e9.jpeg?rect=14%2C321%2C3522%2C1979&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2023/04/20/ee1c3586-496b-427d-b188-931fa8c9f3e9.jpeg?rect=14%2C321%2C3522%2C1979&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2023/04/20/ee1c3586-496b-427d-b188-931fa8c9f3e9.jpeg?rect=14%2C321%2C3522%2C1979&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2023/04/20/ee1c3586-496b-427d-b188-931fa8c9f3e9.jpeg?rect=14%2C321%2C3522%2C1979&amp;width=640 640w, https://bmg-images.forward-publishing.io/2023/04/20/ee1c3586-496b-427d-b188-931fa8c9f3e9.jpeg?rect=14%2C321%2C3522%2C1979&amp;width=320 320w, https://bmg-images.forward-publishing.io/2023/04/20/ee1c3586-496b-427d-b188-931fa8c9f3e9.jpeg?rect=14%2C321%2C3522%2C1979&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Am Sonnabend startet im Herrenkrug die Saison des Magdeburger Renn-Vereins.Foto: Frank Sorge">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Galopp</h4>
+                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Magdeburger Renn-Verein freut sich auf ersten von vier Renntagen</h3>
             </a>
         </article>
 </div>
@@ -2344,6 +2384,16 @@
                     </li>
                 </ul>
               </div>
+              <div class="fp-footer__inner">
+                <div class="fp-footer__category">
+                  <h4>
+                    <a href="/video" target="_self">Video
+                    </a>
+                  </h4>
+                </div>
+                <ul>
+                </ul>
+              </div>
 
                 <div class="fp-footer__inner fp-footer__social-media">
                   <div class="fp-social-media">
@@ -2440,7 +2490,7 @@
     }
 </script>
 
-            <script src="/static/scripts/scripts.edc8f467.js" defer=""></script>
+            <script src="/static/scripts/scripts.93eed1e1.js" defer=""></script>
 
 <script src="https://static.dumontnext.de/revenue/lightworks-vs.js"></script>
 
@@ -2463,7 +2513,12 @@
         </div>
     </div>
 
-    <script src="/static/scripts/adScripts.edc8f467.js"></script>
-  
+    <script src="/static/scripts/adScripts.93eed1e1.js"></script>
+
+    
+<div id="bineos-tracking-infos" data-bineos-id="9d298de30b" data-document-id="407" data-ivw-id="SP-DundW" data-content-type="category-page" data-category="sport" data-sub-category="" style="display: none;">
+</div>
+
+<script src="https://cdn.dl.volksstimme.de/bineosmgm/content/Bineos_2_0/bineos.min.js"></script>  
 
 </body></html>

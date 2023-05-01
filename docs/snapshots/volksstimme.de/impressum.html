@@ -1,8 +1,8 @@
 <!DOCTYPE html><html lang="de"><head>
 
-      <link rel="preload prefetch stylesheet" href="/designs/bmg_base_design/1.0.153/styles-vs.css" as="style">
+      <link rel="preload prefetch stylesheet" href="/designs/bmg_base_design/1.0.154/styles-vs.css" as="style">
 
-      <link rel="preload prefetch stylesheet" href="/static/css/styles-delivery-vs-base.edc8f467.css" as="style">
+      <link rel="preload prefetch stylesheet" href="/static/css/styles-delivery-vs-base.93eed1e1.css" as="style">
 
     <title>Volksstimme Impressum</title>
     <meta charset="UTF-8">
@@ -46,11 +46,27 @@
                 cre.onload = function(){
                     if (typeof(cre_client) != "undefined") {
                         cre_client.addListener(function(response){
-                            const userType = response?.data?.action_groups?.cms_snippet?.parameters[0]
+                            let userType = response?.data?.action_groups?.cms_snippet?.parameters[0]
+
+                            if (!userType) {
+                                console.error('Could not load C1 user type!')
+                                userType = "pur-anon"
+                            }
+
                             if(typeof initiateSourcePoint === "function") {
                                 initiateSourcePoint(userType)
                             }
+
+                            // Store user type for later use
+                            localStorage.setItem("C1_USER_TYPE", userType)
+
+                            // Dispatch event about user type storage
+                            var userTypeStorageEvent = new Event("USER_TYPE_STORAGE", {
+                                bubbles: true,
+                            })
+                            window.dispatchEvent(userTypeStorageEvent)
                         });
+
                         cre_client.set_page_view();
                         cre_client.set_origin("web");
                         cre_client.set_service_id("mv-web");
@@ -66,8 +82,10 @@
                         cre_client.set_kicker("Volksstimme%20Impressum");
                         cre_client.request();
 
-                        var trackingLoadedEvent = new Event("TRACKING_LOADED", {bubbles: true});
-                        cre.dispatchEvent(trackingLoadedEvent);
+                        var c1TrackingLoadedEvent = new Event("C1_TRACKING_LOADED", {
+                            bubbles: true,
+                        });
+                        cre.dispatchEvent(c1TrackingLoadedEvent);
                     }
                 };
                 s.parentNode.insertBefore(cre, s);
@@ -247,7 +265,7 @@
                         </a>
                     </li>
                     <li class="fp-top-nav__list-item">
-                        <a class="text-sm-secondary--bold" href="https://trauer.volksstimme.de/" target="_blank" rel="noopener noreferrer">
+                        <a class="text-sm-secondary--bold" href="https://www.abschied-nehmen.de" target="_blank" rel="noopener noreferrer">
                                 Trauer
                         </a>
                     </li>
@@ -385,15 +403,15 @@
                             </a>
                         </div>
     <div class="fp-main-header__weather-widget">
-        <div class="fp-main-header__weather-widget--top regen">
+        <div class="fp-main-header__weather-widget--top wolkig">
             <span class="weather-icon-img">
-                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/regen.svg" alt="weather">
+                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/wolkig.svg" alt="weather">
             </span>
-            <span class="fp-main-header__weather-widget--tooltip">regen</span>
+            <span class="fp-main-header__weather-widget--tooltip">wolkig</span>
             <aside>
-                <span class="fp-main-header__weather-widget--day-temp">12°</span>
+                <span class="fp-main-header__weather-widget--day-temp">18°</span>
                 <span>/</span>
-                <span class="fp-main-header__weather-widget--night-temp">2°</span>
+                <span class="fp-main-header__weather-widget--night-temp">8°</span>
             </aside>
         </div>
         <div class="fp-main-header__weather-widget--bottom">
@@ -460,6 +478,12 @@
 ">
                     <a class="text-14--bold" href="/blaulicht" target="_self">
                       Blaulicht
+                    </a>
+                  </li>
+                  <li class="fp-main-nav__list-item
+">
+                    <a class="text-14--bold" href="/video" target="_self">
+                      Video
                     </a>
                   </li>
             </ul>
@@ -588,6 +612,12 @@
 ">
                     <a class="text-14--bold" href="/blaulicht" target="_self">
                       Blaulicht
+                    </a>
+                  </li>
+                  <li class="fp-main-nav__list-item
+">
+                    <a class="text-14--bold" href="/video" target="_self">
+                      Video
                     </a>
                   </li>
             </ul>
@@ -1133,6 +1163,14 @@
                       </a>
                     </li>
             </ul>
+            <div class="fp-sidebar-menu__nav--header">
+              <h4>
+                  <a href="/video" target="_self">Video
+                  </a>
+              </h4>
+            </div>
+            <ul class="fp-sidebar-menu__nav--list">
+            </ul>
         </nav>
 
 
@@ -1218,7 +1256,7 @@
                             </a>
                           </li>
                           <li class="fp-sidebar-menu__nav--item">
-                            <a class="text-base-secondary--semibold" href="https://trauer.volksstimme.de/" target="_blank" rel="noopener noreferrer">
+                            <a class="text-base-secondary--semibold" href="https://www.abschied-nehmen.de" target="_blank" rel="noopener noreferrer">
                               Trauer
                             </a>
                           </li>
@@ -1340,7 +1378,7 @@
   <main class="fp-page-content general-page" id="general-page-main">
       <div class="fp-container fp-container-2"><div id="ad-top-banner-mobile" data-screen="mobile"></div><div id="ad-top-banner" data-screen="desktop"></div><div class="fp-page__header fp-breaking-news" data-t-name="Minifeature" data-fp-container-name="breaking-news-header"></div><div id="page-header" class="fp-page__header"></div><div class="fp-page__body"><header class="fp-category-name-header fp-page-title"><aside class="fp-category-name-header__content"><h2 class="text-xxl--bold fp-category-name-header__text">Impressum Volksstimme.de</h2></aside></header><p class="fp-paragraph">Dieses Gesamtangebot besteht aus verschiedenen Teilangeboten. Herausgeber und Diensteanbieter ist die</p><div class="center" id="middle-ad-mobile" data-screen="mobile"></div>
 <div class="center" id="middle-ad" data-screen="desktop"></div>
-<p class="fp-paragraph">Mitteldeutsche Verlags- und Druckhaus GmbH<br>Bahnhofstr. 17<br> 39104 Magdeburg<br>Tel. 0391/59 99-0<br> E-Mail <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a0cdd6c4e0cdc5c4c9c5cec7d2d5d0d0c58dcdc1c7c4c5c2d5d2c78ec4c5">[email&#160;protected]</a><br> Geschäftsführer: Marco Fehrecke</p><p class="fp-paragraph">HR-Nr.:  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HR B 100552<br> UST-ID:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;DE 152410552</p><p class="fp-paragraph">Inhaltlich verantwortlich für das Teilangebot Volksstimme: Marc Rath, Chefredakteur</p><p class="fp-paragraph">Chefredakteur Digitale Transformation: Gert Glowinski</p><p class="fp-paragraph"><a target="_blank" rel="null" href="https://www.media-mitteldeutschland.de"></a>Werbevermarktung:<br>Media Mitteldeutschland GmbH<br>Bahnhofstr. 17, 39104 Magdeburg<br>Verantwortlich lokal: Steffen Schulle; verantwortlich national: Sebastian Mühlenkamp&nbsp;<br>Tel. 0391/5999-900<br>E-Mail <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1d7c736778747a78735d6b7271766e6e6974707078337978">[email&#160;protected]</a><br>Es gilt die aktuelle Anzeigenpreisliste. <br><a target="_blank" rel="null" href="https://www.media-mitteldeutschland.de">Werben in der Volksstimme</a></p><p class="fp-paragraph">Den Datenschutzbeauftragten erreichen Sie unter: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="07636673626974646f72737d4771686b6c7474736e6a6a62296362">[email&#160;protected]</a></p><p class="fp-paragraph"><strong>Verwendung von Inhalten</strong></p><p class="fp-paragraph">Grundsätzlich sind sämtliche Inhalte (Content) wie Texte, Fotos, Grafiken, Video- und Audiosequenzen, die auf diesen Webseiten veröffentlicht werden, Eigentum der Mitteldeutsche Verlags- und Druckhaus GmbH und dürfen ohne Rücksprache mit ihr nicht nachgenutzt oder verwendet werden. Der Verlag gestattet jedoch die Übernahme von Content, sofern dieser ausdrücklich für den privaten Gebrauch eines Nutzers bestimmt ist. Voraussetzung dafür ist ein eindeutiger Quellenverweis auf den jeweiligen Print- oder Online-Titel der Mitteldeutsche Verlags- und Druckhaus GmbH sowie eine direkte Referenzierung (Verlinkung) dorthin.&nbsp;</p><p class="fp-paragraph"><strong>Haftungsausschluss</strong></p><p class="fp-paragraph">Der Autor übernimmt keinerlei Gewähr für die Aktualität, Korrektheit, Vollständigkeit oder Qualität der bereitgestellten Informationen. Haftungsansprüche gegen den Autor, welche sich auf Schäden materieller oder ideeller Art beziehen, die durch die Nutzung oder Nichtnutzung der dargebotenen Informationen bzw. durch die Nutzung fehlerhafter und unvollständiger Informationen verursacht wurden, sind grundsätzlich ausgeschlossen, sofern seitens des Autors kein nachweislich vorsätzliches oder grob fahrlässiges Verschulden vorliegt. Alle Angebote sind freibleibend und unverbindlich. Der Autor behält es sich ausdrücklich vor, Teile der Seiten oder das gesamte Angebot ohne gesonderte Ankündigung zu verändern, zu ergänzen, zu löschen oder die Veröffentlichung zeitweise oder endgültig einzustellen.</p><p class="fp-paragraph"><strong>Streitbeilegung</strong></p><p class="fp-paragraph">Gemäß § 36 VSBG (Verbraucherstreitbeilegungsgesetz – Gesetz über die alternative Streitbeilegung in Verbrauchersachen) erklärt der Betreiber dieser Website: Wir sind weder bereit noch verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen. Die Europäische Kommission stellt unter <a href="http://ec.europa.eu/consumers/odr/" target="_blank">http://ec.europa.eu/consumers/odr/</a> eine Plattform zur außerge-richtlichen Online-Streitbeilegung (sog. OS-Plattform) bereit.</p></div>
+<p class="fp-paragraph">Mitteldeutsche Verlags- und Druckhaus GmbH<br>Bahnhofstr. 17<br> 39104 Magdeburg<br>Tel. 0391/59 99-0<br> E-Mail <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4d203b290d2028292428232a3f383d3d2860202c2a29282f383f2a632928">[email&#160;protected]</a><br> Geschäftsführer: Marco Fehrecke</p><p class="fp-paragraph">HR-Nr.:  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HR B 100552<br> UST-ID:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;DE 152410552</p><p class="fp-paragraph">Inhaltlich verantwortlich für das Teilangebot Volksstimme: Marc Rath, Chefredakteur</p><p class="fp-paragraph">Chefredakteur Digitale Transformation: Gert Glowinski</p><p class="fp-paragraph"><a target="_blank" rel="null" href="https://www.media-mitteldeutschland.de"></a>Werbevermarktung:<br>Media Mitteldeutschland GmbH<br>Bahnhofstr. 17, 39104 Magdeburg<br>Verantwortlich lokal: Steffen Schulle; verantwortlich national: Sebastian Mühlenkamp&nbsp;<br>Tel. 0391/5999-900<br>E-Mail <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c0a1aebaa5a9a7a5ae80b6afacabb3b3b4a9adada5eea4a5">[email&#160;protected]</a><br>Es gilt die aktuelle Anzeigenpreisliste. <br><a target="_blank" rel="null" href="https://www.media-mitteldeutschland.de">Werben in der Volksstimme</a></p><p class="fp-paragraph">Den Datenschutzbeauftragten erreichen Sie unter: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="187c796c7d766b7b706d6c62586e7774736b6b6c7175757d367c7d">[email&#160;protected]</a></p><p class="fp-paragraph"><strong>Verwendung von Inhalten</strong></p><p class="fp-paragraph">Grundsätzlich sind sämtliche Inhalte (Content) wie Texte, Fotos, Grafiken, Video- und Audiosequenzen, die auf diesen Webseiten veröffentlicht werden, Eigentum der Mitteldeutsche Verlags- und Druckhaus GmbH und dürfen ohne Rücksprache mit ihr nicht nachgenutzt oder verwendet werden. Der Verlag gestattet jedoch die Übernahme von Content, sofern dieser ausdrücklich für den privaten Gebrauch eines Nutzers bestimmt ist. Voraussetzung dafür ist ein eindeutiger Quellenverweis auf den jeweiligen Print- oder Online-Titel der Mitteldeutsche Verlags- und Druckhaus GmbH sowie eine direkte Referenzierung (Verlinkung) dorthin.&nbsp;</p><p class="fp-paragraph"><strong>Haftungsausschluss</strong></p><p class="fp-paragraph">Der Autor übernimmt keinerlei Gewähr für die Aktualität, Korrektheit, Vollständigkeit oder Qualität der bereitgestellten Informationen. Haftungsansprüche gegen den Autor, welche sich auf Schäden materieller oder ideeller Art beziehen, die durch die Nutzung oder Nichtnutzung der dargebotenen Informationen bzw. durch die Nutzung fehlerhafter und unvollständiger Informationen verursacht wurden, sind grundsätzlich ausgeschlossen, sofern seitens des Autors kein nachweislich vorsätzliches oder grob fahrlässiges Verschulden vorliegt. Alle Angebote sind freibleibend und unverbindlich. Der Autor behält es sich ausdrücklich vor, Teile der Seiten oder das gesamte Angebot ohne gesonderte Ankündigung zu verändern, zu ergänzen, zu löschen oder die Veröffentlichung zeitweise oder endgültig einzustellen.</p><p class="fp-paragraph"><strong>Streitbeilegung</strong></p><p class="fp-paragraph">Gemäß § 36 VSBG (Verbraucherstreitbeilegungsgesetz – Gesetz über die alternative Streitbeilegung in Verbrauchersachen) erklärt der Betreiber dieser Website: Wir sind weder bereit noch verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen. Die Europäische Kommission stellt unter <a href="http://ec.europa.eu/consumers/odr/" target="_blank">http://ec.europa.eu/consumers/odr/</a> eine Plattform zur außerge-richtlichen Online-Streitbeilegung (sog. OS-Plattform) bereit.</p></div>
 <div id="nativendo-nativendo-infeed"></div></div>
   </main>
 
@@ -1771,6 +1809,16 @@
                     </li>
                 </ul>
               </div>
+              <div class="fp-footer__inner">
+                <div class="fp-footer__category">
+                  <h4>
+                    <a href="/video" target="_self">Video
+                    </a>
+                  </h4>
+                </div>
+                <ul>
+                </ul>
+              </div>
 
                 <div class="fp-footer__inner fp-footer__social-media">
                   <div class="fp-social-media">
@@ -1867,7 +1915,7 @@
     }
 </script>
 
-            <script src="/static/scripts/scripts.edc8f467.js" defer=""></script>
+            <script src="/static/scripts/scripts.93eed1e1.js" defer=""></script>
 
 <script src="https://static.dumontnext.de/revenue/lightworks-vs.js"></script>
 
@@ -1890,7 +1938,12 @@
         </div>
     </div>
 
-    <script src="/static/scripts/adScripts.edc8f467.js"></script>
-  
+    <script src="/static/scripts/adScripts.93eed1e1.js"></script>
+
+    
+<div id="bineos-tracking-infos" data-bineos-id="9d298de30b" data-document-id="195" data-ivw-id="RC-Angebotsinformation" data-content-type="general-page" data-category="" data-sub-category="" style="display: none;">
+</div>
+
+<script src="https://cdn.dl.volksstimme.de/bineosmgm/content/Bineos_2_0/bineos.min.js"></script>  
 
 </body></html>
