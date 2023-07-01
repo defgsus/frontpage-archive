@@ -20,16 +20,17 @@
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/tabletgothic/TabletGothic-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/beckett/Beckett-Light.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/normalize.eb629295d4c4fe1d25752792b6f2f37f.css">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/base/base.9d70de6eed5a84f527bf0a31d137fc60.css">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/navigation/navigation.1782b99e5732f81a1cb5b33f090d67d2.css">
-    <link rel="preload" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.356f3335955b5fbe2a687e0b5c522f62.css" as="style">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.356f3335955b5fbe2a687e0b5c522f62.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.356f3335955b5fbe2a687e0b5c522f62.css"></noscript>
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/base/base.0dfecd01f8dac6b1bd9fa6f907e74134.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/navigation/navigation.c1cf1e8f4c74224eba2580a35a66b525.css">
+    <link rel="preload" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.f1f72d723b8d7d29e22ea001e0a9d8ed.css" as="style">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.f1f72d723b8d7d29e22ea001e0a9d8ed.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.f1f72d723b8d7d29e22ea001e0a9d8ed.css"></noscript>
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/breadcrumbs.0761dc285cb76fb469c02402bf3aa005.css" as="style">
     <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/breadcrumbs.0761dc285cb76fb469c02402bf3aa005.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/breadcrumbs.0761dc285cb76fb469c02402bf3aa005.css"></noscript>
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/centerpage/centerpage.cb8f4c6fc660311e9eb588cd58c2b7d7.css">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/base/print.900228320ce4c751ee823dd8ca6292a6.css" media="print">
+    <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/breadcrumbs.0761dc285cb76fb469c02402bf3aa005.css"></noscript><link rel="stylesheet" href="https://static.zeit.de/p/wally/footerbar.css" media="print" onload="this.media='all'" />
+    
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/centerpage/centerpage.1a582bd2c66bb4fa6b3a9a414611dec9.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/base/print.bb7266fb35e239652040481184a4ae53.css" media="print">
 
     <script id="zonConfig" type="application/json">
         {
@@ -62,7 +63,6 @@
                 "brightcove_chapter_marks": true,
                 "comments_feedback_banner": false,
                 "comments_ads_use_postmessage": true,
-                "comments_per_user": true,
                 "https": false,
                 "bookmark_maintenance": false,
                 "merkl_sync": false,
@@ -71,7 +71,8 @@
                 "recipe_autocomplete": true,
                 "spark_clicktracking": true,
                 "visibility_tracking": true,
-                "zwe_hijack_images_swiping": true
+                "zwe_hijack_images_swiping": true,
+                "comments_per_user": true
                 },
             "settings": {
                 "autoplay_carousel_item_duration": "",
@@ -128,7 +129,6 @@
                 return cache;
             }
     
-            document.createElement( 'picture' );
             window.Zeit = {
                 assetHost: getConfig().assetHost,
                 publicPath: getConfig().publicPath,
@@ -446,7 +446,21 @@
         };
 
             </script>
-            <script src="https://consent-cdn.zeit.de/wrapperMessagingWithoutDetection.js"></script>
+                <script>
+                window.addEventListener('postRejectAllCompleted', () => {
+                    if (document.querySelector( "[id^='sp_message_']" )) {
+                        return;
+                    }
+                    const script = document.createElement('script');
+
+                    // Since consent has been revoked through the tcfapi, we now need to
+                    // try to rerender it once more.
+                    script.src =
+                        "https://consent-cdn.zeit.de/wrapperMessagingWithoutDetection.js";
+                    document.body.appendChild(script);
+                });
+            </script>
+                <script src="https://consent-cdn.zeit.de/wrapperMessagingWithoutDetection.js"></script>
     
     <script>
         const ioDomain = window.Zeit.showMobileAds() ? 'data-614d3891ff.zeit.de' : 'data-af9f3dfb33.zeit.de';
@@ -532,7 +546,7 @@
     </script>
     
     <script type="application/ld+json">
-        {"@context": "http://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://www.zeit.de/campus/2023/03/ausland-semester-studium-praktikum-erasmus-tipps"}, {"@type": "ListItem", "position": 2, "url": "https://www.zeit.de/2023/22/lernen-kuenstliche-intelligenz-bwl-studium"}, {"@type": "ListItem", "position": 3, "url": "https://www.zeit.de/campus/2023-05/klimaaktivismus-letzte-generation-razzia-radikalisierung"}, {"@type": "ListItem", "position": 4, "url": "https://www.zeit.de/campus/2023-04/letzte-generation-protest-berlin-faq"}, {"@type": "ListItem", "position": 5, "url": "https://www.zeit.de/campus/2023-05/handwerk-berufswechsel-zimmerer-ausbildung"}, {"@type": "ListItem", "position": 6, "url": "https://www.zeit.de/campus/2023-05/mutter-sohn-beziehung-frauenbild-praegung"}, {"@type": "ListItem", "position": 7, "url": "https://www.zeit.de/campus/2023-04/kritik-eltern-koerpergewicht-berufswahl-partnerwahl"}, {"@type": "ListItem", "position": 8, "url": "https://www.zeit.de/campus/2023-05/berufsanfaenger-fehler-berufswahl-selbstvertrauen"}, {"@type": "ListItem", "position": 9, "url": "https://www.zeit.de/campus/2022-08/dating-liebe-beziehung-erfahrungen-kindheit"}, {"@type": "ListItem", "position": 10, "url": "https://www.zeit.de/campus/2022-07/dating-muehe-verhalten-liebe"}, {"@type": "ListItem", "position": 11, "url": "https://www.zeit.de/campus/2022-06/liebe-beziehung-partnerschaft-hindernisse"}, {"@type": "ListItem", "position": 12, "url": "https://www.zeit.de/campus/2023/03/studentische-ernaehrung-guenstiges-essen-ideen-kuenstler"}, {"@type": "ListItem", "position": 13, "url": "https://www.zeit.de/campus/2023-05/grenzen-setzen-partnerschaft-beziehung-glover-tawwab-nedra"}, {"@type": "ListItem", "position": 14, "url": "https://www.zeit.de/campus/2023-05/trennungen-beziehungsende-freundschaft-sex-mit-ex"}, {"@type": "ListItem", "position": 15, "url": "https://www.zeit.de/2023/20/bwl-studium-hochschule-abbrecherquote"}]}
+        {"@context": "http://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://www.zeit.de/campus/2023-06/chatgpt-ki-schummel-auffliegen-aufruf"}, {"@type": "ListItem", "position": 2, "url": "https://www.zeit.de/campus/2023-06/lebensentscheidungen-jungsein-ratschlaege-spass-selbstoptimierung"}, {"@type": "ListItem", "position": 3, "url": "https://www.zeit.de/campus/2023/04/bwl-influencer-david-doebele-hedgefonds-henning-papas-kreditkarte"}, {"@type": "ListItem", "position": 4, "url": "https://www.zeit.de/campus/2023-06/aelter-werden-60-dinge-jung-alt"}, {"@type": "ListItem", "position": 5, "url": "https://www.zeit.de/campus/2023-06/millennials-30-jahre-alt-langweilig-veraenderung-persoenlichkeit"}, {"@type": "ListItem", "position": 6, "url": "https://www.zeit.de/campus/2023-06/positive-maennlichkeit-maennerfestival-chemnitz"}, {"@type": "ListItem", "position": 7, "url": "https://www.zeit.de/campus/angebote/hochschulegeisenheim/index"}, {"@type": "ListItem", "position": 8, "url": "https://www.zeit.de/campus/2023-06/testament-junge-menschen-tod-social-media"}, {"@type": "ListItem", "position": 9, "url": "https://www.zeit.de/campus/2022-08/dating-liebe-beziehung-erfahrungen-kindheit"}, {"@type": "ListItem", "position": 10, "url": "https://www.zeit.de/campus/2022-07/dating-muehe-verhalten-liebe"}, {"@type": "ListItem", "position": 11, "url": "https://www.zeit.de/campus/2022-06/liebe-beziehung-partnerschaft-hindernisse"}, {"@type": "ListItem", "position": 12, "url": "https://www.zeit.de/campus/2023-06/freibad-schwimmbad-soziale-schichten-durchmischung"}, {"@type": "ListItem", "position": 13, "url": "https://www.zeit.de/arbeit/2023-06/kuendigung-pause-sara-weber-uni-podcast"}, {"@type": "ListItem", "position": 14, "url": "https://www.zeit.de/campus/2023-06/allgemeinbildung-ki-chatgpt-zukunft"}, {"@type": "ListItem", "position": 15, "url": "https://www.zeit.de/campus/2023-06/eltern-grenzen-kinder-streit"}]}
     </script>
 
     
@@ -555,9 +569,7 @@
         </script>
     <script src="https://cl.k5a.io/6156f4770662411b5d525213.js" async></script>
         <script>
-    if ( screen.width >= window.Zeit.tabletMinWidth && screen.width < window.Zeit.desktopMinWidth && !window.Zeit.user.adFree ) {
-        window.Zeit.viewport.set( 'portrait' );
-    }
+        if ( screen.width >= window.Zeit.tabletMinWidth && screen.width < window.Zeit.desktopMinWidth && !window.Zeit.user.adFree ) {window.Zeit.viewport.set( 'portrait' );}
     </script>
     
     <script>
@@ -749,7 +761,7 @@
     }
     </style>
         <style></style>
-    <script src="https://static.zeit.de/p/zeit.web/js/colorscheme.29faacb425784be93acf.js" ></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/colorscheme.19c1a7bf9545b0945227.js" ></script>
     <!-- zeit.web.core.template.include_in_head injection point -->
 </head>
 <body data-page-type="centerpage" data-template="" data-is-hp="true" data-unique-id="http://xml.zeit.de/campus/index" data-uuid="de6e0d19-d954-457b-a7ba-3bd69df9f473" data-overscrolling="off">
@@ -1043,12 +1055,20 @@
                 </ul>
                 <div role="heading" class="navigation-section__headline" id="nav-headline-anzeigen">Anzeigen</div><ul class="navigation__section" data-vt-section="anzeigen" data-ct-section-type="anzeigen"  aria-labelledby="nav-headline-anzeigen">
                                                 <li>
-                        <a href="https://www.zeit.de/angebote/sommer-in-bremen/index" class="navigation-link" itemprop="url">
-        <span itemprop="name">Sommer in Bremen</span>
+                        <a href="https://www.zeit.de/campus/angebote/hochschulegeisenheim/index" class="navigation-link" itemprop="url">
+        <span itemprop="name">Mit dem Studium die Welt retten</span>
 </a>                    </li>
                                                     <li>
-                        <a href="https://www.zeit.de/angebote/lukas-baerfuss-die-krume-brot/index" class="navigation-link" itemprop="url">
-        <span itemprop="name">Lukas Bärfuss »Die Krume Brot«</span>
+                        <a href="https://zett.cmk.zeit.de/cms/articles/15531/anzeige/techniker-krankenkasse/wie-ich-mir-mein-leben-zurueckgeholt-habe" class="navigation-link" itemprop="url">
+        <span itemprop="name">So gelingt ein achtsames Leben</span>
+</a>                    </li>
+                                                    <li>
+                        <a href="https://www.zeit.de/zett/angebote/come-as-you-are/rewe/index" class="navigation-link" itemprop="url">
+        <span itemprop="name">LGBTIQ+freundliches Unternehmen</span>
+</a>                    </li>
+                                                    <li>
+                        <a href="https://www.zeit.de/angebote/most-wanted-employer-2023/index" class="navigation-link" itemprop="url">
+        <span itemprop="name">Beliebteste Arbeitgeber 2023</span>
 </a>                    </li>
                                                     <li>
                         <a href="https://www.zeit.de/campus/angebote/howitworks/index" class="navigation-link" itemprop="url">
@@ -1094,7 +1114,7 @@
 
 
 <div class="navigation__area navigation__area--account" data-ct-container-type="navigation_account" itemscope itemtype="http://schema.org/SiteNavigationElement">
-        <a href="https://premium.zeit.de/probe-abo" class="navigation_subscription-link" data-ct-element-type="subscription-link" itemprop="url"><span itemprop="name">Abo testen</span></a>
+        <a href="https://premium.zeit.de/probe-abo" class="navigation__subscription-link" data-ct-element-type="subscription-link" itemprop="url"><span itemprop="name">Abo testen</span></a>
                 <a class="navigation__button navigation__button--account" role="button" href="#navigation-content-account" aria-controls="navigation-content-account" title="Nutzermenü" data-ct-label="" data-ct-action="open">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" class="svg-symbol menu-icon" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><path fill-rule="evenodd" d="M9 7.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM9 9a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4.642 12.996C3.98 13.77 3.75 15.01 3.75 17h-1.5c0-1.987.199-3.747 1.251-4.978C4.58 10.76 6.37 10.25 9 10.25c2.63 0 4.42.51 5.499 1.772C15.55 13.253 15.75 15.013 15.75 17h-1.5c0-1.99-.23-3.23-.892-4.004-.636-.744-1.846-1.246-4.358-1.246-2.512 0-3.722.502-4.358 1.246Z" clip-rule="evenodd"/></svg>
         </a>
@@ -1154,7 +1174,7 @@
         }
     </script>
 </div>
-                        <main class="main main--centerpage" id="main">
+                            <main class="main main--centerpage" id="main">
                             <div class="cp-region cp-region--solo cp-region--has-zco-lead-cinema">        
 
 <div class="cp-area cp-area--solo" data-ct-context="solo">
@@ -1164,44 +1184,46 @@
                                     
 
 <article class="teaser-lead-cinema "
-    data-unique-id="http://xml.zeit.de/campus/2023/03/ausland-semester-studium-praktikum-erasmus-tipps" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2023-06/chatgpt-ki-schummel-auffliegen-aufruf">
 
-                    <a href="https://www.zeit.de/campus/2023/03/ausland-semester-studium-praktikum-erasmus-tipps" class="teaser-lead-cinema__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Auslandssemester: Alles, was du für dein Semester im Ausland wissen musst">Auslandssemester: Alles, was du für dein Semester im Ausland wissen musst</a>
-                <figure class="teaser-lead-cinema__media teaser-lead-cinema__media--force-mobile scaled-image variant variant--cinema">
+                    <a href="https://www.zeit.de/campus/2023-06/chatgpt-ki-schummel-auffliegen-aufruf" class="teaser-lead-cinema__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Aufruf: Schon mal ChatGPT verwendet und damit aufgeflogen?">Aufruf: Schon mal ChatGPT verwendet und damit aufgeflogen?</a>
+                <figure class="teaser-lead-cinema__media  scaled-image variant variant--cinema">
                 <div class="teaser-lead-cinema__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023/03/ausland-semester-studium-praktikum-erasmus-tipps-teaser/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/2023-06/chatgpt-betruegen/cinema__980x420">
                                 <img class="teaser-lead-cinema__media-item"
-                          alt="Auslandssemester: Alles, was du für dein Semester im Ausland wissen musst"
-                     src="https://img.zeit.de/campus/2023/03/ausland-semester-studium-praktikum-erasmus-tipps-teaser/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2023/03/ausland-semester-studium-praktikum-erasmus-tipps-teaser/cinema"
+                          alt="Aufruf: Schon mal ChatGPT verwendet und damit aufgeflogen?"
+                     src="https://img.zeit.de/campus/2023-06/chatgpt-betruegen/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/2023-06/chatgpt-betruegen/cinema"
                      data-ratio="2.33333333333"
                      decoding="async"
-                     data-mobile-src="https://img.zeit.de/campus/2023/03/ausland-semester-studium-praktikum-erasmus-tipps-teaser/wide" data-mobile-ratio="1.77777777778">
+                     data-mobile-src="https://img.zeit.de/campus/2023-06/chatgpt-betruegen/wide" data-mobile-ratio="1.77777777778">
                             </noscript></div>
 
         <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023/03/ausland-semester-studium-praktikum-erasmus-tipps-teaser/cinema__980x420",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Xavier Coiffic/\u200bunsplash.com", "url": "https://unsplash.com/fr/@xaviercoiffic?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText"}
+    "url": "https://img.zeit.de/campus/2023-06/chatgpt-betruegen/cinema__980x420",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Meum Mare"}
 }
 </script>                </figure>
 
                         <h2 class="teaser-lead-cinema__heading">
                 <a class="teaser-lead-cinema__heading-link"
-                   title="Auslandssemester - Alles, was du für dein Semester im Ausland wissen musst"
-                   href="https://www.zeit.de/campus/2023/03/ausland-semester-studium-praktikum-erasmus-tipps"
+                   title="Aufruf - Schon mal ChatGPT verwendet und damit aufgeflogen?"
+                   href="https://www.zeit.de/campus/2023-06/chatgpt-ki-schummel-auffliegen-aufruf"
                    >
                                                                         <span class="teaser-lead-cinema__kicker">
-                                                                                                <span>Auslandssemester</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-lead-cinema__title teaser-lead-cinema__title--has-comma">Alles, was du für dein Semester im Ausland wissen musst</span>
+                                                                                                <span>Aufruf</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-lead-cinema__title">Schon mal ChatGPT verwendet und damit aufgeflogen?</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-cinema__text">Wie man in Italien ein WG-Zimmer findet und was bei Heimweh hilft. 26 Fakten und Tipps zur Vorbereitung für ein Auslandssemester – von A wie Abbrechen bis Z wie Zeitpunkt</p>
+                                    <p class="teaser-lead-cinema__text">Beim Schummeln erwischt oder ein unangenehmer Fehler in der Hochzeitsrede: Hast du schon mal ChatGPT verwendet und bist dadurch in eine peinliche Situation geraten?</p>
                                                 <div class="teaser-lead-cinema__metadata">
-                                                                                                                                                            </div>
+                                                                            <span class="teaser-lead-cinema__byline">    Von            Paul Weinheimer</span>
+                                                                                                                                            <a class="teaser-lead-cinema__commentcount" href="https://www.zeit.de/campus/2023-06/chatgpt-ki-schummel-auffliegen-aufruf#comments" data-ct-label="comments" title="Kommentare anzeigen">9 Kommentare</a>
+                                                </div>
                                 
     </article>
 
@@ -1237,47 +1259,48 @@
                                     
 
 <article class="teaser-lead-portrait "
-    data-unique-id="http://xml.zeit.de/2023/22/lernen-kuenstliche-intelligenz-bwl-studium" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2023-06/lebensentscheidungen-jungsein-ratschlaege-spass-selbstoptimierung" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/2023/22/lernen-kuenstliche-intelligenz-bwl-studium" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Lernen mit künstlicher Intelligenz: Lehren, was die KI nicht kann">Lernen mit künstlicher Intelligenz: Lehren, was die KI nicht kann</a>
+                    <a href="https://www.zeit.de/campus/2023-06/lebensentscheidungen-jungsein-ratschlaege-spass-selbstoptimierung" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Lebensentscheidungen: Verschwende deine Jugend">Lebensentscheidungen: Verschwende deine Jugend</a>
                 <figure class="teaser-lead-portrait__media teaser-lead-portrait__media--force-mobile scaled-image variant variant--portrait">
                 <div class="teaser-lead-portrait__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/22/lernen-kuenstliche-intelligenz/portrait__612x816">
+            <noscript data-src="https://img.zeit.de/campus/2023-06/lebensentscheidungen-jungsein-ratschlaege-spass-selbstoptimierung-festival/portrait__612x816">
                                 <img class="teaser-lead-portrait__media-item"
-                          alt="Lernen mit künstlicher Intelligenz: Lehren, was die KI nicht kann"
-                     src="https://img.zeit.de/2023/22/lernen-kuenstliche-intelligenz/portrait__612x816"
-                     data-src="https://img.zeit.de/2023/22/lernen-kuenstliche-intelligenz/portrait"
+                          alt="Lebensentscheidungen: Verschwende deine Jugend"
+                     src="https://img.zeit.de/campus/2023-06/lebensentscheidungen-jungsein-ratschlaege-spass-selbstoptimierung-festival/portrait__612x816"
+                     data-src="https://img.zeit.de/campus/2023-06/lebensentscheidungen-jungsein-ratschlaege-spass-selbstoptimierung-festival/portrait"
                      data-ratio="0.75"
                      decoding="async"
-                     data-mobile-src="https://img.zeit.de/2023/22/lernen-kuenstliche-intelligenz/wide" data-mobile-ratio="1.77777777778">
+                     data-mobile-src="https://img.zeit.de/campus/2023-06/lebensentscheidungen-jungsein-ratschlaege-spass-selbstoptimierung-festival/wide" data-mobile-ratio="1.77777777778">
                             </noscript></div>
 
         <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/22/lernen-kuenstliche-intelligenz/portrait__612x816",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Charlotte Zobel/\u200bplainpicture", "url": "https://www.plainpicture.com/de/search?credit=plainpicture%2FCharlotte+Zobel"}
+    "url": "https://img.zeit.de/campus/2023-06/lebensentscheidungen-jungsein-ratschlaege-spass-selbstoptimierung-festival/portrait__612x816",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Krists Luhaers/\u200bunsplash.com", "url": "https://unsplash.com/de/fotos/DSB1MZWsGco"}
 }
 </script>                </figure>
 
         <div class="teaser-lead-portrait__content">
                             <h2 class="teaser-lead-portrait__heading">
                 <a class="teaser-lead-portrait__heading-link"
-                   title="Lernen mit künstlicher Intelligenz - Lehren, was die KI nicht kann"
-                   href="https://www.zeit.de/2023/22/lernen-kuenstliche-intelligenz-bwl-studium"
+                   title="Lebensentscheidungen - Verschwende deine Jugend"
+                   href="https://www.zeit.de/campus/2023-06/lebensentscheidungen-jungsein-ratschlaege-spass-selbstoptimierung"
                    >
                                                                         <span class="teaser-lead-portrait__kicker">
-                                <span class="series-label">Die Position</span>
-                                                                                                    <span>Lernen mit künstlicher Intelligenz</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">Lehren, was die KI nicht kann</span>
+                                                                                                <span>Lebensentscheidungen</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">Verschwende deine Jugend</span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-portrait__text">Controlling, Buchhaltung und andere Dinge, die BWL-Studierende lernen, werden bald nutzlos. KI kann das alles. Die Unis müssen sich dieser Realität jetzt stellen.</p>
+                                    <p class="teaser-lead-portrait__text">Brich einfach ab. Verballer Dein Geld. Heirate zu jung. Manchmal ist der falsche Weg genau der richtige. Zehn unvernünftige Ratschläge, wie man sein Leben gut auskostet.</p>
                                                 <div class="teaser-lead-portrait__metadata">
-                                                                            <span class="teaser-lead-portrait__byline">    Ein Gastbeitrag von            Edda Pulst</span>
-                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/2023/22/lernen-kuenstliche-intelligenz-bwl-studium#comments" data-ct-label="comments" title="Kommentare anzeigen">22 Kommentare</a>
+                                                                            <span class="teaser-lead-portrait__byline">    Von    Leonie Baumeister,
+            Amna Franzke,
+            Martin Hogger    u. a.</span>
+                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/2023-06/lebensentscheidungen-jungsein-ratschlaege-spass-selbstoptimierung#comments" data-ct-label="comments" title="Kommentare anzeigen">68 Kommentare</a>
                                                 </div>
                                 
     
@@ -1296,13 +1319,13 @@
                                     <aside class="teaser-follow-us"
     data-unique-id="http://xml.zeit.de/campus/campus-aktuelle-ausgabe">
     <div class="teaser-follow-us__packshot">
-        <a class="packshot" href="https://premium.zeit.de/zeit-campus-ausgabenseite?wt_zmc=fix.int.zonpme.zeitde.teaser.zcampusausgsseite.bildtext.cover.cover&amp;utm_medium=fix&amp;utm_source=zeitde_zonpme_int&amp;utm_campaign=teaser&amp;utm_content=zcampusausgsseite_bildtext_cover_cover" title="Das aktuelle Heft: ZEIT Campus 3/2023" data-ct-label="packshot">
+        <a class="packshot" href="https://premium.zeit.de/zeit-campus-ausgabenseite?wt_zmc=fix.int.zonpme.zeitde.teaser.zcampusausgsseite.bildtext.cover.cover&amp;utm_medium=fix&amp;utm_source=zeitde_zonpme_int&amp;utm_campaign=teaser&amp;utm_content=zcampusausgsseite_bildtext_cover_cover" title="Das aktuelle Heft: ZEIT Campus 4/2023" data-ct-label="packshot">
                             <figure class="packshot__media  scaled-image variant variant--portrait">
                 <div class="packshot__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023/03/cover/portrait__612x816">
+            <noscript data-src="https://img.zeit.de/campus/2023/04/cover/portrait__612x816">
                                 <img class="packshot__media-item"
-                     alt="ZEIT Campus 3/23"                     src="https://img.zeit.de/campus/2023/03/cover/portrait__612x816"
-                     data-src="https://img.zeit.de/campus/2023/03/cover/portrait"
+                     alt=""                     src="https://img.zeit.de/campus/2023/04/cover/portrait__612x816"
+                     data-src="https://img.zeit.de/campus/2023/04/cover/portrait"
                      data-ratio="0.75"
                      decoding="async"
                      >
@@ -1312,13 +1335,13 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023/03/cover/portrait__612x816",
+    "url": "https://img.zeit.de/campus/2023/04/cover/portrait__612x816",
     "copyrightHolder": null
 }
 </script>                </figure>
             <div class="packshot__content">
                 <div class="packshot__kicker">Das aktuelle Heft</div>
-                <div class="packshot__title">ZEIT Campus 3/2023</div>
+                <div class="packshot__title">ZEIT Campus 4/2023</div>
                 <div class="packshot__cta"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="15" viewBox="0 0 20 15" class="svg-symbol packshot__arrow" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Pfeil nach rechts"><title>Pfeil nach rechts</title><path d="m12.947.416-2.119 2.215 3.435 3.533H0v3h14.263l-3.435 3.345 2.119 2.075L20 7.5 12.947.416z"/></svg> Jetzt bestellen</div>
             </div>
         </a>
@@ -1389,16 +1412,16 @@
                                     
 
 <article class="teaser-square "
-    data-unique-id="http://xml.zeit.de/campus/2023-05/klimaaktivismus-letzte-generation-razzia-radikalisierung" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2023/04/bwl-influencer-david-doebele-hedgefonds-henning-papas-kreditkarte" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2023-05/klimaaktivismus-letzte-generation-razzia-radikalisierung" class="teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Klimaaktivismus • Das Beste aus Z+: Die Radikalisierung der Generation Weiterso">Klimaaktivismus • Das Beste aus Z+: Die Radikalisierung der Generation Weiterso</a>
+                    <a href="https://www.zeit.de/campus/2023/04/bwl-influencer-david-doebele-hedgefonds-henning-papas-kreditkarte" class="teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="BWL-Influencer: &#34;Rich kids sind Champagnersprüher, die auf Papas Jacht Selfies machen&#34;">BWL-Influencer: &#34;Rich kids sind Champagnersprüher, die auf Papas Jacht Selfies machen&#34;</a>
                 <figure class="teaser-square__media teaser-square__media--force-mobile scaled-image variant variant--square">
                 <div class="teaser-square__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023-05/klimaaktivismus-letzte-generation-razzia/square__460x460">
+            <noscript data-src="https://img.zeit.de/campus/2023/04/bwl-influencer-david-doebele-hedgefonds-henning-papas-kreditkarte-bild/square__460x460">
                                 <img class="teaser-square__media-item"
-                          alt="Klimaaktivismus • Das Beste aus Z+: Die Radikalisierung der Generation Weiterso"
-                     src="https://img.zeit.de/campus/2023-05/klimaaktivismus-letzte-generation-razzia/square__460x460"
-                     data-src="https://img.zeit.de/campus/2023-05/klimaaktivismus-letzte-generation-razzia/square"
+                          alt="BWL-Influencer: &#34;Rich kids sind Champagnersprüher, die auf Papas Jacht Selfies machen&#34;"
+                     src="https://img.zeit.de/campus/2023/04/bwl-influencer-david-doebele-hedgefonds-henning-papas-kreditkarte-bild/square__460x460"
+                     data-src="https://img.zeit.de/campus/2023/04/bwl-influencer-david-doebele-hedgefonds-henning-papas-kreditkarte-bild/square"
                      data-ratio="1.0"
                      decoding="async"
                      >
@@ -1408,26 +1431,26 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023-05/klimaaktivismus-letzte-generation-razzia/square__460x460",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Christoph Soeder/\u200bdpa; Fabrizio Bensch/\u200bReuters"}
+    "url": "https://img.zeit.de/campus/2023/04/bwl-influencer-david-doebele-hedgefonds-henning-papas-kreditkarte-bild/square__460x460",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Ryan Haskins"}
 }
 </script>                </figure>
 
                         <h2 class="teaser-square__heading">
                 <a class="teaser-square__heading-link"
-                   title="Klimaaktivismus • Das Beste aus Z+ - Die Radikalisierung der Generation Weiterso"
-                   href="https://www.zeit.de/campus/2023-05/klimaaktivismus-letzte-generation-razzia-radikalisierung"
+                   title="BWL-Influencer - &#34;Rich kids sind Champagnersprüher, die auf Papas Jacht Selfies machen&#34;"
+                   href="https://www.zeit.de/campus/2023/04/bwl-influencer-david-doebele-hedgefonds-henning-papas-kreditkarte"
                    >
                                                                         <span class="teaser-square__kicker">
-                                                                                                <span>Klimaaktivismus • Das Beste aus Z+</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-square__title">Die Radikalisierung der Generation Weiterso</span>
+                                                                                                <span>BWL-Influencer</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-square__title teaser-square__title--has-comma">&#34;Rich kids sind Champagnersprüher, die auf Papas Jacht Selfies machen&#34;</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-square__text">Ist jetzt der Punkt gekommen, an dem sich die Letzte Generation radikalisiert? Experten sagen: Nicht die Bewegung wird extremer, sondern ihre Gegner.</p>
+                                    <p class="teaser-square__text">David Döbele, Hedgefonds Henning und Papas Kreditkarte sind BWL-Influencer. Sie spielen mit den Klischees der Reichen. Was sie über Rolex, Sylt und Highperformer denken.</p>
                                                 <div class="teaser-square__metadata">
-                                                                            <span class="teaser-square__byline">    Von            Alisa Schellenberg</span>
-                                                                                                                                            <a class="teaser-square__commentcount" href="https://www.zeit.de/campus/2023-05/klimaaktivismus-letzte-generation-razzia-radikalisierung#comments" data-ct-label="comments" title="Kommentare anzeigen">330 Kommentare</a>
+                                                                            <span class="teaser-square__byline">    Interview:            Christoph Farkas            und            Martina Kix</span>
+                                                                                                                                            <a class="teaser-square__commentcount" href="https://www.zeit.de/campus/2023/04/bwl-influencer-david-doebele-hedgefonds-henning-papas-kreditkarte#comments" data-ct-label="comments" title="Kommentare anzeigen">29 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -1444,16 +1467,16 @@
                                     
 
 <article class="teaser-square "
-    data-unique-id="http://xml.zeit.de/campus/2023-04/letzte-generation-protest-berlin-faq" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2023-06/aelter-werden-60-dinge-jung-alt" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2023-04/letzte-generation-protest-berlin-faq" class="teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Bundesweite Razzia: Wer ist die Letzte Generation?">Bundesweite Razzia: Wer ist die Letzte Generation?</a>
+                    <a href="https://www.zeit.de/campus/2023-06/aelter-werden-60-dinge-jung-alt" class="teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Älter werden: 67 Dinge, die zeigen, dass du alt bist">Älter werden: 67 Dinge, die zeigen, dass du alt bist</a>
                 <figure class="teaser-square__media teaser-square__media--force-mobile scaled-image variant variant--square">
                 <div class="teaser-square__media-container ">
-            <noscript data-src="https://img.zeit.de/zett/2023-04/letzte-generation-protest-berlin/square__460x460">
+            <noscript data-src="https://img.zeit.de/campus/2023-06/campus-alt-jung-aelter-werden/square__460x460">
                                 <img class="teaser-square__media-item"
-                          alt="Bundesweite Razzia: Wer ist die Letzte Generation?"
-                     src="https://img.zeit.de/zett/2023-04/letzte-generation-protest-berlin/square__460x460"
-                     data-src="https://img.zeit.de/zett/2023-04/letzte-generation-protest-berlin/square"
+                          alt="Älter werden: 67 Dinge, die zeigen, dass du alt bist"
+                     src="https://img.zeit.de/campus/2023-06/campus-alt-jung-aelter-werden/square__460x460"
+                     data-src="https://img.zeit.de/campus/2023-06/campus-alt-jung-aelter-werden/square"
                      data-ratio="1.0"
                      decoding="async"
                      >
@@ -1463,26 +1486,25 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/zett/2023-04/letzte-generation-protest-berlin/square__460x460",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Nadja Wohlleben/\u200bReuters"}
+    "url": "https://img.zeit.de/campus/2023-06/campus-alt-jung-aelter-werden/square__460x460",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Simon Gerlinger"}
 }
 </script>                </figure>
 
                         <h2 class="teaser-square__heading">
                 <a class="teaser-square__heading-link"
-                   title="Bundesweite Razzia - Wer ist die Letzte Generation?"
-                   href="https://www.zeit.de/campus/2023-04/letzte-generation-protest-berlin-faq"
+                   title="Älter werden - 67 Dinge, die zeigen, dass du alt bist"
+                   href="https://www.zeit.de/campus/2023-06/aelter-werden-60-dinge-jung-alt"
                    >
                                                                         <span class="teaser-square__kicker">
-                                                                                                <span>Bundesweite Razzia</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-square__title">Wer ist die Letzte Generation?</span>
+                                                                                                <span>Älter werden</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-square__title teaser-square__title--has-comma">67 Dinge, die zeigen, dass du alt bist</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-square__text">Erneut hat die Polizei in vielen Bundesländern Räume der Letzten Generation durchsucht. Wie kam es dazu? Was fordern die Aktivisten? Und ist das kriminell? Ein Überblick</p>
+                                    <p class="teaser-square__text">Wahres Alter zeigt sich nicht in Lebensjahren, sondern mit den Dingen, die wir tun. Den Sätzen, die wir sagen. Dem Leben, das wir führen. Ja sorry, isso.</p>
                                                 <div class="teaser-square__metadata">
-                                                                            <span class="teaser-square__byline">    Von            Fabian Albrecht,            Konstantin Zimmermann            und            Ivana Sokola</span>
-                                                                                                                                            <a class="teaser-square__commentcount" href="https://www.zeit.de/campus/2023-04/letzte-generation-protest-berlin-faq#comments" data-ct-label="comments" title="Kommentare anzeigen">726 Kommentare</a>
+                                                                                                                                                                                <a class="teaser-square__commentcount" href="https://www.zeit.de/campus/2023-06/aelter-werden-60-dinge-jung-alt#comments" data-ct-label="comments" title="Kommentare anzeigen">356 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -1498,46 +1520,46 @@
                                     
 
 <article class="teaser-lead-portrait "
-    data-unique-id="http://xml.zeit.de/campus/2023-05/handwerk-berufswechsel-zimmerer-ausbildung" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2023-06/millennials-30-jahre-alt-langweilig-veraenderung-persoenlichkeit" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2023-05/handwerk-berufswechsel-zimmerer-ausbildung" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Berufswechsel und Handwerk: &#34;Manchmal fühlte ich mich wie ein Obdachloser&#34;">Berufswechsel und Handwerk: &#34;Manchmal fühlte ich mich wie ein Obdachloser&#34;</a>
+                    <a href="https://www.zeit.de/campus/2023-06/millennials-30-jahre-alt-langweilig-veraenderung-persoenlichkeit" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Millennials: Du bist nicht nur 30, du bist langweilig">Millennials: Du bist nicht nur 30, du bist langweilig</a>
                 <figure class="teaser-lead-portrait__media teaser-lead-portrait__media--force-mobile scaled-image variant variant--portrait">
                 <div class="teaser-lead-portrait__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023-05/handwerk-berufswechsel-zimmerer-ausbildung-zimmerer/portrait__612x816">
+            <noscript data-src="https://img.zeit.de/campus/2023-06/millennials-30-jahre-alt-langweilig/portrait__612x816">
                                 <img class="teaser-lead-portrait__media-item"
-                          alt="Berufswechsel und Handwerk: &#34;Manchmal fühlte ich mich wie ein Obdachloser&#34;"
-                     src="https://img.zeit.de/campus/2023-05/handwerk-berufswechsel-zimmerer-ausbildung-zimmerer/portrait__612x816"
-                     data-src="https://img.zeit.de/campus/2023-05/handwerk-berufswechsel-zimmerer-ausbildung-zimmerer/portrait"
+                          alt="Millennials: Du bist nicht nur 30, du bist langweilig"
+                     src="https://img.zeit.de/campus/2023-06/millennials-30-jahre-alt-langweilig/portrait__612x816"
+                     data-src="https://img.zeit.de/campus/2023-06/millennials-30-jahre-alt-langweilig/portrait"
                      data-ratio="0.75"
                      decoding="async"
-                     data-mobile-src="https://img.zeit.de/campus/2023-05/handwerk-berufswechsel-zimmerer-ausbildung-zimmerer/wide" data-mobile-ratio="1.77777777778">
+                     data-mobile-src="https://img.zeit.de/campus/2023-06/millennials-30-jahre-alt-langweilig/wide" data-mobile-ratio="1.77777777778">
                             </noscript></div>
 
         <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023-05/handwerk-berufswechsel-zimmerer-ausbildung-zimmerer/portrait__612x816",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Callum Hill/\u200bunsplash.com", "url": "https://unsplash.com/de/fotos/oamw52SCGi0"}
+    "url": "https://img.zeit.de/campus/2023-06/millennials-30-jahre-alt-langweilig/portrait__612x816",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0mikesch/\u200bplainpicture"}
 }
 </script>                </figure>
 
         <div class="teaser-lead-portrait__content">
                             <h2 class="teaser-lead-portrait__heading">
                 <a class="teaser-lead-portrait__heading-link"
-                   title="Berufswechsel und Handwerk - &#34;Manchmal fühlte ich mich wie ein Obdachloser&#34;"
-                   href="https://www.zeit.de/campus/2023-05/handwerk-berufswechsel-zimmerer-ausbildung"
+                   title="Millennials - Du bist nicht nur 30, du bist langweilig"
+                   href="https://www.zeit.de/campus/2023-06/millennials-30-jahre-alt-langweilig-veraenderung-persoenlichkeit"
                    >
                                                                         <span class="teaser-lead-portrait__kicker">
-                                                                                                <span>Berufswechsel und Handwerk</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">&#34;Manchmal fühlte ich mich wie ein Obdachloser&#34;</span>
+                                                                                                <span>Millennials</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">Du bist nicht nur 30, du bist langweilig</span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-portrait__text">Marcel wagte nach seinem Physikstudium den Wechsel ins Handwerk – als Zimmerer. Doch dort waren nicht nur die Arbeitsbedingungen eine Zumutung, sondern auch seine Kunden.</p>
+                                    <p class="teaser-lead-portrait__text">Feiern geht nicht, weil Kater so schlimm. Campen nicht wegen des Rückens. Der Grund: das Alter! Bullshit. Wer nicht mehr feiern will, hat echt ganz andere Probleme.</p>
                                                 <div class="teaser-lead-portrait__metadata">
-                                                                            <span class="teaser-lead-portrait__byline">    Protokoll:            Luisa Wick</span>
-                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/2023-05/handwerk-berufswechsel-zimmerer-ausbildung#comments" data-ct-label="comments" title="Kommentare anzeigen">79 Kommentare</a>
+                                                                            <span class="teaser-lead-portrait__byline">    Ein Kommentar von            Katharina Meyer zu Eppendorf</span>
+                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/2023-06/millennials-30-jahre-alt-langweilig-veraenderung-persoenlichkeit#comments" data-ct-label="comments" title="Kommentare anzeigen">113 Kommentare</a>
                                                 </div>
                                 
     
@@ -1556,16 +1578,16 @@
                                     
 
 <article class="teaser-wide-large "
-    data-unique-id="http://xml.zeit.de/campus/2023-05/mutter-sohn-beziehung-frauenbild-praegung" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2023-06/positive-maennlichkeit-maennerfestival-chemnitz" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2023-05/mutter-sohn-beziehung-frauenbild-praegung" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Mutter-Sohn-Beziehung: &#34;Meine Mutter hat mir den Playboy bestellt&#34;">Mutter-Sohn-Beziehung: &#34;Meine Mutter hat mir den Playboy bestellt&#34;</a>
+                    <a href="https://www.zeit.de/campus/2023-06/positive-maennlichkeit-maennerfestival-chemnitz" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Positive Männlichkeit: Arbeit am offenen Mann">Positive Männlichkeit: Arbeit am offenen Mann</a>
                 <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023-05/mutter-sohn-beziehung-frauenbild-praegung-foto/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/2023-06/positive-maennlichkeit-maennerfestival-4/cinema__980x420">
                                 <img class="teaser-wide-large__media-item"
-                          alt="Mutter-Sohn-Beziehung: &#34;Meine Mutter hat mir den Playboy bestellt&#34;"
-                     src="https://img.zeit.de/campus/2023-05/mutter-sohn-beziehung-frauenbild-praegung-foto/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2023-05/mutter-sohn-beziehung-frauenbild-praegung-foto/cinema"
+                          alt="Positive Männlichkeit: Arbeit am offenen Mann"
+                     src="https://img.zeit.de/campus/2023-06/positive-maennlichkeit-maennerfestival-4/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/2023-06/positive-maennlichkeit-maennerfestival-4/cinema"
                      data-ratio="2.33333333333"
                      decoding="async"
                      >
@@ -1575,27 +1597,27 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023-05/mutter-sohn-beziehung-frauenbild-praegung-foto/cinema__980x420",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Pexels /\u200b Anna Shvets", "url": "https://www.pexels.com/de-de/foto/liebe-niedlich-kind-mutter-3905794/"}
+    "url": "https://img.zeit.de/campus/2023-06/positive-maennlichkeit-maennerfestival-4/cinema__980x420",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Simon Gerlinger f\u00fcr ZEIT ONLINE"}
 }
 </script>                </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Mutter-Sohn-Beziehung - &#34;Meine Mutter hat mir den Playboy bestellt&#34;"
-                   href="https://www.zeit.de/campus/2023-05/mutter-sohn-beziehung-frauenbild-praegung"
+                   title="Positive Männlichkeit - Arbeit am offenen Mann"
+                   href="https://www.zeit.de/campus/2023-06/positive-maennlichkeit-maennerfestival-chemnitz"
                    >
                                                                         <span class="teaser-wide-large__kicker">
-                                                                                                <span>Mutter-Sohn-Beziehung</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">&#34;Meine Mutter hat mir den Playboy bestellt&#34;</span>
+                                                                                                <span>Positive Männlichkeit</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">Arbeit am offenen Mann</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Mütter beeinflussen das Frauenbild ihrer Söhne. Liebe, Sexismus, Geld: Vier Männer erzählen, wie ihre Mütter sie geprägt haben – und wovon sie sich befreien mussten.
+                                    <p class="teaser-wide-large__text">Was ist Männlichkeit? Was ein guter Mann? Unser Autor sucht Antworten auf einem Männerfestival. Zwischen Tänzen und Kämpfen findet er wahrhaftige Erkenntnisse.
 </p>
                                                 <div class="teaser-wide-large__metadata">
-                                                                            <span class="teaser-wide-large__byline">    Protokoll:            Martin Hogger</span>
-                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2023-05/mutter-sohn-beziehung-frauenbild-praegung#comments" data-ct-label="comments" title="Kommentare anzeigen">34 Kommentare</a>
+                                                                            <span class="teaser-wide-large__byline">    Eine Reportage von            Martin Hogger            und            Simon Gerlinger</span>
+                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2023-06/positive-maennlichkeit-maennerfestival-chemnitz#comments" data-ct-label="comments" title="Kommentare anzeigen">125 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -1612,16 +1634,16 @@
                                     
 
 <article class="teaser-wide-large  teaser-wide-large--advertorial"
-    data-unique-id="http://xml.zeit.de/campus/angebote/howitworks/2023/tkk-how-it-works-teaser">
+    data-unique-id="http://xml.zeit.de/campus/angebote/hochschulegeisenheim/index">
 
-                    <a href="https://www.zeit.de/campus/angebote/howitworks/index" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" target="_blank" rel="noopener" title="How it works: Dein Weg durchs Studium zum Job">How it works: Dein Weg durchs Studium zum Job</a>
+                    <a href="https://www.zeit.de/campus/angebote/hochschulegeisenheim/index" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Einfach die Welt retten? Mit diesen Studiengängen könnte es klappen">Einfach die Welt retten? Mit diesen Studiengängen könnte es klappen</a>
                 <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/angebote/howitworks/2023/180423/tk-how-it-works-kampagnenmotiv/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/angebote/hochschulegeisenheim/pexels-george-milton-7014865/cinema__980x420">
                                 <img class="teaser-wide-large__media-item"
-                          alt="How it works: Dein Weg durchs Studium zum Job"
-                     src="https://img.zeit.de/campus/angebote/howitworks/2023/180423/tk-how-it-works-kampagnenmotiv/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/angebote/howitworks/2023/180423/tk-how-it-works-kampagnenmotiv/cinema"
+                          alt="Einfach die Welt retten? Mit diesen Studiengängen könnte es klappen"
+                     src="https://img.zeit.de/campus/angebote/hochschulegeisenheim/pexels-george-milton-7014865/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/angebote/hochschulegeisenheim/pexels-george-milton-7014865/cinema"
                      data-ratio="2.33333333333"
                      decoding="async"
                      >
@@ -1631,23 +1653,22 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/angebote/howitworks/2023/180423/tk-how-it-works-kampagnenmotiv/cinema__980x420",
+    "url": "https://img.zeit.de/campus/angebote/hochschulegeisenheim/pexels-george-milton-7014865/cinema__980x420",
     "copyrightHolder": null
 }
 </script>                </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title=" - How it works: Dein Weg durchs Studium zum Job"
-                   href="https://www.zeit.de/campus/angebote/howitworks/index"
-                    target="_blank"
-                         rel="noopener"                   >
-                                                                                                <span class="teaser-wide-large__title">How it works: Dein Weg durchs Studium zum Job</span>
+                   title=" - Einfach die Welt retten? Mit diesen Studiengängen könnte es klappen"
+                   href="https://www.zeit.de/campus/angebote/hochschulegeisenheim/index"
+                   >
+                                                                                                <span class="teaser-wide-large__title">Einfach die Welt retten? Mit diesen Studiengängen könnte es klappen</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Entdecke neue Inhalte rund um die Themen Mentale Gesundheit, Berufsorientierung sowie Work- und Study-Life-Balance. </p>
+                                    <p class="teaser-wide-large__text">Die Weltbevölkerung wächst täglich, das bedeutet, dass wir neue Wege brauchen, um alle gesund und ausreichend zu ernähren – und gleichzeitig unseren Planeten zu erhalten.</p>
                                                         
     </article>
 
@@ -1739,16 +1760,16 @@
                                     
 
 <article class="teaser-wide-large "
-    data-unique-id="http://xml.zeit.de/campus/2023-04/kritik-eltern-koerpergewicht-berufswahl-partnerwahl">
+    data-unique-id="http://xml.zeit.de/campus/2023-06/testament-junge-menschen-tod-social-media" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2023-04/kritik-eltern-koerpergewicht-berufswahl-partnerwahl" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Kritik an den Eltern: Hast du den Kontakt zu deinen Eltern abgebrochen?">Kritik an den Eltern: Hast du den Kontakt zu deinen Eltern abgebrochen?</a>
-                <figure class="teaser-wide-large__media  scaled-image variant variant--cinema">
+                    <a href="https://www.zeit.de/campus/2023-06/testament-junge-menschen-tod-social-media" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Testament für junge Menschen: &#34;Meine Schwester kriegt das Passwort für mein Instagram-Profil&#34;">Testament für junge Menschen: &#34;Meine Schwester kriegt das Passwort für mein Instagram-Profil&#34;</a>
+                <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023-04/kritik-eltern-koerpergewicht-berufswahl-partnerwahl-foto/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/2023-06/campus-erben-testament-junge-menschen-millenial/cinema__980x420">
                                 <img class="teaser-wide-large__media-item"
-                          alt="Kritik an den Eltern: Hast du den Kontakt zu deinen Eltern abgebrochen?"
-                     src="https://img.zeit.de/campus/2023-04/kritik-eltern-koerpergewicht-berufswahl-partnerwahl-foto/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2023-04/kritik-eltern-koerpergewicht-berufswahl-partnerwahl-foto/cinema"
+                          alt="Testament für junge Menschen: &#34;Meine Schwester kriegt das Passwort für mein Instagram-Profil&#34;"
+                     src="https://img.zeit.de/campus/2023-06/campus-erben-testament-junge-menschen-millenial/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/2023-06/campus-erben-testament-junge-menschen-millenial/cinema"
                      data-ratio="2.33333333333"
                      decoding="async"
                      >
@@ -1758,26 +1779,26 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023-04/kritik-eltern-koerpergewicht-berufswahl-partnerwahl-foto/cinema__980x420",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Brian Gordillo/\u200bunsplash.com", "url": "https://unsplash.com/de/fotos/XgyDUs53mqc"}
+    "url": "https://img.zeit.de/campus/2023-06/campus-erben-testament-junge-menschen-millenial/cinema__980x420",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Devin Avery/\u200bunsplash.com"}
 }
 </script>                </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Kritik an den Eltern - Hast du den Kontakt zu deinen Eltern abgebrochen?"
-                   href="https://www.zeit.de/campus/2023-04/kritik-eltern-koerpergewicht-berufswahl-partnerwahl"
+                   title="Testament für junge Menschen - &#34;Meine Schwester kriegt das Passwort für mein Instagram-Profil&#34;"
+                   href="https://www.zeit.de/campus/2023-06/testament-junge-menschen-tod-social-media"
                    >
                                                                         <span class="teaser-wide-large__kicker">
-                                                                                                <span>Kritik an den Eltern</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">Hast du den Kontakt zu deinen Eltern abgebrochen?</span>
+                                                                                                <span>Testament für junge Menschen</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">&#34;Meine Schwester kriegt das Passwort für mein Instagram-Profil&#34;</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Sie kommentieren ungefragt Lebensentwürfe, die Berufs- oder Partnerwahl. Du hast deinen Eltern gesagt, dass sie aufhören sollen? Erzähl uns deine Geschichte.</p>
+                                    <p class="teaser-wide-large__text">Auch als junger Mensch sollte man ein Testament verfassen. Selbst dann, wenn man kein Vermögen hat. Es gibt ja Wichtigeres als Geld, wie drei junge Menschen erzählen.</p>
                                                 <div class="teaser-wide-large__metadata">
-                                                                            <span class="teaser-wide-large__byline">    Von            Hannan El Mikdam-Lasslop</span>
-                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2023-04/kritik-eltern-koerpergewicht-berufswahl-partnerwahl#comments" data-ct-label="comments" title="Kommentare anzeigen">181 Kommentare</a>
+                                                                            <span class="teaser-wide-large__byline">    Von            Vinzent  Tschirpke</span>
+                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2023-06/testament-junge-menschen-tod-social-media#comments" data-ct-label="comments" title="Kommentare anzeigen">1 Kommentar</a>
                                                 </div>
                                 
     </article>
@@ -1793,17 +1814,17 @@
             
                                     
 
-<article class="teaser-wide-large "
-    data-unique-id="http://xml.zeit.de/campus/2023-05/berufsanfaenger-fehler-berufswahl-selbstvertrauen" data-zplus="zplus">
+<article class="teaser-wide-large  teaser-wide-large--advertorial"
+    data-unique-id="http://xml.zeit.de/campus/angebote/howitworks/2023/tkk-how-it-works-teaser">
 
-                    <a href="https://www.zeit.de/campus/2023-05/berufsanfaenger-fehler-berufswahl-selbstvertrauen" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Berufsanfänger: &#34;Der Schaden lag insgesamt bei 300.000 Euro&#34;">Berufsanfänger: &#34;Der Schaden lag insgesamt bei 300.000 Euro&#34;</a>
+                    <a href="https://www.zeit.de/campus/angebote/howitworks/index" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" target="_blank" rel="noopener" title="How it works: Dein Weg durchs Studium zum Job">How it works: Dein Weg durchs Studium zum Job</a>
                 <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023-05/berufsanfaenger/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/angebote/howitworks/2023/180423/tk-how-it-works-kampagnenmotiv/cinema__980x420">
                                 <img class="teaser-wide-large__media-item"
-                          alt="Berufsanfänger: &#34;Der Schaden lag insgesamt bei 300.000 Euro&#34;"
-                     src="https://img.zeit.de/campus/2023-05/berufsanfaenger/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2023-05/berufsanfaenger/cinema"
+                          alt="How it works: Dein Weg durchs Studium zum Job"
+                     src="https://img.zeit.de/campus/angebote/howitworks/2023/180423/tk-how-it-works-kampagnenmotiv/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/angebote/howitworks/2023/180423/tk-how-it-works-kampagnenmotiv/cinema"
                      data-ratio="2.33333333333"
                      decoding="async"
                      >
@@ -1813,28 +1834,24 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023-05/berufsanfaenger/cinema__980x420",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Brooke Cagle/\u200bunsplash.com", "url": "https://unsplash.com/de/@brookecagle"}
+    "url": "https://img.zeit.de/campus/angebote/howitworks/2023/180423/tk-how-it-works-kampagnenmotiv/cinema__980x420",
+    "copyrightHolder": null
 }
 </script>                </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Berufsanfänger - &#34;Der Schaden lag insgesamt bei 300.000 Euro&#34;"
-                   href="https://www.zeit.de/campus/2023-05/berufsanfaenger-fehler-berufswahl-selbstvertrauen"
-                   >
-                                                                        <span class="teaser-wide-large__kicker">
-                                                                                                <span>Berufsanfänger</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">&#34;Der Schaden lag insgesamt bei 300.000 Euro&#34;</span>
+                   title=" - How it works: Dein Weg durchs Studium zum Job"
+                   href="https://www.zeit.de/campus/angebote/howitworks/index"
+                    target="_blank"
+                         rel="noopener"                   >
+                                                                                                <span class="teaser-wide-large__title">How it works: Dein Weg durchs Studium zum Job</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Wer neu im Job ist, will keine Fehler machen. Aber oft passieren sie genau dann. Hier erzählen acht Menschen, was sie als Berufsanfängerinnen verbockt haben.</p>
-                                                <div class="teaser-wide-large__metadata">
-                                                                            <span class="teaser-wide-large__byline">    Von            Hannan El Mikdam-Lasslop</span>
-                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2023-05/berufsanfaenger-fehler-berufswahl-selbstvertrauen#comments" data-ct-label="comments" title="Kommentare anzeigen">59 Kommentare</a>
-                                                </div>
-                                
+                                    <p class="teaser-wide-large__text">Entdecke neue Inhalte rund um die Themen Mentale Gesundheit, Berufsorientierung sowie Work- und Study-Life-Balance. </p>
+                                                        
     </article>
 
                                                 </div>
@@ -1966,45 +1983,45 @@
                                     
 
 <article class="teaser-lead-cinema "
-    data-unique-id="http://xml.zeit.de/campus/2023/03/studentische-ernaehrung-guenstiges-essen-ideen-kuenstler" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2023-06/freibad-schwimmbad-soziale-schichten-durchmischung">
 
-                    <a href="https://www.zeit.de/campus/2023/03/studentische-ernaehrung-guenstiges-essen-ideen-kuenstler" class="teaser-lead-cinema__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Studentische Ernährung: Die letzten Reste aus dem Kühlschrank">Studentische Ernährung: Die letzten Reste aus dem Kühlschrank</a>
-                <figure class="teaser-lead-cinema__media teaser-lead-cinema__media--force-mobile scaled-image variant variant--cinema">
+                    <a href="https://www.zeit.de/campus/2023-06/freibad-schwimmbad-soziale-schichten-durchmischung" class="teaser-lead-cinema__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Freibad: Im Freibad sind alle gleich">Freibad: Im Freibad sind alle gleich</a>
+                <figure class="teaser-lead-cinema__media  scaled-image variant variant--cinema">
                 <div class="teaser-lead-cinema__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023/03/studentische-ernaehrung-guenstiges-essen-ideen-kuenstler-teaser-2/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/2023-06/freibad-schwimmbad-soziale-schichten/cinema__980x420">
                                 <img class="teaser-lead-cinema__media-item"
-                          alt="Studentische Ernährung: Die letzten Reste aus dem Kühlschrank"
-                     src="https://img.zeit.de/campus/2023/03/studentische-ernaehrung-guenstiges-essen-ideen-kuenstler-teaser-2/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2023/03/studentische-ernaehrung-guenstiges-essen-ideen-kuenstler-teaser-2/cinema"
+                          alt="Freibad: Im Freibad sind alle gleich"
+                     src="https://img.zeit.de/campus/2023-06/freibad-schwimmbad-soziale-schichten/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/2023-06/freibad-schwimmbad-soziale-schichten/cinema"
                      data-ratio="2.33333333333"
                      decoding="async"
-                     data-mobile-src="https://img.zeit.de/campus/2023/03/studentische-ernaehrung-guenstiges-essen-ideen-kuenstler-teaser-2/wide" data-mobile-ratio="1.77777777778">
+                     data-mobile-src="https://img.zeit.de/campus/2023-06/freibad-schwimmbad-soziale-schichten/wide" data-mobile-ratio="1.77777777778">
                             </noscript></div>
 
         <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023/03/studentische-ernaehrung-guenstiges-essen-ideen-kuenstler-teaser-2/cinema__980x420",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Nicolas Polli"}
+    "url": "https://img.zeit.de/campus/2023-06/freibad-schwimmbad-soziale-schichten/cinema__980x420",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Thomas Barwick/\u200bGetty Images"}
 }
 </script>                </figure>
 
                         <h2 class="teaser-lead-cinema__heading">
                 <a class="teaser-lead-cinema__heading-link"
-                   title="Studentische Ernährung - Die letzten Reste aus dem Kühlschrank"
-                   href="https://www.zeit.de/campus/2023/03/studentische-ernaehrung-guenstiges-essen-ideen-kuenstler"
+                   title="Freibad - Im Freibad sind alle gleich"
+                   href="https://www.zeit.de/campus/2023-06/freibad-schwimmbad-soziale-schichten-durchmischung"
                    >
                                                                         <span class="teaser-lead-cinema__kicker">
-                                                                                                <span>Studentische Ernährung</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-lead-cinema__title">Die letzten Reste aus dem Kühlschrank</span>
+                                                                                                <span>Freibad</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-lead-cinema__title">Im Freibad sind alle gleich</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-cinema__text">Großer Hunger, kleines Budget: Künstlerinnen erzählen, was sie in ihrer Studienzeit gegessen haben – und geben Tipps für Übriggebliebenes.</p>
+                                    <p class="teaser-lead-cinema__text">An kaum einem Ort treffen sich so viele Milieus wie im Freibad. Das Nebeneinander von alten Damen und halbstarken Jungs funktioniert – wenn nur die Sportler nicht wären.</p>
                                                 <div class="teaser-lead-cinema__metadata">
-                                                                            <span class="teaser-lead-cinema__byline">    Protokoll:            Stefanie Witterauf</span>
-                                                                                                                                            <a class="teaser-lead-cinema__commentcount" href="https://www.zeit.de/campus/2023/03/studentische-ernaehrung-guenstiges-essen-ideen-kuenstler#comments" data-ct-label="comments" title="Kommentare anzeigen">13 Kommentare</a>
+                                                                            <span class="teaser-lead-cinema__byline">    Von            Nils Frenzel</span>
+                                                                                                                                            <a class="teaser-lead-cinema__commentcount" href="https://www.zeit.de/campus/2023-06/freibad-schwimmbad-soziale-schichten-durchmischung#comments" data-ct-label="comments" title="Kommentare anzeigen">205 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -2042,16 +2059,16 @@
                                     
 
 <article class="teaser-wide-large "
-    data-unique-id="http://xml.zeit.de/campus/2023-05/grenzen-setzen-partnerschaft-beziehung-glover-tawwab-nedra" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/arbeit/2023-06/kuendigung-pause-sara-weber-uni-podcast">
 
-                    <a href="https://www.zeit.de/campus/2023-05/grenzen-setzen-partnerschaft-beziehung-glover-tawwab-nedra" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Nedra Glover Tawwab: &#34;Die Angst, etwas zu sagen, ist so groß, dass man alles zulässt&#34;">Nedra Glover Tawwab: &#34;Die Angst, etwas zu sagen, ist so groß, dass man alles zulässt&#34;</a>
-                <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
+                    <a href="https://www.zeit.de/arbeit/2023-06/kuendigung-pause-sara-weber-uni-podcast" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Kündigung: &#34;Mein einziger Plan für die Zeit nach der Kündigung: Pause machen&#34;">Kündigung: &#34;Mein einziger Plan für die Zeit nach der Kündigung: Pause machen&#34;</a>
+                <figure class="teaser-wide-large__media  scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023-05/grenzen-setzen-partnerschaft-beziehung-glover-tawwab-nedra-frau/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/2023-06/sara-weber-uni-podcast-teaser/cinema__980x420">
                                 <img class="teaser-wide-large__media-item"
-                          alt="Nedra Glover Tawwab: &#34;Die Angst, etwas zu sagen, ist so groß, dass man alles zulässt&#34;"
-                     src="https://img.zeit.de/campus/2023-05/grenzen-setzen-partnerschaft-beziehung-glover-tawwab-nedra-frau/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2023-05/grenzen-setzen-partnerschaft-beziehung-glover-tawwab-nedra-frau/cinema"
+                          alt="Kündigung: &#34;Mein einziger Plan für die Zeit nach der Kündigung: Pause machen&#34;"
+                     src="https://img.zeit.de/campus/2023-06/sara-weber-uni-podcast-teaser/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/2023-06/sara-weber-uni-podcast-teaser/cinema"
                      data-ratio="2.33333333333"
                      decoding="async"
                      >
@@ -2061,26 +2078,27 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023-05/grenzen-setzen-partnerschaft-beziehung-glover-tawwab-nedra-frau/cinema__980x420",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Edward Howell/\u200bunsplash.com", "url": "https://unsplash.com/de/fotos/nXYclYlx_v4"}
+    "url": "https://img.zeit.de/campus/2023-06/sara-weber-uni-podcast-teaser/cinema__980x420",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0[M] Maya Claussen"}
 }
 </script>                </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Nedra Glover Tawwab - &#34;Die Angst, etwas zu sagen, ist so groß, dass man alles zulässt&#34;"
-                   href="https://www.zeit.de/campus/2023-05/grenzen-setzen-partnerschaft-beziehung-glover-tawwab-nedra"
+                   title="Kündigung - &#34;Mein einziger Plan für die Zeit nach der Kündigung: Pause machen&#34;"
+                   href="https://www.zeit.de/arbeit/2023-06/kuendigung-pause-sara-weber-uni-podcast"
                    >
                                                                         <span class="teaser-wide-large__kicker">
-                                                                                                <span>Nedra Glover Tawwab</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title teaser-wide-large__title--has-comma">&#34;Die Angst, etwas zu sagen, ist so groß, dass man alles zulässt&#34;</span>
+                                <span class="series-label">Und was macht die Uni?</span>
+                                                                                                    <span>Kündigung</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">&#34;Mein einziger Plan für die Zeit nach der Kündigung: Pause machen&#34;</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Wie kann man in privaten und beruflichen Beziehungen Grenzen aufzeigen – ohne Drama? Das erklärt die Therapeutin Nedra Glover Tawwab. Und gibt einen Rat, der immer geht.</p>
+                                    <p class="teaser-wide-large__text">In der neuen Folge von &#34;Und was macht die Uni&#34; sprechen wir mit Autorin Sara Weber darüber, wie man Kündigen plant und warum Yoga einen Burn-out nicht verhindern kann.</p>
                                                 <div class="teaser-wide-large__metadata">
-                                                                            <span class="teaser-wide-large__byline">    Interview:            Hanna Gieffers</span>
-                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2023-05/grenzen-setzen-partnerschaft-beziehung-glover-tawwab-nedra#comments" data-ct-label="comments" title="Kommentare anzeigen">25 Kommentare</a>
+                                                                            <span class="teaser-wide-large__byline">    Von            Christoph Farkas            und            Martina Kix</span>
+                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/arbeit/2023-06/kuendigung-pause-sara-weber-uni-podcast#comments" data-ct-label="comments" title="Kommentare anzeigen">5 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -2097,16 +2115,16 @@
                                     
 
 <article class="teaser-wide-large "
-    data-unique-id="http://xml.zeit.de/campus/2023-05/trennungen-beziehungsende-freundschaft-sex-mit-ex" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2023-06/allgemeinbildung-ki-chatgpt-zukunft" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2023-05/trennungen-beziehungsende-freundschaft-sex-mit-ex" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Trennungen: &#34;Wir haben uns getrennt und hatten direkt danach Sex&#34;">Trennungen: &#34;Wir haben uns getrennt und hatten direkt danach Sex&#34;</a>
+                    <a href="https://www.zeit.de/campus/2023-06/allgemeinbildung-ki-chatgpt-zukunft" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Allgemeinbildung: Was weiß denn ich">Allgemeinbildung: Was weiß denn ich</a>
                 <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023-05/trennungen-beziehungsende-freundschaft-sex-mit-ex-paar/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/2023-06/allgemeinbildung-ki-chatgpt/cinema__980x420">
                                 <img class="teaser-wide-large__media-item"
-                          alt="Trennungen: &#34;Wir haben uns getrennt und hatten direkt danach Sex&#34;"
-                     src="https://img.zeit.de/campus/2023-05/trennungen-beziehungsende-freundschaft-sex-mit-ex-paar/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2023-05/trennungen-beziehungsende-freundschaft-sex-mit-ex-paar/cinema"
+                          alt="Allgemeinbildung: Was weiß denn ich"
+                     src="https://img.zeit.de/campus/2023-06/allgemeinbildung-ki-chatgpt/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/2023-06/allgemeinbildung-ki-chatgpt/cinema"
                      data-ratio="2.33333333333"
                      decoding="async"
                      >
@@ -2116,26 +2134,26 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023-05/trennungen-beziehungsende-freundschaft-sex-mit-ex-paar/cinema__980x420",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Pexels /\u200b Helena Lopes", "url": "https://www.pexels.com/de-de/foto/mann-und-frau-kurz-vor-dem-kuss-2055224/"}
+    "url": "https://img.zeit.de/campus/2023-06/allgemeinbildung-ki-chatgpt/cinema__980x420",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Westend61/\u200bimago images"}
 }
 </script>                </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Trennungen - &#34;Wir haben uns getrennt und hatten direkt danach Sex&#34;"
-                   href="https://www.zeit.de/campus/2023-05/trennungen-beziehungsende-freundschaft-sex-mit-ex"
+                   title="Allgemeinbildung - Was weiß denn ich"
+                   href="https://www.zeit.de/campus/2023-06/allgemeinbildung-ki-chatgpt-zukunft"
                    >
                                                                         <span class="teaser-wide-large__kicker">
-                                                                                                <span>Trennungen</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">&#34;Wir haben uns getrennt und hatten direkt danach Sex&#34;</span>
+                                                                                                <span>Allgemeinbildung</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">Was weiß denn ich</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Manchmal ist es gut, ungeschriebene Gesetze zu brechen. Vier Menschen erzählen, wie sie einen eigenen Umgang mit ihren Ex-Beziehungen gefunden haben. Und was sie bereuen.</p>
+                                    <p class="teaser-wide-large__text">In einer Welt mit Google und ChatGPT stellt sich die Frage: Was muss man heute noch wissen – Dreisatz, Goethe, Kreuzzüge? Wirklich wichtig ist: statistisches Denken.</p>
                                                 <div class="teaser-wide-large__metadata">
-                                                                            <span class="teaser-wide-large__byline">    Protokoll:            Paul Lütge</span>
-                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2023-05/trennungen-beziehungsende-freundschaft-sex-mit-ex#comments" data-ct-label="comments" title="Kommentare anzeigen">4 Kommentare</a>
+                                                                            <span class="teaser-wide-large__byline">    Von            Astrid Probst</span>
+                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2023-06/allgemeinbildung-ki-chatgpt-zukunft#comments" data-ct-label="comments" title="Kommentare anzeigen">28 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -2151,46 +2169,46 @@
                                     
 
 <article class="teaser-lead-portrait "
-    data-unique-id="http://xml.zeit.de/2023/20/bwl-studium-hochschule-abbrecherquote" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2023-06/eltern-grenzen-kinder-streit" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/2023/20/bwl-studium-hochschule-abbrecherquote" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="BWL-Studium: Ist BWL ein Verlegenheitsfach?">BWL-Studium: Ist BWL ein Verlegenheitsfach?</a>
+                    <a href="https://www.zeit.de/campus/2023-06/eltern-grenzen-kinder-streit" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Eltern Grenzen setzen: &#34;Meine Mutter muss lernen, dass ich nicht ihre beste Freundin bin&#34;">Eltern Grenzen setzen: &#34;Meine Mutter muss lernen, dass ich nicht ihre beste Freundin bin&#34;</a>
                 <figure class="teaser-lead-portrait__media teaser-lead-portrait__media--force-mobile scaled-image variant variant--portrait">
                 <div class="teaser-lead-portrait__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/20/ein-verlegenheitsfach-bild-1/portrait__612x816">
+            <noscript data-src="https://img.zeit.de/zett/2023-06/eltern-grenzen-kinder-streit-mann/portrait__612x816">
                                 <img class="teaser-lead-portrait__media-item"
-                          alt="BWL-Studium: Ist BWL ein Verlegenheitsfach?"
-                     src="https://img.zeit.de/2023/20/ein-verlegenheitsfach-bild-1/portrait__612x816"
-                     data-src="https://img.zeit.de/2023/20/ein-verlegenheitsfach-bild-1/portrait"
+                          alt="Eltern Grenzen setzen: &#34;Meine Mutter muss lernen, dass ich nicht ihre beste Freundin bin&#34;"
+                     src="https://img.zeit.de/zett/2023-06/eltern-grenzen-kinder-streit-mann/portrait__612x816"
+                     data-src="https://img.zeit.de/zett/2023-06/eltern-grenzen-kinder-streit-mann/portrait"
                      data-ratio="0.75"
                      decoding="async"
-                     data-mobile-src="https://img.zeit.de/2023/20/ein-verlegenheitsfach-bild-1/wide" data-mobile-ratio="1.77777777778">
+                     data-mobile-src="https://img.zeit.de/zett/2023-06/eltern-grenzen-kinder-streit-mann/wide" data-mobile-ratio="1.77777777778">
                             </noscript></div>
 
         <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/20/ein-verlegenheitsfach-bild-1/portrait__612x816",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Mario Wezel f\u00fcr DIE ZEIT"}
+    "url": "https://img.zeit.de/zett/2023-06/eltern-grenzen-kinder-streit-mann/portrait__612x816",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Alessia C_jpg/\u200bunsplash.com", "url": "https://unsplash.com/de/fotos/pebI51QvefM"}
 }
 </script>                </figure>
 
         <div class="teaser-lead-portrait__content">
                             <h2 class="teaser-lead-portrait__heading">
                 <a class="teaser-lead-portrait__heading-link"
-                   title="BWL-Studium - Ist BWL ein Verlegenheitsfach?"
-                   href="https://www.zeit.de/2023/20/bwl-studium-hochschule-abbrecherquote"
+                   title="Eltern Grenzen setzen - &#34;Meine Mutter muss lernen, dass ich nicht ihre beste Freundin bin&#34;"
+                   href="https://www.zeit.de/campus/2023-06/eltern-grenzen-kinder-streit"
                    >
                                                                         <span class="teaser-lead-portrait__kicker">
-                                                                                                <span>BWL-Studium</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">Ist BWL ein Verlegenheitsfach?</span>
+                                                                                                <span>Eltern Grenzen setzen</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">&#34;Meine Mutter muss lernen, dass ich nicht ihre beste Freundin bin&#34;</span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-portrait__text">Professorin Christina Hoon sagt, BWL sei zu Recht das beliebteste Studienfach. Zudem erklärt sie, warum Deutschland so viele Betriebswirtschaftler braucht. </p>
+                                    <p class="teaser-lead-portrait__text">Die eigenen Eltern mit ihren Fehlern zu konfrontieren, ist schwer. Drei junge Menschen erzählen, wie sie es geschafft haben, sich von der Familie abzugrenzen. </p>
                                                 <div class="teaser-lead-portrait__metadata">
-                                                                            <span class="teaser-lead-portrait__byline">    Interview:            Thomas Kerstan            und            Martin Spiewak</span>
-                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/2023/20/bwl-studium-hochschule-abbrecherquote#comments" data-ct-label="comments" title="Kommentare anzeigen">56 Kommentare</a>
+                                                                            <span class="teaser-lead-portrait__byline">    Protokoll:            Hannan El Mikdam-Lasslop</span>
+                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/2023-06/eltern-grenzen-kinder-streit#comments" data-ct-label="comments" title="Kommentare anzeigen">12 Kommentare</a>
                                                 </div>
                                 
     
@@ -2354,11 +2372,11 @@
     </script>
 </div>
     
-    <script src="https://static.zeit.de/p/zeit.web/js/mausabhaengigeszaehlinstrument.8707543f1e8bb24995fd.js" async></script>
-    <script src="https://static.zeit.de/p/zeit.web/js/images.b38f12356559318f79e4.js" async></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/mausabhaengigeszaehlinstrument.1fa08d5bc36bd2411226.js" async></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/images.80abb2cabec99f3e82fc.js" async></script>
 
-    <script src="https://static.zeit.de/p/zeit.web/js/promise.2f58cd9058c6466cc3eb.js" nomodule defer></script>
-    <script src="https://static.zeit.de/p/zeit.web/js/campus.0751e60ae441caf9aa33.js" defer></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/promise.ad6d608bb41eec563693.js" nomodule defer></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/campus.fb8869716d79493ad2c4.js" defer></script>
 
     <script class="webtrekk_script">
 window.Zeit.loadJS( 'https://static.zeit.de/static/js/webtrekk/webtrekk_v4.5.3.min-3.js', function() {
@@ -2471,6 +2489,27 @@ window.Zeit.loadJS( 'https://static.zeit.de/static/js/webtrekk/webtrekk_v4.5.3.m
     
 
 <script>
+    window.Zeit.renderFooterbar = function( type ) {
+        import( 'https://static.zeit.de/p/wally/footerbar.js' ).then( ({ FooterBar }) => {
+            new FooterBar({
+                target: document.body,
+                intro: true,
+                props: {
+                    type,
+                    settings: {
+                        contentUrl: "https://www.zeit.de/campus/index",
+                        ssoUrl: "https://meine.zeit.de",
+                        productId: "zede",
+                        premiumHost: "https://premium.zeit.de",
+                        assetHost: "https://static.zeit.de/p/zeit.web",
+                    }
+                }
+            });
+        });
+    };
+</script>
+
+<script>
     function loadPiano() {
         function log() {
             location.hash === '#debug-piano' && console.debug.apply( console, arguments );
@@ -2518,7 +2557,7 @@ window.Zeit.loadJS( 'https://static.zeit.de/static/js/webtrekk/webtrekk_v4.5.3.m
                 if ( data.footerBar ) {
                     if (data.footerBar.indexOf( 'footer_bar' ) > -1) {
                         window.Zeit.readyWhenYouAre( function(p) {
-                            window.Zeit.paywallFooter( p );
+                            window.Zeit.renderFooterbar( p );
                             })(data.footerBar);
                     }
                 }

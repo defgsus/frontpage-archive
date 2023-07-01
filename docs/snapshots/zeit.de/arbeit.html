@@ -20,16 +20,17 @@
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/tabletgothic/TabletGothic-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/patron_bold/PatronWEB-Bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/normalize.eb629295d4c4fe1d25752792b6f2f37f.css">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.arbeit/base/base.c7ef4f6a0ed168fd4b31712f84a771f1.css">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/navigation/navigation.1782b99e5732f81a1cb5b33f090d67d2.css">
-    <link rel="preload" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.356f3335955b5fbe2a687e0b5c522f62.css" as="style">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.356f3335955b5fbe2a687e0b5c522f62.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.356f3335955b5fbe2a687e0b5c522f62.css"></noscript>
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.arbeit/base/base.fc1cf7204a4c17e0a5fe0b19e6bd2cd7.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/navigation/navigation.c1cf1e8f4c74224eba2580a35a66b525.css">
+    <link rel="preload" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.f1f72d723b8d7d29e22ea001e0a9d8ed.css" as="style">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.f1f72d723b8d7d29e22ea001e0a9d8ed.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.f1f72d723b8d7d29e22ea001e0a9d8ed.css"></noscript>
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/breadcrumbs.0761dc285cb76fb469c02402bf3aa005.css" as="style">
     <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/breadcrumbs.0761dc285cb76fb469c02402bf3aa005.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/breadcrumbs.0761dc285cb76fb469c02402bf3aa005.css"></noscript>
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.arbeit/centerpage/centerpage.d859071abaecf6da0e844acacb2fcc48.css">
-<link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.arbeit/base/print.592fbf818fbdac7c062ec58e9c1e64b7.css" media="print">
+    <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/breadcrumbs.0761dc285cb76fb469c02402bf3aa005.css"></noscript><link rel="stylesheet" href="https://static.zeit.de/p/wally/footerbar.css" media="print" onload="this.media='all'" />
+    
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.arbeit/centerpage/centerpage.aa0eb145e2619002b53c3851c266b93c.css">
+<link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.arbeit/base/print.85726713e976000dc989a23e81da1ace.css" media="print">
 
     <script id="zonConfig" type="application/json">
         {
@@ -62,7 +63,6 @@
                 "brightcove_chapter_marks": true,
                 "comments_feedback_banner": false,
                 "comments_ads_use_postmessage": true,
-                "comments_per_user": true,
                 "https": false,
                 "bookmark_maintenance": false,
                 "merkl_sync": false,
@@ -71,7 +71,8 @@
                 "recipe_autocomplete": true,
                 "spark_clicktracking": true,
                 "visibility_tracking": true,
-                "zwe_hijack_images_swiping": true
+                "zwe_hijack_images_swiping": true,
+                "comments_per_user": true
                 },
             "settings": {
                 "autoplay_carousel_item_duration": "",
@@ -128,7 +129,6 @@
                 return cache;
             }
     
-            document.createElement( 'picture' );
             window.Zeit = {
                 assetHost: getConfig().assetHost,
                 publicPath: getConfig().publicPath,
@@ -446,7 +446,21 @@
         };
 
             </script>
-            <script src="https://consent-cdn.zeit.de/wrapperMessagingWithoutDetection.js"></script>
+                <script>
+                window.addEventListener('postRejectAllCompleted', () => {
+                    if (document.querySelector( "[id^='sp_message_']" )) {
+                        return;
+                    }
+                    const script = document.createElement('script');
+
+                    // Since consent has been revoked through the tcfapi, we now need to
+                    // try to rerender it once more.
+                    script.src =
+                        "https://consent-cdn.zeit.de/wrapperMessagingWithoutDetection.js";
+                    document.body.appendChild(script);
+                });
+            </script>
+                <script src="https://consent-cdn.zeit.de/wrapperMessagingWithoutDetection.js"></script>
     
     <script>
         const ioDomain = window.Zeit.showMobileAds() ? 'data-614d3891ff.zeit.de' : 'data-af9f3dfb33.zeit.de';
@@ -518,7 +532,7 @@
     </script>
     
     <script type="application/ld+json">
-        {"@context": "http://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://www.zeit.de/arbeit/2023-05/tarifvertraege-leiharbeit-bundesarbeitsgericht-urteil"}, {"@type": "ListItem", "position": 2, "url": "https://www.zeit.de/arbeit/2022-09/gemeinde-gehalt-deutschland-vergleich-daten-entwicklung"}, {"@type": "ListItem", "position": 3, "url": "https://www.zeit.de/arbeit/2023-05/rente-lebensarbeitszeit-studie-berufe-gesundheit"}, {"@type": "ListItem", "position": 4, "url": "https://www.zeit.de/arbeit/2023-05/ueberstunden-arbeitnehmer-beschaeftigte-arbeitszeit"}, {"@type": "ListItem", "position": 5, "url": "https://www.zeit.de/2023/23/arno-duebel-arbeitslosigkeit-erwerbsarbeit-work-life-balance"}, {"@type": "ListItem", "position": 6, "url": "https://www.zeit.de/arbeit/2023-05/kritik-vorgesetzten-chef-mitarbeiter-feedback-kritikfaehigkeit"}, {"@type": "ListItem", "position": 7, "url": "https://www.zeit.de/arbeit/2023-05/evg-deutsche-bahn-tarifangebot-abgelehnt"}, {"@type": "ListItem", "position": 8, "url": "https://www.zeit.de/arbeit/2023-05/finanzielle-gewalt-frauen-geld-partnerschaft-beziehung"}, {"@type": "ListItem", "position": 9, "url": "https://www.zeit.de/arbeit/2023-05/gleichberechtigung-beziehung-kinder-arbeit-alltag"}, {"@type": "ListItem", "position": 10, "url": "https://www.zeit.de/arbeit/2023-05/sophia-rudolph-mitarbeiterfuehrung-gehorsam-chefs-chefinnen-podcast"}, {"@type": "ListItem", "position": 11, "url": "https://www.zeit.de/zeit-fuer-unternehmer/2023/01/climate-quitting-klimakrise-umweltschutz-arbeitgeber-unternehmen"}, {"@type": "ListItem", "position": 12, "url": "https://www.zeit.de/arbeit/2023-05/elektrotechniker-landmaschinenhersteller-gehalt-kontoauszug"}, {"@type": "ListItem", "position": 13, "url": "https://www.zeit.de/2023/22/kuendigung-job-unzufriedenheit-tipps-coachin"}, {"@type": "ListItem", "position": 14, "url": "https://www.zeit.de/arbeit/2023-03/nestle-studie-2023-currywurst-kantine-nachhaltigkeit-vegan"}, {"@type": "ListItem", "position": 15, "url": "https://www.zeit.de/2023/22/arbeitseinstellung-motivation-bildung-vermaechtnisstudie"}, {"@type": "ListItem", "position": 16, "url": "https://www.zeit.de/2023/22/frauen-familie-beruf-ungleichheit-vermaechtnisstudie"}, {"@type": "ListItem", "position": 17, "url": "https://www.zeit.de/2023/22/vermaechtnisstudie-kinder-familie-arbeit"}, {"@type": "ListItem", "position": 18, "url": "https://www.zeit.de/arbeit/2023-05/gastronomie-restaurant-kette-alex-gruender-trinkgeld"}, {"@type": "ListItem", "position": 19, "url": "https://www.zeit.de/arbeit/2023-05/danger-dan-rapband-erfolg-arbeit-podcast"}, {"@type": "ListItem", "position": 20, "url": "https://www.zeit.de/arbeit/2023-05/nachnamen-wahl-frau-mann-karriere"}, {"@type": "ListItem", "position": 21, "url": "https://www.zeit.de/arbeit/2023-05/elternzeit-vater-karriere-gleichstellung"}, {"@type": "ListItem", "position": 22, "url": "https://www.zeit.de/arbeit/2023-05/pflegereform-karl-lauterbach-pflegegeld"}]}
+        {"@context": "http://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://www.zeit.de/arbeit/2023-06/cdu-ueberstunden-mehrarbeit-steuerliche-foerderung"}, {"@type": "ListItem", "position": 2, "url": "https://www.zeit.de/arbeit/2022-09/gemeinde-gehalt-deutschland-vergleich-daten-entwicklung"}, {"@type": "ListItem", "position": 3, "url": "https://www.zeit.de/arbeit/2023-06/arbeitsplatz-missbrauch-sexuelle-belaestigung-aufruf"}, {"@type": "ListItem", "position": 4, "url": "https://www.zeit.de/arbeit/2023-06/musikindustrie-missbrauch-sexismus-belaestigung-frauen"}, {"@type": "ListItem", "position": 5, "url": "https://www.zeit.de/arbeit/2023-06/ernaehrung-arbeitsplatz-gesundes-essen-buero-vorbereiten"}, {"@type": "ListItem", "position": 6, "url": "https://www.zeit.de/2023/27/kuenstliche-intelligenz-fachkraeftemangel-arbeitsmarkt"}, {"@type": "ListItem", "position": 7, "url": "https://www.zeit.de/arbeit/2023-06/miriam-wohlfarth-beliebtheit-chefs-chefinnen-podcast"}, {"@type": "ListItem", "position": 8, "url": "https://www.zeit.de/arbeit/2023-06/mindestlohn-erhoehung-kommission-tom-krebs"}, {"@type": "ListItem", "position": 9, "url": "https://www.zeit.de/arbeit/2023-06/rage-applying-gen-z-bewerbung-simon-schnetzer"}, {"@type": "ListItem", "position": 10, "url": "https://www.zeit.de/arbeit/2023-06/filmbranche-machtmissbrauch-uebergriffe-arbeitsbedingungen-til-schweiger"}, {"@type": "ListItem", "position": 11, "url": "https://www.zeit.de/arbeit/2023-06/mindestlohn-erhoehung-inflation-kommission"}, {"@type": "ListItem", "position": 12, "url": "https://www.zeit.de/arbeit/2023-06/kommission-empfiehlt-mindestlohn-von-12-41-euro-ab-2024"}, {"@type": "ListItem", "position": 13, "url": "https://www.zeit.de/arbeit/2023-06/sachbearbeiter-standesamt-haus-finanzieren-kontoauszug"}, {"@type": "ListItem", "position": 14, "url": "https://www.zeit.de/2023/27/waldbrand-nationalpark-harz-saechsische-schweiz"}, {"@type": "ListItem", "position": 15, "url": "https://www.zeit.de/arbeit/2023-06/japanische-amateurfussballer-deutschland-erndtebrueck"}, {"@type": "ListItem", "position": 16, "url": "https://www.zeit.de/arbeit/2023-06/evg-deutsche-bahn-streik-unbefristet-tarifverhandlung"}, {"@type": "ListItem", "position": 17, "url": "https://www.zeit.de/2023/27/mit-freunden-zusammenarbeiten-problem-gespraech"}, {"@type": "ListItem", "position": 18, "url": "https://www.zeit.de/arbeit/2023-05/smalltalk-fragen-themen-kommunikation-tipps"}, {"@type": "ListItem", "position": 19, "url": "https://www.zeit.de/arbeit/2023-06/martin-blum-radwege-ausbau-arbeit-podcast"}, {"@type": "ListItem", "position": 20, "url": "https://www.zeit.de/arbeit/2023-06/fehlgeburten-diagnose-falsch-rechte"}, {"@type": "ListItem", "position": 21, "url": "https://www.zeit.de/arbeit/2023-06/muedigkeit-energielosigkeit-arbeit-alltag-tipps"}]}
     </script>
 
     
@@ -540,9 +554,7 @@
         </script>
     <script src="https://cl.k5a.io/6156f4770662411b5d525213.js" async></script>
         <script>
-    if ( screen.width >= window.Zeit.tabletMinWidth && screen.width < window.Zeit.desktopMinWidth && !window.Zeit.user.adFree ) {
-        window.Zeit.viewport.set( 'portrait' );
-    }
+        if ( screen.width >= window.Zeit.tabletMinWidth && screen.width < window.Zeit.desktopMinWidth && !window.Zeit.user.adFree ) {window.Zeit.viewport.set( 'portrait' );}
     </script>
     
     <script>
@@ -734,7 +746,7 @@
     }
     </style>
         <style></style>
-    <script src="https://static.zeit.de/p/zeit.web/js/colorscheme.29faacb425784be93acf.js" ></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/colorscheme.19c1a7bf9545b0945227.js" ></script>
     <!-- [esi-debug] src="/interactive/g/2022/gehaelter-gemeinden/static-html/includes/standalone/index/head-includes.html" -->
     <link rel="stylesheet" href="https://interactive.zeit.de/g/2022/gehaelter-gemeinden/static/assets/setupZonReactApp.712c79b7.css">
 <link rel="stylesheet" href="https://interactive.zeit.de/g/2022/gehaelter-gemeinden/static/assets/index.e3f02f48.css">
@@ -1041,12 +1053,20 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
                 </ul>
                 <div role="heading" class="navigation-section__headline" id="nav-headline-anzeigen">Anzeigen</div><ul class="navigation__section" data-vt-section="anzeigen" data-ct-section-type="anzeigen"  aria-labelledby="nav-headline-anzeigen">
                                                 <li>
-                        <a href="https://www.zeit.de/angebote/sommer-in-bremen/index" class="navigation-link" itemprop="url">
-        <span itemprop="name">Sommer in Bremen</span>
+                        <a href="https://www.zeit.de/campus/angebote/hochschulegeisenheim/index" class="navigation-link" itemprop="url">
+        <span itemprop="name">Mit dem Studium die Welt retten</span>
 </a>                    </li>
                                                     <li>
-                        <a href="https://www.zeit.de/angebote/lukas-baerfuss-die-krume-brot/index" class="navigation-link" itemprop="url">
-        <span itemprop="name">Lukas Bärfuss »Die Krume Brot«</span>
+                        <a href="https://zett.cmk.zeit.de/cms/articles/15531/anzeige/techniker-krankenkasse/wie-ich-mir-mein-leben-zurueckgeholt-habe" class="navigation-link" itemprop="url">
+        <span itemprop="name">So gelingt ein achtsames Leben</span>
+</a>                    </li>
+                                                    <li>
+                        <a href="https://www.zeit.de/zett/angebote/come-as-you-are/rewe/index" class="navigation-link" itemprop="url">
+        <span itemprop="name">LGBTIQ+freundliches Unternehmen</span>
+</a>                    </li>
+                                                    <li>
+                        <a href="https://www.zeit.de/angebote/most-wanted-employer-2023/index" class="navigation-link" itemprop="url">
+        <span itemprop="name">Beliebteste Arbeitgeber 2023</span>
 </a>                    </li>
                                                     <li>
                         <a href="https://www.zeit.de/campus/angebote/howitworks/index" class="navigation-link" itemprop="url">
@@ -1092,7 +1112,7 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 
 
 <div class="navigation__area navigation__area--account" data-ct-container-type="navigation_account" itemscope itemtype="http://schema.org/SiteNavigationElement">
-        <a href="https://premium.zeit.de/probe-abo" class="navigation_subscription-link" data-ct-element-type="subscription-link" itemprop="url"><span itemprop="name">Abo testen</span></a>
+        <a href="https://premium.zeit.de/probe-abo" class="navigation__subscription-link" data-ct-element-type="subscription-link" itemprop="url"><span itemprop="name">Abo testen</span></a>
                 <a class="navigation__button navigation__button--account" role="button" href="#navigation-content-account" aria-controls="navigation-content-account" title="Nutzermenü" data-ct-label="" data-ct-action="open">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" class="svg-symbol menu-icon" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><path fill-rule="evenodd" d="M9 7.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM9 9a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4.642 12.996C3.98 13.77 3.75 15.01 3.75 17h-1.5c0-1.987.199-3.747 1.251-4.978C4.58 10.76 6.37 10.25 9 10.25c2.63 0 4.42.51 5.499 1.772C15.55 13.253 15.75 15.013 15.75 17h-1.5c0-1.99-.23-3.23-.892-4.004-.636-.744-1.846-1.246-4.358-1.246-2.512 0-3.722.502-4.358 1.246Z" clip-rule="evenodd"/></svg>
         </a>
@@ -1152,7 +1172,7 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
         }
     </script>
 </div>
-                        <main class="main main--centerpage" id="main">
+                            <main class="main main--centerpage" id="main">
                             <div class="cp-region cp-region--solo">        
 
 <div class="cp-area cp-area--solo" data-ct-context="solo">
@@ -1161,50 +1181,51 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-lead " data-unique-id="http://xml.zeit.de/arbeit/2023-05/tarifvertraege-leiharbeit-bundesarbeitsgericht-urteil">
+<article class="teaser-lead " data-unique-id="http://xml.zeit.de/arbeit/2023-06/cdu-ueberstunden-mehrarbeit-steuerliche-foerderung" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/arbeit/2023-05/tarifvertraege-leiharbeit-bundesarbeitsgericht-urteil" class="teaser-lead__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Bundesarbeitsgericht: Tarifverträge in der Leiharbeit sind rechtens">Bundesarbeitsgericht: Tarifverträge in der Leiharbeit sind rechtens</a>
-                    <figure class="teaser-lead__media  scaled-image variant variant--portrait">
+                    <a href="https://www.zeit.de/arbeit/2023-06/cdu-ueberstunden-mehrarbeit-steuerliche-foerderung" class="teaser-lead__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="CDU: Noch mehr Überstunden? Bitte nicht">CDU: Noch mehr Überstunden? Bitte nicht</a>
+                    <figure class="teaser-lead__media teaser-lead__media--force-mobile scaled-image variant variant--portrait">
                 <div class="teaser-lead__media-container ">
-            <noscript data-src="https://img.zeit.de/arbeit/2023-05/tarifvertraege-leiharbeit-bundesarbeitsgericht-urteil-bild/portrait__612x816">
+            <noscript data-src="https://img.zeit.de/arbeit/2023-06/buero/portrait__612x816">
                                 <img class="teaser-lead__media-item"
-                          alt="Bundesarbeitsgericht: Tarifverträge in der Leiharbeit sind rechtens"
-                     src="https://img.zeit.de/arbeit/2023-05/tarifvertraege-leiharbeit-bundesarbeitsgericht-urteil-bild/portrait__612x816"
-                     data-src="https://img.zeit.de/arbeit/2023-05/tarifvertraege-leiharbeit-bundesarbeitsgericht-urteil-bild/portrait"
+                          alt="CDU: Noch mehr Überstunden? Bitte nicht"
+                     src="https://img.zeit.de/arbeit/2023-06/buero/portrait__612x816"
+                     data-src="https://img.zeit.de/arbeit/2023-06/buero/portrait"
                      data-ratio="0.75"
                      decoding="async"
-                     data-mobile-src="https://img.zeit.de/arbeit/2023-05/tarifvertraege-leiharbeit-bundesarbeitsgericht-urteil-bild/wide" data-mobile-ratio="1.77777777778">
+                     data-mobile-src="https://img.zeit.de/arbeit/2023-06/buero/wide" data-mobile-ratio="1.77777777778">
                             </noscript></div>
 
         <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/arbeit/2023-05/tarifvertraege-leiharbeit-bundesarbeitsgericht-urteil-bild/portrait__612x816",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Julian Stratenschulte/\u200bdpa"}
+    "url": "https://img.zeit.de/arbeit/2023-06/buero/portrait__612x816",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0CHUTTERSNAP/\u200bunsplash.com"}
 }
 </script>                </figure>
 
     <div class="teaser-lead__container">
 
                     <h2 class="teaser-lead__heading">
-                                <a class="teaser-lead__heading-link" href="https://www.zeit.de/arbeit/2023-05/tarifvertraege-leiharbeit-bundesarbeitsgericht-urteil">
+                                <a class="teaser-lead__heading-link" href="https://www.zeit.de/arbeit/2023-06/cdu-ueberstunden-mehrarbeit-steuerliche-foerderung">
                     <span class="teaser-lead__kicker">
-                            <span>
-                            <span>Bundesarbeitsgericht</span><span class="visually-hidden">: </span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
+<span>
+                            <span>CDU</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
                     <span class="teaser-lead__title">
-        <span>Tarifverträge</span> in der Leiharbeit sind rechtens
+        Noch mehr <span>Überstunden?</span> Bitte nicht
     </span>
 </a>
                             </h2>
         
         
-                                    <p class="teaser-lead__text">Dass Leiharbeiter häufig weniger verdienen als die Stammbelegschaft, verstößt nicht gegen EU-Recht. Eine Klägerin verlor vor dem Bundesarbeitsgericht in dritter Instanz.</p>
+                                    <p class="teaser-lead__text">Der CDU-Vize Carsten Linnemann will, dass Überstunden steuerfrei bezahlt werden. Das soll Beschäftigte motivieren, noch mehr zu arbeiten. Doch genau das wäre falsch.</p>
                                                 <div class="teaser-lead__metadata">
-                                                                                                                                                                                                                    <a class="teaser-lead__commentcount" href="https://www.zeit.de/arbeit/2023-05/tarifvertraege-leiharbeit-bundesarbeitsgericht-urteil#comments" data-ct-label="comments" title="Kommentare anzeigen">33 Kommentare</a>
-                                                                        </div>
+                                                                            <span class="teaser-lead__byline">    Ein Kommentar von            David Gutensohn</span>
+                                                                                                    </div>
                                     </div></article>
 
                             <div class="ad-container" data-type="mobile" data-tile="1">
@@ -1293,16 +1314,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-05/rente-lebensarbeitszeit-studie-berufe-gesundheit" data-zplus="zplus">
+<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-06/arbeitsplatz-missbrauch-sexuelle-belaestigung-aufruf">
 
-                    <a href="https://www.zeit.de/arbeit/2023-05/rente-lebensarbeitszeit-studie-berufe-gesundheit" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Rente: &#34;Wer länger arbeitet, stirbt früher&#34;">Rente: &#34;Wer länger arbeitet, stirbt früher&#34;</a>
-                    <figure class="teaser-small__media teaser-small__media--force-mobile scaled-image variant variant--wide">
+                    <a href="https://www.zeit.de/arbeit/2023-06/arbeitsplatz-missbrauch-sexuelle-belaestigung-aufruf" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Aufruf: Erleben Sie Missbrauch am Arbeitsplatz?">Aufruf: Erleben Sie Missbrauch am Arbeitsplatz?</a>
+                    <figure class="teaser-small__media  scaled-image variant variant--wide">
                 <div class="teaser-small__media-container ">
-            <noscript data-src="https://img.zeit.de/arbeit/2023-05/rente-lebensarbeitszeit-studie-berufe-gesundheit-bild/wide__822x462">
+            <noscript data-src="https://img.zeit.de/arbeit/2023-06/arbeitsplatz-missbrauch-sexuelle-belaestigung/wide__822x462">
                                 <img class="teaser-small__media-item"
-                          alt="Rente: &#34;Wer länger arbeitet, stirbt früher&#34;"
-                     src="https://img.zeit.de/arbeit/2023-05/rente-lebensarbeitszeit-studie-berufe-gesundheit-bild/wide__822x462"
-                     data-src="https://img.zeit.de/arbeit/2023-05/rente-lebensarbeitszeit-studie-berufe-gesundheit-bild/wide"
+                          alt="Aufruf: Erleben Sie Missbrauch am Arbeitsplatz?"
+                     src="https://img.zeit.de/arbeit/2023-06/arbeitsplatz-missbrauch-sexuelle-belaestigung/wide__822x462"
+                     data-src="https://img.zeit.de/arbeit/2023-06/arbeitsplatz-missbrauch-sexuelle-belaestigung/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -1312,30 +1333,30 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/arbeit/2023-05/rente-lebensarbeitszeit-studie-berufe-gesundheit-bild/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Ute Grabowsky/\u200bphotothek/\u200bimago images"}
+    "url": "https://img.zeit.de/arbeit/2023-06/arbeitsplatz-missbrauch-sexuelle-belaestigung/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0[M] ZEIT ONLINE, gremlin/\u200bGetty Images"}
 }
 </script>                </figure>
 
     <div class="teaser-small__container">
 
                     <h2 class="teaser-small__heading">
-                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-05/rente-lebensarbeitszeit-studie-berufe-gesundheit">
+                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-06/arbeitsplatz-missbrauch-sexuelle-belaestigung-aufruf">
                     <span class="teaser-small__kicker">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
-<span>
-                            <span>Rente</span><span class="visually-hidden">: </span>
+                            <span>
+                            <span>Aufruf</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-small__title">&#34;Wer länger arbeitet, stirbt früher&#34;</span>
+                    <span class="teaser-small__title">Erleben Sie Missbrauch am Arbeitsplatz?</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-small__text">Menschen, die später in Rente gehen, leben kürzer, zeigt eine neue Studie. Eine Expertin erklärt, für welche Berufe das gilt und wie man sie verändern müsste.</p>
+                                    <p class="teaser-small__text">Ein Chef, der seine Macht ausnutzt, sexuelle Übergriffe oder ein toxisches Arbeitsklima: Kennen Sie das und wollen es anonym öffentlich machen? Schreiben Sie uns!</p>
                                                 <div class="teaser-small__metadata">
-                                                                            <span class="teaser-small__byline">    Interview:            David Gutensohn</span>
-                                                                                                    </div>
+                                                                            <span class="teaser-small__byline">    Von            David Gutensohn            und            Anne-Katrin Schade</span>
+                                                                                                                                                                                <a class="teaser-small__commentcount" href="https://www.zeit.de/arbeit/2023-06/arbeitsplatz-missbrauch-sexuelle-belaestigung-aufruf#comments" data-ct-label="comments" title="Kommentare anzeigen">93 Kommentare</a>
+                                                                        </div>
                                     </div></article>
 
                             <!-- adtile1mobile is omitted to avoid duplicates. -->
@@ -1349,16 +1370,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-05/ueberstunden-arbeitnehmer-beschaeftigte-arbeitszeit">
+<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-06/musikindustrie-missbrauch-sexismus-belaestigung-frauen" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/arbeit/2023-05/ueberstunden-arbeitnehmer-beschaeftigte-arbeitszeit" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Arbeitszeit: Beschäftigte machten 2022 mehr als eine Milliarde Überstunden">Arbeitszeit: Beschäftigte machten 2022 mehr als eine Milliarde Überstunden</a>
-                    <figure class="teaser-small__media  scaled-image variant variant--wide">
+                    <a href="https://www.zeit.de/arbeit/2023-06/musikindustrie-missbrauch-sexismus-belaestigung-frauen" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Machtmissbrauch in der Musikindustrie: &#34;Bestellt uns doch mal fünf, sechs Groupies&#34;">Machtmissbrauch in der Musikindustrie: &#34;Bestellt uns doch mal fünf, sechs Groupies&#34;</a>
+                    <figure class="teaser-small__media teaser-small__media--force-mobile scaled-image variant variant--wide">
                 <div class="teaser-small__media-container ">
-            <noscript data-src="https://img.zeit.de/arbeit/2023-05/ueberstunden-arbeitnehmer-beschaeftigte-arbeitszeit-bild/wide__822x462">
+            <noscript data-src="https://img.zeit.de/arbeit/2023-06/musikindustrie-missbrauch-sexismus/wide__822x462">
                                 <img class="teaser-small__media-item"
-                          alt="Arbeitszeit: Beschäftigte machten 2022 mehr als eine Milliarde Überstunden"
-                     src="https://img.zeit.de/arbeit/2023-05/ueberstunden-arbeitnehmer-beschaeftigte-arbeitszeit-bild/wide__822x462"
-                     data-src="https://img.zeit.de/arbeit/2023-05/ueberstunden-arbeitnehmer-beschaeftigte-arbeitszeit-bild/wide"
+                          alt="Machtmissbrauch in der Musikindustrie: &#34;Bestellt uns doch mal fünf, sechs Groupies&#34;"
+                     src="https://img.zeit.de/arbeit/2023-06/musikindustrie-missbrauch-sexismus/wide__822x462"
+                     data-src="https://img.zeit.de/arbeit/2023-06/musikindustrie-missbrauch-sexismus/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -1368,29 +1389,32 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/arbeit/2023-05/ueberstunden-arbeitnehmer-beschaeftigte-arbeitszeit-bild/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Cavan Images/\u200bDEEPOL/\u200bplainpicture"}
+    "url": "https://img.zeit.de/arbeit/2023-06/musikindustrie-missbrauch-sexismus/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0[M] ZEIT ONLINE gilaxia/\u200bGetty Images"}
 }
 </script>                </figure>
 
     <div class="teaser-small__container">
 
                     <h2 class="teaser-small__heading">
-                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-05/ueberstunden-arbeitnehmer-beschaeftigte-arbeitszeit">
+                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-06/musikindustrie-missbrauch-sexismus-belaestigung-frauen">
                     <span class="teaser-small__kicker">
-                            <span>
-                            <span>Arbeitszeit</span><span class="visually-hidden">: </span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
+<span>
+                            <span>Machtmissbrauch in der Musikindustrie</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-small__title">Beschäftigte machten 2022 mehr als eine Milliarde Überstunden</span>
+                    <span class="teaser-small__title">&#34;Bestellt uns doch mal fünf, sechs Groupies&#34;</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-small__text">Arbeitnehmer in Deutschland arbeiten auch nach Feierabend: 2022 leistete jeder Beschäftigte umgerechnet 31 Überstunden. Das entspricht rund 800.000 Vollzeitstellen.</p>
+                                    <p class="teaser-small__text">Goldene Einlassbänder und Sex im Tourbus: In der Musikbranche soll es Muster geben, um Frauen für Sex zu rekrutieren. Insider berichten von fragwürdigen Praktiken dort.</p>
                                                 <div class="teaser-small__metadata">
-                                                                                                                                                                                                                    <a class="teaser-small__commentcount" href="https://www.zeit.de/arbeit/2023-05/ueberstunden-arbeitnehmer-beschaeftigte-arbeitszeit#comments" data-ct-label="comments" title="Kommentare anzeigen">52 Kommentare</a>
-                                                                        </div>
+                                                                            <span class="teaser-small__byline">    Von    Jana Gioia Baurmann,
+            David Gutensohn,
+            Maike Huckschlag    u. a.</span>
+                                                                                                    </div>
                                     </div></article>
 
                                                 </div>
@@ -1403,16 +1427,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-small " data-unique-id="http://xml.zeit.de/2023/23/arno-duebel-arbeitslosigkeit-erwerbsarbeit-work-life-balance" data-zplus="zplus">
+<article class="teaser-small  teaser-small--advertorial" data-unique-id="http://xml.zeit.de/angebote/most-wanted-employer-2023/ressort-teaser-mwe-2023">
 
-                    <a href="https://www.zeit.de/2023/23/arno-duebel-arbeitslosigkeit-erwerbsarbeit-work-life-balance" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Arno Dübel: Der Erfinder der Nulltagewoche">Arno Dübel: Der Erfinder der Nulltagewoche</a>
+                    <a href="https://www.zeit.de/angebote/most-wanted-employer-2023/index" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" target="_blank" rel="noopener" title="Arbeitgeber-Check: Welche Unternehmen sind die „Most Wanted Employer“?">Arbeitgeber-Check: Welche Unternehmen sind die „Most Wanted Employer“?</a>
                     <figure class="teaser-small__media teaser-small__media--force-mobile scaled-image variant variant--wide">
                 <div class="teaser-small__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/23/arno-duebel-arbeitslosigkeit-erwerbsarbeit-work-life-balance-teaserbild/wide__822x462">
+            <noscript data-src="https://img.zeit.de/angebote/most-wanted-employer-2022/teaserbild-unsplash/wide__822x462">
                                 <img class="teaser-small__media-item"
-                          alt="Arno Dübel: Der Erfinder der Nulltagewoche"
-                     src="https://img.zeit.de/2023/23/arno-duebel-arbeitslosigkeit-erwerbsarbeit-work-life-balance-teaserbild/wide__822x462"
-                     data-src="https://img.zeit.de/2023/23/arno-duebel-arbeitslosigkeit-erwerbsarbeit-work-life-balance-teaserbild/wide"
+                          alt="Arbeitgeber-Check: Welche Unternehmen sind die „Most Wanted Employer“?"
+                     src="https://img.zeit.de/angebote/most-wanted-employer-2022/teaserbild-unsplash/wide__822x462"
+                     data-src="https://img.zeit.de/angebote/most-wanted-employer-2022/teaserbild-unsplash/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -1422,31 +1446,26 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/23/arno-duebel-arbeitslosigkeit-erwerbsarbeit-work-life-balance-teaserbild/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Lars Berg/\u200bimago images"}
+    "url": "https://img.zeit.de/angebote/most-wanted-employer-2022/teaserbild-unsplash/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0unsplash.com"}
 }
 </script>                </figure>
 
     <div class="teaser-small__container">
 
                     <h2 class="teaser-small__heading">
-                                <a class="teaser-small__heading-link" href="https://www.zeit.de/2023/23/arno-duebel-arbeitslosigkeit-erwerbsarbeit-work-life-balance">
+                                <a class="teaser-small__heading-link" href="https://www.zeit.de/angebote/most-wanted-employer-2023/index">
                     <span class="teaser-small__kicker">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
-<span>
-                            <span>Arno Dübel</span><span class="visually-hidden">: </span>
+                            <span>
                             </span>
                         </span>
-                    <span class="teaser-small__title">Der Erfinder der Nulltagewoche</span>
+                    <span class="teaser-small__title">Arbeitgeber-Check: Welche Unternehmen sind die „Most Wanted Employer“?</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-small__text">Er tat beharrlich nichts und pflegte seine Work-Life-Balance, bevor es zum Modewort verkam. Nun ist &#34;Deutschlands faulster Arbeitsloser&#34; gestorben. Ein Nachruf</p>
-                                                <div class="teaser-small__metadata">
-                                                                            <span class="teaser-small__byline">    Von            Daniel Haas</span>
-                                                                                                    </div>
-                                    </div></article>
+                                    <p class="teaser-small__text">Der Arbeitgebermarkt hat sich zum Arbeitnehmermarkt gewandelt. Um möglichen Bewerber:innen Orientierung zu bieten, haben sich Arbeitgebersiegel auf dem Markt etabliert.</p>
+                                                            </div></article>
 
                                                 </div>
 
@@ -1500,16 +1519,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-duo teaser-duo--bright" data-unique-id="http://xml.zeit.de/arbeit/2023-05/kritik-vorgesetzten-chef-mitarbeiter-feedback-kritikfaehigkeit" data-zplus="zplus">
+<article class="teaser-duo teaser-duo--bright" data-unique-id="http://xml.zeit.de/arbeit/2023-06/ernaehrung-arbeitsplatz-gesundes-essen-buero-vorbereiten" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/arbeit/2023-05/kritik-vorgesetzten-chef-mitarbeiter-feedback-kritikfaehigkeit" class="teaser-duo__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Kritik an Vorgesetzten: &#34;Kein Chef mag es, Kritik zu hören&#34;">Kritik an Vorgesetzten: &#34;Kein Chef mag es, Kritik zu hören&#34;</a>
+                    <a href="https://www.zeit.de/arbeit/2023-06/ernaehrung-arbeitsplatz-gesundes-essen-buero-vorbereiten" class="teaser-duo__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Ernährung am Arbeitsplatz: Wie man sich im Büro gesund ernährt">Ernährung am Arbeitsplatz: Wie man sich im Büro gesund ernährt</a>
                     <figure class="teaser-duo__media teaser-duo__media--force-mobile scaled-image variant variant--wide">
                 <div class="teaser-duo__media-container ">
-            <noscript data-src="https://img.zeit.de/arbeit/2023-05/kritik-vorgesetzten-chef-mitarbeiter-feedback/wide__822x462">
+            <noscript data-src="https://img.zeit.de/arbeit/2023-06/ello/wide__822x462">
                                 <img class="teaser-duo__media-item"
-                          alt="Kritik an Vorgesetzten: &#34;Kein Chef mag es, Kritik zu hören&#34;"
-                     src="https://img.zeit.de/arbeit/2023-05/kritik-vorgesetzten-chef-mitarbeiter-feedback/wide__822x462"
-                     data-src="https://img.zeit.de/arbeit/2023-05/kritik-vorgesetzten-chef-mitarbeiter-feedback/wide"
+                          alt="Ernährung am Arbeitsplatz: Wie man sich im Büro gesund ernährt"
+                     src="https://img.zeit.de/arbeit/2023-06/ello/wide__822x462"
+                     data-src="https://img.zeit.de/arbeit/2023-06/ello/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -1519,30 +1538,29 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/arbeit/2023-05/kritik-vorgesetzten-chef-mitarbeiter-feedback/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0plainpicture"}
+    "url": "https://img.zeit.de/arbeit/2023-06/ello/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Ello/\u200bunsplash.com"}
 }
 </script>                </figure>
 
     <div class="teaser-duo__container">
 
                     <h2 class="teaser-duo__heading">
-                                <a class="teaser-duo__heading-link" href="https://www.zeit.de/arbeit/2023-05/kritik-vorgesetzten-chef-mitarbeiter-feedback-kritikfaehigkeit">
+                                <a class="teaser-duo__heading-link" href="https://www.zeit.de/arbeit/2023-06/ernaehrung-arbeitsplatz-gesundes-essen-buero-vorbereiten">
                     <span class="teaser-duo__kicker">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
 <span>
-                            <span class="series-label">Was Chefs wirklich denken</span>
-                                <span>Kritik an Vorgesetzten</span><span class="visually-hidden">: </span>
+                            <span>Ernährung am Arbeitsplatz</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-duo__title">&#34;Kein Chef mag es, Kritik zu hören&#34;</span>
+                    <span class="teaser-duo__title">Wie man sich im Büro gesund ernährt</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-duo__text">Ehrliche Kritik, übertriebenes Lob: Wer ungefragt Feedback gibt, macht sich unbeliebt. Der Chef eines Mittelständlers erklärt, wann seine Angestellten schweigen sollten.</p>
+                                    <p class="teaser-duo__text">Während der Arbeit braucht der Körper Energie, was isst man am besten? Experten erklären, welche Nährstoffe der Körper braucht und was man nicht frühstücken sollte.</p>
                                                 <div class="teaser-duo__metadata">
-                                                                            <span class="teaser-duo__byline">    Protokoll:            Heike Faller</span>
+                                                                            <span class="teaser-duo__byline">    Von            Jona Gebhard,            Paul Lütge            und            Ferdinand Schwarz</span>
                                                                                                     </div>
                                     </div></article>
 
@@ -1567,24 +1585,26 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-quote teaser-quote--yellow" data-unique-id="http://xml.zeit.de/arbeit/2023-05/evg-deutsche-bahn-tarifangebot-abgelehnt">
+<article class="teaser-quote teaser-quote--yellow" data-unique-id="http://xml.zeit.de/2023/27/kuenstliche-intelligenz-fachkraeftemangel-arbeitsmarkt">
 
-                    <a href="https://www.zeit.de/arbeit/2023-05/evg-deutsche-bahn-tarifangebot-abgelehnt" class="teaser-quote__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Tarifstreit: EVG lehnt Tarifangebot der Bahn ab">Tarifstreit: EVG lehnt Tarifangebot der Bahn ab</a>
+                    <a href="https://www.zeit.de/2023/27/kuenstliche-intelligenz-fachkraeftemangel-arbeitsmarkt" class="teaser-quote__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Künstliche Intelligenz: KI, bitte übernehmen Sie!">Künstliche Intelligenz: KI, bitte übernehmen Sie!</a>
             <p class="teaser-quote__text">
-                Die EVG hat ein nachgebessertes Tarifangebot der Deutschen Bahn als &#34;unzureichend&#34; abgelehnt und weitere Verhandlungen gefordert. Die Bahn erteilte dem eine Absage.     </p>
+                Sie hilft Arzttermine zu vergeben und Pakete zu liefern: KI kann unsere Rettung sein, aber dafür müssen wir sie trainieren. Noch gibt es die Fachkräfte dafür.    </p>
     
     <div class="teaser-quote__headingwrapper">
                     <h2 class="teaser-quote__heading">
-                                <a class="teaser-quote__heading-link" href="https://www.zeit.de/arbeit/2023-05/evg-deutsche-bahn-tarifangebot-abgelehnt">
+                                <a class="teaser-quote__heading-link" href="https://www.zeit.de/2023/27/kuenstliche-intelligenz-fachkraeftemangel-arbeitsmarkt">
                     <span class="teaser-quote__kicker">
                             <span>
-                            <span>Tarifstreit</span><span class="visually-hidden">: </span>
+                            <span class="series-label">Die Position</span>
+                                <span>Künstliche Intelligenz</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-quote__title">EVG lehnt Tarifangebot der Bahn ab</span>
+                    <span class="teaser-quote__title">KI, bitte übernehmen Sie!</span>
                     </a>
                             </h2>
-                                                                            </div>
+                                                                            <span class="teaser-quote__byline">    Ein Gastbeitrag von            Aljoscha Burchardt</span>
+                                        </div>
 
                 </article>
 
@@ -1599,16 +1619,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-duo teaser-duo--bright" data-unique-id="http://xml.zeit.de/arbeit/2023-05/finanzielle-gewalt-frauen-geld-partnerschaft-beziehung" data-zplus="zplus">
+<article class="teaser-duo teaser-duo--bright" data-unique-id="http://xml.zeit.de/arbeit/2023-06/miriam-wohlfarth-beliebtheit-chefs-chefinnen-podcast">
 
-                    <a href="https://www.zeit.de/arbeit/2023-05/finanzielle-gewalt-frauen-geld-partnerschaft-beziehung" class="teaser-duo__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Finanzielle Gewalt: &#34;Gerade Besserverdienende üben finanzielle Gewalt aus&#34; ">Finanzielle Gewalt: &#34;Gerade Besserverdienende üben finanzielle Gewalt aus&#34; </a>
-                    <figure class="teaser-duo__media teaser-duo__media--force-mobile scaled-image variant variant--wide">
+                    <a href="https://www.zeit.de/arbeit/2023-06/miriam-wohlfarth-beliebtheit-chefs-chefinnen-podcast" class="teaser-duo__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Podcast &#34;Was Chefinnen wirklich denken&#34;: &#34;Ich würde keine Freunde einstellen&#34;">Podcast &#34;Was Chefinnen wirklich denken&#34;: &#34;Ich würde keine Freunde einstellen&#34;</a>
+                    <figure class="teaser-duo__media  scaled-image variant variant--wide">
                 <div class="teaser-duo__media-container ">
-            <noscript data-src="https://img.zeit.de/arbeit/2023-05/finanzielle-gewalt-frauen-geld-partnerschaft-beziehung-bildv/wide__822x462">
+            <noscript data-src="https://img.zeit.de/arbeit/2023-06/miriam-wohlfarth-beliebtheit-chefs-chefinnen-podcast-aufmacherfoto/wide__822x462">
                                 <img class="teaser-duo__media-item"
-                          alt="Finanzielle Gewalt: &#34;Gerade Besserverdienende üben finanzielle Gewalt aus&#34; "
-                     src="https://img.zeit.de/arbeit/2023-05/finanzielle-gewalt-frauen-geld-partnerschaft-beziehung-bildv/wide__822x462"
-                     data-src="https://img.zeit.de/arbeit/2023-05/finanzielle-gewalt-frauen-geld-partnerschaft-beziehung-bildv/wide"
+                          alt="Podcast &#34;Was Chefinnen wirklich denken&#34;: &#34;Ich würde keine Freunde einstellen&#34;"
+                     src="https://img.zeit.de/arbeit/2023-06/miriam-wohlfarth-beliebtheit-chefs-chefinnen-podcast-aufmacherfoto/wide__822x462"
+                     data-src="https://img.zeit.de/arbeit/2023-06/miriam-wohlfarth-beliebtheit-chefs-chefinnen-podcast-aufmacherfoto/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -1618,30 +1638,31 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/arbeit/2023-05/finanzielle-gewalt-frauen-geld-partnerschaft-beziehung-bildv/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Malte Mueller/\u200bfStop/\u200bGetty Images"}
+    "url": "https://img.zeit.de/arbeit/2023-06/miriam-wohlfarth-beliebtheit-chefs-chefinnen-podcast-aufmacherfoto/wide__822x462",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Jacobia Dahm f\u00fcr ZEIT ONLINE"}
 }
 </script>                </figure>
 
     <div class="teaser-duo__container">
 
                     <h2 class="teaser-duo__heading">
-                                <a class="teaser-duo__heading-link" href="https://www.zeit.de/arbeit/2023-05/finanzielle-gewalt-frauen-geld-partnerschaft-beziehung">
+                                <a class="teaser-duo__heading-link" href="https://www.zeit.de/arbeit/2023-06/miriam-wohlfarth-beliebtheit-chefs-chefinnen-podcast">
                     <span class="teaser-duo__kicker">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
-<span>
-                            <span>Finanzielle Gewalt</span><span class="visually-hidden">: </span>
+                            <span>
+                            <span class="series-label">Was Chefinnen wirklich denken</span>
+                                <span>Podcast &#34;Was Chefinnen wirklich denken&#34;</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-duo__title">&#34;Gerade Besserverdienende üben finanzielle Gewalt aus&#34; </span>
+                    <span class="teaser-duo__title">&#34;Ich würde keine Freunde einstellen&#34;</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-duo__text">Frauen sind finanziell oft von ihrem Partner abhängig. Viele leiden, können sich aber nicht wehren. Eine Expertin erklärt, wie man sich vor finanzieller Gewalt schützt.</p>
+                                    <p class="teaser-duo__text">Wie macht man sich bei der eigenen Chefin beliebt – ohne sich einzuschleimen? Hauptsache keine Geschenke, findet die Digitalunternehmerin Miriam Wohlfarth.</p>
                                                 <div class="teaser-duo__metadata">
-                                                                            <span class="teaser-duo__byline">    Interview:            Hannah Scherkamp</span>
-                                                                                                    </div>
+                                                                            <span class="teaser-duo__byline">    Von            Moritz Müller-Wirth            und            Leonie Seifert</span>
+                                                                                                                                                                                <a class="teaser-duo__commentcount" href="https://www.zeit.de/arbeit/2023-06/miriam-wohlfarth-beliebtheit-chefs-chefinnen-podcast#comments" data-ct-label="comments" title="Kommentare anzeigen">4 Kommentare</a>
+                                                                        </div>
                                     </div></article>
 
                                                 </div>
@@ -1654,16 +1675,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-05/gleichberechtigung-beziehung-kinder-arbeit-alltag" data-zplus="zplus">
+<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-06/mindestlohn-erhoehung-kommission-tom-krebs" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/arbeit/2023-05/gleichberechtigung-beziehung-kinder-arbeit-alltag" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Gleichberechtigung: &#34;Mein Leben ist eine krasse Abnutzungsveranstaltung&#34; ">Gleichberechtigung: &#34;Mein Leben ist eine krasse Abnutzungsveranstaltung&#34; </a>
+                    <a href="https://www.zeit.de/arbeit/2023-06/mindestlohn-erhoehung-kommission-tom-krebs" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Mindestlohnerhöhung: &#34;Die Kommission hat das Mindestlohngesetz eigentlich missachtet&#34;">Mindestlohnerhöhung: &#34;Die Kommission hat das Mindestlohngesetz eigentlich missachtet&#34;</a>
                     <figure class="teaser-small__media teaser-small__media--force-mobile scaled-image variant variant--wide">
                 <div class="teaser-small__media-container ">
-            <noscript data-src="https://img.zeit.de/arbeit/2023-05/gleichberechtigung-beziehung-kinder-arbeit/wide__822x462">
+            <noscript data-src="https://img.zeit.de/arbeit/2023-06/mindestlohn/wide__822x462">
                                 <img class="teaser-small__media-item"
-                          alt="Gleichberechtigung: &#34;Mein Leben ist eine krasse Abnutzungsveranstaltung&#34; "
-                     src="https://img.zeit.de/arbeit/2023-05/gleichberechtigung-beziehung-kinder-arbeit/wide__822x462"
-                     data-src="https://img.zeit.de/arbeit/2023-05/gleichberechtigung-beziehung-kinder-arbeit/wide"
+                          alt="Mindestlohnerhöhung: &#34;Die Kommission hat das Mindestlohngesetz eigentlich missachtet&#34;"
+                     src="https://img.zeit.de/arbeit/2023-06/mindestlohn/wide__822x462"
+                     data-src="https://img.zeit.de/arbeit/2023-06/mindestlohn/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -1673,29 +1694,29 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/arbeit/2023-05/gleichberechtigung-beziehung-kinder-arbeit/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Maskot/\u200bplainpicture"}
+    "url": "https://img.zeit.de/arbeit/2023-06/mindestlohn/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Marcel Kusch/\u200bdpa"}
 }
 </script>                </figure>
 
     <div class="teaser-small__container">
 
                     <h2 class="teaser-small__heading">
-                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-05/gleichberechtigung-beziehung-kinder-arbeit-alltag">
+                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-06/mindestlohn-erhoehung-kommission-tom-krebs">
                     <span class="teaser-small__kicker">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
 <span>
-                            <span>Gleichberechtigung</span><span class="visually-hidden">: </span>
+                            <span>Mindestlohnerhöhung</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-small__title">&#34;Mein Leben ist eine krasse Abnutzungsveranstaltung&#34; </span>
+                    <span class="teaser-small__title">&#34;Die Kommission hat das Mindestlohngesetz eigentlich missachtet&#34;</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-small__text">Ein Paar hat drei junge Kinder, beide arbeiten in Vollzeit. Trotz einer Nanny bleibt kaum Zeit für die Eltern. Warum der Alltag eine organisatorische Hochleistung ist.</p>
+                                    <p class="teaser-small__text">Der Mindestlohn soll um 41 Cent steigen. Tom Krebs ist Teil der Kommission, die das entschieden hat. Er zeigt sich geschockt – und stellt die Arbeit des Gremiums infrage.</p>
                                                 <div class="teaser-small__metadata">
-                                                                            <span class="teaser-small__byline">    Von            Hannah Scherkamp</span>
+                                                                            <span class="teaser-small__byline">    Interview:            Roman Pletter</span>
                                                                                                     </div>
                                     </div></article>
 
@@ -1710,16 +1731,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-05/sophia-rudolph-mitarbeiterfuehrung-gehorsam-chefs-chefinnen-podcast">
+<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-06/rage-applying-gen-z-bewerbung-simon-schnetzer" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/arbeit/2023-05/sophia-rudolph-mitarbeiterfuehrung-gehorsam-chefs-chefinnen-podcast" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Podcast &#34;Was Chefinnen wirklich denken&#34;: &#34;Eine gewisse Form von Befehl und Gehorsam fehlt mir heute&#34;">Podcast &#34;Was Chefinnen wirklich denken&#34;: &#34;Eine gewisse Form von Befehl und Gehorsam fehlt mir heute&#34;</a>
-                    <figure class="teaser-small__media  scaled-image variant variant--wide">
+                    <a href="https://www.zeit.de/arbeit/2023-06/rage-applying-gen-z-bewerbung-simon-schnetzer" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Rage Applying: Und tschüss!">Rage Applying: Und tschüss!</a>
+                    <figure class="teaser-small__media teaser-small__media--force-mobile scaled-image variant variant--wide">
                 <div class="teaser-small__media-container ">
-            <noscript data-src="https://img.zeit.de/arbeit/2023-05/sophia-rudolph-mitarbeiterfuehrung-gehorsam-chefs-chefinnen-aufmacherfoto/wide__822x462">
+            <noscript data-src="https://img.zeit.de/arbeit/2023-06/rage-applying-gen-z-bewerbung/wide__822x462">
                                 <img class="teaser-small__media-item"
-                          alt="Podcast &#34;Was Chefinnen wirklich denken&#34;: &#34;Eine gewisse Form von Befehl und Gehorsam fehlt mir heute&#34;"
-                     src="https://img.zeit.de/arbeit/2023-05/sophia-rudolph-mitarbeiterfuehrung-gehorsam-chefs-chefinnen-aufmacherfoto/wide__822x462"
-                     data-src="https://img.zeit.de/arbeit/2023-05/sophia-rudolph-mitarbeiterfuehrung-gehorsam-chefs-chefinnen-aufmacherfoto/wide"
+                          alt="Rage Applying: Und tschüss!"
+                     src="https://img.zeit.de/arbeit/2023-06/rage-applying-gen-z-bewerbung/wide__822x462"
+                     data-src="https://img.zeit.de/arbeit/2023-06/rage-applying-gen-z-bewerbung/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -1729,31 +1750,30 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/arbeit/2023-05/sophia-rudolph-mitarbeiterfuehrung-gehorsam-chefs-chefinnen-aufmacherfoto/wide__822x462",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Jacobia Dahm f\u00fcr ZEIT ONLINE"}
+    "url": "https://img.zeit.de/arbeit/2023-06/rage-applying-gen-z-bewerbung/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Klaus Vedfelt/\u200bGetty Images"}
 }
 </script>                </figure>
 
     <div class="teaser-small__container">
 
                     <h2 class="teaser-small__heading">
-                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-05/sophia-rudolph-mitarbeiterfuehrung-gehorsam-chefs-chefinnen-podcast">
+                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-06/rage-applying-gen-z-bewerbung-simon-schnetzer">
                     <span class="teaser-small__kicker">
-                            <span>
-                            <span class="series-label">Was Chefinnen wirklich denken</span>
-                                <span>Podcast &#34;Was Chefinnen wirklich denken&#34;</span><span class="visually-hidden">: </span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
+<span>
+                            <span>Rage Applying</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-small__title">&#34;Eine gewisse Form von Befehl und Gehorsam fehlt mir heute&#34;</span>
+                    <span class="teaser-small__title">Und tschüss!</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-small__text">Wie macht man als Chefin eine Ansage, die bei den Mitarbeitenden ankommt? Die Spitzenköchin Sophia Rudolph wundert sich über eine Generation, die nicht recht folgt.</p>
+                                    <p class="teaser-small__text">Im Nullkommanichts bewerben sich junge Menschen auf einen neuen Job, sobald sie unzufrieden sind. Was hinter &#34;Rage Applying&#34; steckt, weiß Jugendforscher Simon Schnetzer.</p>
                                                 <div class="teaser-small__metadata">
-                                                                            <span class="teaser-small__byline">    Von            Leonie Seifert            und            Moritz Müller-Wirth</span>
-                                                                                                                                                                                <a class="teaser-small__commentcount" href="https://www.zeit.de/arbeit/2023-05/sophia-rudolph-mitarbeiterfuehrung-gehorsam-chefs-chefinnen-podcast#comments" data-ct-label="comments" title="Kommentare anzeigen">19 Kommentare</a>
-                                                                        </div>
+                                                                            <span class="teaser-small__byline">    Interview:            Larissa Kögl</span>
+                                                                                                    </div>
                                     </div></article>
 
                                                 </div>
@@ -1766,16 +1786,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-small " data-unique-id="http://xml.zeit.de/zeit-fuer-unternehmer/2023/01/climate-quitting-klimakrise-umweltschutz-arbeitgeber-unternehmen" data-zplus="zplus">
+<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-06/filmbranche-machtmissbrauch-uebergriffe-arbeitsbedingungen-til-schweiger" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/zeit-fuer-unternehmer/2023/01/climate-quitting-klimakrise-umweltschutz-arbeitgeber-unternehmen" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Climate-Quitting: Kündigungsgrund Klima">Climate-Quitting: Kündigungsgrund Klima</a>
+                    <a href="https://www.zeit.de/arbeit/2023-06/filmbranche-machtmissbrauch-uebergriffe-arbeitsbedingungen-til-schweiger" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Filmbranche: &#34;Zieht er sich einfach nur um? Oder will er, dass ich ihn nackt sehe?&#34;">Filmbranche: &#34;Zieht er sich einfach nur um? Oder will er, dass ich ihn nackt sehe?&#34;</a>
                     <figure class="teaser-small__media teaser-small__media--force-mobile scaled-image variant variant--wide">
                 <div class="teaser-small__media-container ">
-            <noscript data-src="https://img.zeit.de/zeit-fuer-unternehmer/2023/01/kuendigung-wg-klima-bild-2/wide__822x462">
+            <noscript data-src="https://img.zeit.de/arbeit/2023-06/filmbranche-machtmissbrauch-uebergriffe-arbeitsbedingungen-til-schweiger-bild/wide__822x462">
                                 <img class="teaser-small__media-item"
-                          alt="Climate-Quitting: Kündigungsgrund Klima"
-                     src="https://img.zeit.de/zeit-fuer-unternehmer/2023/01/kuendigung-wg-klima-bild-2/wide__822x462"
-                     data-src="https://img.zeit.de/zeit-fuer-unternehmer/2023/01/kuendigung-wg-klima-bild-2/wide"
+                          alt="Filmbranche: &#34;Zieht er sich einfach nur um? Oder will er, dass ich ihn nackt sehe?&#34;"
+                     src="https://img.zeit.de/arbeit/2023-06/filmbranche-machtmissbrauch-uebergriffe-arbeitsbedingungen-til-schweiger-bild/wide__822x462"
+                     data-src="https://img.zeit.de/arbeit/2023-06/filmbranche-machtmissbrauch-uebergriffe-arbeitsbedingungen-til-schweiger-bild/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -1785,29 +1805,29 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/zeit-fuer-unternehmer/2023/01/kuendigung-wg-klima-bild-2/wide__822x462",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Rita Puig-Serra Costa & Dani Pujalte/\u200bConnected Archives"}
+    "url": "https://img.zeit.de/arbeit/2023-06/filmbranche-machtmissbrauch-uebergriffe-arbeitsbedingungen-til-schweiger-bild/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0KAL VISUALS/\u200bunsplash.com", "url": "https://unsplash.com/de/fotos/6oLabfCwBME"}
 }
 </script>                </figure>
 
     <div class="teaser-small__container">
 
                     <h2 class="teaser-small__heading">
-                                <a class="teaser-small__heading-link" href="https://www.zeit.de/zeit-fuer-unternehmer/2023/01/climate-quitting-klimakrise-umweltschutz-arbeitgeber-unternehmen">
+                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-06/filmbranche-machtmissbrauch-uebergriffe-arbeitsbedingungen-til-schweiger">
                     <span class="teaser-small__kicker">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
 <span>
-                            <span>Climate-Quitting</span><span class="visually-hidden">: </span>
+                            <span>Filmbranche</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-small__title">Kündigungsgrund Klima</span>
+                    <span class="teaser-small__title">&#34;Zieht er sich einfach nur um? Oder will er, dass ich ihn nackt sehe?&#34;</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-small__text">Viele Menschen würden ihren Job aufgeben, wenn sich ihr Betrieb zu wenig für Umweltschutz einsetzt. Um sie zu halten, braucht es mehr als ein bisschen Greenwashing.</p>
+                                    <p class="teaser-small__text">Übergriffige Schauspieler, aggressive Regisseurinnen und Produktionsfirmen, die Überstunden nicht zahlen: Eine Kostümbildnerin spricht über Arbeitsbedingungen beim Film. </p>
                                                 <div class="teaser-small__metadata">
-                                                                            <span class="teaser-small__byline">    Von            Jennifer Garic</span>
+                                                                            <span class="teaser-small__byline">    Protokoll:            Jana Gioia Baurmann</span>
                                                                                                     </div>
                                     </div></article>
 
@@ -1863,16 +1883,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-05/elektrotechniker-landmaschinenhersteller-gehalt-kontoauszug" data-zplus="zplus">
+<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-06/mindestlohn-erhoehung-inflation-kommission">
 
-                    <a href="https://www.zeit.de/arbeit/2023-05/elektrotechniker-landmaschinenhersteller-gehalt-kontoauszug" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Elektrotechniker in der Landwirtschaft • Das Beste aus Z+: &#34;Ich war seit 20 Jahren nicht mehr im Ausland&#34;">Elektrotechniker in der Landwirtschaft • Das Beste aus Z+: &#34;Ich war seit 20 Jahren nicht mehr im Ausland&#34;</a>
-                    <figure class="teaser-small__media teaser-small__media--force-mobile scaled-image variant variant--wide">
+                    <a href="https://www.zeit.de/arbeit/2023-06/mindestlohn-erhoehung-inflation-kommission" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Mindestlohn: Da hätten sie auch gleich abrunden können">Mindestlohn: Da hätten sie auch gleich abrunden können</a>
+                    <figure class="teaser-small__media  scaled-image variant variant--wide">
                 <div class="teaser-small__media-container ">
-            <noscript data-src="https://img.zeit.de/arbeit/2023-05/elektrotechniker-landmaschinenhersteller-gehalt/wide__822x462">
+            <noscript data-src="https://img.zeit.de/wirtschaft/2023-06/mindestlohn-erhoehung-inflation-kommission-bild/wide__822x462">
                                 <img class="teaser-small__media-item"
-                          alt="Elektrotechniker in der Landwirtschaft • Das Beste aus Z+: &#34;Ich war seit 20 Jahren nicht mehr im Ausland&#34;"
-                     src="https://img.zeit.de/arbeit/2023-05/elektrotechniker-landmaschinenhersteller-gehalt/wide__822x462"
-                     data-src="https://img.zeit.de/arbeit/2023-05/elektrotechniker-landmaschinenhersteller-gehalt/wide"
+                          alt="Mindestlohn: Da hätten sie auch gleich abrunden können"
+                     src="https://img.zeit.de/wirtschaft/2023-06/mindestlohn-erhoehung-inflation-kommission-bild/wide__822x462"
+                     data-src="https://img.zeit.de/wirtschaft/2023-06/mindestlohn-erhoehung-inflation-kommission-bild/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -1882,30 +1902,30 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/arbeit/2023-05/elektrotechniker-landmaschinenhersteller-gehalt/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Kathleen Finlay/\u200bplainpicture"}
+    "url": "https://img.zeit.de/wirtschaft/2023-06/mindestlohn-erhoehung-inflation-kommission-bild/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Oryk HAIST/\u200bimago images"}
 }
 </script>                </figure>
 
     <div class="teaser-small__container">
 
                     <h2 class="teaser-small__heading">
-                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-05/elektrotechniker-landmaschinenhersteller-gehalt-kontoauszug">
+                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-06/mindestlohn-erhoehung-inflation-kommission">
                     <span class="teaser-small__kicker">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
-<span>
-                            <span>Elektrotechniker in der Landwirtschaft • Das Beste aus Z+</span><span class="visually-hidden">: </span>
+                            <span>
+                            <span>Mindestlohn</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-small__title">&#34;Ich war seit 20 Jahren nicht mehr im Ausland&#34;</span>
+                    <span class="teaser-small__title">Da hätten sie auch gleich abrunden können</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-small__text">Ingo, 48, ist Elektrotechniker bei einem Landmaschinenhersteller und verdient 2.300 Euro im Monat. Um seine neue Wohnung einzurichten, musste er einen Kredit aufnehmen.</p>
+                                    <p class="teaser-small__text">Der Mindestlohn soll künftig um 41 Cent steigen. Und man fragt sich: Ist das ernst gemeint oder ein Scherz? Eine Kommission, die das beschließt, gehört abgeschafft.</p>
                                                 <div class="teaser-small__metadata">
-                                                                            <span class="teaser-small__byline">    Protokoll:            Daniel Sander</span>
-                                                                                                    </div>
+                                                                            <span class="teaser-small__byline">    Ein Kommentar von            David Gutensohn</span>
+                                                                                                                                                                                <a class="teaser-small__commentcount" href="https://www.zeit.de/arbeit/2023-06/mindestlohn-erhoehung-inflation-kommission#comments" data-ct-label="comments" title="Kommentare anzeigen">1.150 Kommentare</a>
+                                                                        </div>
                                     </div></article>
 
                             <!-- adtile1mobile is omitted to avoid duplicates. -->
@@ -1919,16 +1939,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-small " data-unique-id="http://xml.zeit.de/2023/22/kuendigung-job-unzufriedenheit-tipps-coachin" data-zplus="zplus">
+<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-06/kommission-empfiehlt-mindestlohn-von-12-41-euro-ab-2024">
 
-                    <a href="https://www.zeit.de/2023/22/kuendigung-job-unzufriedenheit-tipps-coachin" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Jobkündigung: Wann ist der richtige Zeitpunkt, um zu kündigen?">Jobkündigung: Wann ist der richtige Zeitpunkt, um zu kündigen?</a>
-                    <figure class="teaser-small__media teaser-small__media--force-mobile scaled-image variant variant--wide">
+                    <a href="https://www.zeit.de/arbeit/2023-06/kommission-empfiehlt-mindestlohn-von-12-41-euro-ab-2024" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Inflation: Mindestlohn soll bis 2025 schrittweise auf 12,82 Euro steigen">Inflation: Mindestlohn soll bis 2025 schrittweise auf 12,82 Euro steigen</a>
+                    <figure class="teaser-small__media  scaled-image variant variant--wide">
                 <div class="teaser-small__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/22/kuendigung-job-unzufriedenheit/wide__822x462">
+            <noscript data-src="https://img.zeit.de/arbeit/2023-06/kommission-empfiehlt-mindestlohn-von-12-41-euro-ab-2024-bild/wide__822x462">
                                 <img class="teaser-small__media-item"
-                          alt="Jobkündigung: Wann ist der richtige Zeitpunkt, um zu kündigen?"
-                     src="https://img.zeit.de/2023/22/kuendigung-job-unzufriedenheit/wide__822x462"
-                     data-src="https://img.zeit.de/2023/22/kuendigung-job-unzufriedenheit/wide"
+                          alt="Inflation: Mindestlohn soll bis 2025 schrittweise auf 12,82 Euro steigen"
+                     src="https://img.zeit.de/arbeit/2023-06/kommission-empfiehlt-mindestlohn-von-12-41-euro-ab-2024-bild/wide__822x462"
+                     data-src="https://img.zeit.de/arbeit/2023-06/kommission-empfiehlt-mindestlohn-von-12-41-euro-ab-2024-bild/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -1938,31 +1958,29 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/22/kuendigung-job-unzufriedenheit/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Cavan Images/\u200bGetty Images"}
+    "url": "https://img.zeit.de/arbeit/2023-06/kommission-empfiehlt-mindestlohn-von-12-41-euro-ab-2024-bild/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Jan Woitas/\u200bdpa"}
 }
 </script>                </figure>
 
     <div class="teaser-small__container">
 
                     <h2 class="teaser-small__heading">
-                                <a class="teaser-small__heading-link" href="https://www.zeit.de/2023/22/kuendigung-job-unzufriedenheit-tipps-coachin">
+                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-06/kommission-empfiehlt-mindestlohn-von-12-41-euro-ab-2024">
                     <span class="teaser-small__kicker">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
-<span>
-                            <span class="series-label">Die Coachin</span>
-                                <span>Jobkündigung</span><span class="visually-hidden">: </span>
+                            <span>
+                            <span>Inflation</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-small__title">Wann ist der richtige Zeitpunkt, um zu kündigen?</span>
+                    <span class="teaser-small__title">Mindestlohn soll bis 2025 schrittweise auf 12,82 Euro steigen</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-small__text">Kerstin ist gelangweilt vom Job und genervt vom Chef. Sie ist unsicher, ob sie kündigen soll – oder doch auf Besserung hoffen. Drei Fragen können bei der Antwort helfen.</p>
+                                    <p class="teaser-small__text">Bundesarbeitsminister Hubertus Heil will die neue Empfehlung der Mindestlohnkommission umsetzen. Gewerkschaften warnen vor Reallohnverlusten. </p>
                                                 <div class="teaser-small__metadata">
-                                                                            <span class="teaser-small__byline">    Protokoll:            Linda Tutmann</span>
-                                                                                                    </div>
+                                                                                                                                                                                                                    <a class="teaser-small__commentcount" href="https://www.zeit.de/arbeit/2023-06/kommission-empfiehlt-mindestlohn-von-12-41-euro-ab-2024#comments" data-ct-label="comments" title="Kommentare anzeigen">699 Kommentare</a>
+                                                                        </div>
                                     </div></article>
 
                                                 </div>
@@ -2026,16 +2044,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-03/nestle-studie-2023-currywurst-kantine-nachhaltigkeit-vegan">
+<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-06/sachbearbeiter-standesamt-haus-finanzieren-kontoauszug" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/arbeit/2023-03/nestle-studie-2023-currywurst-kantine-nachhaltigkeit-vegan" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Nachhaltigkeit in Kantinen: Alles hat ein Ende und so weiter">Nachhaltigkeit in Kantinen: Alles hat ein Ende und so weiter</a>
-                    <figure class="teaser-small__media  scaled-image variant variant--wide">
+                    <a href="https://www.zeit.de/arbeit/2023-06/sachbearbeiter-standesamt-haus-finanzieren-kontoauszug" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Sachbearbeiter im Standesamt: &#34;Mein Partner verdient als Lehrer in Teilzeit mehr als ich&#34;">Sachbearbeiter im Standesamt: &#34;Mein Partner verdient als Lehrer in Teilzeit mehr als ich&#34;</a>
+                    <figure class="teaser-small__media teaser-small__media--force-mobile scaled-image variant variant--wide">
                 <div class="teaser-small__media-container ">
-            <noscript data-src="https://img.zeit.de/arbeit/2023-05/nestle-studie-2023-currywurst-kantine-nachhaltigkeit-vegan-bild/wide__822x462">
+            <noscript data-src="https://img.zeit.de/arbeit/2023-06/sachbearbeiter-standesamt-haus/wide__822x462">
                                 <img class="teaser-small__media-item"
-                          alt="Nachhaltigkeit in Kantinen: Alles hat ein Ende und so weiter"
-                     src="https://img.zeit.de/arbeit/2023-05/nestle-studie-2023-currywurst-kantine-nachhaltigkeit-vegan-bild/wide__822x462"
-                     data-src="https://img.zeit.de/arbeit/2023-05/nestle-studie-2023-currywurst-kantine-nachhaltigkeit-vegan-bild/wide"
+                          alt="Sachbearbeiter im Standesamt: &#34;Mein Partner verdient als Lehrer in Teilzeit mehr als ich&#34;"
+                     src="https://img.zeit.de/arbeit/2023-06/sachbearbeiter-standesamt-haus/wide__822x462"
+                     data-src="https://img.zeit.de/arbeit/2023-06/sachbearbeiter-standesamt-haus/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -2045,30 +2063,31 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/arbeit/2023-05/nestle-studie-2023-currywurst-kantine-nachhaltigkeit-vegan-bild/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0ZEIT ONLINE; Quelle: John Mac Dougall/\u200bAFP/\u200bGetty Images"}
+    "url": "https://img.zeit.de/arbeit/2023-06/sachbearbeiter-standesamt-haus/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Oscar Wong/\u200bGetty Images"}
 }
 </script>                </figure>
 
     <div class="teaser-small__container">
 
                     <h2 class="teaser-small__heading">
-                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-03/nestle-studie-2023-currywurst-kantine-nachhaltigkeit-vegan">
+                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-06/sachbearbeiter-standesamt-haus-finanzieren-kontoauszug">
                     <span class="teaser-small__kicker">
-                            <span>
-                            <span>Nachhaltigkeit in Kantinen</span><span class="visually-hidden">: </span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
+<span>
+                            <span class="series-label">Kontoauszug</span>
+                                <span>Sachbearbeiter im Standesamt</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-small__title">Alles hat ein Ende und so weiter</span>
+                    <span class="teaser-small__title">&#34;Mein Partner verdient als Lehrer in Teilzeit mehr als ich&#34;</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-small__text">Die Currywurst, auch Kraftriegel der Nation genannt, ist vom Aussterben bedroht. Ja, wirklich. Was bleibt, wenn die Wurst geht.</p>
+                                    <p class="teaser-small__text">Joris, 41, ist Standesbeamter. Er macht Urlaub im Harz und besitzt nur einen Anzug. Das gemeinsame Haus finanziert vor allem sein Partner.</p>
                                                 <div class="teaser-small__metadata">
-                                                                            <span class="teaser-small__byline">    Eine Glosse von            Jana Gioia Baurmann</span>
-                                                                                                                                                                                <a class="teaser-small__commentcount" href="https://www.zeit.de/arbeit/2023-03/nestle-studie-2023-currywurst-kantine-nachhaltigkeit-vegan#comments" data-ct-label="comments" title="Kommentare anzeigen">237 Kommentare</a>
-                                                                        </div>
+                                                                            <span class="teaser-small__byline">    Protokoll:            Daniel Sander</span>
+                                                                                                    </div>
                                     </div></article>
 
                             <!-- adtile1mobile is omitted to avoid duplicates. -->
@@ -2082,16 +2101,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-small " data-unique-id="http://xml.zeit.de/2023/22/arbeitseinstellung-motivation-bildung-vermaechtnisstudie" data-zplus="zplus">
+<article class="teaser-small " data-unique-id="http://xml.zeit.de/2023/27/waldbrand-nationalpark-harz-saechsische-schweiz">
 
-                    <a href="https://www.zeit.de/2023/22/arbeitseinstellung-motivation-bildung-vermaechtnisstudie" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Arbeitseinstellung: Der Wert der Arbeit ändert sich">Arbeitseinstellung: Der Wert der Arbeit ändert sich</a>
-                    <figure class="teaser-small__media teaser-small__media--force-mobile scaled-image variant variant--wide">
+                    <a href="https://www.zeit.de/2023/27/waldbrand-nationalpark-harz-saechsische-schweiz" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Waldbrand: &#34;Wenn es brennt, dann will ich da sein&#34;">Waldbrand: &#34;Wenn es brennt, dann will ich da sein&#34;</a>
+                    <figure class="teaser-small__media  scaled-image variant variant--wide">
                 <div class="teaser-small__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/22/arbeitseinstellung-motivation-bildung/wide__822x462">
+            <noscript data-src="https://img.zeit.de/2023/27/man-muss-akzeptieren-dass-es-wieder-brennen-kann-bild-1/wide__822x462">
                                 <img class="teaser-small__media-item"
-                          alt="Arbeitseinstellung: Der Wert der Arbeit ändert sich"
-                     src="https://img.zeit.de/2023/22/arbeitseinstellung-motivation-bildung/wide__822x462"
-                     data-src="https://img.zeit.de/2023/22/arbeitseinstellung-motivation-bildung/wide"
+                          alt="Waldbrand: &#34;Wenn es brennt, dann will ich da sein&#34;"
+                     src="https://img.zeit.de/2023/27/man-muss-akzeptieren-dass-es-wieder-brennen-kann-bild-1/wide__822x462"
+                     data-src="https://img.zeit.de/2023/27/man-muss-akzeptieren-dass-es-wieder-brennen-kann-bild-1/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -2101,31 +2120,30 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/22/arbeitseinstellung-motivation-bildung/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Israel Andrade/\u200bunsplash.com", "url": "https://unsplash.com/de/@israelandrxde"}
+    "url": "https://img.zeit.de/2023/27/man-muss-akzeptieren-dass-es-wieder-brennen-kann-bild-1/wide__822x462",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Silas Bahr f\u00fcr DIE ZEIT"}
 }
 </script>                </figure>
 
     <div class="teaser-small__container">
 
                     <h2 class="teaser-small__heading">
-                                <a class="teaser-small__heading-link" href="https://www.zeit.de/2023/22/arbeitseinstellung-motivation-bildung-vermaechtnisstudie">
+                                <a class="teaser-small__heading-link" href="https://www.zeit.de/2023/27/waldbrand-nationalpark-harz-saechsische-schweiz">
                     <span class="teaser-small__kicker">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
-<span>
-                            <span class="series-label">Das Vermächtnis</span>
-                                <span>Arbeitseinstellung</span><span class="visually-hidden">: </span>
+                            <span>
+                            <span>Waldbrand</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-small__title">Der Wert der Arbeit ändert sich</span>
+                    <span class="teaser-small__title">&#34;Wenn es brennt, dann will ich da sein&#34;</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-small__text">Die Vermächtnis-Studie zeigt: Heute würden weitaus weniger Menschen als früher arbeiten, wenn sie das Geld nicht bräuchten. Schwindet gerade überall die Arbeitsmoral?</p>
+                                    <p class="teaser-small__text">Nach heftigen Bränden werden die Chefs der Nationalparks im Harz und in der Sächsischen Schweiz kritisiert. Tun sie genug, um ihre Wälder vor Feuer zu schützen? </p>
                                                 <div class="teaser-small__metadata">
-                                                                            <span class="teaser-small__byline">    Ein Gastbeitrag von            Jan Wetzel</span>
-                                                                                                    </div>
+                                                                            <span class="teaser-small__byline">    Von            Mona Berner            und            Anne Hähnig</span>
+                                                                                                                                                                                <a class="teaser-small__commentcount" href="https://www.zeit.de/2023/27/waldbrand-nationalpark-harz-saechsische-schweiz#comments" data-ct-label="comments" title="Kommentare anzeigen">42 Kommentare</a>
+                                                                        </div>
                                     </div></article>
 
                                                 </div>
@@ -2138,16 +2156,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-small " data-unique-id="http://xml.zeit.de/2023/22/frauen-familie-beruf-ungleichheit-vermaechtnisstudie" data-zplus="zplus">
+<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-06/japanische-amateurfussballer-deutschland-erndtebrueck">
 
-                    <a href="https://www.zeit.de/2023/22/frauen-familie-beruf-ungleichheit-vermaechtnisstudie" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Frauen in Familie und Beruf: &#34;Männer stehen in Unternehmen mit Frauenförderung besser da&#34;">Frauen in Familie und Beruf: &#34;Männer stehen in Unternehmen mit Frauenförderung besser da&#34;</a>
-                    <figure class="teaser-small__media teaser-small__media--force-mobile scaled-image variant variant--wide">
+                    <a href="https://www.zeit.de/arbeit/2023-06/japanische-amateurfussballer-deutschland-erndtebrueck" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Japanische Amateurfußballer: Legionäre für die fünfte Liga">Japanische Amateurfußballer: Legionäre für die fünfte Liga</a>
+                    <figure class="teaser-small__media  scaled-image variant variant--wide">
                 <div class="teaser-small__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/22/frauen-familie-beruf-ungleichheit/wide__822x462">
+            <noscript data-src="https://img.zeit.de/arbeit/2023-06/japanische-amateurfussballer-deutschland-13/wide__822x462">
                                 <img class="teaser-small__media-item"
-                          alt="Frauen in Familie und Beruf: &#34;Männer stehen in Unternehmen mit Frauenförderung besser da&#34;"
-                     src="https://img.zeit.de/2023/22/frauen-familie-beruf-ungleichheit/wide__822x462"
-                     data-src="https://img.zeit.de/2023/22/frauen-familie-beruf-ungleichheit/wide"
+                          alt="Japanische Amateurfußballer: Legionäre für die fünfte Liga"
+                     src="https://img.zeit.de/arbeit/2023-06/japanische-amateurfussballer-deutschland-13/wide__822x462"
+                     data-src="https://img.zeit.de/arbeit/2023-06/japanische-amateurfussballer-deutschland-13/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -2157,31 +2175,30 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/22/frauen-familie-beruf-ungleichheit/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Deepol/\u200bplainpicture"}
+    "url": "https://img.zeit.de/arbeit/2023-06/japanische-amateurfussballer-deutschland-13/wide__822x462",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Sofia Brandes f\u00fcr ZEIT ONLINE"}
 }
 </script>                </figure>
 
     <div class="teaser-small__container">
 
                     <h2 class="teaser-small__heading">
-                                <a class="teaser-small__heading-link" href="https://www.zeit.de/2023/22/frauen-familie-beruf-ungleichheit-vermaechtnisstudie">
+                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-06/japanische-amateurfussballer-deutschland-erndtebrueck">
                     <span class="teaser-small__kicker">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
-<span>
-                            <span class="series-label">Das Vermächtnis</span>
-                                <span>Frauen in Familie und Beruf</span><span class="visually-hidden">: </span>
+                            <span>
+                            <span>Japanische Amateurfußballer</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-small__title">&#34;Männer stehen in Unternehmen mit Frauenförderung besser da&#34;</span>
+                    <span class="teaser-small__title">Legionäre für die fünfte Liga</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-small__text">Es braucht weiterhin Programme, um Frauen im Beruf zu fördern. Bloß diskreditieren sie die Leistung erfolgreicher Frauen – während ausgerechnet Männer überzeugen können.</p>
+                                    <p class="teaser-small__text">Ein Provinzclub in Westfalen träumt vom Erfolg. Sechs japanische Spieler sollen ihn in die Regionalliga schießen. Wie der Kapitalismus den Amateurfußball erobert.</p>
                                                 <div class="teaser-small__metadata">
-                                                                            <span class="teaser-small__byline">    Ein Gastbeitrag von            Lena Hipp</span>
-                                                                                                    </div>
+                                                                            <span class="teaser-small__byline">    Eine Reportage von            Jana Gioia Baurmann            und            Sofia Brandes</span>
+                                                                                                                                                                                <a class="teaser-small__commentcount" href="https://www.zeit.de/arbeit/2023-06/japanische-amateurfussballer-deutschland-erndtebrueck#comments" data-ct-label="comments" title="Kommentare anzeigen">44 Kommentare</a>
+                                                                        </div>
                                     </div></article>
 
                                                 </div>
@@ -2316,16 +2333,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-small " data-unique-id="http://xml.zeit.de/2023/22/vermaechtnisstudie-kinder-familie-arbeit" data-zplus="zplus">
+<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-06/evg-deutsche-bahn-streik-unbefristet-tarifverhandlung" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/2023/22/vermaechtnisstudie-kinder-familie-arbeit" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Vermächtnis-Studie: &#34;Mütter müssen durch ein Tal der Erschöpfung&#34;">Vermächtnis-Studie: &#34;Mütter müssen durch ein Tal der Erschöpfung&#34;</a>
+                    <a href="https://www.zeit.de/arbeit/2023-06/evg-deutsche-bahn-streik-unbefristet-tarifverhandlung" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="EVG und die Deutsche Bahn: Wird nun in den Sommerferien gestreikt?">EVG und die Deutsche Bahn: Wird nun in den Sommerferien gestreikt?</a>
                     <figure class="teaser-small__media teaser-small__media--force-mobile scaled-image variant variant--wide">
                 <div class="teaser-small__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/22/vermaechtnisstudie-kinder-familie/wide__822x462">
+            <noscript data-src="https://img.zeit.de/arbeit/2023-06/bahn/wide__822x462">
                                 <img class="teaser-small__media-item"
-                          alt="Vermächtnis-Studie: &#34;Mütter müssen durch ein Tal der Erschöpfung&#34;"
-                     src="https://img.zeit.de/2023/22/vermaechtnisstudie-kinder-familie/wide__822x462"
-                     data-src="https://img.zeit.de/2023/22/vermaechtnisstudie-kinder-familie/wide"
+                          alt="EVG und die Deutsche Bahn: Wird nun in den Sommerferien gestreikt?"
+                     src="https://img.zeit.de/arbeit/2023-06/bahn/wide__822x462"
+                     data-src="https://img.zeit.de/arbeit/2023-06/bahn/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -2335,30 +2352,29 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/22/vermaechtnisstudie-kinder-familie/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Eva-Maria Gebhardt/\u200bplainpicture"}
+    "url": "https://img.zeit.de/arbeit/2023-06/bahn/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Mika Baumeister/\u200bunsplash.com"}
 }
 </script>                </figure>
 
     <div class="teaser-small__container">
 
                     <h2 class="teaser-small__heading">
-                                <a class="teaser-small__heading-link" href="https://www.zeit.de/2023/22/vermaechtnisstudie-kinder-familie-arbeit">
+                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-06/evg-deutsche-bahn-streik-unbefristet-tarifverhandlung">
                     <span class="teaser-small__kicker">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
 <span>
-                            <span class="series-label">Das Vermächtnis</span>
-                                <span>Vermächtnis-Studie</span><span class="visually-hidden">: </span>
+                            <span>EVG und die Deutsche Bahn</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-small__title">&#34;Mütter müssen durch ein Tal der Erschöpfung&#34;</span>
+                    <span class="teaser-small__title">Wird nun in den Sommerferien gestreikt?</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-small__text">Familie und Beruf? Das ist kaum zu schaffen, zeigt die Vermächtnis-Studie, weder von Frauen noch von Männern. Gerade Frauen raten nun, Kinder weniger wichtig zu nehmen.</p>
+                                    <p class="teaser-small__text">Immer noch keine Tarifeinigung, es droht ein unbefristeter Bahnstreik. Weshalb die Verhandlungen gescheitert sind und was Bahnreisende jetzt schon wissen sollten.</p>
                                                 <div class="teaser-small__metadata">
-                                                                            <span class="teaser-small__byline">    Ein Gastbeitrag von            Jutta Allmendinger</span>
+                                                                            <span class="teaser-small__byline">    Von            David Gutensohn            und            Anne Jeschke</span>
                                                                                                     </div>
                                     </div></article>
 
@@ -2373,16 +2389,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-05/gastronomie-restaurant-kette-alex-gruender-trinkgeld" data-zplus="zplus">
+<article class="teaser-small " data-unique-id="http://xml.zeit.de/2023/27/mit-freunden-zusammenarbeiten-problem-gespraech" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/arbeit/2023-05/gastronomie-restaurant-kette-alex-gruender-trinkgeld" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Gastronomie: &#34;Wer nicht schwitzt und rennt, der wird gefragt: Wo bleibt mein Bier?&#34;">Gastronomie: &#34;Wer nicht schwitzt und rennt, der wird gefragt: Wo bleibt mein Bier?&#34;</a>
+                    <a href="https://www.zeit.de/2023/27/mit-freunden-zusammenarbeiten-problem-gespraech" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Mit Freunden zusammenarbeiten: Was tun, wenn der Freund kein guter Kollege ist?">Mit Freunden zusammenarbeiten: Was tun, wenn der Freund kein guter Kollege ist?</a>
                     <figure class="teaser-small__media teaser-small__media--force-mobile scaled-image variant variant--wide">
                 <div class="teaser-small__media-container ">
-            <noscript data-src="https://img.zeit.de/arbeit/2023-05/gastronomie-restaurant-kette-alex-gruender-trinkgeld-bild/wide__822x462">
+            <noscript data-src="https://img.zeit.de/2023/27/mit-freunden-zusammenarbeiten-problem-gespraech-bild/wide__822x462">
                                 <img class="teaser-small__media-item"
-                          alt="Gastronomie: &#34;Wer nicht schwitzt und rennt, der wird gefragt: Wo bleibt mein Bier?&#34;"
-                     src="https://img.zeit.de/arbeit/2023-05/gastronomie-restaurant-kette-alex-gruender-trinkgeld-bild/wide__822x462"
-                     data-src="https://img.zeit.de/arbeit/2023-05/gastronomie-restaurant-kette-alex-gruender-trinkgeld-bild/wide"
+                          alt="Mit Freunden zusammenarbeiten: Was tun, wenn der Freund kein guter Kollege ist?"
+                     src="https://img.zeit.de/2023/27/mit-freunden-zusammenarbeiten-problem-gespraech-bild/wide__822x462"
+                     data-src="https://img.zeit.de/2023/27/mit-freunden-zusammenarbeiten-problem-gespraech-bild/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -2392,29 +2408,30 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/arbeit/2023-05/gastronomie-restaurant-kette-alex-gruender-trinkgeld-bild/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0[M] ZEIT ONLINE; Andrey Ilkevich/\u200bunsplash.com"}
+    "url": "https://img.zeit.de/2023/27/mit-freunden-zusammenarbeiten-problem-gespraech-bild/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0plainpicture"}
 }
 </script>                </figure>
 
     <div class="teaser-small__container">
 
                     <h2 class="teaser-small__heading">
-                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-05/gastronomie-restaurant-kette-alex-gruender-trinkgeld">
+                                <a class="teaser-small__heading-link" href="https://www.zeit.de/2023/27/mit-freunden-zusammenarbeiten-problem-gespraech">
                     <span class="teaser-small__kicker">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
 <span>
-                            <span>Gastronomie</span><span class="visually-hidden">: </span>
+                            <span class="series-label">Die Coachin</span>
+                                <span>Mit Freunden zusammenarbeiten</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-small__title">&#34;Wer nicht schwitzt und rennt, der wird gefragt: Wo bleibt mein Bier?&#34;</span>
+                    <span class="teaser-small__title">Was tun, wenn der Freund kein guter Kollege ist?</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-small__text">Der Kunde ist König? Davon hält Irmin Burdekat nichts. Als Gastwirt setzt er Grenzen. Welcher Gast so gar nicht geht und woran man erkennt, ob ein Laden gut geführt ist.</p>
+                                    <p class="teaser-small__text">Freunde teilen Werte und den Humor, doch nicht immer arbeiten sie auch gut zusammen. Darunter kann die Freundschaft leiden. Unsere Coachin erklärt, was hilft. </p>
                                                 <div class="teaser-small__metadata">
-                                                                            <span class="teaser-small__byline">    Interview:            Jana Gioia Baurmann</span>
+                                                                            <span class="teaser-small__byline">    Protokoll:            Linda Tutmann</span>
                                                                                                     </div>
                                     </div></article>
 
@@ -2428,16 +2445,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-05/danger-dan-rapband-erfolg-arbeit-podcast">
+<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-05/smalltalk-fragen-themen-kommunikation-tipps" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/arbeit/2023-05/danger-dan-rapband-erfolg-arbeit-podcast" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Danger Dan: &#34;Das Klavieralbum hat uns allen den Arsch gerettet&#34;">Danger Dan: &#34;Das Klavieralbum hat uns allen den Arsch gerettet&#34;</a>
-                    <figure class="teaser-small__media  scaled-image variant variant--wide">
+                    <a href="https://www.zeit.de/arbeit/2023-05/smalltalk-fragen-themen-kommunikation-tipps" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Small Talk: &#34;Setzen Sie sich beim Small Talk ein Ziel&#34;">Small Talk: &#34;Setzen Sie sich beim Small Talk ein Ziel&#34;</a>
+                    <figure class="teaser-small__media teaser-small__media--force-mobile scaled-image variant variant--wide">
                 <div class="teaser-small__media-container ">
-            <noscript data-src="https://img.zeit.de/arbeit/2023-05/danger-dan-rapband-erfolg-arbeit-podcast-bild-2/wide__822x462">
+            <noscript data-src="https://img.zeit.de/arbeit/2023-05/smalltalk-fragen-themen-kommunikation-tipps-bild/wide__822x462">
                                 <img class="teaser-small__media-item"
-                          alt="Danger Dan: &#34;Das Klavieralbum hat uns allen den Arsch gerettet&#34;"
-                     src="https://img.zeit.de/arbeit/2023-05/danger-dan-rapband-erfolg-arbeit-podcast-bild-2/wide__822x462"
-                     data-src="https://img.zeit.de/arbeit/2023-05/danger-dan-rapband-erfolg-arbeit-podcast-bild-2/wide"
+                          alt="Small Talk: &#34;Setzen Sie sich beim Small Talk ein Ziel&#34;"
+                     src="https://img.zeit.de/arbeit/2023-05/smalltalk-fragen-themen-kommunikation-tipps-bild/wide__822x462"
+                     data-src="https://img.zeit.de/arbeit/2023-05/smalltalk-fragen-themen-kommunikation-tipps-bild/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -2447,31 +2464,30 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/arbeit/2023-05/danger-dan-rapband-erfolg-arbeit-podcast-bild-2/wide__822x462",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Danny K\u00f6tter"}
+    "url": "https://img.zeit.de/arbeit/2023-05/smalltalk-fragen-themen-kommunikation-tipps-bild/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Brooke Cagle/\u200bunsplash.com"}
 }
 </script>                </figure>
 
     <div class="teaser-small__container">
 
                     <h2 class="teaser-small__heading">
-                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-05/danger-dan-rapband-erfolg-arbeit-podcast">
+                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-05/smalltalk-fragen-themen-kommunikation-tipps">
                     <span class="teaser-small__kicker">
-                            <span>
-                            <span class="series-label">Frisch an die Arbeit</span>
-                                <span>Danger Dan</span><span class="visually-hidden">: </span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
+<span>
+                            <span>Small Talk</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-small__title">&#34;Das Klavieralbum hat uns allen den Arsch gerettet&#34;</span>
+                    <span class="teaser-small__title">&#34;Setzen Sie sich beim Small Talk ein Ziel&#34;</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-small__text">Danger Dan rechnete nie damit, Popstar zu werden. Im Podcast erzählt er, wie sein Soloalbum seine Band vor der Insolvenz bewahrte – und warum er mit dem Erfolg hadert.</p>
+                                    <p class="teaser-small__text">Ob kurz auf dem Flur oder im Fahrstuhl: Small Talk ist wichtig. Eine Expertin erklärt, wie man Fragen stellt, ohne zu direkt zu sein – und wann Komplimente schaden.</p>
                                                 <div class="teaser-small__metadata">
-                                                                            <span class="teaser-small__byline">    Von            Daniel Erk</span>
-                                                                                                                                                                                <a class="teaser-small__commentcount" href="https://www.zeit.de/arbeit/2023-05/danger-dan-rapband-erfolg-arbeit-podcast#comments" data-ct-label="comments" title="Kommentare anzeigen">10 Kommentare</a>
-                                                                        </div>
+                                                                            <span class="teaser-small__byline">    Interview:            Hannah Scherkamp</span>
+                                                                                                    </div>
                                     </div></article>
 
                                                 </div>
@@ -2484,16 +2500,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-05/nachnamen-wahl-frau-mann-karriere" data-zplus="zplus">
+<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-06/martin-blum-radwege-ausbau-arbeit-podcast">
 
-                    <a href="https://www.zeit.de/arbeit/2023-05/nachnamen-wahl-frau-mann-karriere" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Wahl des Nachnamens: Der Nachname kann der Karriere schaden">Wahl des Nachnamens: Der Nachname kann der Karriere schaden</a>
-                    <figure class="teaser-small__media teaser-small__media--force-mobile scaled-image variant variant--wide">
+                    <a href="https://www.zeit.de/arbeit/2023-06/martin-blum-radwege-ausbau-arbeit-podcast" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Martin Blum: &#34;Faszinierend, wie man ohne Autoverkehr plötzlich die Vögel hört&#34;">Martin Blum: &#34;Faszinierend, wie man ohne Autoverkehr plötzlich die Vögel hört&#34;</a>
+                    <figure class="teaser-small__media  scaled-image variant variant--wide">
                 <div class="teaser-small__media-container ">
-            <noscript data-src="https://img.zeit.de/arbeit/2023-05/namenswahl-mann-frau/wide__822x462">
+            <noscript data-src="https://img.zeit.de/arbeit/2023-06/martin-blum-radwege-ausbau/wide__822x462">
                                 <img class="teaser-small__media-item"
-                          alt="Wahl des Nachnamens: Der Nachname kann der Karriere schaden"
-                     src="https://img.zeit.de/arbeit/2023-05/namenswahl-mann-frau/wide__822x462"
-                     data-src="https://img.zeit.de/arbeit/2023-05/namenswahl-mann-frau/wide"
+                          alt="Martin Blum: &#34;Faszinierend, wie man ohne Autoverkehr plötzlich die Vögel hört&#34;"
+                     src="https://img.zeit.de/arbeit/2023-06/martin-blum-radwege-ausbau/wide__822x462"
+                     data-src="https://img.zeit.de/arbeit/2023-06/martin-blum-radwege-ausbau/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -2503,30 +2519,31 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/arbeit/2023-05/namenswahl-mann-frau/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Freddy G/\u200bunsplash.com"}
+    "url": "https://img.zeit.de/arbeit/2023-06/martin-blum-radwege-ausbau/wide__822x462",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Mobilit\u00e4tsagentur Wien/\u200bRegina H\u00fcgli"}
 }
 </script>                </figure>
 
     <div class="teaser-small__container">
 
                     <h2 class="teaser-small__heading">
-                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-05/nachnamen-wahl-frau-mann-karriere">
+                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-06/martin-blum-radwege-ausbau-arbeit-podcast">
                     <span class="teaser-small__kicker">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
-<span>
-                            <span class="series-label">Das Vermächtnis</span>
-                                <span>Wahl des Nachnamens</span><span class="visually-hidden">: </span>
+                            <span>
+                            <span class="series-label">Frisch an die Arbeit</span>
+                                <span>Martin Blum</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-small__title">Der Nachname kann der Karriere schaden</span>
+                    <span class="teaser-small__title">&#34;Faszinierend, wie man ohne Autoverkehr plötzlich die Vögel hört&#34;</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-small__text">Die Wahl des Nachnamens entscheidet, wie man von anderen wahrgenommen wird, zeigt die neue Vermächtnisstudie. Bei Frauen ist der Effekt ganz anders als bei Männern.</p>
+                                    <p class="teaser-small__text"> Als Leiter der Wiener Mobilitätsagentur ist Martin Blum für neue Radwege zuständig. Im Podcast erzählt er von heftigen Protesten der Autofahrer und wie er sich wehrt.</p>
                                                 <div class="teaser-small__metadata">
-                                                                                                                                        </div>
+                                                                            <span class="teaser-small__byline">    Von            Daniel Erk</span>
+                                                                                                                                                                                <a class="teaser-small__commentcount" href="https://www.zeit.de/arbeit/2023-06/martin-blum-radwege-ausbau-arbeit-podcast#comments" data-ct-label="comments" title="Kommentare anzeigen">56 Kommentare</a>
+                                                                        </div>
                                     </div></article>
 
                             <!-- adtile1mobile is omitted to avoid duplicates. -->
@@ -2540,16 +2557,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-05/elternzeit-vater-karriere-gleichstellung">
+<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-06/fehlgeburten-diagnose-falsch-rechte" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/arbeit/2023-05/elternzeit-vater-karriere-gleichstellung" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Elternzeit: Fördert endlich mal die Väter!">Elternzeit: Fördert endlich mal die Väter!</a>
-                    <figure class="teaser-small__media  scaled-image variant variant--wide">
+                    <a href="https://www.zeit.de/arbeit/2023-06/fehlgeburten-diagnose-falsch-rechte" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Fehldiagnose: Meine angebliche Fehlgeburt? Ist heute ein Jahr alt">Fehldiagnose: Meine angebliche Fehlgeburt? Ist heute ein Jahr alt</a>
+                    <figure class="teaser-small__media teaser-small__media--force-mobile scaled-image variant variant--wide">
                 <div class="teaser-small__media-container ">
-            <noscript data-src="https://img.zeit.de/arbeit/2023-05/elternzeit-vater-karriere/wide__822x462">
+            <noscript data-src="https://img.zeit.de/arbeit/2023-06/fehlgeburten-diagnose-falsch/wide__822x462">
                                 <img class="teaser-small__media-item"
-                          alt="Elternzeit: Fördert endlich mal die Väter!"
-                     src="https://img.zeit.de/arbeit/2023-05/elternzeit-vater-karriere/wide__822x462"
-                     data-src="https://img.zeit.de/arbeit/2023-05/elternzeit-vater-karriere/wide"
+                          alt="Fehldiagnose: Meine angebliche Fehlgeburt? Ist heute ein Jahr alt"
+                     src="https://img.zeit.de/arbeit/2023-06/fehlgeburten-diagnose-falsch/wide__822x462"
+                     data-src="https://img.zeit.de/arbeit/2023-06/fehlgeburten-diagnose-falsch/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -2559,31 +2576,31 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/arbeit/2023-05/elternzeit-vater-karriere/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0DEEPOL/\u200bplainpicture"}
+    "url": "https://img.zeit.de/arbeit/2023-06/fehlgeburten-diagnose-falsch/wide__822x462",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Alina G\u00fcnter f\u00fcr ZEIT ONLINE"}
 }
 </script>                </figure>
 
     <div class="teaser-small__container">
 
                     <h2 class="teaser-small__heading">
-                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-05/elternzeit-vater-karriere-gleichstellung">
+                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-06/fehlgeburten-diagnose-falsch-rechte">
                     <span class="teaser-small__kicker">
-                            <span>
-                            <span class="series-label">Das Vermächtnis</span>
-                                <span>Elternzeit</span><span class="visually-hidden">: </span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
+<span>
+                            <span class="series-label">Wir sprechen uns wieder</span>
+                                <span>Fehldiagnose</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-small__title">Fördert endlich mal die Väter!</span>
+                    <span class="teaser-small__title">Meine angebliche Fehlgeburt? Ist heute ein Jahr alt</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-small__text">Jeder Zweite glaubt, dass die Elternzeit Vätern beruflich schadet. Das Schlimme ist: Das stimmt – und muss dringend verhindert werden.</p>
+                                    <p class="teaser-small__text">Viele Frauen erleiden Fehlgeburten. Als ihr vom Arzt fälschlicherweise eine solche diagnostiziert wurde, merkte unsere Autorin, wie wenig Rechte Betroffene haben.</p>
                                                 <div class="teaser-small__metadata">
-                                                                            <span class="teaser-small__byline">    Ein Kommentar von            Anne Jeschke</span>
-                                                                                                                                                                                <a class="teaser-small__commentcount" href="https://www.zeit.de/arbeit/2023-05/elternzeit-vater-karriere-gleichstellung#comments" data-ct-label="comments" title="Kommentare anzeigen">193 Kommentare</a>
-                                                                        </div>
+                                                                            <span class="teaser-small__byline">    Eine Kolumne von            Caroline Rosales</span>
+                                                                                                    </div>
                                     </div></article>
 
                                                 </div>
@@ -2596,16 +2613,16 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
             
                                     
 
-<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-05/pflegereform-karl-lauterbach-pflegegeld">
+<article class="teaser-small " data-unique-id="http://xml.zeit.de/arbeit/2023-06/muedigkeit-energielosigkeit-arbeit-alltag-tipps" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/arbeit/2023-05/pflegereform-karl-lauterbach-pflegegeld" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Pflegereform: Keine Gewerkschaft hätte das akzeptiert">Pflegereform: Keine Gewerkschaft hätte das akzeptiert</a>
-                    <figure class="teaser-small__media  scaled-image variant variant--wide">
+                    <a href="https://www.zeit.de/arbeit/2023-06/muedigkeit-energielosigkeit-arbeit-alltag-tipps" class="teaser-small__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Müdigkeit am Arbeitsplatz: &#34;Nicht jeder Mensch verträgt Koffein&#34;">Müdigkeit am Arbeitsplatz: &#34;Nicht jeder Mensch verträgt Koffein&#34;</a>
+                    <figure class="teaser-small__media teaser-small__media--force-mobile scaled-image variant variant--wide">
                 <div class="teaser-small__media-container ">
-            <noscript data-src="https://img.zeit.de/arbeit/2023-05/pflege/wide__822x462">
+            <noscript data-src="https://img.zeit.de/arbeit/2023-06/muedigkeit-energielosigkeit-arbeit-2/wide__822x462">
                                 <img class="teaser-small__media-item"
-                          alt="Pflegereform: Keine Gewerkschaft hätte das akzeptiert"
-                     src="https://img.zeit.de/arbeit/2023-05/pflege/wide__822x462"
-                     data-src="https://img.zeit.de/arbeit/2023-05/pflege/wide"
+                          alt="Müdigkeit am Arbeitsplatz: &#34;Nicht jeder Mensch verträgt Koffein&#34;"
+                     src="https://img.zeit.de/arbeit/2023-06/muedigkeit-energielosigkeit-arbeit-2/wide__822x462"
+                     data-src="https://img.zeit.de/arbeit/2023-06/muedigkeit-energielosigkeit-arbeit-2/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -2615,30 +2632,30 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/arbeit/2023-05/pflege/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Steven HWG/\u200bunsplash.com"}
+    "url": "https://img.zeit.de/arbeit/2023-06/muedigkeit-energielosigkeit-arbeit-2/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Jocelyn Mayrena, Ephraim Morales/\u200bunsplash.com"}
 }
 </script>                </figure>
 
     <div class="teaser-small__container">
 
                     <h2 class="teaser-small__heading">
-                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-05/pflegereform-karl-lauterbach-pflegegeld">
+                                <a class="teaser-small__heading-link" href="https://www.zeit.de/arbeit/2023-06/muedigkeit-energielosigkeit-arbeit-alltag-tipps">
                     <span class="teaser-small__kicker">
-                            <span>
-                            <span>Pflegereform</span><span class="visually-hidden">: </span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol zplus-logo" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>
+<span>
+                            <span>Müdigkeit am Arbeitsplatz</span><span class="visually-hidden">: </span>
                             </span>
                         </span>
-                    <span class="teaser-small__title">Keine Gewerkschaft hätte das akzeptiert</span>
+                    <span class="teaser-small__title">&#34;Nicht jeder Mensch verträgt Koffein&#34;</span>
                     </a>
                             </h2>
         
         
-                                    <p class="teaser-small__text">Statt Angehörige zu unterstützen, ändert die neue Pflegereform fast nichts. Das Pflegegeld steigt nur um 4,5 Prozent. Das ist in Zeiten der Inflation lächerlich wenig.</p>
+                                    <p class="teaser-small__text">Nachmittags nimmt die Energie vieler rasant ab. Bisher galt Kaffee als Retter: Die Ärztin Anne Fleck weiß, wann auch er schadet und was noch hilft, um fit zu bleiben.</p>
                                                 <div class="teaser-small__metadata">
-                                                                            <span class="teaser-small__byline">    Ein Kommentar von            David Gutensohn</span>
-                                                                                                                                                                                <a class="teaser-small__commentcount" href="https://www.zeit.de/arbeit/2023-05/pflegereform-karl-lauterbach-pflegegeld#comments" data-ct-label="comments" title="Kommentare anzeigen">179 Kommentare</a>
-                                                                        </div>
+                                                                            <span class="teaser-small__byline">    Interview:            Hannah Scherkamp</span>
+                                                                                                    </div>
                                     </div></article>
 
                                                 </div>
@@ -2798,11 +2815,11 @@ window.zgStaticPropsHydration["standalone"]["index"]={"default": {}}
 </div>
     
 
-    <script src="https://static.zeit.de/p/zeit.web/js/images.b38f12356559318f79e4.js" async></script>
-    <script src="https://static.zeit.de/p/zeit.web/js/mausabhaengigeszaehlinstrument.8707543f1e8bb24995fd.js" async></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/images.80abb2cabec99f3e82fc.js" async></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/mausabhaengigeszaehlinstrument.1fa08d5bc36bd2411226.js" async></script>
 
-    <script src="https://static.zeit.de/p/zeit.web/js/promise.2f58cd9058c6466cc3eb.js" nomodule defer></script>
-    <script src="https://static.zeit.de/p/zeit.web/js/arbeit.5c36530be2fba49b1e52.js" defer></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/promise.ad6d608bb41eec563693.js" nomodule defer></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/arbeit.d1c13fa2e05194c7763c.js" defer></script>
 
     <script class="webtrekk_script">
 window.Zeit.loadJS( 'https://static.zeit.de/static/js/webtrekk/webtrekk_v4.5.3.min-3.js', function() {
@@ -2915,6 +2932,27 @@ window.Zeit.loadJS( 'https://static.zeit.de/static/js/webtrekk/webtrekk_v4.5.3.m
     
 
 <script>
+    window.Zeit.renderFooterbar = function( type ) {
+        import( 'https://static.zeit.de/p/wally/footerbar.js' ).then( ({ FooterBar }) => {
+            new FooterBar({
+                target: document.body,
+                intro: true,
+                props: {
+                    type,
+                    settings: {
+                        contentUrl: "https://www.zeit.de/arbeit/index",
+                        ssoUrl: "https://meine.zeit.de",
+                        productId: "zede",
+                        premiumHost: "https://premium.zeit.de",
+                        assetHost: "https://static.zeit.de/p/zeit.web",
+                    }
+                }
+            });
+        });
+    };
+</script>
+
+<script>
     function loadPiano() {
         function log() {
             location.hash === '#debug-piano' && console.debug.apply( console, arguments );
@@ -2962,7 +3000,7 @@ window.Zeit.loadJS( 'https://static.zeit.de/static/js/webtrekk/webtrekk_v4.5.3.m
                 if ( data.footerBar ) {
                     if (data.footerBar.indexOf( 'footer_bar' ) > -1) {
                         window.Zeit.readyWhenYouAre( function(p) {
-                            window.Zeit.paywallFooter( p );
+                            window.Zeit.renderFooterbar( p );
                             })(data.footerBar);
                     }
                 }
