@@ -22,11 +22,11 @@
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/tabletgothic/TabletGothic-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/beckett/Beckett-Light.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/normalize.eb629295d4c4fe1d25752792b6f2f37f.css">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/base/base.202327ac34d6994b1d7e1628d4e9eb18.css">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/navigation/navigation.cffa99580bc12ed19e1a18580d93aece.css">
-    <link rel="preload" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.c70be9d3746025a49fa209fcf81b0b41.css" as="style">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.c70be9d3746025a49fa209fcf81b0b41.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.c70be9d3746025a49fa209fcf81b0b41.css"></noscript>
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/base/base.67cd9abf6e369fca4e2eb82a84598429.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/navigation/navigation.f8efda12d1f688f1dfadb80b997f4b25.css">
+    <link rel="preload" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.f59a56d460b26fdd9d2c8969ad9a4d7c.css" as="style">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.f59a56d460b26fdd9d2c8969ad9a4d7c.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.f59a56d460b26fdd9d2c8969ad9a4d7c.css"></noscript>
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/breadcrumbs.fb96d8f2050b97507c59f41764281c6b.css" as="style">
     <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/breadcrumbs.fb96d8f2050b97507c59f41764281c6b.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/breadcrumbs.fb96d8f2050b97507c59f41764281c6b.css"></noscript><link rel="stylesheet" href="https://wally.zeit.de/footerbar.css" media="print" onload="this.media='all'" />
@@ -67,11 +67,10 @@
                 "comments_feedback_banner": false,
                 "comments_ads_use_postmessage": true,
                 "https": false,
-                "load_webtrekk_from_gtm": false,
-                "merkl_sync": false,
+                "load_webtrekk_from_gtm": true,
                 "navigation_sticky": true,
                 "navigation_sticky_mobile": true,
-                "pur2_active": false,
+                "pur2_active": true,
                 "pur2_cookie": false,
                 "recipe_autocomplete": true,
                 "spark_clicktracking": true,
@@ -91,17 +90,15 @@
                 "consent_fallbackcookie_expire_days": 7.0,
                 "hp_overlay_active": false,
                 "hp_overlay_interval": 79,
-                "merkl_sync_url": "https://merkliste.zeit.de/rpc/proxied",
                 "newsletter_signup_url": "https://newsletter.zeit.de/",
                 "registration_newsletter_id": "was-jetzt",
-                "sourcepoint_authId_expire_days": "",
-                "sourcepoint_authId_version": "",
+                "sourcepoint_authId_expire_days": "30",
+                "sourcepoint_authId_version": "001",
                 "sourcepoint_max_timeout": 5000,
                 "sourcepoint_nocookies_message": "Um zeit.de nutzen zu k\u00f6nnen, m\u00fcssen Cookies in Ihrem Browser aktiviert sein.",
-                "sourcepoint_privacy_manager_id": "222776",
-                "sourcepoint_standard_user_privacy_manager_id": "",
-                "sourcepoint_pur_user_privacy_manager_id": "852537",
-                "sourcepoint_purpose_social_embed": "",
+                "sourcepoint_privacy_manager_id": "865941",
+                "sourcepoint_pur_privacy_manager_id": "866325",
+                "sourcepoint_purpose_social_embed": "650061cbc47a59059cc4387c",
                 "sso_cookie": "zeit_sso_201501",
                 "sso_session_cookie": "zeit_sso_session_201501",
                 "tickaroo_liveblog_limit": 25,
@@ -390,108 +387,248 @@
         window.dataLayer = window.dataLayer || [];
     </script>
 
+        <script>
+            (function () {
+                function getColorScheme() {
+                    var storedScheme = window.localStorage && window.localStorage.getItem( 'color-scheme' );
+                    if ( storedScheme === 'light' || storedScheme === 'dark' ) {
+                        return storedScheme;
+                    }
+                    if ( window.matchMedia && window.matchMedia( '(prefers-color-scheme: dark)' ).matches ) {
+                        return 'dark';
+                    }
+                    return 'light';
+                }
+
+                function format_gtm_date(dateString) {
+                    try {
+                        var date = new Date(dateString);
+                        return date.toISOString().replace('Z', '+00:00');
+                    } catch (e) {
+                        return '';
+                    }
+                }
+
+                window.dataLayer = window.dataLayer || [];
+
+                var langs = window.navigator.languages || [window.navigator.language];
+                langs = langs.concat(); // clone for use of shift()
+
+                var data = {
+                    domain: document.location.hostname,
+                    language1: langs.shift() || '',
+                    language2: langs.shift() || '',
+                    page: {"page_category": "centerpage", "ivw_code": "campus/bild-text", "breakpoint": "stationaer", "push": "", "paywall": "open"},
+                    content: {"id": "de6e0d19-d954-457b-a7ba-3bd69df9f473", "owner": "redaktion", "content_type": "centerpage.homepage", "ressort": "campus", "sub_ressort": "", "product_id": "zede", "cluster": "", "publishing_date": "2016-04-19T14:40:48+02:00", "last_updated": "2021-12-06T11:43:47+01:00", "authors": "", "pages": "1/1", "keywords": "zeit;kpmg;zeit online;jobeinstieg;homepage;liebe;generation y", "length": "", "access": "free", "publisher_assets": "", "channels": "undefined"},
+                    user: {"iqd_usergroup": "undefined"},
+                    advertising: {"banner_channel": "campus/homepage/centerpage", "enabled": "yes", "version": "desktop.site"},
+                };
+
+                data.page.page_name = document.title;
+                data.page.path = window.location.pathname;
+                data.page.breakpoint = window.Zeit.breakpoint.getTrackingBreakpoint();
+                data.user.color_scheme = getColorScheme();
+                data.advertising.version = window.Zeit.getSiteParam();
+
+                data.content.publishing_date = format_gtm_date(data.content.publishing_date);
+                data.content.last_updated = format_gtm_date(data.content.last_updated);
+
+                data.user.is_loggedin = 'nicht angemeldet';
+                if ( window.Zeit.user ) {
+                    data.user.iqd_usergroup = window.Zeit.user.iqd_usergroup || 'undefined';
+                    if ( window.Zeit.user.ssoid !== null ) {
+                        data.user.user_id = window.Zeit.user.ssoid
+                    }
+                    if ( window.Zeit.user.state === 'active' ) {
+                        data.user.is_loggedin = 'angemeldet';
+                    }
+                    if ( window.Zeit.user.adFree ) {
+                        data.user.is_pur = 'true';
+                        data.user.subscription_type = 'pur_abonnent';
+                    }
+                    if ( window.Zeit.user.hasAbo ) {
+                        data.user.subscription_type = 'digital_abonnent';
+                    }
+                    if ( window.Zeit.user.hasAbo || window.Zeit.user.adFree ) {
+                        data.user.has_subscription = 'true';
+                    }
+                }
+
+                window.dataLayer.push(data);
+
+                                                    window.dataLayer.push({
+                        "event": "#ab_testing",
+                        "test_name": "rebrush",
+                        "group_name": "Kontrollgruppe",
+                        "path": window.location.pathname
+                    });
+                            })();
+        </script>
+
+        
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-MH96D5');</script>
     <!-- End Google Tag Manager -->
 
-            <script>
-        window.addEventListener( 'load', function() {
-            try {
-                if ( window.sessionStorage.getItem( 'gtmCheck' ) ) {
-                    return;
-                }
-                if ( 'find' in Array.prototype && 'dataLayer' in window ) {
-                    var gtmStarted = 'google_tag_manager' in window;
-                    var slug = gtmStarted ? 'a' : 'b';
-                    var gif = document.createElement( 'img' );
-                    gif.src = '%host%/%slug%.gif'
-                        .replace('%host%', window.Zeit.actualHost)
-                        .replace('%slug%', slug);
-                    window.sessionStorage.setItem( 'gtmCheck', 1 );
-                }
-            } catch ( e ) {
-                window.Zeit.log( 'error', 'gtmCheck', e );
-            }
-        });
-    </script>
-        
     
-<script>
-    if ( !window.Zeit.user.adFree ) {
-        !function () { var e = function () { var e, t = "__tcfapiLocator", a = [], n = window; for (; n;) { try { if (n.frames[t]) { e = n; break } } catch (e) { } if (n === window.top) break; n = n.parent } e || (!function e() { var a = n.document, r = !!n.frames[t]; if (!r) if (a.body) { var i = a.createElement("iframe"); i.style.cssText = "display:none", i.name = t, a.body.appendChild(i) } else setTimeout(e, 5); return !r }(), n.__tcfapi = function () { for (var e, t = arguments.length, n = new Array(t), r = 0; r < t; r++)n[r] = arguments[r]; if (!n.length) return a; if ("setGdprApplies" === n[0]) n.length > 3 && 2 === parseInt(n[1], 10) && "boolean" == typeof n[3] && (e = n[3], "function" == typeof n[2] && n[2]("set", !0)); else if ("ping" === n[0]) { var i = { gdprApplies: e, cmpLoaded: !1, cmpStatus: "stub" }; "function" == typeof n[2] && n[2](i) } else a.push(n) }, n.addEventListener("message", (function (e) { var t = "string" == typeof e.data, a = {}; try { a = t ? JSON.parse(e.data) : e.data } catch (e) { } var n = a.__tcfapiCall; n && window.__tcfapi(n.command, n.version, (function (a, r) { var i = { __tcfapiReturn: { returnValue: a, success: r, callId: n.callId } }; t && (i = JSON.stringify(i)), e.source.postMessage(i, "*") }), n.parameter) }), !1)) }; "undefined" != typeof module ? module.exports = e : e() }();
-    }
+    <script>
+    !function () { var e = function () { var e, t = "__tcfapiLocator", a = [], n = window; for (; n;) { try { if (n.frames[t]) { e = n; break } } catch (e) { } if (n === window.top) break; n = n.parent } e || (!function e() { var a = n.document, r = !!n.frames[t]; if (!r) if (a.body) { var i = a.createElement("iframe"); i.style.cssText = "display:none", i.name = t, a.body.appendChild(i) } else setTimeout(e, 5); return !r }(), n.__tcfapi = function () { for (var e, t = arguments.length, n = new Array(t), r = 0; r < t; r++)n[r] = arguments[r]; if (!n.length) return a; if ("setGdprApplies" === n[0]) n.length > 3 && 2 === parseInt(n[1], 10) && "boolean" == typeof n[3] && (e = n[3], "function" == typeof n[2] && n[2]("set", !0)); else if ("ping" === n[0]) { var i = { gdprApplies: e, cmpLoaded: !1, cmpStatus: "stub" }; "function" == typeof n[2] && n[2](i) } else a.push(n) }, n.addEventListener("message", (function (e) { var t = "string" == typeof e.data, a = {}; try { a = t ? JSON.parse(e.data) : e.data } catch (e) { } var n = a.__tcfapiCall; n && window.__tcfapi(n.command, n.version, (function (a, r) { var i = { __tcfapiReturn: { returnValue: a, success: r, callId: n.callId } }; t && (i = JSON.stringify(i)), e.source.postMessage(i, "*") }), n.parameter) }), !1)) }; "undefined" != typeof module ? module.exports = e : e() }();
 </script>
-    
-    
-
     <script id="sourcepoint_scaffolding">
-        var targetingParams = {
-            debug: window.location.href.indexOf('cmp-debug') > -1,
-            theme: '',
-            consentLanguage: ''
-        };
-        if ( typeof window.Zeit === 'object' && typeof window.Zeit.user === 'object') {
-            if ( window.Zeit.user.ssoid ) {
-                targetingParams.login_status = 'true';
-            }
-            if ( window.Zeit.user.hasAbo ) {
-                targetingParams.abo_status = 'true';
+
+    var targetingParams = {
+        debug: window.location.href.indexOf('debug-sourcepoint') > -1
+    };
+    if ( window.Zeit.abtest && window.Zeit.abtest.sourcepointTargetingParams) {
+        window.Zeit.abtest.sourcepointTargetingParams.forEach(function(item){
+            targetingParams[item.key] = item.value;
+        });
+    }
+    if ( typeof window.Zeit === 'object' && typeof window.Zeit.user === 'object') {
+        if ( window.Zeit.user.ssoid ) {
+            targetingParams.login_status = 'true';
+        }
+        if ( window.Zeit.user.hasAbo ) {
+            targetingParams.abo_status = 'true';
+        }
+        if ( window.Zeit.user.adFree ) {
+            targetingParams.pur_status = 'true';
+        } else {
+            targetingParams.pur_status = 'false';
+        }
+    }
+
+
+    
+        if ( '__tcfapi' in window) {
+            window.__tcfapi('addEventListener', 2, function( tcData, success ) {
+                if (success && tcData.eventStatus === 'cmpuishown' ) {
+                    window.dataLayer.push({
+                        'event': 'consent_layer_view'
+                    });
+                }
+            });
+        }
+    
+    window._sp_ = {
+        config: {
+            targetingParams: targetingParams,
+            accountId: 692,
+            baseEndpoint: "https://consent-cdn.zeit.de",
+            propertyHref: "http://www.zeit.de",
+            propertyId: 3800,
+            events: {
+                onMessageChoiceSelect: function (choice_id, choice_type_id) {
+                                        if ( window.Zeit && window.Zeit.log ) {
+                        window.Zeit.log('onMessageChoiceSelect', choice_id, choice_type_id);
+                    }
+                                    },
+                onPrivacyManagerAction: function (pmData) {
+                                        if ( window.Zeit && window.Zeit.log ) {
+                        window.Zeit.log('onPrivacyManagerAction', pmData);
+                    }
+                                                                window.dataLayer.push({
+                            'event': 'consent_layer_useractioncomplete',
+                            'purposeConsent': pmData.purposeConsent
+                        });
+                                    },
+                onPMCancel: function (messageType) {
+                                            window.dataLayer.push({
+                            'event': 'consent_layer_cancel'
+                        });
+                                    },
+                onConsentReady: function (consentUUID, euconsent) {
+                                        if ( window.Zeit && window.Zeit.log ) {
+                        window.Zeit.log('onConsentReady');
+                        window.Zeit.log('consentUUID', consentUUID);
+                        window.Zeit.log('euconsent', euconsent);
+                    }
+                                        var consentPlausible = true;
+                        if ( window.Zeit && window.Zeit.user.adFree !== true) {
+                            window.Zeit.log('Check for missing consent');
+                            window.__tcfapi('getCustomVendorConsents', 2, function(tcData, success) {
+                                if ( success && typeof window.Zeit !== 'undefined') {
+                                    var requiredPurposes = JSON.parse( "[    {\"_id\": \"650059afdbb0cd04b459edf7\", \"name\": \"Personalisierte Werbung mit seiten\u00fcbergreifender Profilbildung (Stack)\", \"slug\": \"store_information\"},    {\"_id\": \"650061cbc47a59059cc43872\", \"name\": \"Eigene personalisierte Verlagsangebote\", \"slug\": \"verlagsangebote\"},    {\"_id\": \"650061cbc47a59059cc43877\", \"name\": \"Eigene Produkt- und Vertriebsentwicklung\", \"slug\": \"produktentwicklung\"}  ]" );
+                                    var pmid = window.Zeit.settings.get( 'sourcepoint_privacy_manager_id' );
+                                    requiredPurposes.forEach(function(purpose) {
+                                        if ( !tcData.consentedPurposes.find(function(p) { return p._id === purpose._id;}) ) {
+                                            window.Zeit.log('Missing consent for purpose', purpose);
+                                            consentPlausible = false;
+                                        }
+                                    });
+                                    if ( !consentPlausible ) {
+                                        window.__tcfapi('postRejectAll', 2, function (postRejectAllResponse, success) {
+                                            if ( success ) {
+                                                window.Zeit.log('postRejectAllResponse', postRejectAllResponse);
+                                                window._sp_.loadPrivacyManagerModal( pmid );
+                                            }
+                                        });
+                                    } else {
+                                        window.Zeit.log('Consent plausible');
+                                    }
+                                }
+                            });
+                        }
+                    if ( window.tp && window.tp.customVariables && window.tp.customVariables.pur_layer ) {
+                            // reset pur_layer custom variable and reinit piano
+                            window.tp.push(['setCustomVariable', 'pur_layer', false]);
+                            window.tp.experience.execute();
+                        }
+                    window.dataLayer = window.dataLayer || [];
+                        var consentData = {
+                            has_consent: null,
+                            purposes: []
+                        };
+                        if ( window.Zeit && window.Zeit.log ) {
+                            window.__tcfapi('getCustomVendorConsents', 2, function(tcData, success) {
+                                if ( success && typeof window.Zeit !== 'undefined') {
+                                    var purposes = JSON.parse( "[{\"_id\": \"650061cbc47a59059cc4387c\", \"name\": \"Drittanbieter-Inhalte aus sozialen Netzwerken in redaktionellen Inhalten\", \"slug\": \"social_embed\"},    {\"_id\": \"650059afdbb0cd04b459edf7\", \"name\": \"Personalisierte Werbung mit seiten\u00fcbergreifender Profilbildung (Stack)\", \"slug\": \"store_information\"},    {\"_id\": \"650061cbc47a59059cc43872\", \"name\": \"Eigene personalisierte Verlagsangebote\", \"slug\": \"verlagsangebote\"},    {\"_id\": \"650061cbc47a59059cc43877\", \"name\": \"Eigene Produkt- und Vertriebsentwicklung\", \"slug\": \"produktentwicklung\"},    {\"_id\": \"6527ef14a1d4e604f2ce1d44\", \"name\": \"Eigene personalisierte redaktionelle Inhaltsempfehlungen\", \"slug\": \"inhaltsempfehlungen\"}]" );
+                                    purposes.forEach(function(purpose) {
+                                        if ( tcData.consentedPurposes.find(function(p) { return p._id === purpose._id;}) ) {
+                                            purpose.consent = true;
+                                            if ( purpose.slug === 'store_information') {
+                                                consentData.has_consent = true;
+                                            }
+                                        } else {
+                                            purpose.consent = false;
+                                        }
+                                        consentData.purposes.push(purpose);
+                                    });
+                                }
+                            });
+                            window.Zeit.log('dataLayer => consentData', consentData);
+                            window.dataLayer.push({
+                                'event': 'cmp_init',
+                                'consent': consentData
+                            });
+                        }
+                    },
+                onError: function ( message_type, errorCode ) {
+                    if ( window.Zeit && window.Zeit.log ) {
+                        window.Zeit.log('message_type', message_type);
+                        window.Zeit.log('errorCode', errorCode);
+                    }
+                                    }
             }
         }
+    };
 
-        window._sp_ = {
-            config: {
-                targetingParams: targetingParams,
-                consentLanguage: '',
-                accountId: 692,
-                baseEndpoint: "https://consent-cdn.zeit.de",
-                events: {
-                    onMessageChoiceSelect: function (choice_id, choice_type_id) {
-                                                if ( window.Zeit && window.Zeit.log ) {
-                            window.Zeit.log('onMessageChoiceSelect', choice_id, choice_type_id);
-                        }
-                                            },
-                    onPrivacyManagerAction: function (pmData) {
-                                                if ( window.Zeit && window.Zeit.log ) {
-                            window.Zeit.log('onPrivacyManagerAction', pmData);
-                        }
-                                            },
-                    onConsentReady: function (consentUUID, euconsent) {
-                                                if ( window.Zeit && window.Zeit.log ) {
-                            window.Zeit.log('onConsentReady');
-                            window.Zeit.log('consentUUID', consentUUID);
-                            window.Zeit.log('euconsent', euconsent);
-                        }
-                                            },
-                    onError: function ( message_type, errorCode ) {
-                        if ( window.Zeit && window.Zeit.log ) {
-                            window.Zeit.log('message_type', message_type);
-                            window.Zeit.log('errorCode', errorCode);
-                        }
-                                            }
-                }
+        window.Zeit.clientIsBot = function() {
+        var userAgent = window.navigator.userAgent.toLowerCase();
+        var botlist = ['apis-google','mediapartners-google','adsbot-google','googlebot','feedfetcher-google','google-read-aloud','duplexweb-google','google favicon','google-amphtml','google-inspectiontool','googleother','applebot','duckduckbot','bingpreview','bingbot','msnbot','msnbot-media','yahoo! slurp','yandexbot','toutiaospider','qwant-news','qwant.com','qwantify','exabot','sogou','baiduspider','crowdtanglebot','queryly','facebot','facebookexternalhit','twitterbot','bluesky','mastodon','pocketparser','pinterest','xing','feedly','linkedinbot','flipboardproxy','blp_bbot','socialflow','whatsapp','telegrambot','nuzzel','instapaper','discordbot','speedcurve','chrome-lighthouse','zonfrontendmonitoring','guzzlehttp','toutiaospider','upday.com','outbrain','nextcloud-news','linkpulse','embedly','newstral','audisto','botify','ia_archiver','archive.org_bot','zeno','grapeshotcrawler','smartology','cakephp','diezeit','cxensebot','brightcove'],
+            botlistLength = botlist.length;
+        for (let i = 0; i < botlistLength; i++) {
+            if (userAgent.indexOf(botlist[i]) !== -1) {
+                return true;
             }
-        };
+        }
+    }
 
-            </script>
-                <script>
-                window.addEventListener('postRejectAllCompleted', () => {
-                    if (document.querySelector( "[id^='sp_message_']" )) {
-                        return;
-                    }
-                    const script = document.createElement('script');
-
-                    // Since consent has been revoked through the tcfapi, we now need to
-                    // try to rerender it once more.
-                    script.src =
-                        "https://consent-cdn.zeit.de/wrapperMessagingWithoutDetection.js";
-                    document.body.appendChild(script);
-                });
-            </script>
-                <script src="https://consent-cdn.zeit.de/wrapperMessagingWithoutDetection.js"></script>
-    
-
-    <script>
+    if(!window.Zeit.clientIsBot()) {
+        window.Zeit.loadJS( 'https://consent-cdn.zeit.de/wrapperMessagingWithoutDetection.js');
+    }
+        </script>
+        <script>
         const ioDomain = window.Zeit.showMobileAds() ? 'data-614d3891ff.zeit.de' : 'data-af9f3dfb33.zeit.de';
         window.Zeit.loadJS('https://' + ioDomain + '/iomm/latest/bootstrap/stub.js');
     </script>
@@ -575,7 +712,7 @@
     </script>
     
     <script type="application/ld+json">
-        {"@context": "http://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://www.zeit.de/campus/2023/05/altersbilder-ansichten-gesellschaft-forschung-psychologie"}, {"@type": "ListItem", "position": 2, "url": "https://www.zeit.de/campus/2023-09/studentenwohnreport-wohnung-studenten-miete-nebenkosten-gestiegen"}, {"@type": "ListItem", "position": 3, "url": "https://www.zeit.de/campus/2023-09/berufliche-krisen-job-bewaeltigung-selbstwert"}, {"@type": "ListItem", "position": 4, "url": "https://www.zeit.de/campus/2023-09/wohnungsmarkt-vermieter-eigentum-erfahrungsbericht"}, {"@type": "ListItem", "position": 5, "url": "https://www.zeit.de/campus/2023-09/wohnungssuche-wg-zimmer-studenten-ausbildung-aufruf"}, {"@type": "ListItem", "position": 6, "url": "https://www.zeit.de/campus/2023/04/ingenieur-berufseinstieg-studium-kai-furmans"}, {"@type": "ListItem", "position": 7, "url": "https://www.zeit.de/campus/angebote/deloitte/staffel2/gruene-investitionen"}, {"@type": "ListItem", "position": 8, "url": "https://www.zeit.de/campus/2023-09/mieten-wohnheime-steigen-20-prozent"}, {"@type": "ListItem", "position": 9, "url": "https://www.zeit.de/campus/2023/05/marina-abramovic-performance-kuenstlerin-kindheit"}, {"@type": "ListItem", "position": 10, "url": "https://www.zeit.de/campus/2022-08/dating-liebe-beziehung-erfahrungen-kindheit"}, {"@type": "ListItem", "position": 11, "url": "https://www.zeit.de/campus/2022-07/dating-muehe-verhalten-liebe"}, {"@type": "ListItem", "position": 12, "url": "https://www.zeit.de/campus/2022-06/liebe-beziehung-partnerschaft-hindernisse"}, {"@type": "ListItem", "position": 13, "url": "https://www.zeit.de/campus/2023/05/memes-sind-ein-safe-space"}, {"@type": "ListItem", "position": 14, "url": "https://www.zeit.de/campus/2023/05/absolute-beginners-maenner-beziehungserfahrung-flirten"}, {"@type": "ListItem", "position": 15, "url": "https://www.zeit.de/campus/2023/04/satellit-sentinel-2d-tests-weltraumforschung"}]}
+        {"@context": "http://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://www.zeit.de/campus/2024/01/meron-mendel-israel-hamas-gazastreifen-antisemitismus"}, {"@type": "ListItem", "position": 2, "url": "https://www.zeit.de/campus/2023-10/studie-jugendliche-europa-movers-of-tomorrow-zukunft-aengste"}, {"@type": "ListItem", "position": 3, "url": "https://www.zeit.de/campus/2023-10/gespraechsfuehrung-erstes-date-peinliche-stille-tipps-lili-vogelsang"}, {"@type": "ListItem", "position": 4, "url": "https://www.zeit.de/campus/2023-10/klare-kommunikation-anweisungen-kritik-sprache"}, {"@type": "ListItem", "position": 5, "url": "https://www.zeit.de/campus/2023/05/microsoft-powerpoint-visualisierung-arbeitsalltag-sebastian-hotz"}, {"@type": "ListItem", "position": 6, "url": "https://www.zeit.de/2023/44/gegenuni-rechtsextremismus-online-hochschule-frankfurt"}, {"@type": "ListItem", "position": 7, "url": "https://www.zeit.de/campus/angebote/deloitte/staffel2/nachhaltigkeits-richtlinien"}, {"@type": "ListItem", "position": 8, "url": "https://www.zeit.de/campus/2023-10/geld-junge-menschen-finanzpolitik-steuern-rente"}, {"@type": "ListItem", "position": 9, "url": "https://www.zeit.de/campus/2022-08/dating-liebe-beziehung-erfahrungen-kindheit"}, {"@type": "ListItem", "position": 10, "url": "https://www.zeit.de/campus/2022-07/dating-muehe-verhalten-liebe"}, {"@type": "ListItem", "position": 11, "url": "https://www.zeit.de/campus/2022-06/liebe-beziehung-partnerschaft-hindernisse"}, {"@type": "ListItem", "position": 12, "url": "https://www.zeit.de/campus/2023-10/greta-thunberg-fridays-for-future-israel-hamas-palaestinenser"}, {"@type": "ListItem", "position": 13, "url": "https://www.zeit.de/campus/2023/05/studium-ki-spezialisierung-master-tipps"}, {"@type": "ListItem", "position": 14, "url": "https://www.zeit.de/campus/2023-10/universitaet-lueneburg-schriftsteller-richard-david-precht-honorarprofessur-aufgegeben"}]}
     </script>
 
     
@@ -596,8 +733,22 @@
                 "cntTag": ["Paywall-Open", "Online"],
             }
         </script>
-    <script src="https://cl.k5a.io/6156f4770662411b5d525213.js" async></script>
-        <script>
+    <script type="text/javascript">
+            if ( typeof window.__tcfapi === 'function' ) {
+                window.__tcfapi( 'addEventListener', 2, function( tcData, success ) {
+                    if ( success ) {
+                        __tcfapi('getCustomVendorConsents', 2, (data, success) => {
+                            if ( success ) {
+                                var customId = "6155654a60e90105b791536a";
+                                if ( data && data.grants && data.grants[customId] && data.grants[customId].vendorGrant ) {
+                                    window.Zeit.loadJS('https://cl.k5a.io/6156f4770662411b5d525213.js');
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        </script>    <script>
         if ( screen.width >= window.Zeit.tabletMinWidth && screen.width < window.Zeit.desktopMinWidth && !window.Zeit.user.adFree ) {window.Zeit.viewport.set( 'portrait' );}
     </script>
     
@@ -789,8 +940,8 @@
         --vh: 100vh;         
     }
     </style>
-        <style></style>
-    <script src="https://static.zeit.de/p/zeit.web/js/colorscheme.a631870104bba67f0786.js" ></script>
+        <style>body[data-template=visual-article]:not(.has-fullwidth-header) .navigation {max-width: none;}</style>
+    <script src="https://static.zeit.de/p/zeit.web/js/colorscheme.a68c9d5ff249c6b68c81.js" ></script>
 
     <!-- zeit.web.core.template.include_in_head injection point -->
 
@@ -864,7 +1015,7 @@
         <label for="q" class="visually-hidden">suchen</label>
         <input class="navigation-search__input" id="q" name="q" type="search" placeholder="Suche" aria-label="Suchbegriff eingeben">
         <button class="navigation-search__button" type="submit" aria-label="Suche starten" data-ct-element-type="searchbar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="svg-symbol navigation-search-icon" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Lupe"><title>Lupe</title><path fill-rule="evenodd" d="M7.5 12.5a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 1.5a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13Z" clip-rule="evenodd"/><path fill-rule="evenodd" d="m12.97 14.03-2-2 1.06-1.06 2 2 2.5 2.5-1.06 1.06-2.5-2.5Z" clip-rule="evenodd"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" class="svg-symbol navigation-search-icon z-icon-stroke" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Suche"><title>Suche</title><circle cx="7.5" cy="7.5" r="5.75"/><path d="m11.5 11.5 2 2L16 16"/></svg>
         </button>
     </div>
 </form>                    </li>
@@ -1059,28 +1210,16 @@
                 </ul>
                 <div role="heading" class="navigation-section__headline" id="nav-headline-anzeigen">Anzeigen</div><ul class="navigation__section" data-vt-section="anzeigen" data-ct-section-type="anzeigen"  aria-labelledby="nav-headline-anzeigen">
                                                 <li>
+                        <a href="https://www.zeit.de/campus/angebote/fuer-abiturienten/index" class="navigation-link" itemprop="url">
+        <span itemprop="name">Dein Weg in ein erfolgreiches Berufsleben</span>
+</a>                    </li>
+                                                    <li>
                         <a href="https://cmk.zeit.de/cms/microsite/16052/im-einklang-mit-der-natur-eine-reise-durch-die-schweiz" class="navigation-link" itemprop="url">
         <span itemprop="name">Reisen im Einklang mit der Natur</span>
 </a>                    </li>
                                                     <li>
-                        <a href="https://www.zeit.de/arbeit/angebote/most-wanted-employer/index" class="navigation-link" itemprop="url">
-        <span itemprop="name">Most Wanted Employer 2023</span>
-</a>                    </li>
-                                                    <li>
-                        <a href="https://www.zeit.de/angebote/kulturmomente-in-rlp/index" class="navigation-link" itemprop="url">
-        <span itemprop="name">Kulturmomente in Rheinland-Pfalz</span>
-</a>                    </li>
-                                                    <li>
-                        <a href="https://www.zeit.de/campus/angebote/deloitte/staffel2/gruene-investitionen" class="navigation-link" itemprop="url">
+                        <a href="https://www.zeit.de/campus/angebote/deloitte/staffel2/nachhaltigkeits-richtlinien" class="navigation-link" itemprop="url">
         <span itemprop="name">Re:Future. Re:Economy</span>
-</a>                    </li>
-                                                    <li>
-                        <a href="https://www.zeit.de/angebote/landeshauptstadt-muenchen/index" class="navigation-link" itemprop="url">
-        <span itemprop="name">Flower Power 2.0</span>
-</a>                    </li>
-                                                    <li>
-                        <a href="https://cmk.zeit.de/cms/articles/16025/anzeige/robinson-club-gmbh/eure-traeume-und-unsere-leidenschaft-bester-urlaub-alles-im-flow" class="navigation-link" itemprop="url">
-        <span itemprop="name">ROBINSON Urlaub, alles im Flow</span>
 </a>                    </li>
                                                     <li>
                         <a href="https://www.zeit.de/angebote/most-wanted-employer-2023/index" class="navigation-link" itemprop="url">
@@ -1107,8 +1246,8 @@
         <span itemprop="name">ZEIT für X</span>
 </a>                    </li>
                                                     <li>
-                        <a href="https://leo.zeitverlag.de/weltretter-mission.html?utm_source=WebseiteZON&amp;utm_medium=Banner&amp;utm_campaign=ZON" class="navigation-link" itemprop="url">
-        <span itemprop="name">ZEIT LEO Weltretter</span>
+                        <a href="https://leo.zeitverlag.de/weltretter-mission.html" class="navigation-link" itemprop="url">
+        <span itemprop="name">ZEIT LEO Weltretter-Mission</span>
 </a>                    </li>
                 </ul>
         <div data-vt-parameter="navigation_scrolled-to-end.navigation_main..." data-vt-link-id="#navigation"></div>
@@ -1121,7 +1260,7 @@
         </a>
     </h1>
 
-    <!-- [esi-debug] src="/account-navigation?context-uri=https%3A%2F%2Fwww.zeit.de%2Fcampus%2Findex&amp;is-framebuilder=False&amp;wt_content_id=redaktion.campus...centerpage.zede%7Cwww.zeit.de%2Fcampus%2Findex&amp;wt_content_group=cg1%3Dredaktion%26amp%3Bcg2%3Dcenterpage%26amp%3Bcg3%3Dcampus%26amp%3Bcg4%3Dzede%26amp%3Bcg5%3D%26amp%3Bcg6%3D%26amp%3Bcg7%3Dindex%26amp%3Bcg8%3Dcampus%252Fhomepage%252Fcenterpage%26amp%3Bcg9%3D2016-04-19&amp;wt_custom_parameter=cp1%3D%26amp%3Bcp2%3Dcampus%252Fbild-text%26amp%3Bcp3%3D1%252F1%26amp%3Bcp4%3Dzeit%253Bkpmg%253Bzeit%2Bonline%253Bjobeinstieg%253Bhomepage%253Bliebe%253Bgeneration%2By%26amp%3Bcp5%3D2021-12-06%2B11%253A43%253A47.357611%252B01%253A00%26amp%3Bcp6%3D%26amp%3Bcp8%3Dzede%26amp%3Bcp9%3Dcampus%252Fhomepage%252Fcenterpage%26amp%3Bcp10%3Dyes%26amp%3Bcp12%3Ddesktop.site%26amp%3Bcp13%3Dstationaer%26amp%3Bcp15%3D%26amp%3Bcp25%3Doriginal%26amp%3Bcp26%3Dcenterpage.homepage%26amp%3Bcp28%3Ddynamic%26amp%3Bcp29%3Dunfeasible%26amp%3Bcp30%3Dopen%26amp%3Bcp34%3D%26amp%3Bcp38%3Dundefined%26amp%3Bcp40%3Dundefined%26amp%3Bcp49%3Dde6e0d19-d954-457b-a7ba-3bd69df9f473" -->
+    <!-- [esi-debug] src="/account-navigation?context-uri=https%3A%2F%2Fwww.zeit.de%2Fcampus%2Findex&amp;is-framebuilder=False&amp;wt_content_id=redaktion.campus...centerpage.zede%7Cwww.zeit.de%2Fcampus%2Findex&amp;wt_content_group=cg1%3Dredaktion%26amp%3Bcg2%3Dcenterpage%26amp%3Bcg3%3Dcampus%26amp%3Bcg4%3Dzede%26amp%3Bcg5%3D%26amp%3Bcg6%3D%26amp%3Bcg7%3Dindex%26amp%3Bcg8%3Dcampus%252Fhomepage%252Fcenterpage%26amp%3Bcg9%3D2016-04-19&amp;wt_custom_parameter=cp1%3D%26amp%3Bcp2%3Dcampus%252Fbild-text%26amp%3Bcp3%3D1%252F1%26amp%3Bcp4%3Dzeit%253Bkpmg%253Bzeit%2Bonline%253Bjobeinstieg%253Bhomepage%253Bliebe%253Bgeneration%2By%26amp%3Bcp5%3D2021-12-06%2B11%253A43%253A47.357611%252B01%253A00%26amp%3Bcp6%3D%26amp%3Bcp8%3Dzede%26amp%3Bcp9%3Dcampus%252Fhomepage%252Fcenterpage%26amp%3Bcp10%3Dyes%26amp%3Bcp12%3Ddesktop.site%26amp%3Bcp13%3Dstationaer%26amp%3Bcp15%3D%26amp%3Bcp25%3Doriginal%26amp%3Bcp26%3Dcenterpage.homepage%26amp%3Bcp28%3Dfree%26amp%3Bcp29%3Dunfeasible%26amp%3Bcp30%3Dopen%26amp%3Bcp34%3D%26amp%3Bcp38%3Dundefined%26amp%3Bcp40%3Dundefined%26amp%3Bcp49%3Dde6e0d19-d954-457b-a7ba-3bd69df9f473" -->
     
 
 
@@ -1149,12 +1288,7 @@
 </a>                    </li>
                 </ul>
         <div data-vt-parameter="navigation_scrolled-to-end.navigation_account..." data-vt-link-id="#navigation"></div>
-        <noscript class="webtrekk_noscript">
-    <div>
-        <img alt="" width="1" height="1" src="https://audev.zeit.de/981949533494636/wt.pl?p=453min-3,redaktion.campus...centerpage.zede%7Cwww.zeit.de/campus/index,0,0,0,0,0,0,0,0&amp;cg1=redaktion&amp;cg2=centerpage&amp;cg3=campus&amp;cg4=zede&amp;cg5=&amp;cg6=&amp;cg7=index&amp;cg8=campus%2Fhomepage%2Fcenterpage&amp;cg9=2016-04-19&amp;cp1=&amp;cp2=campus%2Fbild-text&amp;cp3=1%2F1&amp;cp4=zeit%3Bkpmg%3Bzeit+online%3Bjobeinstieg%3Bhomepage%3Bliebe%3Bgeneration+y&amp;cp5=2021-12-06+11%3A43%3A47.357611%2B01%3A00&amp;cp6=&amp;cp8=zede&amp;cp9=campus%2Fhomepage%2Fcenterpage&amp;cp10=yes&amp;cp12=desktop.site&amp;cp13=stationaer&amp;cp15=&amp;cp25=original&amp;cp26=centerpage.homepage&amp;cp28=dynamic&amp;cp29=unfeasible&amp;cp30=open&amp;cp34=&amp;cp38=undefined&amp;cp40=undefined&amp;cp49=de6e0d19-d954-457b-a7ba-3bd69df9f473&amp;cp23=nicht_angemeldet&amp;cp46=undefined&amp;cd=" />
-    </div>
-</noscript>
-    </nav>
+        </nav>
 
 
     </div>
@@ -1247,46 +1381,46 @@
                                     
 
 <article class="teaser-lead-cinema "
-    data-unique-id="http://xml.zeit.de/campus/2023/05/altersbilder-ansichten-gesellschaft-forschung-psychologie" data-zplus="zplus-dynamic">
+    data-unique-id="http://xml.zeit.de/campus/2024/01/meron-mendel-israel-hamas-gazastreifen-antisemitismus" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2023/05/altersbilder-ansichten-gesellschaft-forschung-psychologie" class="teaser-lead-cinema__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Altersbilder: &#34;Manche fühlen sich schon mit zwanzig alt&#34;">Altersbilder: &#34;Manche fühlen sich schon mit zwanzig alt&#34;</a>
-                <figure class="teaser-lead-cinema__media  scaled-image variant variant--cinema">
+                    <a href="https://www.zeit.de/campus/2024/01/meron-mendel-israel-hamas-gazastreifen-antisemitismus" class="teaser-lead-cinema__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Meron Mendel über Israel: &#34;Kontextualisierung nach Butscha? Ich kann mich nicht erinnern&#34;">Meron Mendel über Israel: &#34;Kontextualisierung nach Butscha? Ich kann mich nicht erinnern&#34;</a>
+                <figure class="teaser-lead-cinema__media teaser-lead-cinema__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-lead-cinema__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023/05/manche-fuehlen-sich-schon-mit-zwanzig-alt-bild-1/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/2024/01/angesichts-dieser-unfassbaren-grausamkeit-sollte-man-sich-einen-moment-nehmen-innezuhalten-bild-2/cinema__980x420">
                                 <img class="teaser-lead-cinema__media-item"
-                          alt="Altersbilder: &#34;Manche fühlen sich schon mit zwanzig alt&#34;"
-                     src="https://img.zeit.de/campus/2023/05/manche-fuehlen-sich-schon-mit-zwanzig-alt-bild-1/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2023/05/manche-fuehlen-sich-schon-mit-zwanzig-alt-bild-1/cinema"
+                          alt="Meron Mendel über Israel: &#34;Kontextualisierung nach Butscha? Ich kann mich nicht erinnern&#34;"
+                     src="https://img.zeit.de/campus/2024/01/angesichts-dieser-unfassbaren-grausamkeit-sollte-man-sich-einen-moment-nehmen-innezuhalten-bild-2/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/2024/01/angesichts-dieser-unfassbaren-grausamkeit-sollte-man-sich-einen-moment-nehmen-innezuhalten-bild-2/cinema"
                      data-ratio="2.33333333333"
                      decoding="async"
-                     data-mobile-src="https://img.zeit.de/campus/2023/05/manche-fuehlen-sich-schon-mit-zwanzig-alt-bild-1/wide" data-mobile-ratio="1.77777777778">
+                     data-mobile-src="https://img.zeit.de/campus/2024/01/angesichts-dieser-unfassbaren-grausamkeit-sollte-man-sich-einen-moment-nehmen-innezuhalten-bild-2/wide" data-mobile-ratio="1.77777777778">
                             </noscript></div>
 
         <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023/05/manche-fuehlen-sich-schon-mit-zwanzig-alt-bild-1/cinema__980x420",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Bennie Julian Gay"}
+    "url": "https://img.zeit.de/campus/2024/01/angesichts-dieser-unfassbaren-grausamkeit-sollte-man-sich-einen-moment-nehmen-innezuhalten-bild-2/cinema__980x420",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Avishag Shaar-Yashuv/\u200bThe New York Times/\u200blaif"}
 }
 </script>                </figure>
 
                         <h2 class="teaser-lead-cinema__heading">
                 <a class="teaser-lead-cinema__heading-link"
-                   title="Altersbilder - &#34;Manche fühlen sich schon mit zwanzig alt&#34;"
-                   href="https://www.zeit.de/campus/2023/05/altersbilder-ansichten-gesellschaft-forschung-psychologie"
+                   title="Meron Mendel über Israel - &#34;Kontextualisierung nach Butscha? Ich kann mich nicht erinnern&#34;"
+                   href="https://www.zeit.de/campus/2024/01/meron-mendel-israel-hamas-gazastreifen-antisemitismus"
                    >
                                                                         <span class="teaser-lead-cinema__kicker">
                                 <span class="series-label">In der Sprechstunde</span>
-                                                                                                    <span>Altersbilder</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-lead-cinema__title">&#34;Manche fühlen sich schon mit zwanzig alt&#34;</span>
+                                                                                                    <span>Meron Mendel über Israel</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-lead-cinema__title">&#34;Kontextualisierung nach Butscha? Ich kann mich nicht erinnern&#34;</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-cinema__text">Viele Menschen haben Angst vor dem Altern. Dabei könne man seine eigene Lebenserwartung beeinflussen – durch die Art, wie man denkt, sagt die Forscherin Becca Levy.</p>
+                                    <p class="teaser-lead-cinema__text">Die Solidarität mit Palästina ist für manche Milieus identitätsstiftend, sagt der Historiker Meron Mendel. Genau dort wächst auch Antisemitismus, der sich jetzt enthemmt.</p>
                                                 <div class="teaser-lead-cinema__metadata">
-                                                                            <span class="teaser-lead-cinema__byline">    Interview:            Hanna Gieffers</span>
-                                                                                                                                            <a class="teaser-lead-cinema__commentcount" href="https://www.zeit.de/campus/2023/05/altersbilder-ansichten-gesellschaft-forschung-psychologie#comments" data-ct-label="comments" title="Kommentare anzeigen">7 Kommentare</a>
+                                                                            <span class="teaser-lead-cinema__byline">    Interview:            Torben Becker</span>
+                                                                                                                                            <a class="teaser-lead-cinema__commentcount" href="https://www.zeit.de/campus/2024/01/meron-mendel-israel-hamas-gazastreifen-antisemitismus#comments" data-ct-label="comments" title="Kommentare anzeigen">25 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -1323,45 +1457,46 @@
                                     
 
 <article class="teaser-lead-portrait "
-    data-unique-id="http://xml.zeit.de/campus/2023-09/studentenwohnreport-wohnung-studenten-miete-nebenkosten-gestiegen" data-zplus="zplus-dynamic">
+    data-unique-id="http://xml.zeit.de/campus/2023-10/studie-jugendliche-europa-movers-of-tomorrow-zukunft-aengste" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2023-09/studentenwohnreport-wohnung-studenten-miete-nebenkosten-gestiegen" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Studentenwohnreport: Mieten und Nebenkosten in Hochschulstädten teils &#34;extrem erhöht&#34;">Studentenwohnreport: Mieten und Nebenkosten in Hochschulstädten teils &#34;extrem erhöht&#34;</a>
-                <figure class="teaser-lead-portrait__media  scaled-image variant variant--portrait">
+                    <a href="https://www.zeit.de/campus/2023-10/studie-jugendliche-europa-movers-of-tomorrow-zukunft-aengste" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Studie über Jugendliche in Europa: Junge Europäer bezweifeln, dass ihre Generation Kinder haben sollte  ">Studie über Jugendliche in Europa: Junge Europäer bezweifeln, dass ihre Generation Kinder haben sollte  </a>
+                <figure class="teaser-lead-portrait__media teaser-lead-portrait__media--force-mobile scaled-image variant variant--portrait">
                 <div class="teaser-lead-portrait__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023-09/studentenwohnreport-wohnung-studenten/portrait__612x816">
+            <noscript data-src="https://img.zeit.de/campus/2023-10/studie-jugendliche-europa-movers-of-tomorrow/portrait__612x816">
                                 <img class="teaser-lead-portrait__media-item"
-                          alt="Studentenwohnreport: Mieten und Nebenkosten in Hochschulstädten teils &#34;extrem erhöht&#34;"
-                     src="https://img.zeit.de/campus/2023-09/studentenwohnreport-wohnung-studenten/portrait__612x816"
-                     data-src="https://img.zeit.de/campus/2023-09/studentenwohnreport-wohnung-studenten/portrait"
+                          alt="Studie über Jugendliche in Europa: Junge Europäer bezweifeln, dass ihre Generation Kinder haben sollte  "
+                     src="https://img.zeit.de/campus/2023-10/studie-jugendliche-europa-movers-of-tomorrow/portrait__612x816"
+                     data-src="https://img.zeit.de/campus/2023-10/studie-jugendliche-europa-movers-of-tomorrow/portrait"
                      data-ratio="0.75"
                      decoding="async"
-                     data-mobile-src="https://img.zeit.de/campus/2023-09/studentenwohnreport-wohnung-studenten/wide" data-mobile-ratio="1.77777777778">
+                     data-mobile-src="https://img.zeit.de/campus/2023-10/studie-jugendliche-europa-movers-of-tomorrow/wide" data-mobile-ratio="1.77777777778">
                             </noscript></div>
 
         <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023-09/studentenwohnreport-wohnung-studenten/portrait__612x816",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Uwe Anspach/\u200bdpa"}
+    "url": "https://img.zeit.de/campus/2023-10/studie-jugendliche-europa-movers-of-tomorrow/portrait__612x816",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Westend61/\u200bGetty Images"}
 }
 </script>                </figure>
 
         <div class="teaser-lead-portrait__content">
                             <h2 class="teaser-lead-portrait__heading">
                 <a class="teaser-lead-portrait__heading-link"
-                   title="Studentenwohnreport - Mieten und Nebenkosten in Hochschulstädten teils &#34;extrem erhöht&#34;"
-                   href="https://www.zeit.de/campus/2023-09/studentenwohnreport-wohnung-studenten-miete-nebenkosten-gestiegen"
+                   title="Studie über Jugendliche in Europa - Junge Europäer bezweifeln, dass ihre Generation Kinder haben sollte  "
+                   href="https://www.zeit.de/campus/2023-10/studie-jugendliche-europa-movers-of-tomorrow-zukunft-aengste"
                    >
                                                                         <span class="teaser-lead-portrait__kicker">
-                                                                                                <span>Studentenwohnreport</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">Mieten und Nebenkosten in Hochschulstädten teils &#34;extrem erhöht&#34;</span>
+                                                                                                <span>Studie über Jugendliche in Europa</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">Junge Europäer bezweifeln, dass ihre Generation Kinder haben sollte  </span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-portrait__text">700 Euro für 30 Quadratmeter – die Miet- und Nebenkosten sind für viele Studenten inzwischen unbezahlbar. Relativ günstige Wohnungen gibt es nur noch in wenigen Städten. </p>
+                                    <p class="teaser-lead-portrait__text">Klimakrise, Ungleichheit, Unsicherheit: Junge Menschen in Europa blicken laut einer Studie mit Sorge in die Zukunft. Nur die Hälfte will starke demokratische Strukturen.</p>
                                                 <div class="teaser-lead-portrait__metadata">
-                                                                                                                                                                                <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/2023-09/studentenwohnreport-wohnung-studenten-miete-nebenkosten-gestiegen#comments" data-ct-label="comments" title="Kommentare anzeigen">281 Kommentare</a>
+                                                                            <span class="teaser-lead-portrait__byline">    Von            Alisa Schellenberg            und            Carlotta Wald</span>
+                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/2023-10/studie-jugendliche-europa-movers-of-tomorrow-zukunft-aengste#comments" data-ct-label="comments" title="Kommentare anzeigen">56 Kommentare</a>
                                                 </div>
                                 
     
@@ -1473,16 +1608,16 @@
                                     
 
 <article class="teaser-square "
-    data-unique-id="http://xml.zeit.de/campus/2023-09/berufliche-krisen-job-bewaeltigung-selbstwert" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2023-10/gespraechsfuehrung-erstes-date-peinliche-stille-tipps-lili-vogelsang" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2023-09/berufliche-krisen-job-bewaeltigung-selbstwert" class="teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Berufliche Krisen: &#34;Nach elf Arbeitstagen kam die Kündigung&#34; ">Berufliche Krisen: &#34;Nach elf Arbeitstagen kam die Kündigung&#34; </a>
+                    <a href="https://www.zeit.de/campus/2023-10/gespraechsfuehrung-erstes-date-peinliche-stille-tipps-lili-vogelsang" class="teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Gesprächsführung: &#34;Es gibt harmlose Fragen, bei denen man viel lernt über eine Person&#34;">Gesprächsführung: &#34;Es gibt harmlose Fragen, bei denen man viel lernt über eine Person&#34;</a>
                 <figure class="teaser-square__media teaser-square__media--force-mobile scaled-image variant variant--square">
                 <div class="teaser-square__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023-09/campus-berufliche-krise-neustart/square__460x460">
+            <noscript data-src="https://img.zeit.de/campus/2023-10/gespraechsfuehrung-erstes-date-peinliche-stille/square__460x460">
                                 <img class="teaser-square__media-item"
-                          alt="Berufliche Krisen: &#34;Nach elf Arbeitstagen kam die Kündigung&#34; "
-                     src="https://img.zeit.de/campus/2023-09/campus-berufliche-krise-neustart/square__460x460"
-                     data-src="https://img.zeit.de/campus/2023-09/campus-berufliche-krise-neustart/square"
+                          alt="Gesprächsführung: &#34;Es gibt harmlose Fragen, bei denen man viel lernt über eine Person&#34;"
+                     src="https://img.zeit.de/campus/2023-10/gespraechsfuehrung-erstes-date-peinliche-stille/square__460x460"
+                     data-src="https://img.zeit.de/campus/2023-10/gespraechsfuehrung-erstes-date-peinliche-stille/square"
                      data-ratio="1.0"
                      decoding="async"
                      >
@@ -1492,26 +1627,26 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023-09/campus-berufliche-krise-neustart/square__460x460",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Pexels/\u200bMahdi Bafande/\u200bAbbaphe Media"}
+    "url": "https://img.zeit.de/campus/2023-10/gespraechsfuehrung-erstes-date-peinliche-stille/square__460x460",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Cavan Images/\u200bGetty Images"}
 }
 </script>                </figure>
 
                         <h2 class="teaser-square__heading">
                 <a class="teaser-square__heading-link"
-                   title="Berufliche Krisen - &#34;Nach elf Arbeitstagen kam die Kündigung&#34; "
-                   href="https://www.zeit.de/campus/2023-09/berufliche-krisen-job-bewaeltigung-selbstwert"
+                   title="Gesprächsführung - &#34;Es gibt harmlose Fragen, bei denen man viel lernt über eine Person&#34;"
+                   href="https://www.zeit.de/campus/2023-10/gespraechsfuehrung-erstes-date-peinliche-stille-tipps-lili-vogelsang"
                    >
                                                                         <span class="teaser-square__kicker">
-                                                                                                <span>Berufliche Krisen</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-square__title">&#34;Nach elf Arbeitstagen kam die Kündigung&#34; </span>
+                                                                                                <span>Gesprächsführung</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-square__title teaser-square__title--has-comma">&#34;Es gibt harmlose Fragen, bei denen man viel lernt über eine Person&#34;</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-square__text">Bei manchen beginnt schon mit dem ersten Job die erste berufliche Krise. Das Selbstwertgefühl danach: am Boden. Hier erzählen Menschen, wie sie sich rausgekämpft haben.</p>
+                                    <p class="teaser-square__text">Wer Angst vor peinlicher Stille hat, für den sind erste Dates besonders schlimm. Aber manchmal reicht es nur, eine Standardfrage anders zu stellen, sagt Lili Vogelsang.</p>
                                                 <div class="teaser-square__metadata">
-                                                                            <span class="teaser-square__byline">    Von            Paul Weinheimer</span>
-                                                                                                                                            <a class="teaser-square__commentcount" href="https://www.zeit.de/campus/2023-09/berufliche-krisen-job-bewaeltigung-selbstwert#comments" data-ct-label="comments" title="Kommentare anzeigen">66 Kommentare</a>
+                                                                            <span class="teaser-square__byline">    Interview:            Julian Stopa</span>
+                                                                                                                                            <a class="teaser-square__commentcount" href="https://www.zeit.de/campus/2023-10/gespraechsfuehrung-erstes-date-peinliche-stille-tipps-lili-vogelsang#comments" data-ct-label="comments" title="Kommentare anzeigen">67 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -1528,16 +1663,16 @@
                                     
 
 <article class="teaser-square "
-    data-unique-id="http://xml.zeit.de/campus/2023-09/wohnungsmarkt-vermieter-eigentum-erfahrungsbericht" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2023-10/klare-kommunikation-anweisungen-kritik-sprache" data-zplus="zplus-dynamic">
 
-                    <a href="https://www.zeit.de/campus/2023-09/wohnungsmarkt-vermieter-eigentum-erfahrungsbericht" class="teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Wohnungsmarkt • Das Beste aus Z+: &#34;Ich ärgere mich über Interessenten, die schlecht vorbereitet sind&#34; ">Wohnungsmarkt • Das Beste aus Z+: &#34;Ich ärgere mich über Interessenten, die schlecht vorbereitet sind&#34; </a>
-                <figure class="teaser-square__media teaser-square__media--force-mobile scaled-image variant variant--square">
+                    <a href="https://www.zeit.de/campus/2023-10/klare-kommunikation-anweisungen-kritik-sprache" class="teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Klare Kommunikation: Grundsätzlich ist alles erst einmal ganz toll">Klare Kommunikation: Grundsätzlich ist alles erst einmal ganz toll</a>
+                <figure class="teaser-square__media  scaled-image variant variant--square">
                 <div class="teaser-square__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023-09/wohnungsmarkt-vermieter-eigentum-erfahrungsbericht-umzug/square__460x460">
+            <noscript data-src="https://img.zeit.de/campus/2023-10/klare-kommunikation-anweisungen/square__460x460">
                                 <img class="teaser-square__media-item"
-                          alt="Wohnungsmarkt • Das Beste aus Z+: &#34;Ich ärgere mich über Interessenten, die schlecht vorbereitet sind&#34; "
-                     src="https://img.zeit.de/campus/2023-09/wohnungsmarkt-vermieter-eigentum-erfahrungsbericht-umzug/square__460x460"
-                     data-src="https://img.zeit.de/campus/2023-09/wohnungsmarkt-vermieter-eigentum-erfahrungsbericht-umzug/square"
+                          alt="Klare Kommunikation: Grundsätzlich ist alles erst einmal ganz toll"
+                     src="https://img.zeit.de/campus/2023-10/klare-kommunikation-anweisungen/square__460x460"
+                     data-src="https://img.zeit.de/campus/2023-10/klare-kommunikation-anweisungen/square"
                      data-ratio="1.0"
                      decoding="async"
                      >
@@ -1547,26 +1682,26 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023-09/wohnungsmarkt-vermieter-eigentum-erfahrungsbericht-umzug/square__460x460",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Pexels /\u200b Karolina Grabowska", "url": "https://www.pexels.com/de-de/foto/paar-kreativ-beziehung-gesichtslos-4506270/"}
+    "url": "https://img.zeit.de/campus/2023-10/klare-kommunikation-anweisungen/square__460x460",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Lubitz + Dorner/\u200bplainpicture"}
 }
 </script>                </figure>
 
                         <h2 class="teaser-square__heading">
                 <a class="teaser-square__heading-link"
-                   title="Wohnungsmarkt • Das Beste aus Z+ - &#34;Ich ärgere mich über Interessenten, die schlecht vorbereitet sind&#34; "
-                   href="https://www.zeit.de/campus/2023-09/wohnungsmarkt-vermieter-eigentum-erfahrungsbericht"
+                   title="Klare Kommunikation - Grundsätzlich ist alles erst einmal ganz toll"
+                   href="https://www.zeit.de/campus/2023-10/klare-kommunikation-anweisungen-kritik-sprache"
                    >
                                                                         <span class="teaser-square__kicker">
-                                                                                                <span>Wohnungsmarkt • Das Beste aus Z+</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-square__title teaser-square__title--has-comma">&#34;Ich ärgere mich über Interessenten, die schlecht vorbereitet sind&#34; </span>
+                                                                                                <span>Klare Kommunikation</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-square__title">Grundsätzlich ist alles erst einmal ganz toll</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-square__text">Jan, Torben und Paul sind Mitte 20 und schon selbst Vermieter. Hier erzählen sie, warum sie auf Partys diese Info lieber verschweigen und was sie über ihre Mieter denken.</p>
+                                    <p class="teaser-square__text">Niemand will mehr klare Anweisungen geben. Chefs kumpeln rum, selbst unter Freunden versteckt sich Kritik hinter Bullshit-Floskeln. Warum wir mehr harte Worte brauchen.</p>
                                                 <div class="teaser-square__metadata">
-                                                                            <span class="teaser-square__byline">    Protokoll:            Joshua Schößler            und            Paul Weinheimer</span>
-                                                                                                                                            <a class="teaser-square__commentcount" href="https://www.zeit.de/campus/2023-09/wohnungsmarkt-vermieter-eigentum-erfahrungsbericht#comments" data-ct-label="comments" title="Kommentare anzeigen">321 Kommentare</a>
+                                                                            <span class="teaser-square__byline">    Ein Kommentar von            Martin Hogger</span>
+                                                                                                                                            <a class="teaser-square__commentcount" href="https://www.zeit.de/campus/2023-10/klare-kommunikation-anweisungen-kritik-sprache#comments" data-ct-label="comments" title="Kommentare anzeigen">146 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -1582,45 +1717,47 @@
                                     
 
 <article class="teaser-lead-portrait "
-    data-unique-id="http://xml.zeit.de/campus/2023-09/wohnungssuche-wg-zimmer-studenten-ausbildung-aufruf" data-zplus="zplus-dynamic">
+    data-unique-id="http://xml.zeit.de/campus/2023/05/microsoft-powerpoint-visualisierung-arbeitsalltag-sebastian-hotz" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2023-09/wohnungssuche-wg-zimmer-studenten-ausbildung-aufruf" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Wohnungssuche : Suchst du gerade verzweifelt ein WG-Zimmer?">Wohnungssuche : Suchst du gerade verzweifelt ein WG-Zimmer?</a>
-                <figure class="teaser-lead-portrait__media  scaled-image variant variant--portrait">
+                    <a href="https://www.zeit.de/campus/2023/05/microsoft-powerpoint-visualisierung-arbeitsalltag-sebastian-hotz" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="PowerPoint: Die letzte Bastion der Menschlichkeit">PowerPoint: Die letzte Bastion der Menschlichkeit</a>
+                <figure class="teaser-lead-portrait__media teaser-lead-portrait__media--force-mobile scaled-image variant variant--portrait">
                 <div class="teaser-lead-portrait__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023-09/wohnungssuche-wg-zimmer-studenten-ausbildung-aufruf-zimmer/portrait__612x816">
+            <noscript data-src="https://img.zeit.de/campus/2023/05/die-letzte-bastion-der-menschlichkeit-bild-2/portrait__612x816">
                                 <img class="teaser-lead-portrait__media-item"
-                          alt="Wohnungssuche : Suchst du gerade verzweifelt ein WG-Zimmer?"
-                     src="https://img.zeit.de/campus/2023-09/wohnungssuche-wg-zimmer-studenten-ausbildung-aufruf-zimmer/portrait__612x816"
-                     data-src="https://img.zeit.de/campus/2023-09/wohnungssuche-wg-zimmer-studenten-ausbildung-aufruf-zimmer/portrait"
+                          alt="PowerPoint: Die letzte Bastion der Menschlichkeit"
+                     src="https://img.zeit.de/campus/2023/05/die-letzte-bastion-der-menschlichkeit-bild-2/portrait__612x816"
+                     data-src="https://img.zeit.de/campus/2023/05/die-letzte-bastion-der-menschlichkeit-bild-2/portrait"
                      data-ratio="0.75"
                      decoding="async"
-                     data-mobile-src="https://img.zeit.de/campus/2023-09/wohnungssuche-wg-zimmer-studenten-ausbildung-aufruf-zimmer/wide" data-mobile-ratio="1.77777777778">
+                     data-mobile-src="https://img.zeit.de/campus/2023/05/die-letzte-bastion-der-menschlichkeit-bild-2/wide" data-mobile-ratio="1.77777777778">
                             </noscript></div>
 
         <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023-09/wohnungssuche-wg-zimmer-studenten-ausbildung-aufruf-zimmer/portrait__612x816",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Parker Gibbons/\u200bunsplash.com", "url": "https://unsplash.com/de/fotos/TM2F4SnXUO0"}
+    "url": "https://img.zeit.de/campus/2023/05/die-letzte-bastion-der-menschlichkeit-bild-2/portrait__612x816",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Beni Bischof"}
 }
 </script>                </figure>
 
         <div class="teaser-lead-portrait__content">
                             <h2 class="teaser-lead-portrait__heading">
                 <a class="teaser-lead-portrait__heading-link"
-                   title="Wohnungssuche  - Suchst du gerade verzweifelt ein WG-Zimmer?"
-                   href="https://www.zeit.de/campus/2023-09/wohnungssuche-wg-zimmer-studenten-ausbildung-aufruf"
+                   title="PowerPoint - Die letzte Bastion der Menschlichkeit"
+                   href="https://www.zeit.de/campus/2023/05/microsoft-powerpoint-visualisierung-arbeitsalltag-sebastian-hotz"
                    >
                                                                         <span class="teaser-lead-portrait__kicker">
-                                                                                                <span>Wohnungssuche </span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">Suchst du gerade verzweifelt ein WG-Zimmer?</span>
+                                <span class="series-label">El Hotzo</span>
+                                                                                                    <span>PowerPoint</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">Die letzte Bastion der Menschlichkeit</span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-portrait__text">Viele junge Menschen in Ausbildung suchen derzeit eine Wohnung oder ein Zimmer. Doch oft geht ohne Kontakte fast nichts mehr. Erzähl uns deine Geschichte. </p>
+                                    <p class="teaser-lead-portrait__text">Viele verabscheuen PowerPoint. Völlig zu Unrecht, findet unser Kolumnist El Hotzo. Er hat die wahre Kraft der Software entdeckt. </p>
                                                 <div class="teaser-lead-portrait__metadata">
-                                                                                                                                                                                <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/2023-09/wohnungssuche-wg-zimmer-studenten-ausbildung-aufruf#comments" data-ct-label="comments" title="Kommentare anzeigen">63 Kommentare</a>
+                                                                            <span class="teaser-lead-portrait__byline">    Von            Sebastian Hotz</span>
+                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/2023/05/microsoft-powerpoint-visualisierung-arbeitsalltag-sebastian-hotz#comments" data-ct-label="comments" title="Kommentare anzeigen">65 Kommentare</a>
                                                 </div>
                                 
     
@@ -1639,16 +1776,16 @@
                                     
 
 <article class="teaser-wide-large "
-    data-unique-id="http://xml.zeit.de/campus/2023/04/ingenieur-berufseinstieg-studium-kai-furmans" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/2023/44/gegenuni-rechtsextremismus-online-hochschule-frankfurt" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2023/04/ingenieur-berufseinstieg-studium-kai-furmans" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Berufseinstieg als Ingenieur: &#34;Baustellen gehen nur langsam voran, weil Bauingenieure fehlen&#34; ">Berufseinstieg als Ingenieur: &#34;Baustellen gehen nur langsam voran, weil Bauingenieure fehlen&#34; </a>
+                    <a href="https://www.zeit.de/2023/44/gegenuni-rechtsextremismus-online-hochschule-frankfurt" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Gegen-Uni: Sie nennen es Uni">Gegen-Uni: Sie nennen es Uni</a>
                 <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023-08/ingenieure-2/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/2023/44/gegenuni-rechtsextremismus-online-hochschule-frankfurt-bild/cinema__980x420">
                                 <img class="teaser-wide-large__media-item"
-                          alt="Berufseinstieg als Ingenieur: &#34;Baustellen gehen nur langsam voran, weil Bauingenieure fehlen&#34; "
-                     src="https://img.zeit.de/campus/2023-08/ingenieure-2/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2023-08/ingenieure-2/cinema"
+                          alt="Gegen-Uni: Sie nennen es Uni"
+                     src="https://img.zeit.de/2023/44/gegenuni-rechtsextremismus-online-hochschule-frankfurt-bild/cinema__980x420"
+                     data-src="https://img.zeit.de/2023/44/gegenuni-rechtsextremismus-online-hochschule-frankfurt-bild/cinema"
                      data-ratio="2.33333333333"
                      decoding="async"
                      >
@@ -1658,26 +1795,28 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023-08/ingenieure-2/cinema__980x420",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0ThisisEngineering RAEng/\u200bunsplash.com", "url": "https://unsplash.com/de/fotos/0gYq67rIK8s"}
+    "url": "https://img.zeit.de/2023/44/gegenuni-rechtsextremismus-online-hochschule-frankfurt-bild/cinema__980x420",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0[M] DBenitostock/\u200bGetty Images"}
 }
 </script>                </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Berufseinstieg als Ingenieur - &#34;Baustellen gehen nur langsam voran, weil Bauingenieure fehlen&#34; "
-                   href="https://www.zeit.de/campus/2023/04/ingenieur-berufseinstieg-studium-kai-furmans"
+                   title="Gegen-Uni - Sie nennen es Uni"
+                   href="https://www.zeit.de/2023/44/gegenuni-rechtsextremismus-online-hochschule-frankfurt"
                    >
                                                                         <span class="teaser-wide-large__kicker">
-                                                                                                <span>Berufseinstieg als Ingenieur</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title teaser-wide-large__title--has-comma">&#34;Baustellen gehen nur langsam voran, weil Bauingenieure fehlen&#34; </span>
+                                                                                                <span>Gegen-Uni</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">Sie nennen es Uni</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Die Zahl der offenen Stellen für Ingenieure hat einen Höchststand erreicht. Professor Kai Furmans erklärt, welche drei Fragen man im Bewerbungsgespräch stellen sollte. </p>
+                                    <p class="teaser-wide-large__text">Rechte Aktivisten haben ein neues Mittel für ihren Kulturkampf entdeckt: Online-Seminare. Was die sogenannte Gegen-Uni dabei gefährlich macht, ist ihre Nähe zur AfD.</p>
                                                 <div class="teaser-wide-large__metadata">
-                                                                            <span class="teaser-wide-large__byline">    Interview:            Julian Schmelmer</span>
-                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2023/04/ingenieur-berufseinstieg-studium-kai-furmans#comments" data-ct-label="comments" title="Kommentare anzeigen">22 Kommentare</a>
+                                                                            <span class="teaser-wide-large__byline">    Von    Janina Bauer,
+            Frederik Mittendorff,
+            Lisa Plank    u. a.</span>
+                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/2023/44/gegenuni-rechtsextremismus-online-hochschule-frankfurt#comments" data-ct-label="comments" title="Kommentare anzeigen">16 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -1694,16 +1833,16 @@
                                     
 
 <article class="teaser-wide-large  teaser-wide-large--advertorial"
-    data-unique-id="http://xml.zeit.de/campus/angebote/deloitte/staffel2/gruene-investitionen" data-zplus="zplus-dynamic">
+    data-unique-id="http://xml.zeit.de/campus/angebote/deloitte/staffel2/nachhaltigkeits-richtlinien" data-zplus="zplus-dynamic">
 
-                    <a href="https://www.zeit.de/campus/angebote/deloitte/staffel2/gruene-investitionen" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Staffel 2 - Folge 2: Mit grünen Investitionen zu mehr Nachhaltigkeit?">Staffel 2 - Folge 2: Mit grünen Investitionen zu mehr Nachhaltigkeit?</a>
+                    <a href="https://www.zeit.de/campus/angebote/deloitte/staffel2/nachhaltigkeits-richtlinien" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Staffel 2 - Folge 4: Nachhaltigkeit prüfen – halten sich auch alle dran?">Staffel 2 - Folge 4: Nachhaltigkeit prüfen – halten sich auch alle dran?</a>
                 <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/angebote/deloitte/staffel2/unsplash-brandon-lee/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/angebote/deloitte/staffel2/fer-troulik-jno0ddp36bu-unsplash/cinema__980x420">
                                 <img class="teaser-wide-large__media-item"
-                          alt="Staffel 2 - Folge 2: Mit grünen Investitionen zu mehr Nachhaltigkeit?"
-                     src="https://img.zeit.de/campus/angebote/deloitte/staffel2/unsplash-brandon-lee/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/angebote/deloitte/staffel2/unsplash-brandon-lee/cinema"
+                          alt="Staffel 2 - Folge 4: Nachhaltigkeit prüfen – halten sich auch alle dran?"
+                     src="https://img.zeit.de/campus/angebote/deloitte/staffel2/fer-troulik-jno0ddp36bu-unsplash/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/angebote/deloitte/staffel2/fer-troulik-jno0ddp36bu-unsplash/cinema"
                      data-ratio="2.33333333333"
                      decoding="async"
                      >
@@ -1713,23 +1852,23 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/angebote/deloitte/staffel2/unsplash-brandon-lee/cinema__980x420",
+    "url": "https://img.zeit.de/campus/angebote/deloitte/staffel2/fer-troulik-jno0ddp36bu-unsplash/cinema__980x420",
     "copyrightHolder": null
 }
 </script>                </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Staffel 2 - Folge 2 - Mit grünen Investitionen zu mehr Nachhaltigkeit?"
-                   href="https://www.zeit.de/campus/angebote/deloitte/staffel2/gruene-investitionen"
+                   title="Staffel 2 - Folge 4 - Nachhaltigkeit prüfen – halten sich auch alle dran?"
+                   href="https://www.zeit.de/campus/angebote/deloitte/staffel2/nachhaltigkeits-richtlinien"
                    >
                                                                         <span class="teaser-wide-large__kicker">
-                                                                                                <span>Staffel 2 - Folge 2</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">Mit grünen Investitionen zu mehr Nachhaltigkeit?</span>
+                                                                                                <span>Staffel 2 - Folge 4</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">Nachhaltigkeit prüfen – halten sich auch alle dran?</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Die Wirtschaft muss sich mehr an Nachhaltigkeitskriterien messen lassen, auch im Finanzsektor. Ein stringentes Regelwerk soll Greenwashing auf lange Sicht verhindern.</p>
+                                    <p class="teaser-wide-large__text">Sich EU-weit auf gemeinsame Nachhaltigkeits-Richtlinien zu einigen, ist ein ambitioniertes Unterfangen. Nochmal schwieriger wird die Kontrolle ihrer Einhaltung. </p>
                                                         
     </article>
 
@@ -1820,17 +1959,17 @@
             
                                     
 
-<article class="teaser-wide-large "
-    data-unique-id="http://xml.zeit.de/campus/2023-09/mieten-wohnheime-steigen-20-prozent" data-zplus="zplus-dynamic">
+<article class="teaser-wide-large  teaser-wide-large--advertorial"
+    data-unique-id="http://xml.zeit.de/campus/angebote/fuer-abiturienten/ressort-teaser-fom">
 
-                    <a href="https://www.zeit.de/campus/2023-09/mieten-wohnheime-steigen-20-prozent" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Steigende Mieten: Studierendenwerke erhöhen Mieten für Wohnheime deutlich">Steigende Mieten: Studierendenwerke erhöhen Mieten für Wohnheime deutlich</a>
-                <figure class="teaser-wide-large__media  scaled-image variant variant--cinema">
+                    <a href="https://www.zeit.de/campus/angebote/fuer-abiturienten/index" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Zwei Wege zum Bachelor">Zwei Wege zum Bachelor</a>
+                <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023-09/mieten-wohnheime-steigen/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/angebote/fuer-abiturienten/dsc-9192/cinema__980x420">
                                 <img class="teaser-wide-large__media-item"
-                          alt="Steigende Mieten: Studierendenwerke erhöhen Mieten für Wohnheime deutlich"
-                     src="https://img.zeit.de/campus/2023-09/mieten-wohnheime-steigen/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2023-09/mieten-wohnheime-steigen/cinema"
+                          alt="Zwei Wege zum Bachelor"
+                     src="https://img.zeit.de/campus/angebote/fuer-abiturienten/dsc-9192/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/angebote/fuer-abiturienten/dsc-9192/cinema"
                      data-ratio="2.33333333333"
                      decoding="async"
                      >
@@ -1840,27 +1979,23 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023-09/mieten-wohnheime-steigen/cinema__980x420",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Stephanie Pilick/\u200bdpa"}
+    "url": "https://img.zeit.de/campus/angebote/fuer-abiturienten/dsc-9192/cinema__980x420",
+    "copyrightHolder": null
 }
 </script>                </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Steigende Mieten - Studierendenwerke erhöhen Mieten für Wohnheime deutlich"
-                   href="https://www.zeit.de/campus/2023-09/mieten-wohnheime-steigen-20-prozent"
+                   title=" - Zwei Wege zum Bachelor"
+                   href="https://www.zeit.de/campus/angebote/fuer-abiturienten/index"
                    >
-                                                                        <span class="teaser-wide-large__kicker">
-                                                                                                <span>Steigende Mieten</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">Studierendenwerke erhöhen Mieten für Wohnheime deutlich</span>
+                                                                                                <span class="teaser-wide-large__title">Zwei Wege zum Bachelor</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Bis zu 20 Prozent mehr kostet seit diesem Jahr ein Zimmer im Studierendenwohnheim. Nur in zwei deutschen Großstädten wurde die Miete nicht erhöht.</p>
-                                                <div class="teaser-wide-large__metadata">
-                                                                                                                                                                                <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2023-09/mieten-wohnheime-steigen-20-prozent#comments" data-ct-label="comments" title="Kommentare anzeigen">59 Kommentare</a>
-                                                </div>
-                                
+                                    <p class="teaser-wide-large__text">Wie möchte ich meine Zukunft gestalten? Die FOM Hochschule, bietet Abiturienten gleich zwei verschiedene Wege ins Berufsleben.</p>
+                                                        
     </article>
 
                             <!-- adtile1mobile is omitted to avoid duplicates. -->
@@ -1875,16 +2010,16 @@
                                     
 
 <article class="teaser-wide-large "
-    data-unique-id="http://xml.zeit.de/campus/2023/05/marina-abramovic-performance-kuenstlerin-kindheit" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2023-10/geld-junge-menschen-finanzpolitik-steuern-rente" data-zplus="zplus-dynamic">
 
-                    <a href="https://www.zeit.de/campus/2023/05/marina-abramovic-performance-kuenstlerin-kindheit" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Marina Abramović: &#34;Es braucht dieses Feuer&#34;">Marina Abramović: &#34;Es braucht dieses Feuer&#34;</a>
-                <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
+                    <a href="https://www.zeit.de/campus/2023-10/geld-junge-menschen-finanzpolitik-steuern-rente" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Junge Menschen und Geld: &#34;Unser Rentensystem ist besser, als viele glauben&#34;">Junge Menschen und Geld: &#34;Unser Rentensystem ist besser, als viele glauben&#34;</a>
+                <figure class="teaser-wide-large__media  scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023/05/marina-abramovic-performance-kuenstlerin-kindheit-teaser/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/2023-10/geld-junge-menschen-finanzpolitik-steuern-rente-bild/cinema__980x420">
                                 <img class="teaser-wide-large__media-item"
-                          alt="Marina Abramović: &#34;Es braucht dieses Feuer&#34;"
-                     src="https://img.zeit.de/campus/2023/05/marina-abramovic-performance-kuenstlerin-kindheit-teaser/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2023/05/marina-abramovic-performance-kuenstlerin-kindheit-teaser/cinema"
+                          alt="Junge Menschen und Geld: &#34;Unser Rentensystem ist besser, als viele glauben&#34;"
+                     src="https://img.zeit.de/campus/2023-10/geld-junge-menschen-finanzpolitik-steuern-rente-bild/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/2023-10/geld-junge-menschen-finanzpolitik-steuern-rente-bild/cinema"
                      data-ratio="2.33333333333"
                      decoding="async"
                      >
@@ -1894,27 +2029,26 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023/05/marina-abramovic-performance-kuenstlerin-kindheit-teaser/cinema__980x420",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Mario Wurzburger/\u200bGetty Images"}
+    "url": "https://img.zeit.de/campus/2023-10/geld-junge-menschen-finanzpolitik-steuern-rente-bild/cinema__980x420",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0[M] We Are/\u200bGetty Images"}
 }
 </script>                </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Marina Abramović - &#34;Es braucht dieses Feuer&#34;"
-                   href="https://www.zeit.de/campus/2023/05/marina-abramovic-performance-kuenstlerin-kindheit"
+                   title="Junge Menschen und Geld - &#34;Unser Rentensystem ist besser, als viele glauben&#34;"
+                   href="https://www.zeit.de/campus/2023-10/geld-junge-menschen-finanzpolitik-steuern-rente"
                    >
                                                                         <span class="teaser-wide-large__kicker">
-                                <span class="series-label">Der Ort meines Lebens</span>
-                                                                                                    <span>Marina Abramović</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">&#34;Es braucht dieses Feuer&#34;</span>
+                                                                                                <span>Junge Menschen und Geld</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title teaser-wide-large__title--has-comma">&#34;Unser Rentensystem ist besser, als viele glauben&#34;</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Sie peitschte sich blutig und saß fast drei Monate schweigend im Museum: Warum Marina Abramović so hart zu sich selbst ist und wie ihre letzte Performance aussehen soll</p>
+                                    <p class="teaser-wide-large__text">Steuern, Rente, Schuldenbremse: langweilig, aber wichtig. Vier Expertinnen erklären, wie sich Finanzpolitik ändern muss, damit das Beste für junge Menschen herauskommt.</p>
                                                 <div class="teaser-wide-large__metadata">
-                                                                            <span class="teaser-wide-large__byline">    Interview:            Theresa Tröndle</span>
-                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2023/05/marina-abramovic-performance-kuenstlerin-kindheit#comments" data-ct-label="comments" title="Kommentare anzeigen">3 Kommentare</a>
+                                                                            <span class="teaser-wide-large__byline">    Protokoll:            Martin Hogger</span>
+                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2023-10/geld-junge-menschen-finanzpolitik-steuern-rente#comments" data-ct-label="comments" title="Kommentare anzeigen">173 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -2048,45 +2182,45 @@
                                     
 
 <article class="teaser-lead-cinema "
-    data-unique-id="http://xml.zeit.de/campus/2023/05/memes-sind-ein-safe-space" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2023-10/greta-thunberg-fridays-for-future-israel-hamas-palaestinenser" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2023/05/memes-sind-ein-safe-space" class="teaser-lead-cinema__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Sveamaus: &#34;Ich mach lieber Memes, als einem Oligarchen Gemälde zu verkaufen&#34;">Sveamaus: &#34;Ich mach lieber Memes, als einem Oligarchen Gemälde zu verkaufen&#34;</a>
+                    <a href="https://www.zeit.de/campus/2023-10/greta-thunberg-fridays-for-future-israel-hamas-palaestinenser" class="teaser-lead-cinema__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Greta Thunberg: Das große Schweigen">Greta Thunberg: Das große Schweigen</a>
                 <figure class="teaser-lead-cinema__media teaser-lead-cinema__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-lead-cinema__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023/05/memes-sind-ein-safe-space-bild-1/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/2023-10/greta-thunberg-fridays-for-future-israel-hamas/cinema__980x420">
                                 <img class="teaser-lead-cinema__media-item"
-                          alt="Sveamaus: &#34;Ich mach lieber Memes, als einem Oligarchen Gemälde zu verkaufen&#34;"
-                     src="https://img.zeit.de/campus/2023/05/memes-sind-ein-safe-space-bild-1/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2023/05/memes-sind-ein-safe-space-bild-1/cinema"
+                          alt="Greta Thunberg: Das große Schweigen"
+                     src="https://img.zeit.de/campus/2023-10/greta-thunberg-fridays-for-future-israel-hamas/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/2023-10/greta-thunberg-fridays-for-future-israel-hamas/cinema"
                      data-ratio="2.33333333333"
                      decoding="async"
-                     data-mobile-src="https://img.zeit.de/campus/2023/05/memes-sind-ein-safe-space-bild-1/wide" data-mobile-ratio="1.77777777778">
+                     data-mobile-src="https://img.zeit.de/campus/2023-10/greta-thunberg-fridays-for-future-israel-hamas/wide" data-mobile-ratio="1.77777777778">
                             </noscript></div>
 
         <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023/05/memes-sind-ein-safe-space-bild-1/cinema__980x420",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Leon Joshua Dreischulte"}
+    "url": "https://img.zeit.de/campus/2023-10/greta-thunberg-fridays-for-future-israel-hamas/cinema__980x420",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Jonathan Nackstrand/\u200bAFP/\u200bGetty Images"}
 }
 </script>                </figure>
 
                         <h2 class="teaser-lead-cinema__heading">
                 <a class="teaser-lead-cinema__heading-link"
-                   title="Sveamaus - &#34;Ich mach lieber Memes, als einem Oligarchen Gemälde zu verkaufen&#34;"
-                   href="https://www.zeit.de/campus/2023/05/memes-sind-ein-safe-space"
+                   title="Greta Thunberg - Das große Schweigen"
+                   href="https://www.zeit.de/campus/2023-10/greta-thunberg-fridays-for-future-israel-hamas-palaestinenser"
                    >
                                                                         <span class="teaser-lead-cinema__kicker">
-                                                                                                <span>Sveamaus</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-lead-cinema__title teaser-lead-cinema__title--has-comma">&#34;Ich mach lieber Memes, als einem Oligarchen Gemälde zu verkaufen&#34;</span>
+                                                                                                <span>Greta Thunberg</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-lead-cinema__title">Das große Schweigen</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-cinema__text">Svea Mausolf hat Kunst studiert, aber fühlte sich von der Kunstwelt abgestoßen. Heute baut sie Memes und hat mehr als 100.000 Follower. Ist das nicht auch Kunst?</p>
+                                    <p class="teaser-lead-cinema__text">Nach ihren umstrittenen Äußerungen zu Gaza erklärt sich Greta Thunberg. Doch Fridays for Future tut sich insgesamt schwer mit einer Haltung zum Nahostkonflikt.</p>
                                                 <div class="teaser-lead-cinema__metadata">
-                                                                            <span class="teaser-lead-cinema__byline">    Von            Katharina Meyer zu Eppendorf</span>
-                                                                                                                                            <a class="teaser-lead-cinema__commentcount" href="https://www.zeit.de/campus/2023/05/memes-sind-ein-safe-space#comments" data-ct-label="comments" title="Kommentare anzeigen">5 Kommentare</a>
+                                                                            <span class="teaser-lead-cinema__byline">    Von            Alisa Schellenberg</span>
+                                                                                                                                            <a class="teaser-lead-cinema__commentcount" href="https://www.zeit.de/campus/2023-10/greta-thunberg-fridays-for-future-israel-hamas-palaestinenser#comments" data-ct-label="comments" title="Kommentare anzeigen">116 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -2124,7 +2258,7 @@
                                     
 
 <article class="teaser-wide-large  teaser-wide-large--advertorial"
-    data-unique-id="http://xml.zeit.de/campus/angebote/howitworks/2023/tkk-how-it-works-teaser" data-zplus="zplus-dynamic">
+    data-unique-id="http://xml.zeit.de/campus/angebote/howitworks/2023/tkk-how-it-works-teaser">
 
                     <a href="https://www.zeit.de/campus/angebote/howitworks/index" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" target="_blank" rel="noopener" title="How it works: Dein Weg durchs Studium zum Job">How it works: Dein Weg durchs Studium zum Job</a>
                 <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
@@ -2175,16 +2309,16 @@
                                     
 
 <article class="teaser-wide-large "
-    data-unique-id="http://xml.zeit.de/campus/2023/05/absolute-beginners-maenner-beziehungserfahrung-flirten" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2023/05/studium-ki-spezialisierung-master-tipps" data-zplus="zplus-dynamic">
 
-                    <a href="https://www.zeit.de/campus/2023/05/absolute-beginners-maenner-beziehungserfahrung-flirten" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Männer und Einsamkeit • Das Beste aus Z+: Er ist ein absoluter Beginner">Männer und Einsamkeit • Das Beste aus Z+: Er ist ein absoluter Beginner</a>
-                <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
+                    <a href="https://www.zeit.de/campus/2023/05/studium-ki-spezialisierung-master-tipps" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="KI-Spezialisierung im Studium: &#34;Unternehmen melden sich direkt bei mir, um Doktoranden anzuwerben&#34;">KI-Spezialisierung im Studium: &#34;Unternehmen melden sich direkt bei mir, um Doktoranden anzuwerben&#34;</a>
+                <figure class="teaser-wide-large__media  scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023-09/absolute-beginners-maenner-beziehungserfahrung/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/campus/2023-10/studium-ki-spezialisierung-master-tipps-bild/cinema__980x420">
                                 <img class="teaser-wide-large__media-item"
-                          alt="Männer und Einsamkeit • Das Beste aus Z+: Er ist ein absoluter Beginner"
-                     src="https://img.zeit.de/campus/2023-09/absolute-beginners-maenner-beziehungserfahrung/cinema__980x420"
-                     data-src="https://img.zeit.de/campus/2023-09/absolute-beginners-maenner-beziehungserfahrung/cinema"
+                          alt="KI-Spezialisierung im Studium: &#34;Unternehmen melden sich direkt bei mir, um Doktoranden anzuwerben&#34;"
+                     src="https://img.zeit.de/campus/2023-10/studium-ki-spezialisierung-master-tipps-bild/cinema__980x420"
+                     data-src="https://img.zeit.de/campus/2023-10/studium-ki-spezialisierung-master-tipps-bild/cinema"
                      data-ratio="2.33333333333"
                      decoding="async"
                      >
@@ -2194,26 +2328,26 @@
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023-09/absolute-beginners-maenner-beziehungserfahrung/cinema__980x420",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Keagan Henman/\u200bunsplash.com"}
+    "url": "https://img.zeit.de/campus/2023-10/studium-ki-spezialisierung-master-tipps-bild/cinema__980x420",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0[M] Eugene Mymrin/\u200bGetty Images"}
 }
 </script>                </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Männer und Einsamkeit • Das Beste aus Z+ - Er ist ein absoluter Beginner"
-                   href="https://www.zeit.de/campus/2023/05/absolute-beginners-maenner-beziehungserfahrung-flirten"
+                   title="KI-Spezialisierung im Studium - &#34;Unternehmen melden sich direkt bei mir, um Doktoranden anzuwerben&#34;"
+                   href="https://www.zeit.de/campus/2023/05/studium-ki-spezialisierung-master-tipps"
                    >
                                                                         <span class="teaser-wide-large__kicker">
-                                                                                                <span>Männer und Einsamkeit • Das Beste aus Z+</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">Er ist ein absoluter Beginner</span>
+                                                                                                <span>KI-Spezialisierung im Studium</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title teaser-wide-large__title--has-comma">&#34;Unternehmen melden sich direkt bei mir, um Doktoranden anzuwerben&#34;</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Lange dachte Stefan: Irgendwann kommt es, das aufregende Leben, Frauen, Beziehungen, Sex. Heute ist er 31 und wurde noch nie geküsst. Das will er jetzt ändern.</p>
+                                    <p class="teaser-wide-large__text">Wie kann ich mich im Studium auf KI spezialisieren? Und wie finde ich später einen Job? Ein Informatik-Professor erklärt, in welchen Branchen es Nachfrage gibt.</p>
                                                 <div class="teaser-wide-large__metadata">
-                                                                            <span class="teaser-wide-large__byline">    Von            Paul Lütge</span>
-                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2023/05/absolute-beginners-maenner-beziehungserfahrung-flirten#comments" data-ct-label="comments" title="Kommentare anzeigen">351 Kommentare</a>
+                                                                            <span class="teaser-wide-large__byline">    Interview:            Bastian Bieker</span>
+                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2023/05/studium-ki-spezialisierung-master-tipps#comments" data-ct-label="comments" title="Kommentare anzeigen">36 Kommentare</a>
                                                 </div>
                                 
     </article>
@@ -2229,46 +2363,45 @@
                                     
 
 <article class="teaser-lead-portrait "
-    data-unique-id="http://xml.zeit.de/campus/2023/04/satellit-sentinel-2d-tests-weltraumforschung" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2023-10/universitaet-lueneburg-schriftsteller-richard-david-precht-honorarprofessur-aufgegeben" data-zplus="zplus-dynamic">
 
-                    <a href="https://www.zeit.de/campus/2023/04/satellit-sentinel-2d-tests-weltraumforschung" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Satellit: Himmelsauge">Satellit: Himmelsauge</a>
-                <figure class="teaser-lead-portrait__media teaser-lead-portrait__media--force-mobile scaled-image variant variant--portrait">
+                    <a href="https://www.zeit.de/campus/2023-10/universitaet-lueneburg-schriftsteller-richard-david-precht-honorarprofessur-aufgegeben" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Leuphana Universität Lüneburg: Richard David Precht gibt Honorarprofessur auf ">Leuphana Universität Lüneburg: Richard David Precht gibt Honorarprofessur auf </a>
+                <figure class="teaser-lead-portrait__media  scaled-image variant variant--portrait">
                 <div class="teaser-lead-portrait__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2023/04/himmelsauge-teaserbild/portrait__612x816">
+            <noscript data-src="https://img.zeit.de/campus/2023-10/universitaet-lueneburg-schriftsteller-richard-david-precht-honorarprofessur/portrait__612x816">
                                 <img class="teaser-lead-portrait__media-item"
-                          alt="Satellit: Himmelsauge"
-                     src="https://img.zeit.de/campus/2023/04/himmelsauge-teaserbild/portrait__612x816"
-                     data-src="https://img.zeit.de/campus/2023/04/himmelsauge-teaserbild/portrait"
+                          alt="Leuphana Universität Lüneburg: Richard David Precht gibt Honorarprofessur auf "
+                     src="https://img.zeit.de/campus/2023-10/universitaet-lueneburg-schriftsteller-richard-david-precht-honorarprofessur/portrait__612x816"
+                     data-src="https://img.zeit.de/campus/2023-10/universitaet-lueneburg-schriftsteller-richard-david-precht-honorarprofessur/portrait"
                      data-ratio="0.75"
                      decoding="async"
-                     data-mobile-src="https://img.zeit.de/campus/2023/04/himmelsauge-teaserbild/wide" data-mobile-ratio="1.77777777778">
+                     data-mobile-src="https://img.zeit.de/campus/2023-10/universitaet-lueneburg-schriftsteller-richard-david-precht-honorarprofessur/wide" data-mobile-ratio="1.77777777778">
                             </noscript></div>
 
         <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2023/04/himmelsauge-teaserbild/portrait__612x816",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Ines Janas"}
+    "url": "https://img.zeit.de/campus/2023-10/universitaet-lueneburg-schriftsteller-richard-david-precht-honorarprofessur/portrait__612x816",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Rolf Vennenbernd/\u200bdpa"}
 }
 </script>                </figure>
 
         <div class="teaser-lead-portrait__content">
                             <h2 class="teaser-lead-portrait__heading">
                 <a class="teaser-lead-portrait__heading-link"
-                   title="Satellit - Himmelsauge"
-                   href="https://www.zeit.de/campus/2023/04/satellit-sentinel-2d-tests-weltraumforschung"
+                   title="Leuphana Universität Lüneburg - Richard David Precht gibt Honorarprofessur auf "
+                   href="https://www.zeit.de/campus/2023-10/universitaet-lueneburg-schriftsteller-richard-david-precht-honorarprofessur-aufgegeben"
                    >
                                                                         <span class="teaser-lead-portrait__kicker">
-                                                                                                <span>Satellit</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">Himmelsauge</span>
+                                                                                                <span>Leuphana Universität Lüneburg</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">Richard David Precht gibt Honorarprofessur auf </span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-portrait__text">Der Satellit Sentinel-2D soll Veränderungen auf der Erde dokumentieren. Wie laufen die finalen Tests? </p>
+                                    <p class="teaser-lead-portrait__text">Wegen Falschaussagen über orthodoxe Juden steht Schriftsteller Richard David Precht in der Kritik. Auf Forderung der Studenten gab er seine Professur in Lüneburg ab.</p>
                                                 <div class="teaser-lead-portrait__metadata">
-                                                                            <span class="teaser-lead-portrait__byline">    Eine Reportage von            Tim Winter</span>
-                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/2023/04/satellit-sentinel-2d-tests-weltraumforschung#comments" data-ct-label="comments" title="Kommentare anzeigen">3 Kommentare</a>
+                                                                                                                                                                                <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/2023-10/universitaet-lueneburg-schriftsteller-richard-david-precht-honorarprofessur-aufgegeben#comments" data-ct-label="comments" title="Kommentare anzeigen">575 Kommentare</a>
                                                 </div>
                                 
     
@@ -2322,14 +2455,13 @@
         }
     </script>
 </div>
-                        <footer class="footer" data-vt-parameter="footer_impression.footer..." data-vt-link-id="#footer" data-ct-container-type="footer" data-ct-event-type="#footer"><div class="footer__head">
+                        
+<footer class="footer" data-vt-parameter="footer_impression.footer..." data-vt-link-id="#footer" data-ct-container-type="footer" data-ct-event-type="#footer"><div class="footer__head">
         <a href="https://www.zeit.de/campus/index" class="footer-brand" data-ct-section-type="logo" data-ct-url="#footer"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 875.7 94.3" class="svg-symbol footer-brand__logo footer-brand__logo--zco" preserveAspectRatio="xMinYMin meet" role="img" aria-label="ZEIT Campus"><title>ZEIT Campus</title><path d="M352 71q-6.2 5.5-16.6 5.5A23.2 23.2 0 0 1 313.7 63a35.7 35.7 0 0 1-3.2-16 35.2 35.2 0 0 1 3.2-15.6 23.6 23.6 0 0 1 8.9-10 24 24 0 0 1 12.8-3.5q10.4 0 16.6 5.3a24 24 0 0 1 7.8 14.3h21.8a41.8 41.8 0 0 0-6.5-18.6 39.7 39.7 0 0 0-15.6-13.7q-10-5.2-24-5.2-14.2 0-25 6.2A42.2 42.2 0 0 0 294.1 23a50 50 0 0 0-5.8 24.1 50.3 50.3 0 0 0 5.9 24.4 41.8 41.8 0 0 0 16.5 16.8q10.7 6 25 6 14 0 24-5.2a40 40 0 0 0 15.7-14 42 42 0 0 0 6.5-18.5H360a24.4 24.4 0 0 1-7.9 14.5Zm68.9-69-36 90.5h21.9l7-19.5h39.3l7 19.5h23.6L447.6 2Zm12.4 16.3L448 57.5h-29ZM545.6 50 527.8 1.9h-33.2v90.5h21.2l-.7-73.9L532 64.6h25.8L574.3 19l-.8 73.4h21.3V1.9h-32.4L545.6 50zM676.4 5.6A37.5 37.5 0 0 0 659.8 2h-44.6v90.5h21.6v-33h22.3a40.5 40.5 0 0 0 17.4-3.6 27 27 0 0 0 11.6-10 27.9 27.9 0 0 0 4.1-15.2 27 27 0 0 0-4.2-15 28.5 28.5 0 0 0-11.6-10.2Zm-10 34.6q-3.8 3.3-10 3.3h-19.6v-25h19.6a14.8 14.8 0 0 1 9.9 3.3q3.8 3.3 3.9 9.3a11.6 11.6 0 0 1-3.8 9.1Zm95.3 17.2q0 9.5-5 14t-12.9 4.4q-7.8 0-12.7-4.5t-5-13.9V2h-21.6v54.9q0 12.3 5.1 20.7a32 32 0 0 0 14.1 12.6 51.9 51.9 0 0 0 40.6 0 31.6 31.6 0 0 0 14-12.5q5.1-8.5 5.1-20.8V2h-21.6Zm106-10.4q-8-7-22.9-9.2l-11-1.7q-8-1.3-11-3.7a8.2 8.2 0 0 1-3-6.8 9 9 0 0 1 3.6-7q3.6-3 11-3 15.2 0 17.5 13.6h21.3a32 32 0 0 0-5.4-14.7A31 31 0 0 0 855.1 4q-8.3-4-20.4-4a45.8 45.8 0 0 0-19 3.7 29.6 29.6 0 0 0-12.5 9.8 23.5 23.5 0 0 0-4.3 13.8q0 11.3 6.6 18t21.7 9.2l12.1 2q7.7 1.2 10.7 4a9.7 9.7 0 0 1-1.2 15q-4.2 3.1-13 3.1-9.5 0-14-4.6t-5.4-13h-21q1 15.5 11.4 24.4t29.2 8.8q12.4 0 21.3-3.5t13.6-10a24.5 24.5 0 0 0 4.7-14.7q0-12-8-19ZM224.4 6.8v75.9a7.6 7.6 0 0 1-7 7.2c-.8 0-1 2.3 0 2.3h30.8c1 0 .7-2.3 0-2.3-2.8 0-7.5-2.8-7.5-7.2v-76c12 0 24 12.3 28 18.4 1 1.4 2.3.6 1.9-.4L260.5 2.8c-1-2.2-2.4-.9-3.9-.9h-48.1c-1.5 0-3-1.3-3.9.9l-9 22.6c-.4 1 1.2 1.9 2 .4 3.3-6.2 14.5-19 26.8-19M20.9 87.5h12.5a44.7 44.7 0 0 0 35-18.8c.5-1 1.5-.6 1 .5l-10 23H.1L48.9 6.7H38.3A39 39 0 0 0 4.8 24.5c-.7 1.4-2 .8-1.4-.5l9.4-22.6s5.4.5 11 .5h46.5ZM77.1 1.9H140l9.4 23.8c.3.7-1 1-1.4.3a40.3 40.3 0 0 0-36.3-19.3h-10.6v37.7h14.4c11 0 18.7-8.6 19.3-9.6s1.8-.5 1.2.7l-5.5 11.7 5.6 11.7c.6 1.2-1 1.7-1.6.6-1.5-2-6.8-9.8-17.3-9.8h-16v37.8h12.2c17.5 0 31-11.4 34.5-18.5.5-1.1 1.7-.3 1.4.6l-9.1 22.6h-63c-.8 0-.7-2.3 0-2.3 4.6 0 8.7-4.2 8.7-10.7v-67c0-4.4-5.3-8.2-8.7-8.2-.7 0-.8-2 0-2m106 80.7c0 4.4 4.7 7.3 7.5 7.3.7 0 1 2.2 0 2.2h-30.9c-1 0-.7-2.2 0-2.2a7.6 7.6 0 0 0 7-7.3V11.1c0-4.4-4.8-7.2-7-7.2-.7 0-.8-2 0-2h30.4c.9 0 .8 2 0 2-2.1 0-7 2.8-7 7.2Zm49.3-75.9h.6a.6.6 0 0 1 .6.6V87a.6.6 0 0 1-.6.6h-.6a.6.6 0 0 1-.6-.6V7.4a.6.6 0 0 1 .6-.6M57 7.4 11 86.9c-.1.3 0 .6.3.6h.7a1.2 1.2 0 0 0 .9-.6L58.7 7.4c.2-.4.1-.6-.2-.6h-.6a1.2 1.2 0 0 0-1 .6m35.8 0v79.5a.6.6 0 0 0 .6.6h.6a.6.6 0 0 0 .6-.6V7.4a.6.6 0 0 0-.6-.6h-.6a.6.6 0 0 0-.6.6m81.7 0v79.5a.6.6 0 0 0 .6.6h.6a.6.6 0 0 0 .6-.6V7.4a.6.6 0 0 0-.6-.6h-.6a.6.6 0 0 0-.6.6"/></svg></a>
-        <div class="footer-links__button">
-            <a href="https://www.zeit.de/campus/index" class="footer__button js-scroll" title="Zurück nach oben" data-ct-element-type="to_top_button">
-            <span class="footer__button-text">Nach oben</span>
-            <span class="footer__button-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13" class="svg-symbol footer-up" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><path d="M13 7 7 1m0 0L1 7m6-6v12"/><title>Pfeil nach oben</title></svg></span>
-            </a>
-        </div>
+        <a href="https://www.zeit.de/campus/index" class="footer__button js-scroll" title="Zurück nach oben" data-ct-element-type="to_top_button">
+            <span class="footer__button-text z-button">Nach oben</span>
+            <span class="footer__button-arrow"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" class="svg-symbol footer__button-icon z-icon-stroke" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Pfeil nach oben</title><path d="m1 7 6-6 6 6M7 1v12"/></svg></span>
+        </a>
     </div>
 
     <div class="publisher-links" itemscope itemtype="http://schema.org/SiteNavigationElement">
@@ -2432,133 +2564,11 @@
     </script>
 </div>
     
-    <script src="https://static.zeit.de/p/zeit.web/js/mausabhaengigeszaehlinstrument.b2b128488183c14a9e3f.js" async></script>
-    <script src="https://static.zeit.de/p/zeit.web/js/images.f844be61ac834d857b37.js" async></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/mausabhaengigeszaehlinstrument.c63d0c34b4e3a804acba.js" async></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/images.28de941f1d52a57ee358.js" async></script>
 
-    <script src="https://static.zeit.de/p/zeit.web/js/promise.5b29e57cb2b8c2dae8e6.js" nomodule defer></script>
-    <script src="https://static.zeit.de/p/zeit.web/js/campus.f26261d8a6d663150079.js" defer></script>
-
-    <script class="webtrekk_script">
-            window.Zeit.loadJS( 'https://static.zeit.de/static/js/webtrekk/webtrekk_v4.5.3.min-3.js', function() {
-
-                if (typeof window.webtrekkConfig === 'object') {
-                    window.webtrekkConfig.trackId = "981949533494636";
-
-                                            window.webtrekkConfig.requestQueueActivated = true;
-                        window.webtrekkConfig.requestQueueTTL = 5 * 60 * 1000;
-                        window.webtrekkConfig.requestQueueResendInterval = 5 * 1000;
-                        window.webtrekkConfig.requestQueueSize = 10;
-                                    }
-
-                var webtrekk = {
-                    linkTrack : "standard",
-                    linkTrackAttribute: "data-wt-click"
-                };
-
-                function getColorScheme() {
-                    var storedScheme = window.localStorage && window.localStorage.getItem( 'color-scheme' );
-
-                    if ( storedScheme === 'light' || storedScheme === 'dark' ) {
-                        return storedScheme;
-                    }
-
-                    if ( window.matchMedia && window.matchMedia( '(prefers-color-scheme: dark)' ).matches ) {
-                        return 'dark';
-                    }
-
-                    return 'light';
-                }
-
-                if ( typeof webtrekkV3 === "function" ) {
-                    window.wt = new webtrekkV3(webtrekk);
-                    wt.cookie = "3";
-
-                    wt.contentGroup = {
-                        1: "redaktion",
-                        2: "centerpage",
-                        3: "campus",
-                        4: "zede",
-                        5: "",
-                        6: "",
-                        7: "index",
-                        8: "campus/homepage/centerpage",
-                        9: "2016-04-19"
-                        };
-
-                    wt.customParameter = {
-                        1: "",
-                        2: "campus/bild-text",
-                        3: "1/1",
-                        4: "zeit;kpmg;zeit online;jobeinstieg;homepage;liebe;generation y",
-                        5: "2021-12-06 11:43:47.357611+01:00",
-                        6: "",
-                        8: "zede",
-                        9: "campus/homepage/centerpage",
-                        10: "yes",
-                        12: window.Zeit.getSiteParam(),
-                        13: window.Zeit.breakpoint.getTrackingBreakpoint(),
-                        15: "",
-                        25: "original",
-                        26: "centerpage.homepage",
-                        28: "dynamic",
-                        29: "unfeasible",
-                        30: "open",
-                        34: "",
-                        38: "undefined",
-                        40: "undefined",
-                        49: "de6e0d19-d954-457b-a7ba-3bd69df9f473"
-                        };
-
-                    wt.urmCategory = {
-                        24: getColorScheme()
-                    };
-
-                    wt.contentId = "redaktion.campus...centerpage.zede|www.zeit.de/campus/index";
-                                        if ( window.Zeit.abtest && window.Zeit.abtest.webtrekkId && window.Zeit.abtest.webtrekkId.length ) {
-                        wt.customParameter[36] = wt.customParameter[36] ? wt.customParameter[36] + ';' + window.Zeit.abtest.webtrekkId.join(';') : window.Zeit.abtest.webtrekkId.join(';');
-                    };
-
-                    if ( window.Zeit.user && window.Zeit.user.iqd_usergroup ) {
-                            wt.customParameter[40] = window.Zeit.user.iqd_usergroup;
-                        };
-
-                        
-                        wt.customParameter[23] = 'nicht_angemeldet';
-                        wt.customParameter[46] = window.Zeit.cookieRead('zonconsent') ? 'false' : 'undefined';
-
-                        if ( window.Zeit.user ) {
-                            if ( window.Zeit.user.ssoid ) {
-                                wt.customerId = window.Zeit.user.ssoid;
-                            }
-                            if ( window.Zeit.user.state === 'active' ) {
-                                wt.customParameter[23] = 'angemeldet';
-                            }
-                            if ( window.Zeit.user.adFree ) {
-                                wt.customParameter[46] = 'true';
-                            }
-                        }
-
-                    wt.sendinfo();
-
-                                                                window.wts.push(['send', 'link', {
-                            linkId: "#ab_testing",
-                            customClickParameter: {
-                                7: "2023-08-gate-outbrain",
-                                8: "Kontrollgruppe",
-                            }
-                        }]);
-                                            window.wts.push(['send', 'link', {
-                            linkId: "#ab_testing",
-                            customClickParameter: {
-                                7: "rebrush",
-                                8: "Kontrollgruppe",
-                            }
-                        }]);
-                                    }
-            });
-        </script>
-
-                
+    <script src="https://static.zeit.de/p/zeit.web/js/promise.b2285ebd13b49fae7bd7.js" nomodule defer></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/campus.2cae58d0fedacbf79484.js" defer></script>
 
         
 
@@ -2612,7 +2622,7 @@
             tp.push(["setCustomVariable", "uuid", "de6e0d19-d954-457b-a7ba-3bd69df9f473"]);
             tp.push(["setCustomVariable", "url", "https://www.zeit.de/campus/index"]);
                         tp.push(["setContentSection", "campus"]);
-            tp.push(["setTags", ["ZEIT", "KPMG", "Zeit Online", "Jobeinstieg", "Homepage", "Liebe", "Generation Y", "open", "dynamic"]]);
+            tp.push(["setTags", ["ZEIT", "KPMG", "Zeit Online", "Jobeinstieg", "Homepage", "Liebe", "Generation Y", "open", "free"]]);
                         tp.push(["setContentCreated", "2016-04-19T14:40:48+02:00"]);
             tp.push(["setCustomVariable", "last_updated", "2021-12-06T11:43:47+01:00"]);
             tp.push(["setCustomVariable", "page_type", "centerpage"]);
@@ -2622,6 +2632,8 @@
             if ( window.Zeit.user && window.Zeit.user.ssoid ) {
                 tp.push(["setCustomVariable", "sso_id", window.Zeit.user.ssoid]);
             }
+            tp.push(["setCustomVariable", "paywall_status", "open"]);
+            tp.push(["setCustomVariable", "access_right", "free"]);
             tp.push(["setContentIsNative", false]);
 
             var gateAccess;
@@ -2646,7 +2658,7 @@
                     var state = states[0];
                     var access = states[1];
 
-                    if (state === "dynamic") {
+                    if (state === "free") {
                         if (['register', 'paid'].indexOf(access) > -1) {
                             gateAccess = access;
                         }
@@ -2676,13 +2688,27 @@
                     }
                 }]);
                 cX.callQueue.push(['sendPageViewEvent']);
-            window.Zeit.loadJS('//experience-eu.piano.io/xbuilder/experience/load?aid=u6vAlvTEpe', function() {
-                log('Piano loaded', window.tp);
-                mark('load-piano');
-            }, false, function() {
-                log('Piano loading error.');
+            if ( typeof window.__tcfapi === 'function' ) {
+                window.__tcfapi( 'addEventListener', 2, function( tcData, success ) {
+                    if (success) {
+                        if ( tcData.eventStatus == 'cmpuishown') {
+                            tp.push(["setCustomVariable", "pur_layer", true]);
+                        }
+                        window.Zeit.loadJS('//experience-eu.piano.io/xbuilder/experience/load?aid=u6vAlvTEpe', function() {
+                            log('Piano loaded', window.tp);
+                            mark('load-piano');
+                        }, false, function() {
+                            log('Piano loading error.');
+                            });
+                    }
+                    window.__tcfapi('removeEventListener', 2, (success) => {
+                        if ( success ) {
+                            log('Piano consent listener removed.');
+                        }
+                    }, tcData.listenerId);
                 });
-        }
+            }
+            }
     }
 
     loadPiano();
