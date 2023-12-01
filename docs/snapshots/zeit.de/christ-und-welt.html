@@ -22,20 +22,20 @@
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/tabletgothic/TabletGothic-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/franziska/FranziskaWebPro.woff" as="font" type="font/woff" crossorigin>
     <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/normalize.eb629295d4c4fe1d25752792b6f2f37f.css">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/base/base.4c4603b0f8649ce2a21346bc28a18813.css">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/navigation/navigation.f8efda12d1f688f1dfadb80b997f4b25.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/base/base.bf2add0a6195cfb5cc29fa83ff878018.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/navigation/navigation.19c0f79b03e620ac77e15e97211b1489.css">
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.f59a56d460b26fdd9d2c8969ad9a4d7c.css" as="style">
     <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.f59a56d460b26fdd9d2c8969ad9a4d7c.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.f59a56d460b26fdd9d2c8969ad9a4d7c.css"></noscript>
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/breadcrumbs.fb96d8f2050b97507c59f41764281c6b.css" as="style">
     <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/breadcrumbs.fb96d8f2050b97507c59f41764281c6b.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/breadcrumbs.fb96d8f2050b97507c59f41764281c6b.css"></noscript><link rel="stylesheet" href="https://wally.zeit.de/footerbar.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/breadcrumbs.fb96d8f2050b97507c59f41764281c6b.css"></noscript><link rel="stylesheet" href="/+/wally/footerbar.css" media="print" onload="this.media='all'" />
     
 
-            <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/centerpage/centerpage.b7d1ad0e986f1b2bf7b8284d541d7616.css">
+            <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/centerpage/centerpage.388319e20ff2fc4d8f56f47042797050.css">
 
             
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/base/print.1aa7321994aad2c56e597a286073ece6.css" media="print">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.site/base/print.b308c0a0aab0b8d94be183bcf0b66757.css" media="print">
         
     <script id="zonConfig" type="application/json">
         {
@@ -56,6 +56,7 @@
             },
             "actualHost": "https://www.zeit.de",
             "toggles": {
+                "rebrush_2023": false,
                 "abtesting": true,
                 "abtesting_progressbar": false,
                 "adblocker_user_analytics": true,
@@ -119,6 +120,7 @@
                 "sub_ressort": "",
                 "type": "centerpage"
                 },
+            "isFramebuilder": false,
             "tabletMinWidth": 768,
             "desktopMinWidth": 1000,
             "sideAdMinWidth": 998,
@@ -338,46 +340,43 @@
                 localStorageIsSupported: function()
                     {try{return localStorage.setItem("zontest","zontest"),localStorage.removeItem("test"),!0}catch(t){return!1}
                 },
+                abtest: { webtrekkId: [] },
+                simpleHash: function (s) {
+                    if (!Math.imul) return 0;
+                    for ( var i = 0, h = 0xdeadbeef; i < s.length; i++ ) {
+                        h = Math.imul( h ^ s.charCodeAt(i), 2654435761);
+                    }
+                    return ( h ^ h >>> 16 ) >>> 0;
+                },
+                calculateVariantFromId: function( choices, salt ) {
+                    var stableUserId = this.user.ssoid || this.cookieRead( 'creid' ) || window.navigator.userAgent;
+                    var hashString = salt + stableUserId;
+                    var index = this.simpleHash( hashString ) % ( choices.length );
+                    return choices[ index ];
+                },
                 user: {}
             };
     
-            window.Zeit.view = getConfig().view || {};
+            window.Zeit.view = getConfig().view;
             window.Zeit.view.get = function( key ) {
                 return window.Zeit.view[key] || '';
             };
     
-            window.Zeit.toggles = getConfig().toggles || {};
+            window.Zeit.toggles = getConfig().toggles;
             window.Zeit.toggles.get = function( key ) {
                 return window.Zeit.toggles[key] || false;
             }
     
-            window.Zeit.settings = getConfig().settings || {};
+            window.Zeit.settings = getConfig().settings;
             window.Zeit.settings.get = function( key, preset ) {
                 return window.Zeit.settings[key] || preset;
             };
-        })();
     
-                window.Zeit.abtest = {};
-        window.Zeit.abtest.webtrekkId = [];
-        window.Zeit.simpleHash = function (s) {
-            if (!Math.imul) return 0;
-            for ( var i = 0, h = 0xdeadbeef; i < s.length; i++ ) {
-                h = Math.imul( h ^ s.charCodeAt(i), 2654435761);
+            var storedFontSize = window.Zeit.getFontSize();
+            if ( storedFontSize ) {
+                window.Zeit.setFontSize( storedFontSize, false );
             }
-            return ( h ^ h >>> 16 ) >>> 0;
-        };
-        window.Zeit.calculateVariantFromId = function( choices, salt ) {
-            var stableUserId = window.Zeit.user.ssoid || window.Zeit.cookieRead( 'creid' ) || window.navigator.userAgent;
-            var hashString = salt + stableUserId;
-            var index = window.Zeit.simpleHash( hashString ) % ( choices.length );
-            return choices[ index ];
-        };
-        
-        var storedFontSize = window.Zeit.getFontSize();
-        if ( storedFontSize ) {
-            window.Zeit.setFontSize( storedFontSize, false );
-        }
-    
+        })();
     </script>
     <!-- [esi-debug] src="/login-state?for=head" -->
     <script>
@@ -457,15 +456,13 @@
                     }
                 }
 
+                                data.consent = {
+                    has_consent: false,
+                }
+
                 window.dataLayer.push(data);
 
-                                                    window.dataLayer.push({
-                        "event": "#ab_testing",
-                        "test_name": "rebrush",
-                        "group_name": "Kontrollgruppe",
-                        "path": window.location.pathname
-                    });
-                            })();
+            })();
         </script>
 
         
@@ -520,17 +517,18 @@
             baseEndpoint: "https://consent-cdn.zeit.de",
             propertyHref: "http://www.zeit.de",
             propertyId: 3800,
+            zonlog: function() {
+                if ( location.hash.indexOf( 'debug-sourcepoint' ) > -1 ) {
+                    console.debug.apply( console, arguments );
+                }
+            },
             events: {
                 onMessageChoiceSelect: function (choice_id, choice_type_id) {
-                                        if ( window.Zeit && window.Zeit.log ) {
-                        window.Zeit.log('onMessageChoiceSelect', choice_id, choice_type_id);
-                    }
-                                    },
+                    window._sp_.config.zonlog('onMessageChoiceSelect', choice_id, choice_type_id);
+                },
                 onPrivacyManagerAction: function (pmData) {
-                                        if ( window.Zeit && window.Zeit.log ) {
-                        window.Zeit.log('onPrivacyManagerAction', pmData);
-                    }
-                                                                window.dataLayer.push({
+                    window._sp_.config.zonlog('onPrivacyManagerAction', pmData);
+                                            window.dataLayer.push({
                             'event': 'consent_layer_useractioncomplete',
                             'purposeConsent': pmData.purposeConsent
                         });
@@ -541,33 +539,29 @@
                         });
                                     },
                 onConsentReady: function (consentUUID, euconsent) {
-                                        if ( window.Zeit && window.Zeit.log ) {
-                        window.Zeit.log('onConsentReady');
-                        window.Zeit.log('consentUUID', consentUUID);
-                        window.Zeit.log('euconsent', euconsent);
-                    }
-                                        var consentPlausible = true;
+                    window._sp_.config.zonlog('onConsentReady', consentUUID, euconsent);
+                    var consentPlausible = true;
                         if ( window.Zeit && window.Zeit.user.adFree !== true) {
-                            window.Zeit.log('Check for missing consent');
+                            window._sp_.config.zonlog('Check for missing consent');
                             window.__tcfapi('getCustomVendorConsents', 2, function(tcData, success) {
                                 if ( success && typeof window.Zeit !== 'undefined') {
                                     var requiredPurposes = JSON.parse( "[    {\"_id\": \"650059afdbb0cd04b459edf7\", \"name\": \"Personalisierte Werbung mit seiten\u00fcbergreifender Profilbildung (Stack)\", \"slug\": \"store_information\"},    {\"_id\": \"650061cbc47a59059cc43872\", \"name\": \"Eigene personalisierte Verlagsangebote\", \"slug\": \"verlagsangebote\"},    {\"_id\": \"650061cbc47a59059cc43877\", \"name\": \"Eigene Produkt- und Vertriebsentwicklung\", \"slug\": \"produktentwicklung\"}  ]" );
                                     var pmid = window.Zeit.settings.get( 'sourcepoint_privacy_manager_id' );
                                     requiredPurposes.forEach(function(purpose) {
                                         if ( !tcData.consentedPurposes.find(function(p) { return p._id === purpose._id;}) ) {
-                                            window.Zeit.log('Missing consent for purpose', purpose);
+                                            window._sp_.config.zonlog('Missing consent for purpose', purpose);
                                             consentPlausible = false;
                                         }
                                     });
                                     if ( !consentPlausible ) {
                                         window.__tcfapi('postRejectAll', 2, function (postRejectAllResponse, success) {
                                             if ( success ) {
-                                                window.Zeit.log('postRejectAllResponse', postRejectAllResponse);
+                                                window._sp_.config.zonlog('postRejectAllResponse', postRejectAllResponse);
                                                 window._sp_.loadPrivacyManagerModal( pmid );
                                             }
                                         });
                                     } else {
-                                        window.Zeit.log('Consent plausible');
+                                        window._sp_.config.zonlog('Consent plausible');
                                     }
                                 }
                             });
@@ -582,36 +576,31 @@
                             has_consent: null,
                             purposes: []
                         };
-                        if ( window.Zeit && window.Zeit.log ) {
-                            window.__tcfapi('getCustomVendorConsents', 2, function(tcData, success) {
-                                if ( success && typeof window.Zeit !== 'undefined') {
-                                    var purposes = JSON.parse( "[{\"_id\": \"650061cbc47a59059cc4387c\", \"name\": \"Drittanbieter-Inhalte aus sozialen Netzwerken in redaktionellen Inhalten\", \"slug\": \"social_embed\"},    {\"_id\": \"650059afdbb0cd04b459edf7\", \"name\": \"Personalisierte Werbung mit seiten\u00fcbergreifender Profilbildung (Stack)\", \"slug\": \"store_information\"},    {\"_id\": \"650061cbc47a59059cc43872\", \"name\": \"Eigene personalisierte Verlagsangebote\", \"slug\": \"verlagsangebote\"},    {\"_id\": \"650061cbc47a59059cc43877\", \"name\": \"Eigene Produkt- und Vertriebsentwicklung\", \"slug\": \"produktentwicklung\"},    {\"_id\": \"6527ef14a1d4e604f2ce1d44\", \"name\": \"Eigene personalisierte redaktionelle Inhaltsempfehlungen\", \"slug\": \"inhaltsempfehlungen\"}]" );
-                                    purposes.forEach(function(purpose) {
-                                        if ( tcData.consentedPurposes.find(function(p) { return p._id === purpose._id;}) ) {
-                                            purpose.consent = true;
-                                            if ( purpose.slug === 'store_information') {
-                                                consentData.has_consent = true;
-                                            }
-                                        } else {
-                                            purpose.consent = false;
+                        window.__tcfapi('getCustomVendorConsents', 2, function(tcData, success) {
+                            if ( success ) {
+                                var purposes = JSON.parse( "[{\"_id\": \"650061cbc47a59059cc4387c\", \"name\": \"Drittanbieter-Inhalte aus sozialen Netzwerken in redaktionellen Inhalten\", \"slug\": \"social_embed\"},    {\"_id\": \"650059afdbb0cd04b459edf7\", \"name\": \"Personalisierte Werbung mit seiten\u00fcbergreifender Profilbildung (Stack)\", \"slug\": \"store_information\"},    {\"_id\": \"650061cbc47a59059cc43872\", \"name\": \"Eigene personalisierte Verlagsangebote\", \"slug\": \"verlagsangebote\"},    {\"_id\": \"650061cbc47a59059cc43877\", \"name\": \"Eigene Produkt- und Vertriebsentwicklung\", \"slug\": \"produktentwicklung\"},    {\"_id\": \"6527ef14a1d4e604f2ce1d44\", \"name\": \"Eigene personalisierte redaktionelle Inhaltsempfehlungen\", \"slug\": \"inhaltsempfehlungen\"}]" );
+                                purposes.forEach(function(purpose) {
+                                    if ( tcData.consentedPurposes.find(function(p) { return p._id === purpose._id;}) ) {
+                                        purpose.consent = true;
+                                        if ( purpose.slug === 'store_information') {
+                                            consentData.has_consent = true;
                                         }
-                                        consentData.purposes.push(purpose);
-                                    });
-                                }
-                            });
-                            window.Zeit.log('dataLayer => consentData', consentData);
-                            window.dataLayer.push({
-                                'event': 'cmp_init',
-                                'consent': consentData
-                            });
-                        }
+                                    } else {
+                                        purpose.consent = false;
+                                    }
+                                    consentData.purposes.push(purpose);
+                                });
+                            }
+                        });
+                        window._sp_.config.zonlog('dataLayer => consentData', consentData);
+                        window.dataLayer.push({
+                            'event': 'cmp_init',
+                            'consent': consentData
+                        });
                     },
                 onError: function ( message_type, errorCode ) {
-                    if ( window.Zeit && window.Zeit.log ) {
-                        window.Zeit.log('message_type', message_type);
-                        window.Zeit.log('errorCode', errorCode);
-                    }
-                                    }
+                    window._sp_.config.zonlog('onError', message_type, errorCode);
+                }
             }
         }
     };
@@ -748,7 +737,7 @@
     </script>
 
     <script type="application/ld+json">
-        {"@context": "http://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://www.zeit.de/2023/45/macht-kirche-kirchensteuer-politik-austritt-ende"}, {"@type": "ListItem", "position": 2, "url": "https://www.zeit.de/2023/45/weltsynode-rom-katholische-kirche"}, {"@type": "ListItem", "position": 3, "url": "https://www.zeit.de/2023/44/bergkarabach-gefluechtete-aserbaidschan-armenien-etschmiadsin"}, {"@type": "ListItem", "position": 4, "url": "https://www.zeit.de/sinn/2023-09/drogenentzug-sucht-therapie-alkohol"}, {"@type": "ListItem", "position": 5, "url": "https://www.zeit.de/2023/44/nikodemus-schnabel-abt-jerusalem-israel-konflikt"}, {"@type": "ListItem", "position": 6, "url": "https://www.zeit.de/2023/44/job-neuanfang-schichtdienst-selbststaendigkeit-cafe"}, {"@type": "ListItem", "position": 7, "url": "https://www.zeit.de/2023/45/papst-israel-vatikan-hamas-terror-stellungnahme"}, {"@type": "ListItem", "position": 8, "url": "https://www.zeit.de/2023/42/sed-regime-aufarbeitung-diktatur-osten-westen"}, {"@type": "ListItem", "position": 9, "url": "https://www.zeit.de/2023/42/sexueller-missbrauch-evangelische-kirche-studie-aufarbeitung"}, {"@type": "ListItem", "position": 10, "url": "https://www.zeit.de/2023/41/james-martin-weltsynode-katholische-kirche"}, {"@type": "ListItem", "position": 11, "url": "https://www.zeit.de/2023/41/missionare-kolonialismus-christliche-kirche-aufarbeitung"}, {"@type": "ListItem", "position": 12, "url": "https://www.zeit.de/gesellschaft/2023-09/katholische-kirche-sexueller-missbrauch-aufarbeitung-bistum-essen"}, {"@type": "ListItem", "position": 13, "url": "https://www.zeit.de/2023/39/weltsynode-rom-papst-katholische-kirche-reform"}, {"@type": "ListItem", "position": 14, "url": "https://www.zeit.de/2023/39/gottesdienst-queere-paare-koeln-marianne-arndt"}, {"@type": "ListItem", "position": 15, "url": "https://www.zeit.de/2023/37/irme-setter-karp-afd-mitglieder-kirchenaemter"}, {"@type": "ListItem", "position": 16, "url": "https://www.zeit.de/2023/36/papst-franziskus-benedikt-xvi-theologie"}, {"@type": "ListItem", "position": 17, "url": "https://www.zeit.de/2023/43/bienenzucht-bistum-osnabrueck-kirche-missbrauch"}, {"@type": "ListItem", "position": 18, "url": "https://www.zeit.de/kultur/kunst/2023-10/rafal-milach-kuenstler-polen-wahl-proteste-katholische-kirche"}, {"@type": "ListItem", "position": 19, "url": "https://www.zeit.de/2023/42/weltsynode-rom-katholische-kirche-papst-franziskus"}]}
+        {"@context": "http://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://www.zeit.de/2023/51/kirchenreform-deutschland-papst-franziskus-kritik-katholische-kirche"}, {"@type": "ListItem", "position": 2, "url": "https://www.zeit.de/2023/51/martina-schweinsburg-thueringen-cdu-landraetin-glaube-afd"}, {"@type": "ListItem", "position": 3, "url": "https://www.zeit.de/sinn/2023-11/erika-lust-feministische-pornografie-sexuelle-fantasien-aengste"}, {"@type": "ListItem", "position": 4, "url": "https://www.zeit.de/2023/48/christian-von-der-heide-designer-affaeren"}, {"@type": "ListItem", "position": 5, "url": "https://www.zeit.de/2023/48/terroranschlag-paris-beziehung-partner-tod"}, {"@type": "ListItem", "position": 6, "url": "https://www.zeit.de/sinn/2023-11/lena-gercke-schoenheit-model-sinn"}, {"@type": "ListItem", "position": 7, "url": "https://www.zeit.de/2023/51/frere-matthew-taize-nachfolger-frere-roger-frankreich"}, {"@type": "ListItem", "position": 8, "url": "https://www.zeit.de/2023/49/evangelische-kirche-annette-kurschus-ruecktritt-sexueller-missbrauch"}, {"@type": "ListItem", "position": 9, "url": "https://www.zeit.de/gesellschaft/2023-11/kirchenaustritte-studie-evangelisch-katholisch-kristin-merle"}, {"@type": "ListItem", "position": 10, "url": "https://www.zeit.de/2023/47/cornelia-egg-moewes-abendsegen-twitter"}, {"@type": "ListItem", "position": 11, "url": "https://www.zeit.de/2023/47/missbrauchsskandal-katholische-kirche-ministerinnen-eindruecke"}, {"@type": "ListItem", "position": 12, "url": "https://www.zeit.de/2023/47/missbrauchsskandal-katholische-kirche-staatliche-aufarbeitung"}, {"@type": "ListItem", "position": 13, "url": "https://www.zeit.de/2023/46/katholische-kirche-frankreich-sexueller-missbrauch-veronique-margron"}, {"@type": "ListItem", "position": 14, "url": "https://www.zeit.de/2023/45/papst-israel-vatikan-hamas-terror-stellungnahme"}, {"@type": "ListItem", "position": 15, "url": "https://www.zeit.de/2023/46/weltsynode-vatikan-katholische-kirche-papst-frauen"}, {"@type": "ListItem", "position": 16, "url": "https://www.zeit.de/2023/45/macht-kirche-kirchensteuer-politik-austritt-ende"}, {"@type": "ListItem", "position": 17, "url": "https://www.zeit.de/gesellschaft/2023-11/papst-franziskus-krankheit-vatikan"}, {"@type": "ListItem", "position": 18, "url": "https://www.zeit.de/gesellschaft/zeitgeschehen/2023-11/katholische-kiche-zdk-reform-synodaler-weg-ausschuss"}, {"@type": "ListItem", "position": 19, "url": "https://www.zeit.de/2023/49/grabrede-beerdigung-glaube-tod-trauer"}]}
     </script>
 
     
@@ -769,11 +758,11 @@
                 "cntTag": ["Paywall-Open", "Online"],
             }
         </script>
-    <script type="text/javascript">
+    <script>
             if ( typeof window.__tcfapi === 'function' ) {
                 window.__tcfapi( 'addEventListener', 2, function( tcData, success ) {
                     if ( success ) {
-                        __tcfapi('getCustomVendorConsents', 2, (data, success) => {
+                        window.__tcfapi('getCustomVendorConsents', 2, (data, success) => {
                             if ( success ) {
                                 var customId = "6155654a60e90105b791536a";
                                 if ( data && data.grants && data.grants[customId] && data.grants[customId].vendorGrant ) {
@@ -785,7 +774,7 @@
                 });
             }
         </script>    <script>
-        if ( screen.width >= window.Zeit.tabletMinWidth && screen.width < window.Zeit.desktopMinWidth && !window.Zeit.user.adFree ) {window.Zeit.viewport.set( 'portrait' );}
+        if ( screen.width >= window.Zeit.tabletMinWidth && screen.width < window.Zeit.desktopMinWidth && !window.Zeit.user.adFree ) {                window.Zeit.viewport.set( window.outerWidth < window.Zeit.desktopMinWidth ? 'portrait' : 'standard' );}
     </script>
     
     <script>
@@ -990,7 +979,7 @@ if (!window.Zeit.user.adFree && window.location.pathname.indexOf('administrative
     }
     </style>
         <style>body[data-template=visual-article]:not(.has-fullwidth-header) .navigation {max-width: none;}</style>
-    <script src="https://static.zeit.de/p/zeit.web/js/colorscheme.a68c9d5ff249c6b68c81.js" ></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/colorscheme.2db23f13769cd2856187.js" ></script>
 
     <!-- zeit.web.core.template.include_in_head injection point -->
 
@@ -1053,7 +1042,7 @@ if (!window.Zeit.user.adFree && window.location.pathname.indexOf('administrative
 
 <div class="navigation__area navigation__area--main" data-ct-container-type="navigation_main">
         <a class="navigation__button navigation__button--main" role="button" href="#navigation-content-main" aria-controls="navigation-content-main" title="Navigation" data-ct-label="" data-ct-action="open">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" class="svg-symbol menu-icon" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><path fill-rule="evenodd" d="M1 8.25h16v1.5H1v-1.5ZM1 3.25h16v1.5H1v-1.5ZM1 13.25h16v1.5H1v-1.5Z" clip-rule="evenodd"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" class="svg-symbol menu-icon" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><path fill-rule="evenodd" d="M1 8.25h16v1.5H1zM1 3.25h16v1.5H1zM1 13.25h16v1.5H1z" clip-rule="evenodd"/></svg>
             <span>Menü</span>
         </a>
     </div>
@@ -1080,7 +1069,7 @@ if (!window.Zeit.user.adFree && window.location.pathname.indexOf('administrative
                 <ul class="navigation__section navigation__section--border navigation__section--bold" data-vt-section="exklusive_angebote" data-ct-section-type="exklusive_angebote"  >
                                                 <li>
                         <a href="https://www.zeit.de/exklusive-zeit-artikel" class="navigation-link" itemprop="url">
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol navigation-link__zplus-icon" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1zm5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20v4z"/></svg>    <span itemprop="name">Exklusive Artikel</span>
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="23" viewBox="0 0 28 23" class="svg-symbol navigation-link__zplus-icon" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><title>Z+</title><path d="M5.4 18.2s.1 0 .1-.1l7.4-13V5h-.4s-.1 0-.1.1L5 18.1v.1h.4zm9-3.1c.1-.2.3-.1.2.1-.1.2-1.6 3.8-1.6 3.8H3.3l7.9-14H9.5c-3.3 0-5 2.2-5.4 2.9-.1.2-.3.1-.2-.1.1-.3 1.5-3.7 1.5-3.7s.9.1 1.8.1h7.5l-8 14h2c3 0 5.3-2.3 5.7-3.1m5.6-4.3h4v1.4h-4v4.1h-1.3v-4.1h-4v-1.4h4v-4H20z"/></svg>    <span itemprop="name">Exklusive Artikel</span>
 </a>                    </li>
                 </ul>
                 <ul class="navigation__section navigation__section--split navigation__section--border navigation__section--bold" data-vt-section="ressorts" data-ct-section-type="ressorts"  >
@@ -1261,20 +1250,20 @@ if (!window.Zeit.user.adFree && window.location.pathname.indexOf('administrative
                 </ul>
                 <div role="heading" class="navigation-section__headline" id="nav-headline-anzeigen">Anzeigen</div><ul class="navigation__section" data-vt-section="anzeigen" data-ct-section-type="anzeigen"  aria-labelledby="nav-headline-anzeigen">
                                                 <li>
-                        <a href="https://www.zeit.de/campus/angebote/fuer-abiturienten/index" class="navigation-link" itemprop="url">
-        <span itemprop="name">Dein Weg in ein erfolgreiches Berufsleben</span>
+                        <a href="https://www.zeit.de/angebote/most-wanted-start-2024/index" class="navigation-link" itemprop="url">
+        <span itemprop="name">Beliebteste Ausbildungsplätze 2024</span>
 </a>                    </li>
                                                     <li>
                         <a href="https://cmk.zeit.de/cms/microsite/16052/im-einklang-mit-der-natur-eine-reise-durch-die-schweiz" class="navigation-link" itemprop="url">
         <span itemprop="name">Reisen im Einklang mit der Natur</span>
 </a>                    </li>
                                                     <li>
-                        <a href="https://www.zeit.de/campus/angebote/deloitte/staffel2/nachhaltigkeits-richtlinien" class="navigation-link" itemprop="url">
+                        <a href="https://www.zeit.de/campus/angebote/deloitte/staffel2/gruene-transformation" class="navigation-link" itemprop="url">
         <span itemprop="name">Re:Future. Re:Economy</span>
 </a>                    </li>
                                                     <li>
-                        <a href="https://www.zeit.de/angebote/most-wanted-employer-2023/index" class="navigation-link" itemprop="url">
-        <span itemprop="name">Beliebteste Arbeitgeber 2023</span>
+                        <a href="https://www.zeit.de/campus/angebote/howitworks/experten-podcasts" class="navigation-link" itemprop="url">
+        <span itemprop="name">How it works: Der Podcast</span>
 </a>                    </li>
                                                     <li>
                         <a href="https://www.zeit.de/campus/angebote/howitworks/index" class="navigation-link" itemprop="url">
@@ -1321,7 +1310,7 @@ if (!window.Zeit.user.adFree && window.location.pathname.indexOf('administrative
 <div class="navigation__area navigation__area--account" data-ct-container-type="navigation_account" itemscope itemtype="http://schema.org/SiteNavigationElement">
         <a href="https://premium.zeit.de/probe-abo" class="navigation__subscription-link" data-ct-element-type="subscription-link" itemprop="url"><span itemprop="name">Abo testen</span></a>
                 <a class="navigation__button navigation__button--account" role="button" href="#navigation-content-account" aria-controls="navigation-content-account" title="Nutzermenü" data-ct-label="" data-ct-action="open">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" class="svg-symbol menu-icon" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><path fill-rule="evenodd" d="M9 7.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM9 9a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4.642 12.996C3.98 13.77 3.75 15.01 3.75 17h-1.5c0-1.987.199-3.747 1.251-4.978C4.58 10.76 6.37 10.25 9 10.25c2.63 0 4.42.51 5.499 1.772C15.55 13.253 15.75 15.013 15.75 17h-1.5c0-1.99-.23-3.23-.892-4.004-.636-.744-1.846-1.246-4.358-1.246-2.512 0-3.722.502-4.358 1.246Z" clip-rule="evenodd"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" class="svg-symbol menu-icon" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><path fill-rule="evenodd" d="M9 7.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5M9 9a4 4 0 1 0 0-8 4 4 0 0 0 0 8M4.642 12.996C3.98 13.77 3.75 15.01 3.75 17h-1.5c0-1.987.199-3.747 1.251-4.978C4.58 10.76 6.37 10.25 9 10.25c2.63 0 4.42.51 5.499 1.772C15.55 13.253 15.75 15.013 15.75 17h-1.5c0-1.99-.23-3.23-.892-4.004-.636-.744-1.846-1.246-4.358-1.246-2.512 0-3.722.502-4.358 1.246" clip-rule="evenodd"/></svg>
         </a>
     </div>
 <nav class="navigation__content navigation__content--account" id="navigation-content-account" data-ct-container-type="navigation_account" aria-label="Nutzermenü" itemscope itemtype="http://schema.org/SiteNavigationElement">
@@ -1468,46 +1457,45 @@ if (!window.Zeit.user.adFree && window.location.pathname.indexOf('administrative
                                                                             
                                     
             
-                                    <article class="zon-teaser-classic  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/45/macht-kirche-kirchensteuer-politik-austritt-ende" data-zplus="zplus">
-                            <a href="https://www.zeit.de/2023/45/macht-kirche-kirchensteuer-politik-austritt-ende" class="zon-teaser-classic__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Macht der Kirche: Aufreger Kirchensteuer">Macht der Kirche: Aufreger Kirchensteuer</a>    <div class="zon-teaser-classic__container">
-        <a href="https://www.zeit.de/2023/45/macht-kirche-kirchensteuer-politik-austritt-ende" class="zon-teaser-classic__heading-link">
+                                    <article class="zon-teaser-classic  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/51/kirchenreform-deutschland-papst-franziskus-kritik-katholische-kirche" data-zplus="zplus-dynamic">
+                            <a href="https://www.zeit.de/2023/51/kirchenreform-deutschland-papst-franziskus-kritik-katholische-kirche" class="zon-teaser-classic__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Kirchenreform in Deutschland: &#34;Rom kartätscht nicht nieder&#34; ">Kirchenreform in Deutschland: &#34;Rom kartätscht nicht nieder&#34; </a>    <div class="zon-teaser-classic__container">
+        <a href="https://www.zeit.de/2023/51/kirchenreform-deutschland-papst-franziskus-kritik-katholische-kirche" class="zon-teaser-classic__heading-link">
         <h3 class="zon-teaser-classic__heading">
-                <span class="zon-teaser-classic__kicker">    <svg class="svg-symbol zplus-logo" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (abopflichtiger Inhalt);">
-        <title>Z+ (abopflichtiger Inhalt);</title>
+                <span class="zon-teaser-classic__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
         <use xlink:href="#svg-zplus" />
     </svg>
-Macht der Kirche</span><span class="visually-hidden">: </span><span class="zon-teaser-classic__title">Aufreger Kirchensteuer</span>
+Kirchenreform in Deutschland</span><span class="visually-hidden">: </span><span class="zon-teaser-classic__title">&#34;Rom kartätscht nicht nieder&#34; </span>
                 </h3>
         </a>
-            <figure class="zon-teaser-classic__media zon-teaser-classic__media--force-mobile scaled-image variant variant--cinema">
+            <figure class="zon-teaser-classic__media  scaled-image variant variant--cinema">
                 <div class="zon-teaser-classic__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/45/macht-kirche-kirchensteuer/cinema__980x420">
+            <noscript data-src="https://img.zeit.de/2023/51/rom-kartaetscht-nicht-nieder-bild-1/cinema__980x420">
                                 <img class="zon-teaser-classic__media-item"
-                          alt="Macht der Kirche: Aufreger Kirchensteuer"
-                     src="https://img.zeit.de/2023/45/macht-kirche-kirchensteuer/cinema__980x420"
-                     data-src="https://img.zeit.de/2023/45/macht-kirche-kirchensteuer/cinema"
+                          alt="Kirchenreform in Deutschland: &#34;Rom kartätscht nicht nieder&#34; "
+                     src="https://img.zeit.de/2023/51/rom-kartaetscht-nicht-nieder-bild-1/cinema__980x420"
+                     data-src="https://img.zeit.de/2023/51/rom-kartaetscht-nicht-nieder-bild-1/cinema"
                      data-ratio="2.33333333333"
                      decoding="async"
-                     data-mobile-src="https://img.zeit.de/2023/45/macht-kirche-kirchensteuer/wide" data-mobile-ratio="1.77777777778">
+                     data-mobile-src="https://img.zeit.de/2023/51/rom-kartaetscht-nicht-nieder-bild-1/wide" data-mobile-ratio="1.77777777778">
                             </noscript></div>
 
         <script type="application/ld+json">
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/45/macht-kirche-kirchensteuer/cinema__980x420",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Peter Schickert/\u200bimago images"}
+    "url": "https://img.zeit.de/2023/51/rom-kartaetscht-nicht-nieder-bild-1/cinema__980x420",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0BSIP/\u200bImago Images"}
 }
 </script>                </figure>
-    <p class="zon-teaser-classic__text">Wie sie fließt. Wie sie entstand. Und warum dem System zum Ende des Jahrzehnts ein Schock droht.</p>
+    <p class="zon-teaser-classic__text">Der Vatikan kritisiert die Reformwünsche der deutschen Kirche gleich in zwei Briefen. Und jetzt? Der Vatikanexperte Ludwig Ring-Eifel schätzt Chancen der Vorhaben ab.</p>
         
 
             <div class="zon-teaser-classic__metadata">
-            <span><span class="zon-teaser-classic__byline">    Von            Thomas Schüller</span>
+            <span><span class="zon-teaser-classic__byline">    Interview:            Georg Löwisch</span>
     </span></div>
         </div>
 
-    <button value="c01775a0-09ec-4b9f-aaaa-5c877b920254" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="30639eef-8ba4-46a3-80b3-d2dd7f35cfb9" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -1535,14 +1523,14 @@ Macht der Kirche</span><span class="visually-hidden">: </span><span class="zon-t
                                                                 
                                     
             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/45/weltsynode-rom-katholische-kirche" data-zplus="zplus-dynamic">
-                            <a href="https://www.zeit.de/2023/45/weltsynode-rom-katholische-kirche" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Weltsynode in Rom: Der Chic der Revoluzzer">Weltsynode in Rom: Der Chic der Revoluzzer</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/51/martina-schweinsburg-thueringen-cdu-landraetin-glaube-afd" data-zplus="zplus">
+                            <a href="https://www.zeit.de/2023/51/martina-schweinsburg-thueringen-cdu-landraetin-glaube-afd" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Martina Schweinsburg: Die Landgräfin">Martina Schweinsburg: Die Landgräfin</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/45/der-chic-der-revoluzzer-bild-1/wide__822x462">
+            <noscript data-src="https://img.zeit.de/2023/51/die-landgraefin-bild-1/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="Weltsynode in Rom: Der Chic der Revoluzzer"
-                     src="https://img.zeit.de/2023/45/der-chic-der-revoluzzer-bild-1/wide__822x462"
-                     data-src="https://img.zeit.de/2023/45/der-chic-der-revoluzzer-bild-1/wide"
+                          alt="Martina Schweinsburg: Die Landgräfin"
+                     src="https://img.zeit.de/2023/51/die-landgraefin-bild-1/wide__822x462"
+                     data-src="https://img.zeit.de/2023/51/die-landgraefin-bild-1/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -1552,29 +1540,30 @@ Macht der Kirche</span><span class="visually-hidden">: </span><span class="zon-t
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/45/der-chic-der-revoluzzer-bild-1/wide__822x462",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Britta Baas"}
+    "url": "https://img.zeit.de/2023/51/die-landgraefin-bild-1/wide__822x462",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Ludwig Ander-Donath f\u00fcr DIE ZEIT"}
 }
 </script>                </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/2023/45/weltsynode-rom-katholische-kirche" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/2023/51/martina-schweinsburg-thueringen-cdu-landraetin-glaube-afd" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
+                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (abopflichtiger Inhalt);">
+        <title>Z+ (abopflichtiger Inhalt);</title>
         <use xlink:href="#svg-zplus" />
     </svg>
-Weltsynode in Rom</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Der Chic der Revoluzzer</span>
+Martina Schweinsburg</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Die Landgräfin</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Zur Weltsynode des Papstes reisen auch Irme Stetter-Karp und Thomas Söding vom Zentralkomitee der deutschen Katholiken. Heraus kommt ein erstaunliches Foto.</p>
+        <p class="zon-teaser-standard__text">Mit Bibelzitaten, einem Hirtenhund und 33 Jahren Erfahrung regiert Martina Schweinsburg den thüringischen Landkreis Greiz. Wird ihre Partei im Osten so wie sie? </p>
                             
 
             <div class="zon-teaser-standard__metadata">
-            <span><span class="zon-teaser-standard__byline">    Von            Jan Feddersen</span>
+            <span><span class="zon-teaser-standard__byline">    Von            Martin Debes</span>
     </span></div>
     
     </div>
 
-    <button value="ef2757fe-1ace-4a78-aec7-de82b6b819f8" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="51e0c028-c5eb-46c1-8a5d-49f9a7554283" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -1715,14 +1704,14 @@ Weltsynode in Rom</span><span class="visually-hidden">: </span><span class="zon-
                                                                             
                                     
             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/44/bergkarabach-gefluechtete-aserbaidschan-armenien-etschmiadsin" data-zplus="zplus-dynamic">
-                            <a href="https://www.zeit.de/2023/44/bergkarabach-gefluechtete-aserbaidschan-armenien-etschmiadsin" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Geflüchtete aus Bergkarabach: Zuflucht in der heiligen Stadt">Geflüchtete aus Bergkarabach: Zuflucht in der heiligen Stadt</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sinn/2023-11/erika-lust-feministische-pornografie-sexuelle-fantasien-aengste" data-zplus="zplus">
+                            <a href="https://www.zeit.de/sinn/2023-11/erika-lust-feministische-pornografie-sexuelle-fantasien-aengste" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Erika Lust: &#34;Ich habe auch schon ein Paar über 70 gezeigt&#34;">Erika Lust: &#34;Ich habe auch schon ein Paar über 70 gezeigt&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/44/zuflucht-in-der-heiligen-stadt-bild-1/wide__822x462">
+            <noscript data-src="https://img.zeit.de/zeit-magazin/2023-11/erika-lust-feministische-pornografie-sexuelle-fantasien-aengste-teaser/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="Geflüchtete aus Bergkarabach: Zuflucht in der heiligen Stadt"
-                     src="https://img.zeit.de/2023/44/zuflucht-in-der-heiligen-stadt-bild-1/wide__822x462"
-                     data-src="https://img.zeit.de/2023/44/zuflucht-in-der-heiligen-stadt-bild-1/wide"
+                          alt="Erika Lust: &#34;Ich habe auch schon ein Paar über 70 gezeigt&#34;"
+                     src="https://img.zeit.de/zeit-magazin/2023-11/erika-lust-feministische-pornografie-sexuelle-fantasien-aengste-teaser/wide__822x462"
+                     data-src="https://img.zeit.de/zeit-magazin/2023-11/erika-lust-feministische-pornografie-sexuelle-fantasien-aengste-teaser/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -1732,29 +1721,30 @@ Weltsynode in Rom</span><span class="visually-hidden">: </span><span class="zon-
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/44/zuflucht-in-der-heiligen-stadt-bild-1/wide__822x462",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Daro Sulakauri, n-ost"}
+    "url": "https://img.zeit.de/zeit-magazin/2023-11/erika-lust-feministische-pornografie-sexuelle-fantasien-aengste-teaser/wide__822x462",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Monica Figueras"}
 }
 </script>                </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/2023/44/bergkarabach-gefluechtete-aserbaidschan-armenien-etschmiadsin" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/sinn/2023-11/erika-lust-feministische-pornografie-sexuelle-fantasien-aengste" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
+                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (abopflichtiger Inhalt);">
+        <title>Z+ (abopflichtiger Inhalt);</title>
         <use xlink:href="#svg-zplus" />
     </svg>
-Geflüchtete aus Bergkarabach</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Zuflucht in der heiligen Stadt</span>
+Erika Lust</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">&#34;Ich habe auch schon ein Paar über 70 gezeigt&#34;</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Als Aserbaidschan die Region Bergkarabach überrennt, muss eine Familie mit vier Kindern fliehen. Sie wird in einer armenischen Kirchengemeinde aufgenommen.  </p>
+        <p class="zon-teaser-standard__text">Die Pornofilmemacherin Erika Lust verfilmt seit zehn Jahren die erotischen Fantasien ihrer Zuschauer. Was hat sich verändert? Sie sagt: Menschen brechen immer mehr Tabus.</p>
                             
 
             <div class="zon-teaser-standard__metadata">
-            <span><span class="zon-teaser-standard__byline">    Von            Tigran Petrosyan</span>
+            <span><span class="zon-teaser-standard__byline">    Interview:            Franziska Herrmann</span>
     </span></div>
     
     </div>
 
-    <button value="68815de4-47e8-4cd6-9714-73dfaa80e689" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="555d04b5-e81e-45a8-bfcc-b898167252c2" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -1762,14 +1752,14 @@ Geflüchtete aus Bergkarabach</span><span class="visually-hidden">: </span><span
                                                                     
                                     
             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sinn/2023-09/drogenentzug-sucht-therapie-alkohol" data-zplus="zplus">
-                            <a href="https://www.zeit.de/sinn/2023-09/drogenentzug-sucht-therapie-alkohol" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Drogenentzug: &#34;Du fühlst dich wie Supermann, kannst saufen wie ein Loch&#34; ">Drogenentzug: &#34;Du fühlst dich wie Supermann, kannst saufen wie ein Loch&#34; </a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/48/christian-von-der-heide-designer-affaeren" data-zplus="zplus">
+                            <a href="https://www.zeit.de/2023/48/christian-von-der-heide-designer-affaeren" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Christian von der Heide: &#34;Das Gefühl hatte ich 20 Jahre nicht mehr erlebt&#34;">Christian von der Heide: &#34;Das Gefühl hatte ich 20 Jahre nicht mehr erlebt&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/sinn/2023-09/drogenentzug-sucht-therapie-8/wide__822x462">
+            <noscript data-src="https://img.zeit.de/2023/48/was-zwischen-uns-passierte-war-mir-unheimlich-bild-2/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="Drogenentzug: &#34;Du fühlst dich wie Supermann, kannst saufen wie ein Loch&#34; "
-                     src="https://img.zeit.de/sinn/2023-09/drogenentzug-sucht-therapie-8/wide__822x462"
-                     data-src="https://img.zeit.de/sinn/2023-09/drogenentzug-sucht-therapie-8/wide"
+                          alt="Christian von der Heide: &#34;Das Gefühl hatte ich 20 Jahre nicht mehr erlebt&#34;"
+                     src="https://img.zeit.de/2023/48/was-zwischen-uns-passierte-war-mir-unheimlich-bild-2/wide__822x462"
+                     data-src="https://img.zeit.de/2023/48/was-zwischen-uns-passierte-war-mir-unheimlich-bild-2/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -1779,117 +1769,21 @@ Geflüchtete aus Bergkarabach</span><span class="visually-hidden">: </span><span
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/sinn/2023-09/drogenentzug-sucht-therapie-8/wide__822x462",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Max Slobodda f\u00fcr ZEIT ONLINE"}
+    "url": "https://img.zeit.de/2023/48/was-zwischen-uns-passierte-war-mir-unheimlich-bild-2/wide__822x462",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0privat"}
 }
 </script>                </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/sinn/2023-09/drogenentzug-sucht-therapie-alkohol" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/2023/48/christian-von-der-heide-designer-affaeren" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
                 <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (abopflichtiger Inhalt);">
         <title>Z+ (abopflichtiger Inhalt);</title>
         <use xlink:href="#svg-zplus" />
     </svg>
-Drogenentzug</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">&#34;Du fühlst dich wie Supermann, kannst saufen wie ein Loch&#34; </span>
+Christian von der Heide</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">&#34;Das Gefühl hatte ich 20 Jahre nicht mehr erlebt&#34;</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Hannes Schulze hat sich maßlos betrunken, Koks gezogen, Heroin gespritzt. Heute ist er clean. Damit das so bleibt, begibt er sich fünfmal die Woche in das alte Milieu.</p>
-                            
-
-            <div class="zon-teaser-standard__metadata">
-            <span><span class="zon-teaser-standard__byline">    Eine Reportage von            Sebastian Dalkowski</span>
-    </span></div>
-    
-    </div>
-
-    <button value="19ca9250-0fa8-419b-9174-11c69fd7dd67" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
-        <use xlink:href="#svg-bookmark" />
-    </svg></button>
-</article>
-                            <!-- adtile1mobile is omitted to avoid duplicates. -->
-                                                                    
-                                    
-            
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/44/nikodemus-schnabel-abt-jerusalem-israel-konflikt" data-zplus="zplus">
-                            <a href="https://www.zeit.de/2023/44/nikodemus-schnabel-abt-jerusalem-israel-konflikt" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Nikodemus Schnabel: Kann man Versöhnung jetzt vergessen?">Nikodemus Schnabel: Kann man Versöhnung jetzt vergessen?</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
-                <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/44/kann-man-versoehnung-jetzt-vergessen-bild-1/wide__822x462">
-                                <img class="zon-teaser-standard__media-item"
-                          alt="Nikodemus Schnabel: Kann man Versöhnung jetzt vergessen?"
-                     src="https://img.zeit.de/2023/44/kann-man-versoehnung-jetzt-vergessen-bild-1/wide__822x462"
-                     data-src="https://img.zeit.de/2023/44/kann-man-versoehnung-jetzt-vergessen-bild-1/wide"
-                     data-ratio="1.77777777778"
-                     decoding="async"
-                     >
-                            </noscript></div>
-
-        <script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/44/kann-man-versoehnung-jetzt-vergessen-bild-1/wide__822x462",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0KNA-Bild"}
-}
-</script>                </figure>
-    <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/2023/44/nikodemus-schnabel-abt-jerusalem-israel-konflikt" class="zon-teaser-standard__heading-link">
-        <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (abopflichtiger Inhalt);">
-        <title>Z+ (abopflichtiger Inhalt);</title>
-        <use xlink:href="#svg-zplus" />
-    </svg>
-Nikodemus Schnabel</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Kann man Versöhnung jetzt vergessen?</span>
-                </h3>
-        </a>
-        <p class="zon-teaser-standard__text">Nikodemus Schnabel arbeitet als Christ schon länger zwischen den Fronten in Israel. Er ist Abt in Jerusalem. Wie blickt er auf die aktuelle Lage im Nahen Osten? </p>
-                            
-
-            <div class="zon-teaser-standard__metadata">
-            <span><span class="zon-teaser-standard__byline">    Interview:            Andreas Öhler</span>
-    </span></div>
-    
-    </div>
-
-    <button value="ae7bbaac-fd7e-444c-b5fa-415ba70942f2" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
-        <use xlink:href="#svg-bookmark" />
-    </svg></button>
-</article>
-                            <!-- adtile1mobile is omitted to avoid duplicates. -->
-                                                                    
-                                    
-            
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/44/job-neuanfang-schichtdienst-selbststaendigkeit-cafe" data-zplus="zplus">
-                            <a href="https://www.zeit.de/2023/44/job-neuanfang-schichtdienst-selbststaendigkeit-cafe" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Neuanfang im Job: &#34;Ich hoffe sehr, dass ich meinen Opa stolz mache&#34;">Neuanfang im Job: &#34;Ich hoffe sehr, dass ich meinen Opa stolz mache&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
-                <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/44/ich-hoffe-sehr-dass-ich-meinen-opa-stolz-mache-bild-2/wide__822x462">
-                                <img class="zon-teaser-standard__media-item"
-                          alt="Neuanfang im Job: &#34;Ich hoffe sehr, dass ich meinen Opa stolz mache&#34;"
-                     src="https://img.zeit.de/2023/44/ich-hoffe-sehr-dass-ich-meinen-opa-stolz-mache-bild-2/wide__822x462"
-                     data-src="https://img.zeit.de/2023/44/ich-hoffe-sehr-dass-ich-meinen-opa-stolz-mache-bild-2/wide"
-                     data-ratio="1.77777777778"
-                     decoding="async"
-                     >
-                            </noscript></div>
-
-        <script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/44/ich-hoffe-sehr-dass-ich-meinen-opa-stolz-mache-bild-2/wide__822x462",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Christina Diawara"}
-}
-</script>                </figure>
-    <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/2023/44/job-neuanfang-schichtdienst-selbststaendigkeit-cafe" class="zon-teaser-standard__heading-link">
-        <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (abopflichtiger Inhalt);">
-        <title>Z+ (abopflichtiger Inhalt);</title>
-        <use xlink:href="#svg-zplus" />
-    </svg>
-Neuanfang im Job</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">&#34;Ich hoffe sehr, dass ich meinen Opa stolz mache&#34;</span>
-                </h3>
-        </a>
-        <p class="zon-teaser-standard__text">Der Schichtdienst im Hotel laugt Christina Diawara aus. Am Tiefpunkt entscheidet sie sich, von vorne anzufangen –  und erfüllt sich den Traum vom eigenen Café.</p>
+        <p class="zon-teaser-standard__text">Christian von der Heide hat viele Affären, wirklich Nähe lässt er nicht zu. Bis er sich für ein monogames Leben entscheidet. Was hat ihn dazu gebracht?</p>
                             
 
             <div class="zon-teaser-standard__metadata">
@@ -1898,7 +1792,103 @@ Neuanfang im Job</span><span class="visually-hidden">: </span><span class="zon-t
     
     </div>
 
-    <button value="e2d7dfe9-0499-46e5-9948-cb46979b26d2" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="a3d8a536-862f-40ba-b72b-12ab9dad31ae" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+        <use xlink:href="#svg-bookmark" />
+    </svg></button>
+</article>
+                            <!-- adtile1mobile is omitted to avoid duplicates. -->
+                                                                    
+                                    
+            
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/48/terroranschlag-paris-beziehung-partner-tod" data-zplus="zplus">
+                            <a href="https://www.zeit.de/2023/48/terroranschlag-paris-beziehung-partner-tod" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Terroranschlag in Paris: Die Entscheidung, guter Hoffnung sein zu können">Terroranschlag in Paris: Die Entscheidung, guter Hoffnung sein zu können</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                <div class="zon-teaser-standard__media-container ">
+            <noscript data-src="https://img.zeit.de/2023/48/dem-hass-getrotzt-bild-1/wide__822x462">
+                                <img class="zon-teaser-standard__media-item"
+                          alt="Terroranschlag in Paris: Die Entscheidung, guter Hoffnung sein zu können"
+                     src="https://img.zeit.de/2023/48/dem-hass-getrotzt-bild-1/wide__822x462"
+                     data-src="https://img.zeit.de/2023/48/dem-hass-getrotzt-bild-1/wide"
+                     data-ratio="1.77777777778"
+                     decoding="async"
+                     >
+                            </noscript></div>
+
+        <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ImageObject",
+    "url": "https://img.zeit.de/2023/48/dem-hass-getrotzt-bild-1/wide__822x462",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Aymeric Guillonneau"}
+}
+</script>                </figure>
+    <div class="zon-teaser-standard__container">
+        <a href="https://www.zeit.de/2023/48/terroranschlag-paris-beziehung-partner-tod" class="zon-teaser-standard__heading-link">
+        <h3 class="zon-teaser-standard__heading">
+                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (abopflichtiger Inhalt);">
+        <title>Z+ (abopflichtiger Inhalt);</title>
+        <use xlink:href="#svg-zplus" />
+    </svg>
+Terroranschlag in Paris</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Die Entscheidung, guter Hoffnung sein zu können</span>
+                </h3>
+        </a>
+        <p class="zon-teaser-standard__text">Seine Frau wird 2015 beim Terroranschlag im Bataclan ermordet. Ihr Verlobter auch. Aus Johannes Baus und Floriane Bernaudat wird ein Paar – das lernt, wieder zu lieben.</p>
+                            
+
+            <div class="zon-teaser-standard__metadata">
+            <span><span class="zon-teaser-standard__byline">    Von            Katharina Render</span>
+    </span></div>
+    
+    </div>
+
+    <button value="5c555e06-48bd-4bbc-a13a-ce8423dbcfbc" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+        <use xlink:href="#svg-bookmark" />
+    </svg></button>
+</article>
+                            <!-- adtile1mobile is omitted to avoid duplicates. -->
+                                                                    
+                                    
+            
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/sinn/2023-11/lena-gercke-schoenheit-model-sinn" data-zplus="zplus">
+                            <a href="https://www.zeit.de/sinn/2023-11/lena-gercke-schoenheit-model-sinn" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Lena Gercke : &#34;Als Mutter legt man viel Eitelkeit ab&#34;">Lena Gercke : &#34;Als Mutter legt man viel Eitelkeit ab&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                <div class="zon-teaser-standard__media-container ">
+            <noscript data-src="https://img.zeit.de/sinn/2023-11/lena-gercke-schoenheit-model-sinn-bild/wide__822x462">
+                                <img class="zon-teaser-standard__media-item"
+                          alt="Lena Gercke : &#34;Als Mutter legt man viel Eitelkeit ab&#34;"
+                     src="https://img.zeit.de/sinn/2023-11/lena-gercke-schoenheit-model-sinn-bild/wide__822x462"
+                     data-src="https://img.zeit.de/sinn/2023-11/lena-gercke-schoenheit-model-sinn-bild/wide"
+                     data-ratio="1.77777777778"
+                     decoding="async"
+                     >
+                            </noscript></div>
+
+        <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ImageObject",
+    "url": "https://img.zeit.de/sinn/2023-11/lena-gercke-schoenheit-model-sinn-bild/wide__822x462",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Dirk Bruniecki"}
+}
+</script>                </figure>
+    <div class="zon-teaser-standard__container">
+        <a href="https://www.zeit.de/sinn/2023-11/lena-gercke-schoenheit-model-sinn" class="zon-teaser-standard__heading-link">
+        <h3 class="zon-teaser-standard__heading">
+                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (abopflichtiger Inhalt);">
+        <title>Z+ (abopflichtiger Inhalt);</title>
+        <use xlink:href="#svg-zplus" />
+    </svg>
+Lena Gercke </span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">&#34;Als Mutter legt man viel Eitelkeit ab&#34;</span>
+                </h3>
+        </a>
+        <p class="zon-teaser-standard__text">Lena Gercke war 2006 die erste Gewinnerin von &#34;Germany’s Next Topmodel&#34;. Seitdem dreht sich in ihrem Beruf alles ums Aussehen. Macht Schönsein glücklich?</p>
+                            
+
+            <div class="zon-teaser-standard__metadata">
+            <span><span class="zon-teaser-standard__byline">    Interview:            Franziska Herrmann            und            Kilian Trotier</span>
+    </span></div>
+    
+    </div>
+
+    <button value="9b309459-fe6c-416f-b70c-72faa8d6cec1" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -1953,14 +1943,14 @@ Neuanfang im Job</span><span class="visually-hidden">: </span><span class="zon-t
                                                                             
                                     
             
-                                    <article class="zon-teaser-square  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/45/papst-israel-vatikan-hamas-terror-stellungnahme" data-zplus="zplus">
-                            <a href="https://www.zeit.de/2023/45/papst-israel-vatikan-hamas-terror-stellungnahme" class="zon-teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Papst über Israel: Die Haltung des Vatikans verstört">Papst über Israel: Die Haltung des Vatikans verstört</a>                <figure class="zon-teaser-square__media zon-teaser-square__media--force-mobile scaled-image variant variant--square is-pixelperfect">
+                                    <article class="zon-teaser-square  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/51/frere-matthew-taize-nachfolger-frere-roger-frankreich" data-zplus="zplus-dynamic">
+                            <a href="https://www.zeit.de/2023/51/frere-matthew-taize-nachfolger-frere-roger-frankreich" class="zon-teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Frère Matthew: Aufbruch in Taizé">Frère Matthew: Aufbruch in Taizé</a>                <figure class="zon-teaser-square__media  scaled-image variant variant--square is-pixelperfect">
                 <div class="zon-teaser-square__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/45/papst-israel-vatikan-hamas-terror/square__460x460">
+            <noscript data-src="https://img.zeit.de/2023/51/aufbruch-in-taiz-bild-1/square__460x460">
                                 <img class="zon-teaser-square__media-item"
-                          alt="Papst über Israel: Die Haltung des Vatikans verstört"
-                     src="https://img.zeit.de/2023/45/papst-israel-vatikan-hamas-terror/square__460x460"
-                     data-src="https://img.zeit.de/2023/45/papst-israel-vatikan-hamas-terror/square"
+                          alt="Frère Matthew: Aufbruch in Taizé"
+                     src="https://img.zeit.de/2023/51/aufbruch-in-taiz-bild-1/square__460x460"
+                     data-src="https://img.zeit.de/2023/51/aufbruch-in-taiz-bild-1/square"
                      data-ratio="1.0"
                      decoding="async"
                      >
@@ -1970,24 +1960,23 @@ Neuanfang im Job</span><span class="visually-hidden">: </span><span class="zon-t
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/45/papst-israel-vatikan-hamas-terror/square__460x460",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Guglielmo Mangiapane/\u200bReuters"}
+    "url": "https://img.zeit.de/2023/51/aufbruch-in-taiz-bild-1/square__460x460",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0ddp media GmbH"}
 }
 </script>                </figure>
 <div class="zon-teaser-square__container">
-        <a href="https://www.zeit.de/2023/45/papst-israel-vatikan-hamas-terror-stellungnahme" class="zon-teaser-square__heading-link">
+        <a href="https://www.zeit.de/2023/51/frere-matthew-taize-nachfolger-frere-roger-frankreich" class="zon-teaser-square__heading-link">
         <h3 class="zon-teaser-square__heading">
-                <span class="zon-teaser-square__kicker">    <svg class="svg-symbol zplus-logo" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (abopflichtiger Inhalt);">
-        <title>Z+ (abopflichtiger Inhalt);</title>
+                <span class="zon-teaser-square__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
         <use xlink:href="#svg-zplus" />
     </svg>
-Papst über Israel</span><span class="visually-hidden">: </span><span class="zon-teaser-square__title">Die Haltung des Vatikans verstört</span>
+Frère Matthew</span><span class="visually-hidden">: </span><span class="zon-teaser-square__title">Aufbruch in Taizé</span>
                 </h3>
         </a>
-        <p class="zon-teaser-square__text">Wie der Papst daran scheiterte, den Terror der Hamas klar und zeitnah zu benennen.</p>
+        <p class="zon-teaser-square__text">Jedes Jahr begrüßen Ordensbrüder in einem kleinen Ort in Burgund Zehntausende Jugendliche. Nun fängt ein neuer Leiter an. Was will Frère Matthew verändern?  </p>
             </div>
 
-    <button value="14ade937-4c8f-4f53-b495-e1a41aaeb70f" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="25eb85a5-a204-4b0e-9054-62052e04358f" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -2000,14 +1989,14 @@ Papst über Israel</span><span class="visually-hidden">: </span><span class="zon
                                                                             
                                     
             
-                                    <article class="zon-teaser-square  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/42/sed-regime-aufarbeitung-diktatur-osten-westen" data-zplus="zplus-dynamic">
-                            <a href="https://www.zeit.de/2023/42/sed-regime-aufarbeitung-diktatur-osten-westen" class="zon-teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Aufarbeitung des SED-Regimes: Unser aller Diktatur ">Aufarbeitung des SED-Regimes: Unser aller Diktatur </a>                <figure class="zon-teaser-square__media  scaled-image variant variant--square is-pixelperfect">
+                                    <article class="zon-teaser-square  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/49/evangelische-kirche-annette-kurschus-ruecktritt-sexueller-missbrauch" data-zplus="zplus-dynamic">
+                            <a href="https://www.zeit.de/2023/49/evangelische-kirche-annette-kurschus-ruecktritt-sexueller-missbrauch" class="zon-teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Evangelische Kirche: Der ungute Rücktritt">Evangelische Kirche: Der ungute Rücktritt</a>                <figure class="zon-teaser-square__media  scaled-image variant variant--square is-pixelperfect">
                 <div class="zon-teaser-square__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/42/unser-aller-diktatur-bild-1/square__460x460">
+            <noscript data-src="https://img.zeit.de/2023/49/evangelische-kirche-annette-kurschus-ruecktritt-sexueller-missbrauch-teaserbild/square__460x460">
                                 <img class="zon-teaser-square__media-item"
-                          alt="Aufarbeitung des SED-Regimes: Unser aller Diktatur "
-                     src="https://img.zeit.de/2023/42/unser-aller-diktatur-bild-1/square__460x460"
-                     data-src="https://img.zeit.de/2023/42/unser-aller-diktatur-bild-1/square"
+                          alt="Evangelische Kirche: Der ungute Rücktritt"
+                     src="https://img.zeit.de/2023/49/evangelische-kirche-annette-kurschus-ruecktritt-sexueller-missbrauch-teaserbild/square__460x460"
+                     data-src="https://img.zeit.de/2023/49/evangelische-kirche-annette-kurschus-ruecktritt-sexueller-missbrauch-teaserbild/square"
                      data-ratio="1.0"
                      decoding="async"
                      >
@@ -2017,23 +2006,23 @@ Papst über Israel</span><span class="visually-hidden">: </span><span class="zon
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/42/unser-aller-diktatur-bild-1/square__460x460",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Rolf Z\u00f6llner/\u200bmauritius images"}
+    "url": "https://img.zeit.de/2023/49/evangelische-kirche-annette-kurschus-ruecktritt-sexueller-missbrauch-teaserbild/square__460x460",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Nigel Treblin/\u200bddp, epd-bild/\u200bpicture alliance/\u200bdp"}
 }
 </script>                </figure>
 <div class="zon-teaser-square__container">
-        <a href="https://www.zeit.de/2023/42/sed-regime-aufarbeitung-diktatur-osten-westen" class="zon-teaser-square__heading-link">
+        <a href="https://www.zeit.de/2023/49/evangelische-kirche-annette-kurschus-ruecktritt-sexueller-missbrauch" class="zon-teaser-square__heading-link">
         <h3 class="zon-teaser-square__heading">
                 <span class="zon-teaser-square__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
         <use xlink:href="#svg-zplus" />
     </svg>
-Aufarbeitung des SED-Regimes</span><span class="visually-hidden">: </span><span class="zon-teaser-square__title">Unser aller Diktatur </span>
+Evangelische Kirche</span><span class="visually-hidden">: </span><span class="zon-teaser-square__title">Der ungute Rücktritt</span>
                 </h3>
         </a>
-        <p class="zon-teaser-square__text">Viele Westdeutsche tun so, als ginge der Osten sie nichts an. Dabei ist die Verklärung des SED-Regimes ein gesamtdeutsches Problem – gerade heute.</p>
+        <p class="zon-teaser-square__text">Zum zweiten Mal tritt eine EKD-Chefin zurück. Doch der Abgang von Annette Kurschus ist anders – er zeigt das Problem einer Kirche, die irrtümlich mit sich im Reinen ist.</p>
             </div>
 
-    <button value="7a9ea12d-cc93-4b0e-9d6b-2b06bf3b372c" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="a404264d-4b4b-4281-be75-fcc6bd4d9c17" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -2045,14 +2034,14 @@ Aufarbeitung des SED-Regimes</span><span class="visually-hidden">: </span><span 
                                                                             
                                     
             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/42/sexueller-missbrauch-evangelische-kirche-studie-aufarbeitung" data-zplus="zplus-register">
-                            <a href="https://www.zeit.de/2023/42/sexueller-missbrauch-evangelische-kirche-studie-aufarbeitung" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Sexueller Missbrauch in der evangelischen Kirche: Durchleuchtete Kirche ">Sexueller Missbrauch in der evangelischen Kirche: Durchleuchtete Kirche </a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/gesellschaft/2023-11/kirchenaustritte-studie-evangelisch-katholisch-kristin-merle" data-zplus="zplus-dynamic">
+                            <a href="https://www.zeit.de/gesellschaft/2023-11/kirchenaustritte-studie-evangelisch-katholisch-kristin-merle" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Kirchenaustritte: &#34;Wenn es nicht passt, dann geht man halt&#34;">Kirchenaustritte: &#34;Wenn es nicht passt, dann geht man halt&#34;</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/42/sexueller-missbrauch-evangelische-kirche-studie-aufarbeitung-teaser/wide__822x462">
+            <noscript data-src="https://img.zeit.de/gesellschaft/2023-11/kirchenaustritte-studie-evangelisch-katholisch-kristin-merle-bild/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="Sexueller Missbrauch in der evangelischen Kirche: Durchleuchtete Kirche "
-                     src="https://img.zeit.de/2023/42/sexueller-missbrauch-evangelische-kirche-studie-aufarbeitung-teaser/wide__822x462"
-                     data-src="https://img.zeit.de/2023/42/sexueller-missbrauch-evangelische-kirche-studie-aufarbeitung-teaser/wide"
+                          alt="Kirchenaustritte: &#34;Wenn es nicht passt, dann geht man halt&#34;"
+                     src="https://img.zeit.de/gesellschaft/2023-11/kirchenaustritte-studie-evangelisch-katholisch-kristin-merle-bild/wide__822x462"
+                     data-src="https://img.zeit.de/gesellschaft/2023-11/kirchenaustritte-studie-evangelisch-katholisch-kristin-merle-bild/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -2062,30 +2051,125 @@ Aufarbeitung des SED-Regimes</span><span class="visually-hidden">: </span><span 
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/42/sexueller-missbrauch-evangelische-kirche-studie-aufarbeitung-teaser/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Panthermedia/\u200bimago images"}
+    "url": "https://img.zeit.de/gesellschaft/2023-11/kirchenaustritte-studie-evangelisch-katholisch-kristin-merle-bild/wide__822x462",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Lisa Rock"}
 }
 </script>                </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/2023/42/sexueller-missbrauch-evangelische-kirche-studie-aufarbeitung" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/gesellschaft/2023-11/kirchenaustritte-studie-evangelisch-katholisch-kristin-merle" class="zon-teaser-standard__heading-link">
+        <h3 class="zon-teaser-standard__heading">
+                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
+        <use xlink:href="#svg-zplus" />
+    </svg>
+Kirchenaustritte</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">&#34;Wenn es nicht passt, dann geht man halt&#34;</span>
+                </h3>
+        </a>
+        <p class="zon-teaser-standard__text">Was hält Menschen in der Kirche? Der Glaube an Gott ist es für viele Katholiken und Protestanten nicht, zeigt eine neue Studie. Sie finden dort etwas anderes.</p>
+                            
+
+            <div class="zon-teaser-standard__metadata">
+            <span><span class="zon-teaser-standard__byline">    Interview:            Christina Fleischmann            und            Merle Schmalenbach</span>
+            <a class="zon-teaser-standard__commentcount" href="https://www.zeit.de/gesellschaft/2023-11/kirchenaustritte-studie-evangelisch-katholisch-kristin-merle#comments" data-ct-label="comments" title="Kommentare anzeigen" tabindex="-1">
+            355 Kommentare        </a></span></div>
+    
+    </div>
+
+    <button value="432d4818-2ba4-4f5d-9bfe-4118e1637665" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+        <use xlink:href="#svg-bookmark" />
+    </svg></button>
+</article>
+                            <!-- adtile1mobile is omitted to avoid duplicates. -->
+                                                                    
+                                    
+            
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/47/cornelia-egg-moewes-abendsegen-twitter" data-zplus="zplus-dynamic">
+                            <a href="https://www.zeit.de/2023/47/cornelia-egg-moewes-abendsegen-twitter" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Cornelia Egg-Möwes: &#34;Der Segen hat Kraft, zu befreien&#34;">Cornelia Egg-Möwes: &#34;Der Segen hat Kraft, zu befreien&#34;</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                <div class="zon-teaser-standard__media-container ">
+            <noscript data-src="https://img.zeit.de/2023/47/der-segen-hat-kraft-zu-befreien-bild-1/wide__822x462">
+                                <img class="zon-teaser-standard__media-item"
+                          alt="Cornelia Egg-Möwes: &#34;Der Segen hat Kraft, zu befreien&#34;"
+                     src="https://img.zeit.de/2023/47/der-segen-hat-kraft-zu-befreien-bild-1/wide__822x462"
+                     data-src="https://img.zeit.de/2023/47/der-segen-hat-kraft-zu-befreien-bild-1/wide"
+                     data-ratio="1.77777777778"
+                     decoding="async"
+                     >
+                            </noscript></div>
+
+        <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ImageObject",
+    "url": "https://img.zeit.de/2023/47/der-segen-hat-kraft-zu-befreien-bild-1/wide__822x462",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Julia Knop"}
+}
+</script>                </figure>
+    <div class="zon-teaser-standard__container">
+        <a href="https://www.zeit.de/2023/47/cornelia-egg-moewes-abendsegen-twitter" class="zon-teaser-standard__heading-link">
+        <h3 class="zon-teaser-standard__heading">
+                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
+        <use xlink:href="#svg-zplus" />
+    </svg>
+Cornelia Egg-Möwes</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">&#34;Der Segen hat Kraft, zu befreien&#34;</span>
+                </h3>
+        </a>
+        <p class="zon-teaser-standard__text">Jeden Tag veröffentlicht die Theologin Cornelia Egg-Möwes einen Abendsegen auf der Plattform X und erreicht Tausende – auch Nichtgläubige. Welche Sehnsucht stillt sie?</p>
+                            
+
+            <div class="zon-teaser-standard__metadata">
+            <span><span class="zon-teaser-standard__byline">    Interview:            Christina Fleischmann</span>
+    </span></div>
+    
+    </div>
+
+    <button value="81be0de8-9086-494c-bab8-7d687341a09d" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+        <use xlink:href="#svg-bookmark" />
+    </svg></button>
+</article>
+                            <!-- adtile1mobile is omitted to avoid duplicates. -->
+                                                                    
+                                    
+            
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/47/missbrauchsskandal-katholische-kirche-ministerinnen-eindruecke" data-zplus="zplus-register">
+                            <a href="https://www.zeit.de/2023/47/missbrauchsskandal-katholische-kirche-ministerinnen-eindruecke" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Missbrauchsskandal der katholischen Kirche: &#34;Es wirkt wurschtelig, eine never-ending Story&#34;">Missbrauchsskandal der katholischen Kirche: &#34;Es wirkt wurschtelig, eine never-ending Story&#34;</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                <div class="zon-teaser-standard__media-container ">
+            <noscript data-src="https://img.zeit.de/2023/47/missbrauchsskandal-katholische-kirche-ministerinnen-eindruecke-bild/wide__822x462">
+                                <img class="zon-teaser-standard__media-item"
+                          alt="Missbrauchsskandal der katholischen Kirche: &#34;Es wirkt wurschtelig, eine never-ending Story&#34;"
+                     src="https://img.zeit.de/2023/47/missbrauchsskandal-katholische-kirche-ministerinnen-eindruecke-bild/wide__822x462"
+                     data-src="https://img.zeit.de/2023/47/missbrauchsskandal-katholische-kirche-ministerinnen-eindruecke-bild/wide"
+                     data-ratio="1.77777777778"
+                     decoding="async"
+                     >
+                            </noscript></div>
+
+        <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ImageObject",
+    "url": "https://img.zeit.de/2023/47/missbrauchsskandal-katholische-kirche-ministerinnen-eindruecke-bild/wide__822x462",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Oliver Ruether/\u200b\u200blaif; Christoph Hardt, Panama Pictures/\u200bimago images;  Christoph Hardt, Future Image/\u200bimago images"}
+}
+</script>                </figure>
+    <div class="zon-teaser-standard__container">
+        <a href="https://www.zeit.de/2023/47/missbrauchsskandal-katholische-kirche-ministerinnen-eindruecke" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
                 <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo zplus-logo--register" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (registrierungspflichtiger Inhalt);">
         <title>Z+ (registrierungspflichtiger Inhalt);</title>
         <use xlink:href="#svg-zplus" />
     </svg>
-Sexueller Missbrauch in der evangelischen Kirche</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Durchleuchtete Kirche </span>
+Missbrauchsskandal der katholischen Kirche</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">&#34;Es wirkt wurschtelig, eine never-ending Story&#34;</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Im Januar wird ein Forschungsteam die erste deutschlandweite Studie über sexuellen Missbrauch bei den Protestanten veröffentlichen. Wie umfangreich wird dann aufgeklärt?</p>
+        <p class="zon-teaser-standard__text">Als 2010 der Missbrauchsskandal der Kirche in Deutschland hochkam, lehnte die Kirche staatliche Aufarbeitung ab. Wie sehen drei ehemalige Ministerinnen das heute? </p>
                             
 
             <div class="zon-teaser-standard__metadata">
-            <span><span class="zon-teaser-standard__byline">    Von            Raoul Löbbert</span>
+            <span><span class="zon-teaser-standard__byline">    Protokoll:            Raoul Löbbert            und            Georg Löwisch</span>
     </span></div>
     
     </div>
 
-    <button value="772413c4-5315-40b2-b8dc-322556f00e55" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="e2ae7a6b-ec46-4688-8cdc-e6685a5f5e31" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -2093,14 +2177,14 @@ Sexueller Missbrauch in der evangelischen Kirche</span><span class="visually-hid
                                                                     
                                     
             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/41/james-martin-weltsynode-katholische-kirche" data-zplus="zplus-dynamic">
-                            <a href="https://www.zeit.de/2023/41/james-martin-weltsynode-katholische-kirche" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="James Martin über die Weltsynode: &#34;Es geht nicht darum, die Kirche zu demokratisieren&#34;">James Martin über die Weltsynode: &#34;Es geht nicht darum, die Kirche zu demokratisieren&#34;</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/47/missbrauchsskandal-katholische-kirche-staatliche-aufarbeitung" data-zplus="zplus-register">
+                            <a href="https://www.zeit.de/2023/47/missbrauchsskandal-katholische-kirche-staatliche-aufarbeitung" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Missbrauchsskandal der katholischen Kirche: Der Mann, der Merkel täuschte">Missbrauchsskandal der katholischen Kirche: Der Mann, der Merkel täuschte</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/gesellschaft/2023-09/james-martin-weltsynode-katholische-kirche-bild/wide__822x462">
+            <noscript data-src="https://img.zeit.de/2023/47/missbrauchsskandal-katholische-kirche-staatliche-aufarbeitung-bild/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="James Martin über die Weltsynode: &#34;Es geht nicht darum, die Kirche zu demokratisieren&#34;"
-                     src="https://img.zeit.de/gesellschaft/2023-09/james-martin-weltsynode-katholische-kirche-bild/wide__822x462"
-                     data-src="https://img.zeit.de/gesellschaft/2023-09/james-martin-weltsynode-katholische-kirche-bild/wide"
+                          alt="Missbrauchsskandal der katholischen Kirche: Der Mann, der Merkel täuschte"
+                     src="https://img.zeit.de/2023/47/missbrauchsskandal-katholische-kirche-staatliche-aufarbeitung-bild/wide__822x462"
+                     data-src="https://img.zeit.de/2023/47/missbrauchsskandal-katholische-kirche-staatliche-aufarbeitung-bild/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -2110,172 +2194,30 @@ Sexueller Missbrauch in der evangelischen Kirche</span><span class="visually-hid
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/gesellschaft/2023-09/james-martin-weltsynode-katholische-kirche-bild/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Clodagh Kilcoyne/\u200bReuters"}
+    "url": "https://img.zeit.de/2023/47/missbrauchsskandal-katholische-kirche-staatliche-aufarbeitung-bild/wide__822x462",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Michael Gottschalk/\u200bphotothek/\u200bimago"}
 }
 </script>                </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/2023/41/james-martin-weltsynode-katholische-kirche" class="zon-teaser-standard__heading-link">
-        <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
-        <use xlink:href="#svg-zplus" />
-    </svg>
-James Martin über die Weltsynode</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">&#34;Es geht nicht darum, die Kirche zu demokratisieren&#34;</span>
-                </h3>
-        </a>
-        <p class="zon-teaser-standard__text">Der Jesuit und US-Bestsellerautor James Martin verteidigt die Weltsynode. Sie sei vor allem dazu da, sich dem Wirken des Heiligen Geistes zu öffnen.</p>
-                            
-
-            <div class="zon-teaser-standard__metadata">
-            <span><span class="zon-teaser-standard__byline">    Interview:            Kilian Trotier</span>
-    </span></div>
-    
-    </div>
-
-    <button value="80104da9-d20d-4b64-a0ac-f4917c050515" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
-        <use xlink:href="#svg-bookmark" />
-    </svg></button>
-</article>
-                            <!-- adtile1mobile is omitted to avoid duplicates. -->
-                                                                    
-                                    
-            
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/41/missionare-kolonialismus-christliche-kirche-aufarbeitung" data-zplus="zplus">
-                            <a href="https://www.zeit.de/2023/41/missionare-kolonialismus-christliche-kirche-aufarbeitung" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Missionare im Kolonialismus: Unheiliges Schweigen">Missionare im Kolonialismus: Unheiliges Schweigen</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
-                <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/41/unheiliges-schweigen-bild-1/wide__822x462">
-                                <img class="zon-teaser-standard__media-item"
-                          alt="Missionare im Kolonialismus: Unheiliges Schweigen"
-                     src="https://img.zeit.de/2023/41/unheiliges-schweigen-bild-1/wide__822x462"
-                     data-src="https://img.zeit.de/2023/41/unheiliges-schweigen-bild-1/wide"
-                     data-ratio="1.77777777778"
-                     decoding="async"
-                     >
-                            </noscript></div>
-
-        <script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/41/unheiliges-schweigen-bild-1/wide__822x462",
-    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0dpa"}
-}
-</script>                </figure>
-    <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/2023/41/missionare-kolonialismus-christliche-kirche-aufarbeitung" class="zon-teaser-standard__heading-link">
-        <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (abopflichtiger Inhalt);">
-        <title>Z+ (abopflichtiger Inhalt);</title>
-        <use xlink:href="#svg-zplus" />
-    </svg>
-Missionare im Kolonialismus</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Unheiliges Schweigen</span>
-                </h3>
-        </a>
-        <p class="zon-teaser-standard__text">Christliche Missionare waren Teil des kolonialen Systems. Doch mit der Aufarbeitung  ihrer Vergangenheit tun die Kirchen sich schwer. </p>
-                            
-
-            <div class="zon-teaser-standard__metadata">
-            <span><span class="zon-teaser-standard__byline">    Von            Raoul Löbbert</span>
-    </span></div>
-    
-    </div>
-
-    <button value="8dfb3bdf-763d-4307-892e-09be2df80df3" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
-        <use xlink:href="#svg-bookmark" />
-    </svg></button>
-</article>
-                            <!-- adtile1mobile is omitted to avoid duplicates. -->
-                                                                    
-                                    
-            
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/gesellschaft/2023-09/katholische-kirche-sexueller-missbrauch-aufarbeitung-bistum-essen" data-zplus="zplus-dynamic">
-                            <a href="https://www.zeit.de/gesellschaft/2023-09/katholische-kirche-sexueller-missbrauch-aufarbeitung-bistum-essen" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Katholische Kirche: Ein Kardinal soll selbst Täter gewesen sein">Katholische Kirche: Ein Kardinal soll selbst Täter gewesen sein</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
-                <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/gesellschaft/zeitgeschehen/2023-09/kardinal-franz-hengsbach-missbrauch/wide__822x462">
-                                <img class="zon-teaser-standard__media-item"
-                          alt="Katholische Kirche: Ein Kardinal soll selbst Täter gewesen sein"
-                     src="https://img.zeit.de/gesellschaft/zeitgeschehen/2023-09/kardinal-franz-hengsbach-missbrauch/wide__822x462"
-                     data-src="https://img.zeit.de/gesellschaft/zeitgeschehen/2023-09/kardinal-franz-hengsbach-missbrauch/wide"
-                     data-ratio="1.77777777778"
-                     decoding="async"
-                     >
-                            </noscript></div>
-
-        <script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "ImageObject",
-    "url": "https://img.zeit.de/gesellschaft/zeitgeschehen/2023-09/kardinal-franz-hengsbach-missbrauch/wide__822x462",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0[M] Alexander Hoepfner f\u00fcr ZEIT ONLINE Foto: bonn-sequenz/\u200bimago images"}
-}
-</script>                </figure>
-    <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/gesellschaft/2023-09/katholische-kirche-sexueller-missbrauch-aufarbeitung-bistum-essen" class="zon-teaser-standard__heading-link">
-        <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
-        <use xlink:href="#svg-zplus" />
-    </svg>
-Katholische Kirche</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Ein Kardinal soll selbst Täter gewesen sein</span>
-                </h3>
-        </a>
-        <p class="zon-teaser-standard__text">Ein prominenter Katholik wird des Missbrauchs beschuldigt: Franz Hengsbach, der verstorbene Gründungschef des Bistums Essen. Die Kirche veröffentlicht Vorwürfe dazu.</p>
-                            
-
-            <div class="zon-teaser-standard__metadata">
-            <span><span class="zon-teaser-standard__byline">    Von            Georg Löwisch</span>
-    </span></div>
-    
-    </div>
-
-    <button value="7faf7139-6f4f-4fbc-b0d7-f1323258f64f" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
-        <use xlink:href="#svg-bookmark" />
-    </svg></button>
-</article>
-                            <!-- adtile1mobile is omitted to avoid duplicates. -->
-                                                                    
-                                    
-            
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/39/weltsynode-rom-papst-katholische-kirche-reform" data-zplus="zplus-register">
-                            <a href="https://www.zeit.de/2023/39/weltsynode-rom-papst-katholische-kirche-reform" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Weltsynode in Rom: Wenn du nicht mehr weiterweißt, gründe einen Arbeitskreis">Weltsynode in Rom: Wenn du nicht mehr weiterweißt, gründe einen Arbeitskreis</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
-                <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/39/wenn-du-nicht-mehr-weiterweisst-gruende-einen-arbeitskreis-bild-1/wide__822x462">
-                                <img class="zon-teaser-standard__media-item"
-                          alt="Weltsynode in Rom: Wenn du nicht mehr weiterweißt, gründe einen Arbeitskreis"
-                     src="https://img.zeit.de/2023/39/wenn-du-nicht-mehr-weiterweisst-gruende-einen-arbeitskreis-bild-1/wide__822x462"
-                     data-src="https://img.zeit.de/2023/39/wenn-du-nicht-mehr-weiterweisst-gruende-einen-arbeitskreis-bild-1/wide"
-                     data-ratio="1.77777777778"
-                     decoding="async"
-                     >
-                            </noscript></div>
-
-        <script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/39/wenn-du-nicht-mehr-weiterweisst-gruende-einen-arbeitskreis-bild-1/wide__822x462",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0KNA"}
-}
-</script>                </figure>
-    <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/2023/39/weltsynode-rom-papst-katholische-kirche-reform" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/2023/47/missbrauchsskandal-katholische-kirche-staatliche-aufarbeitung" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
                 <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo zplus-logo--register" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (registrierungspflichtiger Inhalt);">
         <title>Z+ (registrierungspflichtiger Inhalt);</title>
         <use xlink:href="#svg-zplus" />
     </svg>
-Weltsynode in Rom</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Wenn du nicht mehr weiterweißt, gründe einen Arbeitskreis</span>
+Missbrauchsskandal der katholischen Kirche</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Der Mann, der Merkel täuschte</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Im Oktober tagt die sogenannte Weltsynode in Rom. Der Papst tut so, als gehe es in dem Gremium um Mitbestimmung. Dabei ist es eine pseudodemokratische Illusion.</p>
+        <p class="zon-teaser-standard__text">Wie Deutschlands oberster Bischof Robert Zollitsch eine staatliche Aufklärung vereitelte – und wie eine Entscheidung der Bundeskanzlerin bis heute nachwirkt.</p>
                             
 
             <div class="zon-teaser-standard__metadata">
-            <span><span class="zon-teaser-standard__byline">    Ein Gastbeitrag von            Volker Reinhardt</span>
+            <span><span class="zon-teaser-standard__byline">    Von            Raoul Löbbert            und            Georg Löwisch</span>
     </span></div>
     
     </div>
 
-    <button value="a82d718e-262b-4626-8803-2ffb44d3ebad" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="1a0855a4-f715-48f1-a88f-ec579ab6b54a" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -2283,14 +2225,14 @@ Weltsynode in Rom</span><span class="visually-hidden">: </span><span class="zon-
                                                                     
                                     
             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/39/gottesdienst-queere-paare-koeln-marianne-arndt" data-zplus="zplus-dynamic">
-                            <a href="https://www.zeit.de/2023/39/gottesdienst-queere-paare-koeln-marianne-arndt" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Gottesdienst für queere Paare: &#34;Natürlich ist es Ungehorsam&#34;">Gottesdienst für queere Paare: &#34;Natürlich ist es Ungehorsam&#34;</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/46/katholische-kirche-frankreich-sexueller-missbrauch-veronique-margron" data-zplus="zplus-dynamic">
+                            <a href="https://www.zeit.de/2023/46/katholische-kirche-frankreich-sexueller-missbrauch-veronique-margron" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Katholische Kirche in Frankreich: Im Namen der Hoffnung">Katholische Kirche in Frankreich: Im Namen der Hoffnung</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/39/natuerlich-ist-es-ungehorsam-bild-1/wide__822x462">
+            <noscript data-src="https://img.zeit.de/2023/46/im-namen-der-hoffnung-bild-1/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="Gottesdienst für queere Paare: &#34;Natürlich ist es Ungehorsam&#34;"
-                     src="https://img.zeit.de/2023/39/natuerlich-ist-es-ungehorsam-bild-1/wide__822x462"
-                     data-src="https://img.zeit.de/2023/39/natuerlich-ist-es-ungehorsam-bild-1/wide"
+                          alt="Katholische Kirche in Frankreich: Im Namen der Hoffnung"
+                     src="https://img.zeit.de/2023/46/im-namen-der-hoffnung-bild-1/wide__822x462"
+                     data-src="https://img.zeit.de/2023/46/im-namen-der-hoffnung-bild-1/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -2300,29 +2242,77 @@ Weltsynode in Rom</span><span class="visually-hidden">: </span><span class="zon-
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/39/natuerlich-ist-es-ungehorsam-bild-1/wide__822x462",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Marcus Simaitis f\u00fcr ZEIT Christ&Welt"}
+    "url": "https://img.zeit.de/2023/46/im-namen-der-hoffnung-bild-1/wide__822x462",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Getty Images Deutschland GmbH"}
 }
 </script>                </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/2023/39/gottesdienst-queere-paare-koeln-marianne-arndt" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/2023/46/katholische-kirche-frankreich-sexueller-missbrauch-veronique-margron" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
                 <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
         <use xlink:href="#svg-zplus" />
     </svg>
-Gottesdienst für queere Paare</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">&#34;Natürlich ist es Ungehorsam&#34;</span>
+Katholische Kirche in Frankreich</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Im Namen der Hoffnung</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Gemeindereferentin Marianne Arndt plant einen Gottesdienst vor dem Kölner Dom, um queere Paare segnen zu lassen. Damit positioniert sie sich gegen Kardinal Woelki.</p>
+        <p class="zon-teaser-standard__text">Die Dominikanerin Véronique Margron spricht so deutlich über die Vergehen in der katholischen Kirche Frankreichs wie kaum jemand. Was hält sie dort?  </p>
                             
 
             <div class="zon-teaser-standard__metadata">
-            <span><span class="zon-teaser-standard__byline">    Interview:            Georg Löwisch</span>
+            <span><span class="zon-teaser-standard__byline">    Von            Christine Longin</span>
     </span></div>
     
     </div>
 
-    <button value="758c8b0b-28a7-4f14-9fc0-56050f9eb6e0" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="ff620fba-a275-4d33-94b6-4c36e0e41681" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+        <use xlink:href="#svg-bookmark" />
+    </svg></button>
+</article>
+                            <!-- adtile1mobile is omitted to avoid duplicates. -->
+                                                                    
+                                    
+            
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/45/papst-israel-vatikan-hamas-terror-stellungnahme" data-zplus="zplus-register">
+                            <a href="https://www.zeit.de/2023/45/papst-israel-vatikan-hamas-terror-stellungnahme" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Papst über Israel: Die Haltung des Vatikans verstört">Papst über Israel: Die Haltung des Vatikans verstört</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                <div class="zon-teaser-standard__media-container ">
+            <noscript data-src="https://img.zeit.de/2023/45/papst-israel-vatikan-hamas-terror/wide__822x462">
+                                <img class="zon-teaser-standard__media-item"
+                          alt="Papst über Israel: Die Haltung des Vatikans verstört"
+                     src="https://img.zeit.de/2023/45/papst-israel-vatikan-hamas-terror/wide__822x462"
+                     data-src="https://img.zeit.de/2023/45/papst-israel-vatikan-hamas-terror/wide"
+                     data-ratio="1.77777777778"
+                     decoding="async"
+                     >
+                            </noscript></div>
+
+        <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ImageObject",
+    "url": "https://img.zeit.de/2023/45/papst-israel-vatikan-hamas-terror/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Guglielmo Mangiapane/\u200bReuters"}
+}
+</script>                </figure>
+    <div class="zon-teaser-standard__container">
+        <a href="https://www.zeit.de/2023/45/papst-israel-vatikan-hamas-terror-stellungnahme" class="zon-teaser-standard__heading-link">
+        <h3 class="zon-teaser-standard__heading">
+                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo zplus-logo--register" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (registrierungspflichtiger Inhalt);">
+        <title>Z+ (registrierungspflichtiger Inhalt);</title>
+        <use xlink:href="#svg-zplus" />
+    </svg>
+Papst über Israel</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Die Haltung des Vatikans verstört</span>
+                </h3>
+        </a>
+        <p class="zon-teaser-standard__text">Wie der Papst daran scheiterte, den Terror der Hamas klar und zeitnah zu benennen.</p>
+                            
+
+            <div class="zon-teaser-standard__metadata">
+            <span><span class="zon-teaser-standard__byline">    Von            Gregor Maria Hoff</span>
+    </span></div>
+    
+    </div>
+
+    <button value="14ade937-4c8f-4f53-b495-e1a41aaeb70f" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -2356,14 +2346,14 @@ Gottesdienst für queere Paare</span><span class="visually-hidden">: </span><spa
                                                                             
                                     
             
-                                    <article class="zon-teaser-square  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/37/irme-setter-karp-afd-mitglieder-kirchenaemter" data-zplus="zplus-register">
-                            <a href="https://www.zeit.de/2023/37/irme-setter-karp-afd-mitglieder-kirchenaemter" class="zon-teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Irme Stetter-Karp: &#34;Wer in der AfD ist, darf in der Kirche keine Macht bekommen&#34;">Irme Stetter-Karp: &#34;Wer in der AfD ist, darf in der Kirche keine Macht bekommen&#34;</a>                <figure class="zon-teaser-square__media  scaled-image variant variant--square is-pixelperfect">
+                                    <article class="zon-teaser-square  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/46/weltsynode-vatikan-katholische-kirche-papst-frauen" data-zplus="zplus">
+                            <a href="https://www.zeit.de/2023/46/weltsynode-vatikan-katholische-kirche-papst-frauen" class="zon-teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Weltsynode: Revolution auf Römisch">Weltsynode: Revolution auf Römisch</a>                <figure class="zon-teaser-square__media zon-teaser-square__media--force-mobile scaled-image variant variant--square is-pixelperfect">
                 <div class="zon-teaser-square__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/37/wer-in-der-afd-ist-darf-in-der-kirche-keine-macht-bekommen-bild-1/square__460x460">
+            <noscript data-src="https://img.zeit.de/2023/46/revolution-auf-roemisch-bild-1/square__460x460">
                                 <img class="zon-teaser-square__media-item"
-                          alt="Irme Stetter-Karp: &#34;Wer in der AfD ist, darf in der Kirche keine Macht bekommen&#34;"
-                     src="https://img.zeit.de/2023/37/wer-in-der-afd-ist-darf-in-der-kirche-keine-macht-bekommen-bild-1/square__460x460"
-                     data-src="https://img.zeit.de/2023/37/wer-in-der-afd-ist-darf-in-der-kirche-keine-macht-bekommen-bild-1/square"
+                          alt="Weltsynode: Revolution auf Römisch"
+                     src="https://img.zeit.de/2023/46/revolution-auf-roemisch-bild-1/square__460x460"
+                     data-src="https://img.zeit.de/2023/46/revolution-auf-roemisch-bild-1/square"
                      data-ratio="1.0"
                      decoding="async"
                      >
@@ -2373,24 +2363,24 @@ Gottesdienst für queere Paare</span><span class="visually-hidden">: </span><spa
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/37/wer-in-der-afd-ist-darf-in-der-kirche-keine-macht-bekommen-bild-1/square__460x460",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0picture alliance/\u200bdpa"}
+    "url": "https://img.zeit.de/2023/46/revolution-auf-roemisch-bild-1/square__460x460",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Vatican Media - Servizio Fotografico"}
 }
 </script>                </figure>
 <div class="zon-teaser-square__container">
-        <a href="https://www.zeit.de/2023/37/irme-setter-karp-afd-mitglieder-kirchenaemter" class="zon-teaser-square__heading-link">
+        <a href="https://www.zeit.de/2023/46/weltsynode-vatikan-katholische-kirche-papst-frauen" class="zon-teaser-square__heading-link">
         <h3 class="zon-teaser-square__heading">
-                <span class="zon-teaser-square__kicker">    <svg class="svg-symbol zplus-logo zplus-logo--register" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (registrierungspflichtiger Inhalt);">
-        <title>Z+ (registrierungspflichtiger Inhalt);</title>
+                <span class="zon-teaser-square__kicker">    <svg class="svg-symbol zplus-logo" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (abopflichtiger Inhalt);">
+        <title>Z+ (abopflichtiger Inhalt);</title>
         <use xlink:href="#svg-zplus" />
     </svg>
-Irme Stetter-Karp</span><span class="visually-hidden">: </span><span class="zon-teaser-square__title">&#34;Wer in der AfD ist, darf in der Kirche keine Macht bekommen&#34;</span>
+Weltsynode</span><span class="visually-hidden">: </span><span class="zon-teaser-square__title">Revolution auf Römisch</span>
                 </h3>
         </a>
-        <p class="zon-teaser-square__text">In der katholischen Kirche werden rechtsextreme Töne lauter, sagt Irme Stetter-Karp. Die Präsidentin der katholischen Laien wünscht sich klare Worte gegen Hass und Hetze.</p>
+        <p class="zon-teaser-square__text">Die Weltsynode im Vatikan tagte einen Monat lang – und lieferte keine konkreten Ergebnisse. Warum sie die Verhältnisse trotzdem umgestürzt hat.</p>
             </div>
 
-    <button value="20bfbde2-3387-4059-a9e7-aaa76203975d" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="ccba2b12-d49c-4248-8e8f-0cf05a60368e" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -2403,14 +2393,14 @@ Irme Stetter-Karp</span><span class="visually-hidden">: </span><span class="zon-
                                                                             
                                     
             
-                                    <article class="zon-teaser-square  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/36/papst-franziskus-benedikt-xvi-theologie" data-zplus="zplus-dynamic">
-                            <a href="https://www.zeit.de/2023/36/papst-franziskus-benedikt-xvi-theologie" class="zon-teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Papst Franziskus und Papst Benedikt XVI.: Dem Gendarmen wird gekündigt">Papst Franziskus und Papst Benedikt XVI.: Dem Gendarmen wird gekündigt</a>                <figure class="zon-teaser-square__media  scaled-image variant variant--square is-pixelperfect">
+                                    <article class="zon-teaser-square  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/45/macht-kirche-kirchensteuer-politik-austritt-ende" data-zplus="zplus-register">
+                            <a href="https://www.zeit.de/2023/45/macht-kirche-kirchensteuer-politik-austritt-ende" class="zon-teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Macht der Kirche: Aufreger Kirchensteuer">Macht der Kirche: Aufreger Kirchensteuer</a>                <figure class="zon-teaser-square__media  scaled-image variant variant--square is-pixelperfect">
                 <div class="zon-teaser-square__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/36/dem-gendarmen-wird-gekuendigt-bild-1/square__460x460">
+            <noscript data-src="https://img.zeit.de/2023/45/macht-kirche-kirchensteuer/square__460x460">
                                 <img class="zon-teaser-square__media-item"
-                          alt="Papst Franziskus und Papst Benedikt XVI.: Dem Gendarmen wird gekündigt"
-                     src="https://img.zeit.de/2023/36/dem-gendarmen-wird-gekuendigt-bild-1/square__460x460"
-                     data-src="https://img.zeit.de/2023/36/dem-gendarmen-wird-gekuendigt-bild-1/square"
+                          alt="Macht der Kirche: Aufreger Kirchensteuer"
+                     src="https://img.zeit.de/2023/45/macht-kirche-kirchensteuer/square__460x460"
+                     data-src="https://img.zeit.de/2023/45/macht-kirche-kirchensteuer/square"
                      data-ratio="1.0"
                      decoding="async"
                      >
@@ -2420,23 +2410,24 @@ Irme Stetter-Karp</span><span class="visually-hidden">: </span><span class="zon-
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/36/dem-gendarmen-wird-gekuendigt-bild-1/square__460x460",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0AKG images GmbH"}
+    "url": "https://img.zeit.de/2023/45/macht-kirche-kirchensteuer/square__460x460",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Peter Schickert/\u200bimago images"}
 }
 </script>                </figure>
 <div class="zon-teaser-square__container">
-        <a href="https://www.zeit.de/2023/36/papst-franziskus-benedikt-xvi-theologie" class="zon-teaser-square__heading-link">
+        <a href="https://www.zeit.de/2023/45/macht-kirche-kirchensteuer-politik-austritt-ende" class="zon-teaser-square__heading-link">
         <h3 class="zon-teaser-square__heading">
-                <span class="zon-teaser-square__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
+                <span class="zon-teaser-square__kicker">    <svg class="svg-symbol zplus-logo zplus-logo--register" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (registrierungspflichtiger Inhalt);">
+        <title>Z+ (registrierungspflichtiger Inhalt);</title>
         <use xlink:href="#svg-zplus" />
     </svg>
-Papst Franziskus und Papst Benedikt XVI.</span><span class="visually-hidden">: </span><span class="zon-teaser-square__title">Dem Gendarmen wird gekündigt</span>
+Macht der Kirche</span><span class="visually-hidden">: </span><span class="zon-teaser-square__title">Aufreger Kirchensteuer</span>
                 </h3>
         </a>
-        <p class="zon-teaser-square__text">Zu Lebzeiten sah sich Benedikt XVI. als Bewahrer des reinen katholischen Glaubens. Nun, da der Vorgänger tot ist, rechnet Papst Franziskus mit ihm ab.</p>
+        <p class="zon-teaser-square__text">Wie sie fließt. Wie sie entstand. Und warum dem System zum Ende des Jahrzehnts ein Schock droht.</p>
             </div>
 
-    <button value="47bc4410-1f8d-4d4a-b720-65c4a7060d4b" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="c01775a0-09ec-4b9f-aaaa-5c877b920254" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -2449,14 +2440,14 @@ Papst Franziskus und Papst Benedikt XVI.</span><span class="visually-hidden">: <
                                                                         
                                     
             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/43/bienenzucht-bistum-osnabrueck-kirche-missbrauch" data-zplus="zplus-dynamic">
-                            <a href="https://www.zeit.de/2023/43/bienenzucht-bistum-osnabrueck-kirche-missbrauch" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Bienenzucht im Bistum Osnabrück: Von Bienen lernen, wie Gemeinde geht">Bienenzucht im Bistum Osnabrück: Von Bienen lernen, wie Gemeinde geht</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/gesellschaft/2023-11/papst-franziskus-krankheit-vatikan" data-zplus="zplus-dynamic">
+                            <a href="https://www.zeit.de/gesellschaft/2023-11/papst-franziskus-krankheit-vatikan" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Papst Franziskus: Papst sagt Audienzen wegen Lungenentzündung ab">Papst Franziskus: Papst sagt Audienzen wegen Lungenentzündung ab</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/43/so-geht-gemeinde-bild-1/wide__822x462">
+            <noscript data-src="https://img.zeit.de/gesellschaft/2023-11/papst-franziskus-krankheit-vatikan-bild/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="Bienenzucht im Bistum Osnabrück: Von Bienen lernen, wie Gemeinde geht"
-                     src="https://img.zeit.de/2023/43/so-geht-gemeinde-bild-1/wide__822x462"
-                     data-src="https://img.zeit.de/2023/43/so-geht-gemeinde-bild-1/wide"
+                          alt="Papst Franziskus: Papst sagt Audienzen wegen Lungenentzündung ab"
+                     src="https://img.zeit.de/gesellschaft/2023-11/papst-franziskus-krankheit-vatikan-bild/wide__822x462"
+                     data-src="https://img.zeit.de/gesellschaft/2023-11/papst-franziskus-krankheit-vatikan-bild/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -2466,29 +2457,26 @@ Papst Franziskus und Papst Benedikt XVI.</span><span class="visually-hidden">: <
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/43/so-geht-gemeinde-bild-1/wide__822x462",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Unsplash"}
+    "url": "https://img.zeit.de/gesellschaft/2023-11/papst-franziskus-krankheit-vatikan-bild/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Remo Casilli/\u200bReuters"}
 }
 </script>                </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/2023/43/bienenzucht-bistum-osnabrueck-kirche-missbrauch" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/gesellschaft/2023-11/papst-franziskus-krankheit-vatikan" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
                 <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
         <use xlink:href="#svg-zplus" />
     </svg>
-Bienenzucht im Bistum Osnabrück</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Von Bienen lernen, wie Gemeinde geht</span>
+Papst Franziskus</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Papst sagt Audienzen wegen Lungenentzündung ab</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Ulrich Beckwermert züchtet Bienen im Garten des Osnabrücker Doms. Dort fühlen sich nicht nur die Insekten wohl, sondern auch Menschen, die kaum mehr in die Kirche gehen. </p>
+        <p class="zon-teaser-standard__text">Papst Franziskus ist offenbar schwerer erkrankt als bisher angenommen. Für das Angelus-Gebet zeigte er sich nicht wie üblich am Fenster über dem Petersdom.</p>
                             
 
-            <div class="zon-teaser-standard__metadata">
-            <span><span class="zon-teaser-standard__byline">    Eine Kolumne von            Henrik Rampe</span>
-    </span></div>
     
     </div>
 
-    <button value="24fc48d0-56d9-42f9-8acf-07e01e9ee424" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="74b4eb32-e7a4-4a22-b5e5-9190e78dcc2b" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -2496,14 +2484,14 @@ Bienenzucht im Bistum Osnabrück</span><span class="visually-hidden">: </span><s
                                                                     
                                     
             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/kultur/kunst/2023-10/rafal-milach-kuenstler-polen-wahl-proteste-katholische-kirche" data-zplus="zplus">
-                            <a href="https://www.zeit.de/kultur/kunst/2023-10/rafal-milach-kuenstler-polen-wahl-proteste-katholische-kirche" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Rafał Milach: &#34;Es ist sehr schwierig, europäische Maßstäbe an Polen anzulegen&#34;">Rafał Milach: &#34;Es ist sehr schwierig, europäische Maßstäbe an Polen anzulegen&#34;</a>            <figure class="zon-teaser-standard__media zon-teaser-standard__media--force-mobile scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/gesellschaft/zeitgeschehen/2023-11/katholische-kiche-zdk-reform-synodaler-weg-ausschuss" data-zplus="zplus-dynamic">
+                            <a href="https://www.zeit.de/gesellschaft/zeitgeschehen/2023-11/katholische-kiche-zdk-reform-synodaler-weg-ausschuss" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Katholische Kirche: Zentralkomitee der Katholiken fasst wichtigen Reformbeschluss">Katholische Kirche: Zentralkomitee der Katholiken fasst wichtigen Reformbeschluss</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/kultur/kunst/2023-10/milach-protest1/wide__822x462">
+            <noscript data-src="https://img.zeit.de/gesellschaft/zeitgeschehen/2023-11/katholische-kiche-zdk-reform-synodaler-weg-ausschuss-bild/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="Rafał Milach: &#34;Es ist sehr schwierig, europäische Maßstäbe an Polen anzulegen&#34;"
-                     src="https://img.zeit.de/kultur/kunst/2023-10/milach-protest1/wide__822x462"
-                     data-src="https://img.zeit.de/kultur/kunst/2023-10/milach-protest1/wide"
+                          alt="Katholische Kirche: Zentralkomitee der Katholiken fasst wichtigen Reformbeschluss"
+                     src="https://img.zeit.de/gesellschaft/zeitgeschehen/2023-11/katholische-kiche-zdk-reform-synodaler-weg-ausschuss-bild/wide__822x462"
+                     data-src="https://img.zeit.de/gesellschaft/zeitgeschehen/2023-11/katholische-kiche-zdk-reform-synodaler-weg-ausschuss-bild/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -2513,30 +2501,26 @@ Bienenzucht im Bistum Osnabrück</span><span class="visually-hidden">: </span><s
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/kultur/kunst/2023-10/milach-protest1/wide__822x462",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Rafal Milach"}
+    "url": "https://img.zeit.de/gesellschaft/zeitgeschehen/2023-11/katholische-kiche-zdk-reform-synodaler-weg-ausschuss-bild/wide__822x462",
+    "copyrightHolder": {"@type": "Organization", "name": "\u00a9\u00a0Carsten Koall/\u200bdpa"}
 }
 </script>                </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/kultur/kunst/2023-10/rafal-milach-kuenstler-polen-wahl-proteste-katholische-kirche" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/gesellschaft/zeitgeschehen/2023-11/katholische-kiche-zdk-reform-synodaler-weg-ausschuss" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (abopflichtiger Inhalt);">
-        <title>Z+ (abopflichtiger Inhalt);</title>
+                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
         <use xlink:href="#svg-zplus" />
     </svg>
-Rafał Milach</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">&#34;Es ist sehr schwierig, europäische Maßstäbe an Polen anzulegen&#34;</span>
+Katholische Kirche</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Zentralkomitee der Katholiken fasst wichtigen Reformbeschluss</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Der Fotografiekünstler Rafał Milach dokumentiert mit seiner Kamera die spezifische linke Protestkultur in Polen. Hier spricht er über die bevorstehende Wahl.</p>
+        <p class="zon-teaser-standard__text">Der Laiendachverband hat mit einem Beschluss den Weg frei gemacht für den Synodalen Ausschuss. Er soll die Reformbemühungen aus dem Synodalen Weg fortsetzen. </p>
                             
 
-            <div class="zon-teaser-standard__metadata">
-            <span><span class="zon-teaser-standard__byline">    Interview:            Victor Sattler</span>
-    </span></div>
     
     </div>
 
-    <button value="f3037ac1-c198-42e8-9f2d-bcf60cb56711" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="a28bf3eb-b9b7-4e84-b718-ced866075e64" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -2544,14 +2528,14 @@ Rafał Milach</span><span class="visually-hidden">: </span><span class="zon-teas
                                                                     
                                     
             
-                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/42/weltsynode-rom-katholische-kirche-papst-franziskus" data-zplus="zplus-register">
-                            <a href="https://www.zeit.de/2023/42/weltsynode-rom-katholische-kirche-papst-franziskus" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Weltsynode in Rom: Wohin Papst Franzikus die Kirche steuern will">Weltsynode in Rom: Wohin Papst Franzikus die Kirche steuern will</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
+                                    <article class="zon-teaser-standard  has-bookmark-icon" data-unique-id="http://xml.zeit.de/2023/49/grabrede-beerdigung-glaube-tod-trauer" data-zplus="zplus-dynamic">
+                            <a href="https://www.zeit.de/2023/49/grabrede-beerdigung-glaube-tod-trauer" class="zon-teaser-standard__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Grabrede: Meine allerletzten Worte">Grabrede: Meine allerletzten Worte</a>            <figure class="zon-teaser-standard__media  scaled-image variant variant--wide">
                 <div class="zon-teaser-standard__media-container ">
-            <noscript data-src="https://img.zeit.de/2023/42/weltsynode-rom-katholische-kirche-papst-franziskus-teaser/wide__822x462">
+            <noscript data-src="https://img.zeit.de/2023/49/meine-allerletzten-worte-bild-1/wide__822x462">
                                 <img class="zon-teaser-standard__media-item"
-                          alt="Weltsynode in Rom: Wohin Papst Franzikus die Kirche steuern will"
-                     src="https://img.zeit.de/2023/42/weltsynode-rom-katholische-kirche-papst-franziskus-teaser/wide__822x462"
-                     data-src="https://img.zeit.de/2023/42/weltsynode-rom-katholische-kirche-papst-franziskus-teaser/wide"
+                          alt="Grabrede: Meine allerletzten Worte"
+                     src="https://img.zeit.de/2023/49/meine-allerletzten-worte-bild-1/wide__822x462"
+                     data-src="https://img.zeit.de/2023/49/meine-allerletzten-worte-bild-1/wide"
                      data-ratio="1.77777777778"
                      decoding="async"
                      >
@@ -2561,30 +2545,29 @@ Rafał Milach</span><span class="visually-hidden">: </span><span class="zon-teas
 {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2023/42/weltsynode-rom-katholische-kirche-papst-franziskus-teaser/wide__822x462",
-    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Ludwig Ander-Donath f\u00fcr DIE ZEIT; Herlinde Koelbl/\u200bAgentur Focus"}
+    "url": "https://img.zeit.de/2023/49/meine-allerletzten-worte-bild-1/wide__822x462",
+    "copyrightHolder": {"@type": "Person", "name": "\u00a9\u00a0Neue Z\u00fcrcher Zeitung AG"}
 }
 </script>                </figure>
     <div class="zon-teaser-standard__container">
-        <a href="https://www.zeit.de/2023/42/weltsynode-rom-katholische-kirche-papst-franziskus" class="zon-teaser-standard__heading-link">
+        <a href="https://www.zeit.de/2023/49/grabrede-beerdigung-glaube-tod-trauer" class="zon-teaser-standard__heading-link">
         <h3 class="zon-teaser-standard__heading">
-                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo zplus-logo--register" width="28" height="23" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Z+ (registrierungspflichtiger Inhalt);">
-        <title>Z+ (registrierungspflichtiger Inhalt);</title>
+                <span class="zon-teaser-standard__kicker">    <svg class="svg-symbol zplus-logo invisible" width="28" height="23" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
         <use xlink:href="#svg-zplus" />
     </svg>
-Weltsynode in Rom</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Wohin Papst Franzikus die Kirche steuern will</span>
+Grabrede</span><span class="visually-hidden">: </span><span class="zon-teaser-standard__title">Meine allerletzten Worte</span>
                 </h3>
         </a>
-        <p class="zon-teaser-standard__text">Die Weltsynode der Katholischen Kirche beginnt. Zwei Deutsche, die den Papst persönlich kennen, erklären, warum viele deutschen Reformer ihn als Gegner sehen.</p>
+        <p class="zon-teaser-standard__text">Bei ihrer Beerdigung möchte sie selbst auf ihr Leben zurückblicken. Wie verabschiedet man sich für immer? Unsere Autorin hat ihre eigene Grabrede geschrieben. </p>
                             
 
             <div class="zon-teaser-standard__metadata">
-            <span><span class="zon-teaser-standard__byline">    Interview:            Evelyn Finger</span>
+            <span><span class="zon-teaser-standard__byline">    Von            Klara Obermüller</span>
     </span></div>
     
     </div>
 
-    <button value="15d2c9ec-d907-4c15-ad39-2910014e9a6c" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
+    <button value="71f8c802-5298-423f-aab5-0f5ef81fe5f7" class="bookmark-icon bookmark-icon--on-teaser" title="Artikel merken" hidden>    <svg class="svg-symbol" width="11" height="16" aria-hidden="true">
         <use xlink:href="#svg-bookmark" />
     </svg></button>
 </article>
@@ -2761,11 +2744,11 @@ Weltsynode in Rom</span><span class="visually-hidden">: </span><span class="zon-
     
     <!-- popover -->
     
-    <script src="https://static.zeit.de/p/zeit.web/js/mausabhaengigeszaehlinstrument.c63d0c34b4e3a804acba.js" async></script>
-    <script src="https://static.zeit.de/p/zeit.web/js/images.28de941f1d52a57ee358.js" async></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/mausabhaengigeszaehlinstrument.d1df125e7f1cf10e824e.js" async></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/images.cd221615d2978c8cec3e.js" async></script>
 
-    <script src="https://static.zeit.de/p/zeit.web/js/promise.b2285ebd13b49fae7bd7.js" nomodule defer></script>
-    <script src="https://static.zeit.de/p/zeit.web/js/site.6b93a1e82bf6ca077c8c.js" defer></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/promise.c587d6a95ad22aa9bc17.js" nomodule defer></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/site.e2b8ac1db2608347dfb9.js" defer></script>
 
     <script>
     if ( 'serviceWorker' in window.navigator ) {
@@ -2774,13 +2757,21 @@ Weltsynode in Rom</span><span class="visually-hidden">: </span><span class="zon-
         });
     }
 </script>
-        
+    
+                <script>                                window.dataLayer.push({
+                "event": "#ab_testing",
+                "test_name": "rebrush_0_100",
+                "group_name": "Kontrollgruppe",
+                "path": window.location.pathname
+            });
+                            </script>
+            
 
 <script>
     window.Zeit.renderFooterbar = function( type ) {
         window.Zeit.dispatchEvent('disableOverscrolling');
 
-        import( 'https://wally.zeit.de/footerbar.js' ).then( ({ FooterBar }) => {
+        import( '/+/wally/footerbar.js' ).then( ({ FooterBar }) => {
             new FooterBar({
                 target: document.body,
                 intro: true,
@@ -2788,7 +2779,7 @@ Weltsynode in Rom</span><span class="visually-hidden">: </span><span class="zon-
                     type,
                     settings: {
                         contentUrl: "https://www.zeit.de/christ-und-welt",
-                        apiUrl: "https://wally.zeit.de/api",
+                        apiUrl: "/-/wally/api",
                         ssoUrl: "https://meine.zeit.de",
                         productId: "zede",
                         premiumHost: "https://premium.zeit.de",
