@@ -22,18 +22,18 @@
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/tabletgothic/TabletGothic-Bold-2024.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="https://static.zeit.de/p/zeit.web/fonts/beckett/Beckett-Light.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/normalize.b9eab7af6a39b9cf8a6d40fdc727387a.css">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/base/base.8153f187d8c93b7050e952f66a11470e.css">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/navigation/navigation.72571439d0cd10c4c0116e3f234364bc.css">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.9dc9a41dbb91aebb2e2791138b3c6d8f.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.9dc9a41dbb91aebb2e2791138b3c6d8f.css"></noscript>
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/base/base.2a820cd81edd26b9a75b4cb15345d88a.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/navigation/navigation.467c81a4f632364b5d00bef354f58718.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.8773ac4e3616e83f18791b36bdf91f31.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/footer.8773ac4e3616e83f18791b36bdf91f31.css"></noscript>
     <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/breadcrumbs.1520eea0d0e5f61c14c70ee7a3d8ac63.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.core/standalone/breadcrumbs.1520eea0d0e5f61c14c70ee7a3d8ac63.css"></noscript>
         <link rel="stylesheet" href="/+/wally/footerbar.css" media="print" onload="this.media='all'" />
         <link rel="stylesheet" href="/+/wally/interstitial.css" media="print" onload="this.media='all'" />
         <link rel="stylesheet" href="/+/wally/topbar.css" media="print" onload="this.media='all'" />
         
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/centerpage/centerpage.25c9a74423a9e549d4032a1ef587e5b4.css">
-    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/base/print.88b6692b4bc6f8d9f8f0b192d3f56dcc.css" media="print">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/centerpage/centerpage.7cd936b3ad28a3daa3bfd0216647e4d7.css">
+    <link rel="stylesheet" href="https://static.zeit.de/p/zeit.web/css/web.campus/base/print.d4269501c79d75c14b8b7cbc97e5a733.css" media="print">
 
     <script id="zonConfig" type="application/json">
         {
@@ -82,12 +82,14 @@
                 "comments_per_user": true,
                 "comments_feedback_banner": false,
                 "comments_ads_use_postmessage": false,
-                "summy": true
+                "summy": true,
+                "vertical_abo": false
                 },
             "settings": {
                 "autoplay_carousel_item_duration": "",
                 "autoplay_carousel_animation_duration": "",
                 "bookmark_fetch_api_url": "",
+                "comments_user_api_url": "",
                 "consent_cookie_name": "zonconsent",
                 "consent_cookie_expire_days": 90,
                 "everIdCookieName": "",
@@ -363,7 +365,7 @@
     
             window.Zeit.user.paywall = null;
             if ( window.Zeit.user && window.Zeit.user.state ) {
-                if ( window.Zeit.user.hasAbo ) {
+                if ( window.Zeit.user.entitlements?.includes('zplus') ) {
                     window.Zeit.user.iqd_usergroup = 'iqdpremium';
                 } else if ( window.Zeit.user.ssoid ) {
                     window.Zeit.user.iqd_usergroup = 'iqdpremium_registered';
@@ -371,7 +373,7 @@
             }
     
             window.Zeit.user.hasPaidContentEntitlement = () => {
-                return window.Zeit.user.entitlements.some(
+                return window.Zeit.user.entitlements?.some(
                     x => x != 'registration' && x != 'adfree' );
             };
     
@@ -437,7 +439,7 @@
                     domain: document.location.hostname,
                     language1: langs.shift() || '',
                     language2: langs.shift() || '',
-                    page: {"page_category": "centerpage", "ivw_code": "campus/bild-text", "breakpoint": "stationaer", "push": "", "paywall": "open"},
+                    page: {"page_category": "centerpage", "ivw_code": "campus/bild-text", "breakpoint": "stationaer", "push": "", "paywall": "open", "request_paywall": "open"},
                     content: {"id": "de6e0d19-d954-457b-a7ba-3bd69df9f473", "audio_type": "", "owner": "redaktion", "content_type": "centerpage.homepage", "ressort": "campus", "sub_ressort": "", "product_id": "zede", "cluster": "", "publishing_date": "2016-04-19T14:40:48+02:00", "last_updated": "2021-12-06T11:43:47+01:00", "authors": "", "pages": "1/1", "keywords": "zeit;kpmg;zeit online;jobeinstieg;homepage;liebe;generation y", "length": "", "access": "free", "publisher_assets": "", "channels": "undefined"},
                     user: {
                         is_loggedin: 'nicht angemeldet',
@@ -460,6 +462,7 @@
                 }
 
                 if ( window.Zeit.user ) {
+                    data.user.entitlements = window.Zeit.user.entitlements;
                     if ( window.Zeit.user.iqd_usergroup ) {
                         data.user.iqd_usergroup = window.Zeit.user.iqd_usergroup;
                     }
@@ -469,14 +472,14 @@
                     if ( window.Zeit.user.state === 'active' ) {
                         data.user.is_loggedin = 'angemeldet';
                     }
-                    if ( window.Zeit.user.adFree ) {
+                    if ( window.Zeit.user.entitlements?.includes('pur') ) {
                         data.user.is_pur = 'true';
                         data.user.subscription_type = 'pur_abonnent';
                     }
                     if ( window.Zeit.user.hasAbo ) {
                         data.user.subscription_type = 'digital_abonnent';
                     }
-                    if ( window.Zeit.user.hasAbo || window.Zeit.user.adFree ) {
+                    if ( window.Zeit.user.hasPaidContentEntitlement() || window.Zeit.user.adFree ) {
                         data.user.has_subscription = 'true';
                     }
                 }
@@ -507,7 +510,7 @@
             padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
         }
     </style>
-    <script src="https://static.zeit.de/p/zeit.web/js/zustimmungsverwaltung.06f2ee70cb577c7d92be.js" ></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/zustimmungsverwaltung.9529d64aec06e307625a.js" ></script>
 
 
     <meta name="robots" content="index,follow,noarchive,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
@@ -585,7 +588,7 @@
     
     
     <script type="application/ld+json">
-        {"@context": "http://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://www.zeit.de/campus/2024-12/ungesendete-nachrichten-brief-chat-aufruf"}, {"@type": "ListItem", "position": 2, "url": "https://www.zeit.de/campus/2025/01/studieren-usa-gebuehren-albert-einstein-college-of-medicine-new-york"}, {"@type": "ListItem", "position": 3, "url": "https://www.zeit.de/campus/2024-11/junge-waehlerschaft-bundestagswahl-wahlkampf-aufruf"}, {"@type": "ListItem", "position": 4, "url": "https://www.zeit.de/campus/2024/05/berufseinstieg-studium-logistik-handelsmanagement-einzelhandel"}, {"@type": "ListItem", "position": 5, "url": "https://www.zeit.de/kultur/2024-12/el-hotzo-podcast"}, {"@type": "ListItem", "position": 6, "url": "https://www.zeit.de/campus/angebote/congstar/fairnessheldinnen/trinksaufmich/index"}, {"@type": "ListItem", "position": 7, "url": "https://www.zeit.de/campus/angebote/howitworks/2024/141124/sag-doch-mal-nein"}, {"@type": "ListItem", "position": 8, "url": "https://www.zeit.de/2024/47/orientierungssemester-studienwahl-universitaet-fach-faq"}, {"@type": "ListItem", "position": 9, "url": "https://www.zeit.de/campus/2022-08/dating-liebe-beziehung-erfahrungen-kindheit"}, {"@type": "ListItem", "position": 10, "url": "https://www.zeit.de/campus/2022-07/dating-muehe-verhalten-liebe"}, {"@type": "ListItem", "position": 11, "url": "https://www.zeit.de/campus/2022-06/liebe-beziehung-partnerschaft-hindernisse"}, {"@type": "ListItem", "position": 12, "url": "https://www.zeit.de/campus/2024-12/professorinnen-deutschland-quote-leicht-gestiegen"}, {"@type": "ListItem", "position": 13, "url": "https://www.zeit.de/2024/47/ausbildung-abitur-studium-praxis-erfahrungen"}, {"@type": "ListItem", "position": 14, "url": "https://www.zeit.de/2024/47/studienfinanzierung-uni-leben-kosten-geld-tipps"}]}
+        {"@context": "http://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "url": "https://www.zeit.de/campus/ratgeber/2025/01/soziale-angststoerung-scham-psychologie-therapie"}, {"@type": "ListItem", "position": 2, "url": "https://www.zeit.de/campus/ratgeber/2025/01/mentale-probleme-hilfe-depressionen-panikattaken-angststoerung-therapie"}, {"@type": "ListItem", "position": 3, "url": "https://www.zeit.de/campus/2025-01/nahostkonflikt-unis-waffenruhe-demonstrationen-israel-hamas"}, {"@type": "ListItem", "position": 4, "url": "https://www.zeit.de/campus/2025/01/berufswahl-studium-praktika-leidenschaft-karriere"}, {"@type": "ListItem", "position": 5, "url": "https://www.zeit.de/campus/angebote/karriereweg-haw-professur/index"}, {"@type": "ListItem", "position": 6, "url": "https://www.zeit.de/campus/2025/01/arbeiten-ausland-dubai-expats-steuern-luxus"}, {"@type": "ListItem", "position": 7, "url": "https://www.zeit.de/campus/2025-01/eugh-erasmus-stipendium-eltern-steuern"}, {"@type": "ListItem", "position": 8, "url": "https://efn.typeform.com/to/Hui42XHZ?utm_source=zeit_online&utm_medium=zeit_online_verlagsangebot&utm_campaign=schnelltest&utm_content=zeitabogeschenkt"}, {"@type": "ListItem", "position": 9, "url": "https://www.zeit.de/campus/2022-08/dating-liebe-beziehung-erfahrungen-kindheit"}, {"@type": "ListItem", "position": 10, "url": "https://www.zeit.de/campus/2022-07/dating-muehe-verhalten-liebe"}, {"@type": "ListItem", "position": 11, "url": "https://www.zeit.de/campus/2022-06/liebe-beziehung-partnerschaft-hindernisse"}, {"@type": "ListItem", "position": 12, "url": "https://www.zeit.de/campus/2025-01/studium-bafoeg-stipendien"}, {"@type": "ListItem", "position": 13, "url": "https://www.zeit.de/campus/ratgeber/2025/01/breathwork-seminare-test-atem-stress-aengste"}, {"@type": "ListItem", "position": 14, "url": "https://www.zeit.de/gesellschaft/2025-01/werden-us-unis-fairer-wenn-man-sie-mit-geld-zuschuettet"}]}
     </script>
     
     
@@ -797,8 +800,8 @@
         --vh: 100vh;         
     }
     </style>
-        <style>html:not([data-ad-pos-marg]) body[data-page-type=author] .iqdcontainer.iqdcontainer[data-device=desktop][data-placement=pos_2] { float: none; margin-inline: auto; min-height: auto;} .liveblog .tik4-extension--inline-ad .iqdcontainer[data-device=desktop] { margin-block: var(--z-ds-space-xxl) } .liveblog .tik4-extension--inline-ad .iqdcontainer[data-device=mobile] { margin-inline: calc(var(--z-gap) * -1) } .liveblog .tik4-extension.tik4-extension--inline-ad { max-width: none } .summy-button-highlighted { font-size:14px } .infobox__section:not(.z-accordion) { display: flow-root; }</style>
-    <script src="https://static.zeit.de/p/zeit.web/js/colorscheme.3e111d9ecb733d028b0c.js" ></script>
+        <style>html:not([data-ad-pos-marg]) body[data-page-type=author] .iqdcontainer.iqdcontainer[data-device=desktop][data-placement=pos_2] { float: none; margin-inline: auto; min-height: auto;} .liveblog .tik4-extension--inline-ad .iqdcontainer[data-device=desktop] { margin-block: var(--z-ds-space-xxl) } .liveblog .tik4-extension--inline-ad .iqdcontainer[data-device=mobile] { margin-inline: calc(var(--z-gap) * -1) } .liveblog .tik4-extension.tik4-extension--inline-ad { max-width: none } .summy-button-highlighted { font-size:14px } .infobox__section:not(.z-accordion) { display: flow-root; } .article-header :where(h1, h2, h3, h4, h5, h6) {	hyphens: auto;	-webkit-hyphens: auto; text-wrap: auto; text-wrap: pretty;} .zon-teaser__heading:where(h1, h2, h3, h4, h5, h6) {	text-wrap: auto; text-wrap: pretty;} .cp-region--lead + .iqdcontainer + .iqdcontainer + .cp-region--has-border .cp-area--standard .zon-teaser--standard:first-child { margin-top: var(--z-ds-space-teaser); }</style>
+    <script src="https://static.zeit.de/p/zeit.web/js/colorscheme.bb410306eda5879732be.js" ></script>
 
     <!-- zeit.web.core.template.include_in_head injection point -->
 
@@ -1074,16 +1077,16 @@
                 </ul>
                 <div role="heading" class="navigation-section__headline" id="nav-headline-anzeigen">Anzeigen</div><ul class="navigation__section" data-vt-section="anzeigen" data-ct-section-type="anzeigen"  aria-labelledby="nav-headline-anzeigen">
                                                 <li>
-                        <a href="https://www.zeit.de/campus/angebote/pride-index-2024/index" class="navigation-link" itemprop="url">
-        <span itemprop="name">PRIDE Index 2024</span>
+                        <a href="https://www.zeit.de/campus/angebote/karriereweg-haw-professur/index" class="navigation-link" itemprop="url">
+        <span itemprop="name">Der Karriereweg HAW-Professur</span>
+</a>                    </li>
+                                                    <li>
+                        <a href="https://cmk.zeit.de/cms/microsite/18150/anzeige/workday-inc/workday" class="navigation-link" itemprop="url">
+        <span itemprop="name">Wie Workday Unternehmen stärkt</span>
 </a>                    </li>
                                                     <li>
                         <a href="https://www.zeit.de/angebote/most-wanted-start-2025/index" class="navigation-link" itemprop="url">
         <span itemprop="name">Beliebtesten Ausbildungsplätze 2025</span>
-</a>                    </li>
-                                                    <li>
-                        <a href="https://www.zeit.de/angebote/kitzbuehel/index" class="navigation-link" itemprop="url">
-        <span itemprop="name">Kitzbüheler Wintertraum</span>
 </a>                    </li>
                                                     <li>
                         <a href="https://www.zeit.de/angebote/most-responsible-employer-2025/index" class="navigation-link" itemprop="url">
@@ -1094,20 +1097,8 @@
         <span itemprop="name">Feier dein Geschmack</span>
 </a>                    </li>
                                                     <li>
-                        <a href="https://www.zeit.de/campus/angebote/congstar/fairnessheldinnen/index" class="navigation-link" itemprop="url">
-        <span itemprop="name">congstar Fairnessheld*innen</span>
-</a>                    </li>
-                                                    <li>
                         <a href="https://zeitleo.de/weltretter-mission/" class="navigation-link" itemprop="url">
         <span itemprop="name">ZEIT LEO Weltretter-Mission</span>
-</a>                    </li>
-                                                    <li>
-                        <a href="https://www.zeit.de/campus/angebote/howitworks/index" class="navigation-link" itemprop="url">
-        <span itemprop="name">How it works: Studium und Job</span>
-</a>                    </li>
-                                                    <li>
-                        <a href="https://zett.cmk.zeit.de/cms/articles/18185/anzeige/techniker-krankenkasse/podcast-wie-macht-social-media-wieder-spass-hannes-vincent-krause" class="navigation-link" itemprop="url">
-        <span itemprop="name">How it works: Podcast-Reihe</span>
 </a>                    </li>
                                                     <li>
                         <a href="https://deutsches-schulportal.de/" class="navigation-link" itemprop="url">
@@ -1125,19 +1116,19 @@
         <div data-vt-parameter="navigation_scrolled-to-end.navigation_main..." data-vt-link-id="#navigation"></div>
     </nav>
 
-
+        
         <h1 class="navigation__area navigation__area--logo" data-ct-container-type="navigation_logo">
         <a href="https://www.zeit.de/campus/index" data-ct-label="zeit_campus">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 875.7 94.3" class="svg-symbol header__logo header__logo--zco" preserveAspectRatio="xMinYMin meet" role="img" aria-label="ZEIT Campus"><title>ZEIT Campus</title><path d="M352 71q-6.2 5.5-16.6 5.5A23.2 23.2 0 0 1 313.7 63a35.7 35.7 0 0 1-3.2-16 35.2 35.2 0 0 1 3.2-15.6 23.6 23.6 0 0 1 8.9-10 24 24 0 0 1 12.8-3.5q10.4 0 16.6 5.3a24 24 0 0 1 7.8 14.3h21.8a41.8 41.8 0 0 0-6.5-18.6 39.7 39.7 0 0 0-15.6-13.7q-10-5.2-24-5.2-14.2 0-25 6.2A42.2 42.2 0 0 0 294.1 23a50 50 0 0 0-5.8 24.1 50.3 50.3 0 0 0 5.9 24.4 41.8 41.8 0 0 0 16.5 16.8q10.7 6 25 6 14 0 24-5.2a40 40 0 0 0 15.7-14 42 42 0 0 0 6.5-18.5H360a24.4 24.4 0 0 1-7.9 14.5Zm68.9-69-36 90.5h21.9l7-19.5h39.3l7 19.5h23.6L447.6 2Zm12.4 16.3L448 57.5h-29ZM545.6 50 527.8 1.9h-33.2v90.5h21.2l-.7-73.9L532 64.6h25.8L574.3 19l-.8 73.4h21.3V1.9h-32.4zM676.4 5.6A37.5 37.5 0 0 0 659.8 2h-44.6v90.5h21.6v-33h22.3a40.5 40.5 0 0 0 17.4-3.6 27 27 0 0 0 11.6-10 27.9 27.9 0 0 0 4.1-15.2 27 27 0 0 0-4.2-15 28.5 28.5 0 0 0-11.6-10.2Zm-10 34.6q-3.8 3.3-10 3.3h-19.6v-25h19.6a14.8 14.8 0 0 1 9.9 3.3q3.8 3.3 3.9 9.3a11.6 11.6 0 0 1-3.8 9.1m95.3 17.2q0 9.5-5 14t-12.9 4.4q-7.8 0-12.7-4.5t-5-13.9V2h-21.6v54.9q0 12.3 5.1 20.7a32 32 0 0 0 14.1 12.6 51.9 51.9 0 0 0 40.6 0 31.6 31.6 0 0 0 14-12.5q5.1-8.5 5.1-20.8V2h-21.6Zm106-10.4q-8-7-22.9-9.2l-11-1.7q-8-1.3-11-3.7a8.2 8.2 0 0 1-3-6.8 9 9 0 0 1 3.6-7q3.6-3 11-3 15.2 0 17.5 13.6h21.3a32 32 0 0 0-5.4-14.7A31 31 0 0 0 855.1 4q-8.3-4-20.4-4a45.8 45.8 0 0 0-19 3.7 29.6 29.6 0 0 0-12.5 9.8 23.5 23.5 0 0 0-4.3 13.8q0 11.3 6.6 18t21.7 9.2l12.1 2q7.7 1.2 10.7 4a9.7 9.7 0 0 1-1.2 15q-4.2 3.1-13 3.1-9.5 0-14-4.6t-5.4-13h-21q1 15.5 11.4 24.4t29.2 8.8q12.4 0 21.3-3.5t13.6-10a24.5 24.5 0 0 0 4.7-14.7q0-12-8-19ZM224.4 6.8v75.9a7.6 7.6 0 0 1-7 7.2c-.8 0-1 2.3 0 2.3h30.8c1 0 .7-2.3 0-2.3-2.8 0-7.5-2.8-7.5-7.2v-76c12 0 24 12.3 28 18.4 1 1.4 2.3.6 1.9-.4L260.5 2.8c-1-2.2-2.4-.9-3.9-.9h-48.1c-1.5 0-3-1.3-3.9.9l-9 22.6c-.4 1 1.2 1.9 2 .4 3.3-6.2 14.5-19 26.8-19M20.9 87.5h12.5a44.7 44.7 0 0 0 35-18.8c.5-1 1.5-.6 1 .5l-10 23H.1L48.9 6.7H38.3A39 39 0 0 0 4.8 24.5c-.7 1.4-2 .8-1.4-.5l9.4-22.6s5.4.5 11 .5h46.5ZM77.1 1.9H140l9.4 23.8c.3.7-1 1-1.4.3a40.3 40.3 0 0 0-36.3-19.3h-10.6v37.7h14.4c11 0 18.7-8.6 19.3-9.6s1.8-.5 1.2.7l-5.5 11.7 5.6 11.7c.6 1.2-1 1.7-1.6.6-1.5-2-6.8-9.8-17.3-9.8h-16v37.8h12.2c17.5 0 31-11.4 34.5-18.5.5-1.1 1.7-.3 1.4.6l-9.1 22.6h-63c-.8 0-.7-2.3 0-2.3 4.6 0 8.7-4.2 8.7-10.7v-67c0-4.4-5.3-8.2-8.7-8.2-.7 0-.8-2 0-2m106 80.7c0 4.4 4.7 7.3 7.5 7.3.7 0 1 2.2 0 2.2h-30.9c-1 0-.7-2.2 0-2.2a7.6 7.6 0 0 0 7-7.3V11.1c0-4.4-4.8-7.2-7-7.2-.7 0-.8-2 0-2h30.4c.9 0 .8 2 0 2-2.1 0-7 2.8-7 7.2Zm49.3-75.9h.6a.6.6 0 0 1 .6.6V87a.6.6 0 0 1-.6.6h-.6a.6.6 0 0 1-.6-.6V7.4a.6.6 0 0 1 .6-.6M57 7.4 11 86.9c-.1.3 0 .6.3.6h.7a1.2 1.2 0 0 0 .9-.6L58.7 7.4c.2-.4.1-.6-.2-.6h-.6a1.2 1.2 0 0 0-1 .6m35.8 0v79.5a.6.6 0 0 0 .6.6h.6a.6.6 0 0 0 .6-.6V7.4a.6.6 0 0 0-.6-.6h-.6a.6.6 0 0 0-.6.6m81.7 0v79.5a.6.6 0 0 0 .6.6h.6a.6.6 0 0 0 .6-.6V7.4a.6.6 0 0 0-.6-.6h-.6a.6.6 0 0 0-.6.6"/></svg>
         </a>
     </h1>
 
-    <!-- [esi-debug] src="/account-navigation?context-uri=https%3A%2F%2Fwww.zeit.de%2Fcampus%2Findex&amp;is-framebuilder=False" -->
+    <!-- [esi-debug] src="/account-navigation" -->
     
 
 
 <div class="navigation__area navigation__area--account" data-ct-container-type="navigation_account" itemscope itemtype="http://schema.org/SiteNavigationElement">
-        <a href="https://premium.zeit.de/probe-abo?url=https%3A%2F%2Fwww.zeit.de%2Fcampus%2Findex&amp;entry_service=sonstige" class="navigation__subscription-link" data-ct-element-type="subscription-link" itemprop="url"><span itemprop="name">Abo testen</span></a>
+        <a href="https://premium.zeit.de/probe-abo" class="navigation__subscription-link" data-ct-element-type="subscription-link" data-js-action="returnurl" itemprop="url"><span itemprop="name">Abo testen</span></a>
                 <a class="navigation__button navigation__button--account" role="button" href="#navigation-content-account" aria-controls="navigation-content-account" title="Nutzermenü" data-ct-label="" data-ct-action="open">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" class="svg-symbol menu-icon" preserveAspectRatio="xMinYMin meet" aria-hidden="true"><path fill-rule="evenodd" d="M9 7.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5M9 9a4 4 0 1 0 0-8 4 4 0 0 0 0 8M4.642 12.996C3.98 13.77 3.75 15.01 3.75 17h-1.5c0-1.987.199-3.747 1.251-4.978C4.58 10.76 6.37 10.25 9 10.25s4.42.51 5.499 1.772C15.55 13.253 15.75 15.013 15.75 17h-1.5c0-1.99-.23-3.23-.892-4.004-.636-.744-1.846-1.246-4.358-1.246s-3.722.502-4.358 1.246" clip-rule="evenodd"/></svg>
         </a>
@@ -1152,10 +1143,10 @@
     </p>
     <p class="navigation-promo__subtitle"></p>
     <p class="navigation-promo__text">Melden Sie sich jetzt mit Ihrem bestehenden Account an oder testen Sie unser digitales Abo mit Zugang zu allen Artikeln.</p>
-        <a class="z-button z-button--fullwidth z-button--zplus" href="https://premium.zeit.de/bestellung/2098566?appLinkHandling=true&amp;angebot=https%3A//premium.zeit.de/bestellung/2098566&amp;url=https%3A//premium.zeit.de/abo/paywall%3Furl%3Dhttps%253A%252F%252Fwww.zeit.de%252F5-tipps%26entry_service=navi-accountmenu-button?url=https%3A%2F%2Fwww.zeit.de%2Fcampus%2Findex&entry_service=sonstige" data-ct-element-type="subscribe" itemprop="url"><span itemprop="name">Abo testen</span></a>
+        <a class="z-button z-button--fullwidth z-button--zplus" href="https://premium.zeit.de/bestellung/2098566?appLinkHandling=true&amp;angebot=https%3A//premium.zeit.de/bestellung/2098566&amp;url=https%3A//premium.zeit.de/abo/paywall%3Furl%3Dhttps%253A%252F%252Fwww.zeit.de%252F5-tipps%26entry_service=navi-accountmenu-button" data-ct-element-type="subscribe" itemprop="url" data-js-action="returnurl"><span itemprop="name">Abo testen</span></a>
     </div>                    </li>
                                                     <li>
-                        <a class="z-button z-button--fullwidth navigation-link--login" href="https://meine.zeit.de/anmelden?url=https%3A%2F%2Fwww.zeit.de%2Fcampus%2Findex&amp;entry_service=sonstige" data-ct-element-type="login" itemprop="url">
+                        <a class="z-button z-button--fullwidth navigation-link--login" href="https://meine.zeit.de/anmelden" data-ct-element-type="login" data-js-action="returnurl" itemprop="url">
     <span itemprop="name">Anmelden</span>
 </a>                    </li>
                 </ul>
@@ -1193,50 +1184,50 @@
             
                         
 <article class="teaser-lead-cinema "
-    data-unique-id="http://xml.zeit.de/campus/2024-12/ungesendete-nachrichten-brief-chat-aufruf">
+    data-unique-id="http://xml.zeit.de/campus/ratgeber/2025/01/soziale-angststoerung-scham-psychologie-therapie" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2024-12/ungesendete-nachrichten-brief-chat-aufruf" class="teaser-lead-cinema__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Ungesendete Nachrichten: Welche Nachricht haben Sie nie abgeschickt?">Ungesendete Nachrichten: Welche Nachricht haben Sie nie abgeschickt?</a>
+                    <a href="https://www.zeit.de/campus/ratgeber/2025/01/soziale-angststoerung-scham-psychologie-therapie" class="teaser-lead-cinema__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Soziale Angststörung: Alle denken, dass ich komisch bin">Soziale Angststörung: Alle denken, dass ich komisch bin</a>
                 <figure class="teaser-lead-cinema__media teaser-lead-cinema__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-lead-cinema__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2024-12/ungesendete-nachrichten-brief-chat-aufruf-bild/cinema__980x392">
+            <noscript data-src="https://img.zeit.de/campus/ratgeber/2025/01/alle-denken-dass-ich-komisch-bin-bild-3/cinema__980x392">
                                 <img class="teaser-lead-cinema__media-item"
-                     alt="Ungesendete Nachrichten: Welche Nachricht haben Sie nie abgeschickt?"
-                     src="https://img.zeit.de/campus/2024-12/ungesendete-nachrichten-brief-chat-aufruf-bild/cinema__980x392"
-                     data-src="https://img.zeit.de/campus/2024-12/ungesendete-nachrichten-brief-chat-aufruf-bild/cinema"
+                     alt="Soziale Angststörung: Alle denken, dass ich komisch bin"
+                     src="https://img.zeit.de/campus/ratgeber/2025/01/alle-denken-dass-ich-komisch-bin-bild-3/cinema__980x392"
+                     data-src="https://img.zeit.de/campus/ratgeber/2025/01/alle-denken-dass-ich-komisch-bin-bild-3/cinema"
                      data-ratio="2.5"
                      decoding="async"
-                     data-mobile-src="https://img.zeit.de/campus/2024-12/ungesendete-nachrichten-brief-chat-aufruf-bild/wide" data-mobile-ratio="1.77777777778">
+                     data-mobile-src="https://img.zeit.de/campus/ratgeber/2025/01/alle-denken-dass-ich-komisch-bin-bild-3/wide" data-mobile-ratio="1.77777777778">
                             </noscript></div>
 
         <script type="application/ld+json">
     {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2024-12/ungesendete-nachrichten-brief-chat-aufruf-bild/cinema__980x392",
+    "url": "https://img.zeit.de/campus/ratgeber/2025/01/alle-denken-dass-ich-komisch-bin-bild-3/cinema__980x392",
     "width": 980,
     "height": 392,
     "copyrightHolder": {
-        "@type": "Organization",
-        "name": "\u00a9\u00a0Robbie Noble/\u200bunsplash.com"
+        "@type": "Person",
+        "name": "\u00a9\u00a0Melissa Schriek"
     }
 }
 </script>                </figure>
 
                         <h2 class="teaser-lead-cinema__heading">
                 <a class="teaser-lead-cinema__heading-link"
-                   title="Ungesendete Nachrichten - Welche Nachricht haben Sie nie abgeschickt?"
-                   href="https://www.zeit.de/campus/2024-12/ungesendete-nachrichten-brief-chat-aufruf"
+                   title="Soziale Angststörung - Alle denken, dass ich komisch bin"
+                   href="https://www.zeit.de/campus/ratgeber/2025/01/soziale-angststoerung-scham-psychologie-therapie"
                    >
                                                                         <span class="teaser-lead-cinema__kicker">
-                                                                                                <span>Ungesendete Nachrichten</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-lead-cinema__title">Welche Nachricht haben Sie nie abgeschickt?</span>
+                                                                                                <span>Soziale Angststörung</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-lead-cinema__title">Alle denken, dass ich komisch bin</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-cinema__text">Der Entschuldigungsbrief landete im Mülleimer, die Wutnachricht einfach wieder gelöscht. Wir suchen nach Ihren ungesendeten Nachrichten.</p>
+                                    <p class="teaser-lead-cinema__text">Viele Menschen haben einmal im Leben eine soziale Angststörung. Die Therapeutin Lea Banasch war selbst betroffen und erklärt, was gegen Angst und Scham hilft.</p>
                                     <div class="teaser-lead-cinema__metadata">
-                                                                            <span class="teaser-lead-cinema__byline"> Von Katharina Meyer zu Eppendorf</span>
-                                                                                                                                            <a class="teaser-lead-cinema__commentcount" href="https://www.zeit.de/campus/2024-12/ungesendete-nachrichten-brief-chat-aufruf#comments" data-ct-label="comments" title="Kommentare anzeigen">50 Kommentare</a>
+                                                                            <span class="teaser-lead-cinema__byline"> Interview: Anna Lindemann</span>
+                                                                                                                                            <a class="teaser-lead-cinema__commentcount" href="https://www.zeit.de/campus/ratgeber/2025/01/soziale-angststoerung-scham-psychologie-therapie#comments" data-ct-label="comments" title="Kommentare anzeigen">27 Kommentare</a>
                                                 </div>
                     
     </article>
@@ -1252,31 +1243,31 @@
             
                         
 <article class="teaser-lead-portrait "
-    data-unique-id="http://xml.zeit.de/campus/2025/01/studieren-usa-gebuehren-albert-einstein-college-of-medicine-new-york" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/ratgeber/2025/01/mentale-probleme-hilfe-depressionen-panikattaken-angststoerung-therapie" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2025/01/studieren-usa-gebuehren-albert-einstein-college-of-medicine-new-york" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Studieren in den USA: Ein Milliardengeschenk mit Folgen">Studieren in den USA: Ein Milliardengeschenk mit Folgen</a>
+                    <a href="https://www.zeit.de/campus/ratgeber/2025/01/mentale-probleme-hilfe-depressionen-panikattaken-angststoerung-therapie" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Mentale Probleme: &#34;Geht es den anderen wie mir?&#34;">Mentale Probleme: &#34;Geht es den anderen wie mir?&#34;</a>
                 <figure class="teaser-lead-portrait__media teaser-lead-portrait__media--force-mobile scaled-image variant variant--portrait">
                 <div class="teaser-lead-portrait__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2025/01/02-studieren-usa-reportage-zitate-bus-bild-1/portrait__612x816">
+            <noscript data-src="https://img.zeit.de/campus/ratgeber/2025/01/mentale-probleme-hilfe-depressionen-panikattaken-angststoerung-therapie-duo/portrait__612x816">
                                 <img class="teaser-lead-portrait__media-item"
-                     alt="Studieren in den USA: Als sich Jalen Crespo, 24, am Albert Einstein College bewarb, wusste er noch nicht, dass er dort keine Studiengebühren mehr zahlen  würde. »Dank Ruth Gottesman lebe ich jeden Tag meinen Traum«, sagt er heute."
-                     src="https://img.zeit.de/campus/2025/01/02-studieren-usa-reportage-zitate-bus-bild-1/portrait__612x816"
-                     data-src="https://img.zeit.de/campus/2025/01/02-studieren-usa-reportage-zitate-bus-bild-1/portrait"
+                     alt="Mentale Probleme: Rebekka Czuba und Jakob Amr"
+                     src="https://img.zeit.de/campus/ratgeber/2025/01/mentale-probleme-hilfe-depressionen-panikattaken-angststoerung-therapie-duo/portrait__612x816"
+                     data-src="https://img.zeit.de/campus/ratgeber/2025/01/mentale-probleme-hilfe-depressionen-panikattaken-angststoerung-therapie-duo/portrait"
                      data-ratio="0.75"
                      decoding="async"
-                     data-mobile-src="https://img.zeit.de/campus/2025/01/02-studieren-usa-reportage-zitate-bus-bild-1/wide" data-mobile-ratio="1.77777777778">
+                     data-mobile-src="https://img.zeit.de/campus/ratgeber/2025/01/mentale-probleme-hilfe-depressionen-panikattaken-angststoerung-therapie-duo/wide" data-mobile-ratio="1.77777777778">
                             </noscript></div>
 
         <script type="application/ld+json">
     {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2025/01/02-studieren-usa-reportage-zitate-bus-bild-1/portrait__612x816",
+    "url": "https://img.zeit.de/campus/ratgeber/2025/01/mentale-probleme-hilfe-depressionen-panikattaken-angststoerung-therapie-duo/portrait__612x816",
     "width": 612,
     "height": 816,
     "copyrightHolder": {
         "@type": "Person",
-        "name": "\u00a9\u00a0Jon Henry"
+        "name": "\u00a9\u00a0Thomas Pirot /\u200b Bettina Theuerkauf"
     }
 }
 </script>                </figure>
@@ -1284,19 +1275,19 @@
         <div class="teaser-lead-portrait__content">
                             <h2 class="teaser-lead-portrait__heading">
                 <a class="teaser-lead-portrait__heading-link"
-                   title="Studieren in den USA - Ein Milliardengeschenk mit Folgen"
-                   href="https://www.zeit.de/campus/2025/01/studieren-usa-gebuehren-albert-einstein-college-of-medicine-new-york"
+                   title="Mentale Probleme - &#34;Geht es den anderen wie mir?&#34;"
+                   href="https://www.zeit.de/campus/ratgeber/2025/01/mentale-probleme-hilfe-depressionen-panikattaken-angststoerung-therapie"
                    >
                                                                         <span class="teaser-lead-portrait__kicker">
-                                                                                                <span>Studieren in den USA</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">Ein Milliardengeschenk mit Folgen</span>
+                                                                                                <span>Mentale Probleme</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">&#34;Geht es den anderen wie mir?&#34;</span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-portrait__text">Studierende in den USA müssen sich oft stark verschulden. An einem New Yorker College ist dank einer Milliardenspende Schluss damit. Eine perfekte Geschichte? Geht so</p>
+                                    <p class="teaser-lead-portrait__text">Eine Influencerin, ein Tierschützer, eine Sportlerin und ein Sänger sprechen über den Moment, in dem sie erkannt haben, dass sie Hilfe brauchen.</p>
                                     <div class="teaser-lead-portrait__metadata">
-                                                                            <span class="teaser-lead-portrait__byline"> Von Katharina Meyer zu Eppendorf</span>
-                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/2025/01/studieren-usa-gebuehren-albert-einstein-college-of-medicine-new-york#comments" data-ct-label="comments" title="Kommentare anzeigen">38 Kommentare</a>
+                                                                            <span class="teaser-lead-portrait__byline"> Protokoll: Viola Diem und Julian Schmelmer</span>
+                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/ratgeber/2025/01/mentale-probleme-hilfe-depressionen-panikattaken-angststoerung-therapie#comments" data-ct-label="comments" title="Kommentare anzeigen">4 Kommentare</a>
                                                 </div>
                     
     
@@ -1309,58 +1300,7 @@
 
         <div class="cp-region cp-region--duo">
 <div class="cp-area cp-area--duo" data-ct-context="duo" data-vt-parameter="cp_area_impression.duo.cp_area_duo.." data-vt-link-id="#cp_area">
-                                                                                                
-            
-                        
-<article class="teaser-square "
-    data-unique-id="http://xml.zeit.de/campus/2024-11/junge-waehlerschaft-bundestagswahl-wahlkampf-aufruf">
-
-                    <a href="https://www.zeit.de/campus/2024-11/junge-waehlerschaft-bundestagswahl-wahlkampf-aufruf" class="teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Junge Wählerschaft: Willst du mit uns über die Bundestagswahl reden?">Junge Wählerschaft: Willst du mit uns über die Bundestagswahl reden?</a>
-                <figure class="teaser-square__media teaser-square__media--force-mobile scaled-image variant variant--square">
-                <div class="teaser-square__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2024-11/unge-waehlerschaft-bundestagswahl-wahlkampf-aufruf-bild/square__460x460">
-                                <img class="teaser-square__media-item"
-                     alt="Junge Wählerschaft: Willst du mit uns über die Bundestagswahl reden?"
-                     src="https://img.zeit.de/campus/2024-11/unge-waehlerschaft-bundestagswahl-wahlkampf-aufruf-bild/square__460x460"
-                     data-src="https://img.zeit.de/campus/2024-11/unge-waehlerschaft-bundestagswahl-wahlkampf-aufruf-bild/square"
-                     data-ratio="1.0"
-                     decoding="async"
-                     >
-                            </noscript></div>
-
-        <script type="application/ld+json">
-    {
-    "@context": "https://schema.org",
-    "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2024-11/unge-waehlerschaft-bundestagswahl-wahlkampf-aufruf-bild/square__460x460",
-    "width": 460,
-    "height": 460,
-    "copyrightHolder": {
-        "@type": "Organization",
-        "name": "\u00a9\u00a0Ada daSilva/\u200bGetty Images"
-    }
-}
-</script>                </figure>
-
-                        <h2 class="teaser-square__heading">
-                <a class="teaser-square__heading-link"
-                   title="Junge Wählerschaft - Willst du mit uns über die Bundestagswahl reden?"
-                   href="https://www.zeit.de/campus/2024-11/junge-waehlerschaft-bundestagswahl-wahlkampf-aufruf"
-                   >
-                                                                        <span class="teaser-square__kicker">
-                                                                                                <span>Junge Wählerschaft</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-square__title">Willst du mit uns über die Bundestagswahl reden?</span>
-                </a>
-                </h2>
-        
-        
-                                    <p class="teaser-square__text">Egal, ob du schon weißt, wen du wählst, oder nicht: Wir suchen junge Menschen, die mit uns über Politik sprechen wollen. Erzähl uns, was sich in Deutschland ändern muss.</p>
-                                    <div class="teaser-square__metadata">
-                                                                                                                                                                                <a class="teaser-square__commentcount" href="https://www.zeit.de/campus/2024-11/junge-waehlerschaft-bundestagswahl-wahlkampf-aufruf#comments" data-ct-label="comments" title="Kommentare anzeigen">73 Kommentare</a>
-                                                </div>
-                    
-    </article>
-
-                                                                                    </div>
+                                </div>
 
                 
 <div class="cp-area cp-area--duo" data-ct-context="duo" data-vt-parameter="cp_area_impression.duo.cp_area_duo.." data-vt-link-id="#cp_area">
@@ -1368,16 +1308,16 @@
             
                         
 <article class="teaser-square "
-    data-unique-id="http://xml.zeit.de/campus/2024/05/berufseinstieg-studium-logistik-handelsmanagement-einzelhandel">
+    data-unique-id="http://xml.zeit.de/campus/2025-01/nahostkonflikt-unis-waffenruhe-demonstrationen-israel-hamas" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/campus/2024/05/berufseinstieg-studium-logistik-handelsmanagement-einzelhandel" class="teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Berufseinstieg: &#34;Ich merkte schnell: Der Nebenjob macht mehr Spaß als das Studium&#34;">Berufseinstieg: &#34;Ich merkte schnell: Der Nebenjob macht mehr Spaß als das Studium&#34;</a>
+                    <a href="https://www.zeit.de/campus/2025-01/nahostkonflikt-unis-waffenruhe-demonstrationen-israel-hamas" class="teaser-square__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Nahostkonflikt an Unis: Verschwindet der Nahostkonflikt jetzt vom Campus?">Nahostkonflikt an Unis: Verschwindet der Nahostkonflikt jetzt vom Campus?</a>
                 <figure class="teaser-square__media teaser-square__media--force-mobile scaled-image variant variant--square">
                 <div class="teaser-square__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/2024/05/berufseinstieg-studium-logistik-teaserbild/square__460x460">
+            <noscript data-src="https://img.zeit.de/campus/2025-01/nahostkonflikt-unis-waffenruhe-demonstrationen-israel-hamas-bild/square__460x460">
                                 <img class="teaser-square__media-item"
-                     alt="Berufseinstieg: Logistik wird auch als Bachelor-Studium angeboten."
-                     src="https://img.zeit.de/campus/2024/05/berufseinstieg-studium-logistik-teaserbild/square__460x460"
-                     data-src="https://img.zeit.de/campus/2024/05/berufseinstieg-studium-logistik-teaserbild/square"
+                     alt="Nahostkonflikt an Unis: BERLIN, GERMANY - MAY 7: Activists attempted to sep up a protest camp at the Free University on May 07, 2024 in Berlin, Germany. Mostly leftist pro-Palestine activists have been protesting at locations across the city for several weeks, including at a camp near the Chancellery and a sit-in at another of the city&#39;s universities.(Photo by Axel Schmidt/Getty Images)"
+                     src="https://img.zeit.de/campus/2025-01/nahostkonflikt-unis-waffenruhe-demonstrationen-israel-hamas-bild/square__460x460"
+                     data-src="https://img.zeit.de/campus/2025-01/nahostkonflikt-unis-waffenruhe-demonstrationen-israel-hamas-bild/square"
                      data-ratio="1.0"
                      decoding="async"
                      >
@@ -1387,31 +1327,31 @@
     {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/2024/05/berufseinstieg-studium-logistik-teaserbild/square__460x460",
+    "url": "https://img.zeit.de/campus/2025-01/nahostkonflikt-unis-waffenruhe-demonstrationen-israel-hamas-bild/square__460x460",
     "width": 460,
     "height": 460,
     "copyrightHolder": {
         "@type": "Organization",
-        "name": "\u00a9\u00a0Maxiphoto/\u200bGetty Images"
+        "name": "\u00a9\u00a0Axel Schmidt/\u200bGetty Images"
     }
 }
 </script>                </figure>
 
                         <h2 class="teaser-square__heading">
                 <a class="teaser-square__heading-link"
-                   title="Berufseinstieg - &#34;Ich merkte schnell: Der Nebenjob macht mehr Spaß als das Studium&#34;"
-                   href="https://www.zeit.de/campus/2024/05/berufseinstieg-studium-logistik-handelsmanagement-einzelhandel"
+                   title="Nahostkonflikt an Unis - Verschwindet der Nahostkonflikt jetzt vom Campus?"
+                   href="https://www.zeit.de/campus/2025-01/nahostkonflikt-unis-waffenruhe-demonstrationen-israel-hamas"
                    >
                                                                         <span class="teaser-square__kicker">
-                                                                                                <span>Berufseinstieg</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-square__title">&#34;Ich merkte schnell: Der Nebenjob macht mehr Spaß als das Studium&#34;</span>
+                                                                                                <span>Nahostkonflikt an Unis</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-square__title">Verschwindet der Nahostkonflikt jetzt vom Campus?</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-square__text">Sie bearbeiten Black-Friday-Retouren und planen den schnellsten Weg durch Drogerie-Regalreihen. Josua, Kalina und Leah starten im E-Commerce durch.</p>
+                                    <p class="teaser-square__text">Eine propalästinensische Studentin und ein proisraelischer Student erklären, warum eine Versöhnung trotz Waffenruhe schwer bleibt.</p>
                                     <div class="teaser-square__metadata">
-                                                                            <span class="teaser-square__byline"> Protokoll: Julia Wyrott</span>
-                                                                                                                                            <a class="teaser-square__commentcount" href="https://www.zeit.de/campus/2024/05/berufseinstieg-studium-logistik-handelsmanagement-einzelhandel#comments" data-ct-label="comments" title="Kommentare anzeigen">11 Kommentare</a>
+                                                                            <span class="teaser-square__byline"> Protokoll: Anna Lindemann</span>
+                                                                                                                                            <a class="teaser-square__commentcount" href="https://www.zeit.de/campus/2025-01/nahostkonflikt-unis-waffenruhe-demonstrationen-israel-hamas#comments" data-ct-label="comments" title="Kommentare anzeigen">9 Kommentare</a>
                                                 </div>
                     
     </article>
@@ -1426,31 +1366,31 @@
             
                         
 <article class="teaser-lead-portrait "
-    data-unique-id="http://xml.zeit.de/kultur/2024-12/el-hotzo-podcast">
+    data-unique-id="http://xml.zeit.de/campus/2025/01/berufswahl-studium-praktika-leidenschaft-karriere" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/kultur/2024-12/el-hotzo-podcast" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="El Hotzo: Hilft ein BWL-Studium beim Witzeschreiben, El Hotzo?">El Hotzo: Hilft ein BWL-Studium beim Witzeschreiben, El Hotzo?</a>
+                    <a href="https://www.zeit.de/campus/2025/01/berufswahl-studium-praktika-leidenschaft-karriere" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Berufswahl: Ich folgte meiner Leidenschaft – und verzweifelte auf dem Arbeitsmarkt">Berufswahl: Ich folgte meiner Leidenschaft – und verzweifelte auf dem Arbeitsmarkt</a>
                 <figure class="teaser-lead-portrait__media teaser-lead-portrait__media--force-mobile scaled-image variant variant--portrait">
                 <div class="teaser-lead-portrait__media-container ">
-            <noscript data-src="https://img.zeit.de/kultur/2024-12/el-hotzo-podcast-bild/portrait__612x816">
+            <noscript data-src="https://img.zeit.de/campus/2025-01/berufswahl-studium-praktika-leidenschaft-karriere-journalistin/portrait__612x816">
                                 <img class="teaser-lead-portrait__media-item"
-                     alt="El Hotzo: Hilft ein BWL-Studium beim Witzeschreiben, El Hotzo?"
-                     src="https://img.zeit.de/kultur/2024-12/el-hotzo-podcast-bild/portrait__612x816"
-                     data-src="https://img.zeit.de/kultur/2024-12/el-hotzo-podcast-bild/portrait"
+                     alt="Berufswahl: Ich folgte meiner Leidenschaft – und verzweifelte auf dem Arbeitsmarkt"
+                     src="https://img.zeit.de/campus/2025-01/berufswahl-studium-praktika-leidenschaft-karriere-journalistin/portrait__612x816"
+                     data-src="https://img.zeit.de/campus/2025-01/berufswahl-studium-praktika-leidenschaft-karriere-journalistin/portrait"
                      data-ratio="0.75"
                      decoding="async"
-                     data-mobile-src="https://img.zeit.de/kultur/2024-12/el-hotzo-podcast-bild/wide" data-mobile-ratio="1.77777777778">
+                     data-mobile-src="https://img.zeit.de/campus/2025-01/berufswahl-studium-praktika-leidenschaft-karriere-journalistin/wide" data-mobile-ratio="1.77777777778">
                             </noscript></div>
 
         <script type="application/ld+json">
     {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/kultur/2024-12/el-hotzo-podcast-bild/portrait__612x816",
+    "url": "https://img.zeit.de/campus/2025-01/berufswahl-studium-praktika-leidenschaft-karriere-journalistin/portrait__612x816",
     "width": 612,
     "height": 816,
     "copyrightHolder": {
-        "@type": "Person",
-        "name": "\u00a9\u00a0[M] Federike Wetzel"
+        "@type": "Organization",
+        "name": "\u00a9\u00a0Lubitz + Dorner/\u200bplainpicture"
     }
 }
 </script>                </figure>
@@ -1458,20 +1398,19 @@
         <div class="teaser-lead-portrait__content">
                             <h2 class="teaser-lead-portrait__heading">
                 <a class="teaser-lead-portrait__heading-link"
-                   title="El Hotzo - Hilft ein BWL-Studium beim Witzeschreiben, El Hotzo?"
-                   href="https://www.zeit.de/kultur/2024-12/el-hotzo-podcast"
+                   title="Berufswahl - Ich folgte meiner Leidenschaft – und verzweifelte auf dem Arbeitsmarkt"
+                   href="https://www.zeit.de/campus/2025/01/berufswahl-studium-praktika-leidenschaft-karriere"
                    >
                                                                         <span class="teaser-lead-portrait__kicker">
-                                <span class="series-label">Und was macht die Uni?</span>
-                                                                                                    <span>El Hotzo</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">Hilft ein BWL-Studium beim Witzeschreiben, El Hotzo?</span>
+                                                                                                <span>Berufswahl</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">Ich folgte meiner Leidenschaft – und verzweifelte auf dem Arbeitsmarkt</span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-portrait__text">Die anderen BWLer rauchten Zigarre und lästerten über Gewerkschaften, trotzdem zog Sebastian Hotz sein Studium durch. Wie er es vom Großraumbüro ins Fernsehen schaffte.</p>
+                                    <p class="teaser-lead-portrait__text">Sie hätte Medizin oder Jura studieren können, doch entschied sich für ihre Leidenschaft. Heute fragte sich unsere Autorin: Ist das eine Sackgasse?</p>
                                     <div class="teaser-lead-portrait__metadata">
-                                                                            <span class="teaser-lead-portrait__byline"> Von Charlotte Köhler und Christoph Farkas</span>
-                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/kultur/2024-12/el-hotzo-podcast#comments" data-ct-label="comments" title="Kommentare anzeigen">32 Kommentare</a>
+                                                                            <span class="teaser-lead-portrait__byline"> Von Merle Hubert</span>
+                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/campus/2025/01/berufswahl-studium-praktika-leidenschaft-karriere#comments" data-ct-label="comments" title="Kommentare anzeigen">198 Kommentare</a>
                                                 </div>
                     
     
@@ -1488,16 +1427,16 @@
             
                         
 <article class="teaser-wide-large  teaser-wide-large--advertorial"
-    data-unique-id="http://xml.zeit.de/campus/angebote/pride-index-2024/ressort-teaser-mka-pride-index-2024">
+    data-unique-id="http://xml.zeit.de/campus/angebote/karriereweg-haw-professur/index">
 
-                    <a href="https://www.zeit.de/campus/angebote/pride-index-2024/index" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" target="_blank" rel="noopener" title="PRIDE Index 2024">PRIDE Index 2024</a>
+                    <a href="https://www.zeit.de/campus/angebote/karriereweg-haw-professur/index" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Abi, Studium, Promotion? Der Karriereweg HAW-Professur">Abi, Studium, Promotion? Der Karriereweg HAW-Professur</a>
                 <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/angebote/pride-index-2021/bkg/cinema__980x392">
+            <noscript data-src="https://img.zeit.de/campus/angebote/karriereweg-haw-professur/fhe-sponsored-post-1-alternative/cinema__980x392">
                                 <img class="teaser-wide-large__media-item"
-                     alt="PRIDE Index 2024"
-                     src="https://img.zeit.de/campus/angebote/pride-index-2021/bkg/cinema__980x392"
-                     data-src="https://img.zeit.de/campus/angebote/pride-index-2021/bkg/cinema"
+                     alt="Abi, Studium, Promotion? Der Karriereweg HAW-Professur"
+                     src="https://img.zeit.de/campus/angebote/karriereweg-haw-professur/fhe-sponsored-post-1-alternative/cinema__980x392"
+                     data-src="https://img.zeit.de/campus/angebote/karriereweg-haw-professur/fhe-sponsored-post-1-alternative/cinema"
                      data-ratio="2.5"
                      decoding="async"
                      >
@@ -1507,160 +1446,27 @@
     {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/angebote/pride-index-2021/bkg/cinema__980x392",
-    "width": 980,
-    "height": 392
-}
-</script>                </figure>
-
-                        <h2 class="teaser-wide-large__heading">
-                <a class="teaser-wide-large__heading-link"
-                   title=" - PRIDE Index 2024"
-                   href="https://www.zeit.de/campus/angebote/pride-index-2024/index"
-                    target="_blank"
-                         rel="noopener"                   >
-                                                                                                <span class="teaser-wide-large__title">PRIDE Index 2024</span>
-                </a>
-                </h2>
-        
-        
-                                    <p class="teaser-wide-large__text">Potenziale erkennen &amp; Erfolge gemeinsam feiern: teilnehmende Unternehmen haben ihr LGBTIQ+ Diversity Management auf den Prüfstand gestellt und den Realitätscheck gemacht.</p>
-                                
-    </article>
-
-                                                                                    </div>
-
-                
-<div class="cp-area cp-area--duo" data-ct-context="duo" data-vt-parameter="cp_area_impression.duo.cp_area_duo.." data-vt-link-id="#cp_area">
-                                                                                                
-            
-                        
-<article class="teaser-wide-large  teaser-wide-large--advertorial"
-    data-unique-id="http://xml.zeit.de/campus/angebote/congstar/fairnessheldinnen/trinksaufmich/index">
-
-                    <a href="https://www.zeit.de/campus/angebote/congstar/fairnessheldinnen/trinksaufmich/index" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Fairnessheld*in des Jahres 2024: &#34;Wenn wir laut sind, können uns Politiker*innen nicht ignorieren&#34;">Fairnessheld*in des Jahres 2024: &#34;Wenn wir laut sind, können uns Politiker*innen nicht ignorieren&#34;</a>
-                <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
-                <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/angebote/congstar/fairnessheldinnen/trinksaufmich/trinksaufmich-artikelbild/cinema__980x392">
-                                <img class="teaser-wide-large__media-item"
-                     alt="Fairnessheld*in des Jahres 2024: &#34;Wenn wir laut sind, können uns Politiker*innen nicht ignorieren&#34;"
-                     src="https://img.zeit.de/campus/angebote/congstar/fairnessheldinnen/trinksaufmich/trinksaufmich-artikelbild/cinema__980x392"
-                     data-src="https://img.zeit.de/campus/angebote/congstar/fairnessheldinnen/trinksaufmich/trinksaufmich-artikelbild/cinema"
-                     data-ratio="2.5"
-                     decoding="async"
-                     >
-                            </noscript></div>
-
-        <script type="application/ld+json">
-    {
-    "@context": "https://schema.org",
-    "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/angebote/congstar/fairnessheldinnen/trinksaufmich/trinksaufmich-artikelbild/cinema__980x392",
+    "url": "https://img.zeit.de/campus/angebote/karriereweg-haw-professur/fhe-sponsored-post-1-alternative/cinema__980x392",
     "width": 980,
     "height": 392,
     "copyrightHolder": {
         "@type": "Person",
-        "name": "\u00a9\u00a0Ariel Oscar Greith"
+        "name": "\u00a9\u00a0Fachhochschule Erfurt"
     }
 }
 </script>                </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Fairnessheld*in des Jahres 2024 - &#34;Wenn wir laut sind, können uns Politiker*innen nicht ignorieren&#34;"
-                   href="https://www.zeit.de/campus/angebote/congstar/fairnessheldinnen/trinksaufmich/index"
+                   title=" - Abi, Studium, Promotion? Der Karriereweg HAW-Professur"
+                   href="https://www.zeit.de/campus/angebote/karriereweg-haw-professur/index"
                    >
-                                                                        <span class="teaser-wide-large__kicker">
-                                                                                                <span>Fairnessheld*in des Jahres 2024</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">&#34;Wenn wir laut sind, können uns Politiker*innen nicht ignorieren&#34;</span>
+                                                                                                <span class="teaser-wide-large__title">Abi, Studium, Promotion? Der Karriereweg HAW-Professur</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Julia Gruber alias trinksaufmich ist Fairnessheldin des Jahres 2024. Sie hat sich unter allen Fairnessheld*innen der letzten Monate als Jahresheldin durchgesetzt. </p>
-                                
-    </article>
-
-                                                                                    </div>
-
-                </div>
-
-        <div class="cp-region cp-region--solo">
-<div class="cp-area cp-area--solo" data-ct-context="solo" data-vt-parameter="cp_area_impression.solo.cp_area_solo.." data-vt-link-id="#cp_area">
-                                                                                                
-            
-                        
-<aside class="toolbox zco-toolbox">
-    <h2 class="toolbox__headline">Studium und Beruf</h2>
-    <ul class="toolbox__list zco-toolbox__list">
-            <li class="toolbox__item zco-toolbox__item">
-            <a href="https://studiengaenge.zeit.de/sit?wt_zmc=fix.int.zonpmr.campus.campus-toolbox.sit.link.x.x&amp;utm_medium=fix&amp;utm_source=campus_zonpmr_int&amp;utm_campaign=campus-toolbox&amp;utm_content=sit_link_x_x" class="toolbox__link zco-toolbox__link" title="Studium-Interessentest" data-id="toolbox.8.1.1.zum_test">
-                <h3 class="toolbox__title zco-toolbox__title">Welches Studium passt zu mir?</h3>
-                <p class="toolbox__text">
-                    Mit dem Studium-Interessentest erfährst du mehr über dich.
-                </p>
-                <strong class="toolbox__cta">Zum Test</strong>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15" viewBox="0 0 20 15" class="svg-symbol toolbox__arrow" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Pfeil nach rechts"><title>Pfeil nach rechts</title><path d="m12.947.416-2.119 2.215 3.435 3.533H0v3h14.263l-3.435 3.345 2.119 2.075L20 7.5z"/></svg>
-            </a>
-            <a href=" https://studiengaenge.zeit.de/artikel/was-soll-ich-studieren?wt_zmc=fix.int.zonpmr.campus.campus-toolbox.was-studieren.link.x.x&amp;utm_medium=fix&amp;utm_source=campus_zonpmr_int&amp;utm_campaign=campus-toolbox&amp;utm_content=was-studieren_link_x_x" class="toolbox__footer-link zco-toolbox__footer-link zco-toolbox__footer-link--first" data-id="toolbox.8.2.1.text">Studienorientierung im Überblick <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15" viewBox="0 0 20 15" class="svg-symbol toolbox__arrow" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Pfeil nach rechts"><title>Pfeil nach rechts</title><path d="m12.947.416-2.119 2.215 3.435 3.533H0v3h14.263l-3.435 3.345 2.119 2.075L20 7.5z"/></svg></a>
-        </li>
-            <li class="toolbox__item zco-toolbox__item">
-            <a href=" https://berufstest.zeit.de?wt_zmc=fix.int.zonpmr.campus.campus-toolbox.bot.link.x.x&amp;utm_medium=fix&amp;utm_source=campus_zonpmr_int&amp;utm_campaign=campus-toolbox&amp;utm_content=bot_link_x_x" class="toolbox__link zco-toolbox__link" title="Berufsorientierungsangebote" data-id="toolbox.8.1.2.zum_test">
-                <h3 class="toolbox__title zco-toolbox__title">Welcher Beruf passt zu mir?</h3>
-                <p class="toolbox__text">
-                    Entdecke mit dem Berufstest von BOA deine Stärken.
-                </p>
-                <strong class="toolbox__cta">Zum Test</strong>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15" viewBox="0 0 20 15" class="svg-symbol toolbox__arrow" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Pfeil nach rechts"><title>Pfeil nach rechts</title><path d="m12.947.416-2.119 2.215 3.435 3.533H0v3h14.263l-3.435 3.345 2.119 2.075L20 7.5z"/></svg>
-            </a>
-            <a href="https://berufstest.zeit.de/jobs/eyJKTCI6WzFdLCJXIjp7IkkiOnRydWUsIlAiOiIxMCIsIlMiOltdfX0=?wt_zmc=fix.int.zonpmr.campus.campus-toolbox.boa-jobseite.link.x.x" class="toolbox__footer-link zco-toolbox__footer-link " data-id="toolbox.8.2.2.text">Jobs für Berufseinsteiger:innen <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15" viewBox="0 0 20 15" class="svg-symbol toolbox__arrow" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Pfeil nach rechts"><title>Pfeil nach rechts</title><path d="m12.947.416-2.119 2.215 3.435 3.533H0v3h14.263l-3.435 3.345 2.119 2.075L20 7.5z"/></svg></a>
-        </li>
-        </ul>
-</aside>                                                                                    </div>
-
-                </div>
-
-        <div class="cp-region cp-region--duo">
-<div class="cp-area cp-area--duo" data-ct-context="duo" data-vt-parameter="cp_area_impression.duo.cp_area_duo.." data-vt-link-id="#cp_area">
-                                                                                                
-            
-                        
-<article class="teaser-wide-large  teaser-wide-large--advertorial"
-    data-unique-id="http://xml.zeit.de/campus/angebote/howitworks/2024/141124/sag-doch-mal-nein">
-
-                    <a href="https://www.zeit.de/campus/angebote/howitworks/2024/141124/sag-doch-mal-nein" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Sag doch mal &#34;nein&#34;!">Sag doch mal &#34;nein&#34;!</a>
-                <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
-                <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/campus/angebote/howitworks/2024/141124/tk-sag-nein-artikelbild/cinema__980x392">
-                                <img class="teaser-wide-large__media-item"
-                     alt="Sag doch mal &#34;nein&#34;!"
-                     src="https://img.zeit.de/campus/angebote/howitworks/2024/141124/tk-sag-nein-artikelbild/cinema__980x392"
-                     data-src="https://img.zeit.de/campus/angebote/howitworks/2024/141124/tk-sag-nein-artikelbild/cinema"
-                     data-ratio="2.5"
-                     decoding="async"
-                     >
-                            </noscript></div>
-
-        <script type="application/ld+json">
-    {
-    "@context": "https://schema.org",
-    "@type": "ImageObject",
-    "url": "https://img.zeit.de/campus/angebote/howitworks/2024/141124/tk-sag-nein-artikelbild/cinema__980x392",
-    "width": 980,
-    "height": 392
-}
-</script>                </figure>
-
-                        <h2 class="teaser-wide-large__heading">
-                <a class="teaser-wide-large__heading-link"
-                   title=" - Sag doch mal &#34;nein&#34;!"
-                   href="https://www.zeit.de/campus/angebote/howitworks/2024/141124/sag-doch-mal-nein"
-                   >
-                                                                                                <span class="teaser-wide-large__title">Sag doch mal &#34;nein&#34;!</span>
-                </a>
-                </h2>
-        
-        
-                                    <p class="teaser-wide-large__text">Wer immer nur anderen gefallen will, vergisst sich selbst. So lernst Du, Deine Bedürfnisse in den Fokus zu nehmen.</p>
+                                    <p class="teaser-wide-large__text">Hochschulen für angewandte Wissenschaften (HAW) überzeugen durch ihre Praxisnähe. Wie die akademische Karriere an einer HAW aussehen kann, erfahrt ihr hier.</p>
                                 
     </article>
 
@@ -1672,16 +1478,16 @@
             
                         
 <article class="teaser-wide-large "
-    data-unique-id="http://xml.zeit.de/2024/47/orientierungssemester-studienwahl-universitaet-fach-faq" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/campus/2025/01/arbeiten-ausland-dubai-expats-steuern-luxus" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/2024/47/orientierungssemester-studienwahl-universitaet-fach-faq" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Orientierungssemester: Wie du herausfindest, welches Fach zu dir passt">Orientierungssemester: Wie du herausfindest, welches Fach zu dir passt</a>
+                    <a href="https://www.zeit.de/campus/2025/01/arbeiten-ausland-dubai-expats-steuern-luxus" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Arbeiten im Ausland: &#34;In Dubai ist es normal, dass jemand Fremdes die Unterwäsche faltet&#34;">Arbeiten im Ausland: &#34;In Dubai ist es normal, dass jemand Fremdes die Unterwäsche faltet&#34;</a>
                 <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/2024/47/was-passt-zu-mir-teaser/cinema__980x392">
+            <noscript data-src="https://img.zeit.de/campus/2025/01/arbeiten-ausland-dubai-expats-steuern-luxus-teaserbild/cinema__980x392">
                                 <img class="teaser-wide-large__media-item"
-                     alt="Orientierungssemester: braucht es eine?"
-                     src="https://img.zeit.de/2024/47/was-passt-zu-mir-teaser/cinema__980x392"
-                     data-src="https://img.zeit.de/2024/47/was-passt-zu-mir-teaser/cinema"
+                     alt="Arbeiten im Ausland: &#34;In Dubai ist es normal, dass jemand Fremdes die Unterwäsche faltet&#34;"
+                     src="https://img.zeit.de/campus/2025/01/arbeiten-ausland-dubai-expats-steuern-luxus-teaserbild/cinema__980x392"
+                     data-src="https://img.zeit.de/campus/2025/01/arbeiten-ausland-dubai-expats-steuern-luxus-teaserbild/cinema"
                      data-ratio="2.5"
                      decoding="async"
                      >
@@ -1691,32 +1497,211 @@
     {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2024/47/was-passt-zu-mir-teaser/cinema__980x392",
+    "url": "https://img.zeit.de/campus/2025/01/arbeiten-ausland-dubai-expats-steuern-luxus-teaserbild/cinema__980x392",
     "width": 980,
     "height": 392,
     "copyrightHolder": {
         "@type": "Person",
-        "name": "\u00a9\u00a0Joanne Joo f\u00fcr ZEIT Abitur"
+        "name": "\u00a9\u00a0Fabiola Cedillo"
     }
 }
 </script>                </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Orientierungssemester - Wie du herausfindest, welches Fach zu dir passt"
-                   href="https://www.zeit.de/2024/47/orientierungssemester-studienwahl-universitaet-fach-faq"
+                   title="Arbeiten im Ausland - &#34;In Dubai ist es normal, dass jemand Fremdes die Unterwäsche faltet&#34;"
+                   href="https://www.zeit.de/campus/2025/01/arbeiten-ausland-dubai-expats-steuern-luxus"
                    >
                                                                         <span class="teaser-wide-large__kicker">
-                                                                                                <span>Orientierungssemester</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">Wie du herausfindest, welches Fach zu dir passt</span>
+                                                                                                <span>Arbeiten im Ausland</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">&#34;In Dubai ist es normal, dass jemand Fremdes die Unterwäsche faltet&#34;</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">BWL in Baden-Baden oder Holzwirtschaft in Hamburg? Nie zuvor gab es ein größeres Angebot an Studiengängen. Wer zweifelt, kann ein Orientierungssemester machen.</p>
+                                    <p class="teaser-wide-large__text">Exzessiver Luxus, null Steuern, und alles voller Influencer: So sieht Dubai in den sozialen Medien aus. Vier deutsche Expats erzählen von ihrem Leben in der Wüstenstadt. </p>
                                     <div class="teaser-wide-large__metadata">
-                                                                            <span class="teaser-wide-large__byline"> Von Nadja Kirsten</span>
-                                                                                                                        </div>
+                                                                            <span class="teaser-wide-large__byline"> Protokoll: Hannah Mara Schmitt</span>
+                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2025/01/arbeiten-ausland-dubai-expats-steuern-luxus#comments" data-ct-label="comments" title="Kommentare anzeigen">204 Kommentare</a>
+                                                </div>
                     
+    </article>
+
+                                                                                    </div>
+
+                </div>
+
+        <div class="cp-region cp-region--solo">
+<div class="cp-area cp-area--solo" data-ct-context="solo" data-vt-parameter="cp_area_impression.solo.cp_area_solo.." data-vt-link-id="#cp_area">
+                                                                                                
+            
+                        
+<aside class="toolbox">
+    <h2 class="toolbox__headline">Studium und Beruf</h2>
+    <ul class="toolbox__list">
+    <li class="toolbox__item">
+            <a href="https://studiengaenge.zeit.de/" class="toolbox__link" data-id="toolbox.8.1.1.zum_test">
+                <div class="toolbox__logo">
+                    <svg width="116" height="22" viewBox="0 0 116 22"><path d="M88.46 6.19c0 .794-.735 1.346-1.782 1.346-1.062 0-1.824-.552-1.824-1.345 0-.767.762-1.319 1.824-1.319 1.047 0 1.782.552 1.782 1.319M88.324 8.256v7.11H84.99v-7.11h3.3339999999999996M59.01 7.496V5.639l-3.333.485v1.372H53.46V9.85h2.217v5.516h3.334V9.85h2.408V7.496zM52.965 12.42c0 1.964-1.918 3.228-4.789 3.228-1.89 0-3.483-.498-4.585-1.17v-2.435c1.157.713 2.653 1.21 4.204 1.21 1.075 0 1.592-.188 1.592-.605 0-.363-.285-.565-1.238-.726l-1.36-.242c-2.286-.404-3.266-1.386-3.266-2.96 0-1.79 1.578-3.054 4.87-3.054 2.015 0 3.294.511 4.001.942v2.34c-.68-.376-1.973-.82-3.565-.82-1.265 0-1.755.215-1.755.565 0 .31.245.444 1.116.565l1.524.242c2.204.364 3.251 1.211 3.251 2.92M68.9 11.37c0 1.198-.545 1.816-1.593 1.816-1.02 0-1.483-.551-1.483-1.748V7.496h-3.333v4.749c0 2.179 1.129 3.403 3.265 3.403 1.51 0 2.612-.659 3.143-1.91v1.628h3.333v-7.87H68.9z"/><path fill-rule="evenodd" d="M77.242 7.146c1.592 0 2.653.673 3.197 2.045V5.68h3.333v9.686H80.44v-1.763c-.558 1.332-1.728 2.032-3.415 2.032-2.3 0-3.728-1.79-3.728-4.184-.04-2.502 1.605-4.305 3.946-4.305m-.49 4.238c0 1.022.721 1.735 1.837 1.735 1.143 0 1.864-.74 1.864-1.762 0-.996-.694-1.695-1.85-1.695-1.13 0-1.851.7-1.851 1.722" clip-rule="evenodd"/><path d="M94.357 13.186c1.048 0 1.592-.618 1.592-1.816V7.496h3.333v7.87h-3.333v-1.628c-.531 1.251-1.633 1.91-3.143 1.91-2.136 0-3.265-1.224-3.265-3.403v-4.75h3.333v3.943c0 1.197.463 1.748 1.483 1.748M109.451 9.298c.462-1.48 1.442-2.152 2.938-2.152 1.973 0 3.021 1.265 3.021 3.578v4.642h-3.333v-3.888c0-1.036-.368-1.655-1.184-1.655-.857 0-1.279.66-1.279 1.655v3.888h-3.32v-4.01c0-.928-.367-1.533-1.17-1.533-.843 0-1.292.713-1.292 1.803l-.014-.014v3.754h-3.32v-7.87h3.293v1.843c.463-1.52 1.415-2.193 2.884-2.193 1.456 0 2.422.767 2.776 2.152M23.236 10.576c-.135-.688-.715-1.079-1.672-1.079-.972 0-1.592.432-1.78 1.079z"/><path fill-rule="evenodd" d="M.124 10.135c.209-4.767.313-7.15 1.782-8.634q.187-.189.392-.358C3.905-.19 6.292-.086 11.064.123l18.598.81c4.772.208 7.159.313 8.644 1.78q.19.186.359.391c1.334 1.606 1.23 3.99 1.021 8.757-.065 1.5-.12 2.765-.211 3.839.784.579 1.722.96 2.503 1.084.15.024.198.227.061.294-.548.27-1.558.692-2.89.932-.244 1.066-.621 1.856-1.244 2.485a5 5 0 0 1-.392.359c-1.608 1.332-3.994 1.228-8.767 1.02l-18.597-.811c-4.773-.208-7.16-.312-8.644-1.78a5 5 0 0 1-.36-.391c-1.333-1.606-1.229-3.99-1.02-8.757m11.963-.786H8.27V5.938H4.898v9.438H8.27v-3.614h3.817v3.614h3.371V5.938h-3.371zm9.315-2.211c3.034 0 4.49 1.577 4.49 3.977v.904h-6.028c.391.714 1.335 1.132 2.819 1.132 1.187 0 2.09-.296 2.94-.809v2.333c-.863.566-2.266.97-3.79.97-3.318 0-5.314-1.78-5.314-4.327 0-2.4 1.808-4.18 4.883-4.18m9.64 4.598-1.78-4.248h-3.52l3.452 7.173-1.767 3.277h3.722l5.287-10.45h-3.493z" clip-rule="evenodd"/></svg>
+                    </div>
+                <div class="toolbox__panel">
+                    <h3 class="toolbox__title">Mach den Studium-Test!</h3>
+                    <p class="toolbox__text">
+                        Finde heraus, welche Studiengänge zu deinen Interessen matchen.
+                    </p>
+                    <strong class="toolbox__cta">Zum Test</strong>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15" viewBox="0 0 20 15" class="svg-symbol toolbox__arrow" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Pfeil nach rechts"><title>Pfeil nach rechts</title><path d="m12.947.416-2.119 2.215 3.435 3.533H0v3h14.263l-3.435 3.345 2.119 2.075L20 7.5z"/></svg>
+                </div>
+            </a>
+        </li>
+    <li class="toolbox__item">
+            <a href="https://berufstest.zeit.de/" class="toolbox__link" data-id="toolbox.8.1.2.zum_test">
+                <div class="toolbox__logo">
+                    <svg width="115" height="20" viewBox="0 0 115 20"><path d="M15.054 0h-2.442C11.131 0 9.87 1.286 9.87 2.857v14.286c0 1.571 1.262 2.857 2.743 2.857h2.442c1.482 0 2.744-1.286 2.744-2.857V2.857C17.798 1.286 16.536 0 15.054 0m-.11 16.514c0 .343-.329.657-.658.657h-.905c-.33 0-.659-.314-.659-.657v-13c0-.371.33-.685.659-.685h.905c.33 0 .659.314.659.685zM21.659 0 19.6 20h2.497l.33-3.4h2.304l.33 3.4h2.825L25.69 0zm1.043 13.828.878-10 .988 10zM0 0h5.185C6.667 0 7.93 1.286 7.93 2.857V6.8c0 .686-.22 2.6-2.168 2.971 1.839.372 2.168 1.8 2.168 2.943v4.429C7.929 18.714 6.667 20 5.185 20H0zm4.417 17.171c.33 0 .659-.314.659-.657v-4.628c0-.343-.33-.686-.659-.686H2.853v5.971zm0-8.8c.33 0 .659-.314.659-.657v-4.2c0-.371-.33-.686-.659-.686H2.853v5.543z"/></svg>
+                    </div>
+                <div class="toolbox__panel">
+                    <h3 class="toolbox__title">Welcher Beruf passt zu mir?</h3>
+                    <p class="toolbox__text">
+                        Entdecke mit dem Berufstest deine Stärken in der Arbeitswelt!
+                    </p>
+                    <strong class="toolbox__cta">Zum Test</strong>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15" viewBox="0 0 20 15" class="svg-symbol toolbox__arrow" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Pfeil nach rechts"><title>Pfeil nach rechts</title><path d="m12.947.416-2.119 2.215 3.435 3.533H0v3h14.263l-3.435 3.345 2.119 2.075L20 7.5z"/></svg>
+                </div>
+            </a>
+        </li>
+    <li class="toolbox__item">
+            <a href="https://www.academics.de/" class="toolbox__link" data-id="toolbox.8.1.3.job_finden">
+                <div class="toolbox__logo">
+                    <svg width="101" height="19" viewBox="0 0 101 19"><path d="M17.399 3.414c0 .4-.371.724-.826.724h-2.176c-.455 0-.825-.324-.825-.724V.894c0-.4.37-.724.825-.724h2.176c.456 0 .826.326.826.725zM14.07 6.09h-3.263c-.685 0-1.24.485-1.24 1.086v3.486c-.015.762-.52 1.375-1.147 1.375h-.494v.004H4.989c-.634 0-1.15-.63-1.15-1.409v-.43h.005v-.714c0-.776.514-1.408 1.148-1.408h.561V8.08H6.84c.455 0 .826-.325.826-.726V4.835c0-.401-.371-.725-.826-.725H4.663c-.455 0-.825.324-.825.725v1.837c-.002.775-.517 1.402-1.15 1.402h-.494v.004H.826c-.455 0-.826.324-.826.725v2.519c0 .4.371.724.826.724h1.872c.613.008 1.107.603 1.133 1.349v3.513c0 .6.555 1.086 1.24 1.086h3.261c.685 0 1.24-.486 1.24-1.086v-2.746h.003v-.714c0-.778.515-1.407 1.149-1.407h3.347c.684 0 1.24-.486 1.24-1.086V7.177c0-.602-.556-1.087-1.24-1.087m69.267 11.838H82.21c-.162 0-.269-.111-.269-.278V8.503c0-.168.108-.279.269-.279h1.127c.16 0 .269.111.269.279v9.147c0 .166-.109.278-.27.278m.288-11.594c0 .175-.162.316-.361.316h-.95c-.199 0-.361-.141-.361-.316v-1.1c0-.175.162-.316.36-.316h.95c.2 0 .362.14.362.316zM24.331 12.9l-3.131.538c-.788.13-1.558.24-1.558 1.577 0 1.763 1.379 1.874 2.47 1.874.77 0 1.557-.092 2.219-.314zm.108 5.01c-.538.13-1.396.26-2.362.26-1.629 0-4.152-.093-4.152-3.099 0-2.357 1.27-2.58 2.863-2.858l3.543-.612v-.816c0-.576-.036-1.02-.627-1.263-.322-.129-.822-.185-1.575-.185-1.341 0-2.576.353-3.256.52 0 0-.09.019-.126.019-.07 0-.143-.038-.16-.15l-.18-.853s-.018-.092-.018-.13c0-.13.072-.185.197-.223.555-.166 2.094-.574 3.776-.574 1.289 0 2.11.185 2.648.482.93.538.967 1.448.967 2.394v5.177c0 1.317-.304 1.614-1.539 1.91zm10.325-.483c0 .149-.106.206-.178.241-.447.223-1.718.483-2.827.483-3.382 0-4.277-1.633-4.277-5.103 0-3.45.895-5.102 4.277-5.102 1.11 0 2.344.315 2.81.483.107.037.196.092.196.26 0 .054-.017.146-.017.146l-.143.67c-.036.166-.143.203-.269.203h-.017c-.43-.11-1.45-.427-2.38-.427-2.094 0-2.738.928-2.738 3.767s.644 3.767 2.738 3.767c.93 0 1.95-.26 2.345-.371 0 0 .071-.02.106-.02.109 0 .18.039.216.187l.143.686s.017.092.017.13zm7.429-4.527-3.132.538c-.788.13-1.557.24-1.557 1.577 0 1.763 1.378 1.874 2.469 1.874.77 0 1.557-.092 2.22-.314zm.107 5.01c-.537.13-1.396.26-2.363.26-1.628 0-4.15-.093-4.15-3.099 0-2.357 1.27-2.58 2.862-2.858l3.543-.612v-.816c0-.576-.036-1.02-.626-1.263-.323-.129-.824-.185-1.575-.185-1.342 0-2.577.353-3.256.52 0 0-.09.019-.126.019-.071 0-.143-.038-.16-.15l-.18-.853s-.018-.092-.018-.13c0-.13.072-.185.197-.223.555-.166 2.094-.574 3.776-.574 1.289 0 2.111.185 2.648.482.93.538.967 1.448.967 2.394v5.177c0 1.317-.305 1.614-1.54 1.91m9.682-8.35s-1.074-.296-2.255-.296c-1.86 0-2.666.574-2.666 3.784 0 3.433.949 3.804 2.684 3.804 1.235 0 2.237-.315 2.237-.315zm.519 8.239c-.626.184-1.431.37-2.792.37-3.489 0-4.366-1.54-4.366-5.103 0-3.487.93-5.12 4.134-5.12 1.217 0 2.147.223 2.666.352l-.178-.043V4.514c0-.167.106-.223.25-.26l1.145-.278h.072c.142 0 .197.111.197.26v12.097c0 .65-.018 1.131-1.127 1.466zm9.217-7.033c-.287-1.15-.949-1.503-2.291-1.503-1.378 0-2.022.372-2.309 1.503-.16.632-.179 1.318-.197 1.986l5.011-.019c-.018-.668-.053-1.317-.215-1.967m1.914 3.007c0 .129-.124.278-.25.278H56.94c0 .983.198 1.54.61 2.003.5.594 1.323.798 2.505.798 1.11 0 1.824-.24 2.594-.464 0 0 .053-.018.125-.018.09 0 .143.055.179.185l.197.743s.018.075.018.092c0 .111-.072.168-.197.223-.698.297-1.879.556-3.113.556-3.507 0-4.635-1.632-4.635-5.102 0-3.21.698-5.12 4.223-5.12 1.862 0 2.953.574 3.562 1.576.501.854.626 2.004.626 3.341v.91zm15.803 4.155h-1.127c-.162 0-.269-.111-.269-.278v-6.79c0-1.188-.447-1.596-1.61-1.596-1.522 0-3.078.463-3.078.463v7.923c0 .166-.09.278-.25.278h-1.129c-.179 0-.286-.112-.286-.278v-6.79c0-1.188-.429-1.596-1.592-1.596-1.522 0-3.096.463-3.096.463v7.923c0 .166-.09.278-.269.278h-1.11c-.178 0-.285-.112-.285-.278V9.876c0-.724.107-1.04 1.038-1.355.93-.315 2.648-.576 3.811-.576 1.11 0 1.915.242 2.397.687.896-.352 2.774-.687 3.955-.687 2.148 0 3.168.67 3.168 2.71v6.995c0 .166-.107.277-.268.277zm13.299-.5c0 .148-.109.204-.18.24-.447.223-1.717.483-2.827.483-3.382 0-4.277-1.633-4.277-5.103 0-3.45.895-5.102 4.277-5.102 1.11 0 2.344.315 2.809.483.107.037.198.092.198.26 0 .054-.019.146-.019.146l-.143.67c-.036.166-.143.203-.269.203h-.018c-.429-.11-1.448-.427-2.38-.427-2.092 0-2.737.928-2.737 3.767s.645 3.767 2.738 3.767c.93 0 1.95-.26 2.344-.371 0 0 .072-.02.107-.02.108 0 .179.039.215.187l.143.686s.019.093.019.13m4.402.741c-1.556 0-2.953-.519-3.203-.611-.09-.037-.143-.075-.143-.206v-.017l.18-.872a.195.195 0 0 1 .195-.168c.036 0 .107.02.107.02.18.037 1.414.5 2.826.5 1.398 0 2.238-.446 2.238-1.522 0-1.428-1.038-1.41-2.344-1.614-.93-.148-3.113-.333-3.113-2.801s2.093-2.932 3.686-2.932c1.521 0 2.684.315 2.9.39.143.055.196.13.196.222v.037l-.143.91c-.019.112-.108.13-.18.13h-.035c-.251-.018-1.521-.334-2.542-.334-1.199 0-2.236.335-2.236 1.447 0 1.207 1.162 1.318 2.236 1.466 1.575.223 3.239.427 3.239 2.913 0 2.413-1.772 3.043-3.865 3.043"/></svg>
+                    </div>
+                <div class="toolbox__panel">
+                    <h3 class="toolbox__title">Suchen. Finden. Gestalten.</h3>
+                    <p class="toolbox__text">
+                        Mit academics - dem Karriereportal für Wissenschaft, Forschung, Öffentliches und Gesellschaft.
+                    </p>
+                    <strong class="toolbox__cta">Job finden</strong>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15" viewBox="0 0 20 15" class="svg-symbol toolbox__arrow" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Pfeil nach rechts"><title>Pfeil nach rechts</title><path d="m12.947.416-2.119 2.215 3.435 3.533H0v3h14.263l-3.435 3.345 2.119 2.075L20 7.5z"/></svg>
+                </div>
+            </a>
+        </li>
+    <li class="toolbox__item">
+            <a href="https://goodjobs.eu/" class="toolbox__link" data-id="toolbox.8.1.4.jetzt_jobs_mit_sinn_entdecken">
+                <div class="toolbox__logo">
+                    <svg width="82" height="12" viewBox="0 0 82 12"><path d="M26.193 10c-1.75 0-3.276-1.192-3.276-3.959s1.549-3.958 3.276-3.958c1.728 0 3.276 1.193 3.276 3.958S27.92 10 26.193 10M26.17.104a5.8 5.8 0 0 0-2.58.582L21.143 8.67c.852 2.248 2.827 3.328 5.026 3.328 2.939-.022 5.474-1.933 5.474-5.96 0-4.026-2.538-5.936-5.474-5.936M35.697 9.821h-.785V2.175h.785c1.84 0 3.882.742 3.882 3.824 0 3.103-2.02 3.822-3.882 3.822m.696-9.647h-3.635v11.604h3.635c2.737 0 5.407-1.732 5.407-5.802 0-4.048-2.67-5.802-5.407-5.802M16.716 9.963c-1.75 0-3.276-1.192-3.276-3.958s1.548-3.955 3.275-3.955c1.75 0 3.276 1.192 3.276 3.958s-1.548 3.958-3.276 3.958m0-9.917c-2.939 0-5.474 1.907-5.474 5.937s2.538 5.937 5.474 5.937a5.9 5.9 0 0 0 2.65-.607l2.402-7.872C20.937 1.151 18.94.05 16.718.05M5.52 2.002c1.413 0 2.31.855 2.85 2.18l1.973-.516C9.738 1.552 8.1 0 5.52 0 2.647 0 0 1.979 0 5.937s2.558 5.937 5.34 5.937c1.481 0 2.378-.697 2.804-1.372l.225 1.282h1.795V5.916h-4.24v1.798h2.153C7.942 8.75 7.18 9.918 5.474 9.918 3.68 9.918 2.2 8.75 2.2 5.96c0-2.699 1.48-3.958 3.32-3.958M68.901 10.707h-3.303v-4.57h3.254c1.501 0 2.463 1.104 2.463 2.343 0 1.187-.928 2.223-2.413 2.223m-.25-9.447c1.217 0 2.148.72 2.148 1.89 0 1.138-.797 2.023-1.931 2.023h-3.271V1.258zm1.65 4.35c1.067-.435 1.595-1.505 1.595-2.543 0-1.79-1.382-2.844-3.233-2.844h-4.17v11.525h4.59c2.035 0 3.33-1.538 3.33-3.18 0-1.205-.641-2.576-2.11-2.96M77.668 11.776c2.456 0 3.757-1.678 3.757-3.26 0-1.629-1.236-2.591-3.009-3.03l-1.512-.36c-1.675-.391-1.838-1.288-1.838-1.805 0-1.254 1.188-2.053 2.456-2.053 1.35 0 2.374.799 2.44 2.037h1.072C80.97 1.426 79.456.253 77.553.253c-1.853 0-3.56 1.206-3.56 3.064 0 .897.341 2.25 2.65 2.803l1.512.364c1.106.272 2.195.864 2.195 2.09 0 1.058-.893 2.2-2.682 2.2-1.578 0-2.586-1.06-2.7-2.17h-1.055c.081 1.636 1.561 3.18 3.756 3.18M57.194 10.834c-2.638 0-4.312-2.18-4.312-4.84s1.674-4.852 4.312-4.852 4.407 2.192 4.407 4.852-1.766 4.84-4.404 4.84m0 1.03c3.252 0 5.5-2.626 5.5-5.87 0-3.26-2.248-5.886-5.5-5.886s-5.408 2.627-5.408 5.886c0 3.244 2.156 5.87 5.408 5.87M49.116 8.15q0 1.248-.682 1.985a2.27 2.27 0 0 1-1.738.735q-1.222 0-1.861-.624t-.636-1.928h-.889l-.016.047q-.04 1.623.889 2.467.93.843 2.516.843 1.491 0 2.432-.955t.94-2.57V.3h-.955z"/></svg>
+                    </div>
+                <div class="toolbox__panel">
+                    <h3 class="toolbox__title">Kann mein Job die Welt besser machen?</h3>
+                    <p class="toolbox__text">
+                        Ja, er kann. Jobs bei Arbeitgebenden mit nachhaltigen Zielen findest du auf goodjobs.eu - der Plattform für Jobs mit Sinn. 
+                    </p>
+                    <strong class="toolbox__cta">Jetzt Jobs mit Sinn entdecken</strong>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15" viewBox="0 0 20 15" class="svg-symbol toolbox__arrow" preserveAspectRatio="xMinYMin meet" role="img" aria-label="Pfeil nach rechts"><title>Pfeil nach rechts</title><path d="m12.947.416-2.119 2.215 3.435 3.533H0v3h14.263l-3.435 3.345 2.119 2.075L20 7.5z"/></svg>
+                </div>
+            </a>
+        </li>
+    </ul>
+</aside>                                                                                    </div>
+
+                </div>
+
+        <div class="cp-region cp-region--duo">
+<div class="cp-area cp-area--duo" data-ct-context="duo" data-vt-parameter="cp_area_impression.duo.cp_area_duo.." data-vt-link-id="#cp_area">
+                                                                                                
+            
+                        
+<article class="teaser-wide-large "
+    data-unique-id="http://xml.zeit.de/campus/2025-01/eugh-erasmus-stipendium-eltern-steuern">
+
+                    <a href="https://www.zeit.de/campus/2025-01/eugh-erasmus-stipendium-eltern-steuern" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Europäischer Gerichtshof: Erasmus-Stipendium darf Eltern nicht steuerlich benachteiligen">Europäischer Gerichtshof: Erasmus-Stipendium darf Eltern nicht steuerlich benachteiligen</a>
+                <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
+                <div class="teaser-wide-large__media-container ">
+            <noscript data-src="https://img.zeit.de/campus/2025-01/eugh-erasmus-stipendium-eltern-steuern-bild/cinema__980x392">
+                                <img class="teaser-wide-large__media-item"
+                     alt="Europäischer Gerichtshof: Tor zum Place du Commerce in Lissabon am 13. Dezember 2024: Französische, bulgarische und slowenische Gymnasiasten reisen im Rahmen eines von der EU finanzierten Erasmus-Austauschs nach Portugal, um das Bewusstsein für nachhaltige Entwicklung zu schärfen."
+                     src="https://img.zeit.de/campus/2025-01/eugh-erasmus-stipendium-eltern-steuern-bild/cinema__980x392"
+                     data-src="https://img.zeit.de/campus/2025-01/eugh-erasmus-stipendium-eltern-steuern-bild/cinema"
+                     data-ratio="2.5"
+                     decoding="async"
+                     >
+                            </noscript></div>
+
+        <script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@type": "ImageObject",
+    "url": "https://img.zeit.de/campus/2025-01/eugh-erasmus-stipendium-eltern-steuern-bild/cinema__980x392",
+    "width": 980,
+    "height": 392,
+    "copyrightHolder": {
+        "@type": "Organization",
+        "name": "\u00a9\u00a0Jc Milhet/\u200bHans Lucas/\u200bAFP/\u200bGetty Images"
+    }
+}
+</script>                </figure>
+
+                        <h2 class="teaser-wide-large__heading">
+                <a class="teaser-wide-large__heading-link"
+                   title="Europäischer Gerichtshof - Erasmus-Stipendium darf Eltern nicht steuerlich benachteiligen"
+                   href="https://www.zeit.de/campus/2025-01/eugh-erasmus-stipendium-eltern-steuern"
+                   >
+                                                                        <span class="teaser-wide-large__kicker">
+                                                                                                <span>Europäischer Gerichtshof</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">Erasmus-Stipendium darf Eltern nicht steuerlich benachteiligen</span>
+                </a>
+                </h2>
+        
+        
+                                    <p class="teaser-wide-large__text">Studierende im Erasmus-Austauschprogramm werden mit bis zu 600 Euro im Monat unterstützt. Laut dem EuGH darf das die Steuerfreibeträge für ihre Eltern nicht senken.</p>
+                                    <div class="teaser-wide-large__metadata">
+                                                                                                                                                                                <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2025-01/eugh-erasmus-stipendium-eltern-steuern#comments" data-ct-label="comments" title="Kommentare anzeigen">8 Kommentare</a>
+                                                </div>
+                    
+    </article>
+
+                                                                                    </div>
+
+                
+<div class="cp-area cp-area--duo" data-ct-context="duo" data-vt-parameter="cp_area_impression.duo.cp_area_duo.." data-vt-link-id="#cp_area">
+                                                                                                
+            
+                        
+<article class="teaser-wide-large  teaser-wide-large--advertorial"
+    data-unique-id="http://xml.zeit.de/angebote/Links/ressort-teaser-e-fellows">
+
+                    <a href="https://efn.typeform.com/to/Hui42XHZ?utm_source=zeit_online&amp;utm_medium=zeit_online_verlagsangebot&amp;utm_campaign=schnelltest&amp;utm_content=zeitabogeschenkt" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" target="_blank" rel="noopener" title="e-fellows.net schenkt dir dein ZEIT-Abo">e-fellows.net schenkt dir dein ZEIT-Abo</a>
+                <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
+                <div class="teaser-wide-large__media-container ">
+            <noscript data-src="https://img.zeit.de/angebote/Links/Bilder/efellows/e-fellows-6/cinema__980x392">
+                                <img class="teaser-wide-large__media-item"
+                     alt="e-fellows.net schenkt dir dein ZEIT-Abo"
+                     src="https://img.zeit.de/angebote/Links/Bilder/efellows/e-fellows-6/cinema__980x392"
+                     data-src="https://img.zeit.de/angebote/Links/Bilder/efellows/e-fellows-6/cinema"
+                     data-ratio="2.5"
+                     decoding="async"
+                     >
+                            </noscript></div>
+
+        <script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@type": "ImageObject",
+    "url": "https://img.zeit.de/angebote/Links/Bilder/efellows/e-fellows-6/cinema__980x392",
+    "width": 980,
+    "height": 392
+}
+</script>                </figure>
+
+                        <h2 class="teaser-wide-large__heading">
+                <a class="teaser-wide-large__heading-link"
+                   title=" - e-fellows.net schenkt dir dein ZEIT-Abo"
+                   href="https://efn.typeform.com/to/Hui42XHZ?utm_source=zeit_online&amp;utm_medium=zeit_online_verlagsangebot&amp;utm_campaign=schnelltest&amp;utm_content=zeitabogeschenkt"
+                    target="_blank"
+                         rel="noopener"                   >
+                                                                                                <span class="teaser-wide-large__title">e-fellows.net schenkt dir dein ZEIT-Abo</span>
+                </a>
+                </h2>
+        
+        
+                                    <p class="teaser-wide-large__text">Bewirb dich jetzt auf ein Online-Stipendium und lies die ZEIT kostenlos. Hier kannst du in 30 Sekunden herausfinden, wie deine Chancen stehen.</p>
+                                
     </article>
 
                                                                                     </div>
@@ -1857,25 +1842,16 @@
             
                         
 <article class="teaser-wide-large "
-    data-unique-id="http://xml.zeit.de/campus/2024-12/professorinnen-deutschland-quote-leicht-gestiegen">
+    data-unique-id="http://xml.zeit.de/campus/2025-01/studium-bafoeg-stipendien">
 
-                    <a href="https://www.zeit.de/campus/2024-12/professorinnen-deutschland-quote-leicht-gestiegen" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Wissenschaft: Frauenanteil in Professuren steigt nur geringfügig">Wissenschaft: Frauenanteil in Professuren steigt nur geringfügig</a>
+                    <a href="https://www.zeit.de/campus/2025-01/studium-bafoeg-stipendien" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Studium: Jeder sechste Studierende bezieht staatliche Unterstützung">Studium: Jeder sechste Studierende bezieht staatliche Unterstützung</a>
                 <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/gesellschaft/2024-12/professorenschaft-bild/cinema__980x392">
+            <noscript data-src="https://img.zeit.de/campus/2025-01/studium-bafoeg-stipendien-bild/cinema__980x392">
                                 <img class="teaser-wide-large__media-item"
-                     alt="Wissenschaft: Studentinnen und Studenten sitzen während einer Vorlesung in einem Hörsaal. (zu dpa «Hörsaal statt Bildschirm: Studierende kehren an Hochschulen zurück»)
-
-Service
-+++ dpa-Bildfunk +++
-
-Aufnahmedatum
-17.04.2018
-
-Bildnachweis
-picture alliance/dpa | Sebastian Gollnow"
-                     src="https://img.zeit.de/gesellschaft/2024-12/professorenschaft-bild/cinema__980x392"
-                     data-src="https://img.zeit.de/gesellschaft/2024-12/professorenschaft-bild/cinema"
+                     alt="Studium: Symbolbild: Schulkantine mit Schülern beim Mittagessen im Cartaxo-Gymnasium in der Provinz Santarem, Portugal, 9. Dezember 2024."
+                     src="https://img.zeit.de/campus/2025-01/studium-bafoeg-stipendien-bild/cinema__980x392"
+                     data-src="https://img.zeit.de/campus/2025-01/studium-bafoeg-stipendien-bild/cinema"
                      data-ratio="2.5"
                      decoding="async"
                      >
@@ -1885,30 +1861,30 @@ picture alliance/dpa | Sebastian Gollnow"
     {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/gesellschaft/2024-12/professorenschaft-bild/cinema__980x392",
+    "url": "https://img.zeit.de/campus/2025-01/studium-bafoeg-stipendien-bild/cinema__980x392",
     "width": 980,
     "height": 392,
     "copyrightHolder": {
         "@type": "Organization",
-        "name": "\u00a9\u00a0Sebastian Gollnow/\u200bdpa"
+        "name": "\u00a9\u00a0Jc Milhet/\u200bAFP/\u200bGetty Images"
     }
 }
 </script>                </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Wissenschaft - Frauenanteil in Professuren steigt nur geringfügig"
-                   href="https://www.zeit.de/campus/2024-12/professorinnen-deutschland-quote-leicht-gestiegen"
+                   title="Studium - Jeder sechste Studierende bezieht staatliche Unterstützung"
+                   href="https://www.zeit.de/campus/2025-01/studium-bafoeg-stipendien"
                    >
                                                                         <span class="teaser-wide-large__kicker">
-                                                                                                <span>Wissenschaft</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">Frauenanteil in Professuren steigt nur geringfügig</span>
+                                                                                                <span>Studium</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">Jeder sechste Studierende bezieht staatliche Unterstützung</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Weniger als ein Drittel der Professuren in Deutschland ist mit Frauen besetzt. Im Vergleich zum Vorjahr stieg die Quote um einen Prozentpunkt.</p>
+                                    <p class="teaser-wide-large__text">Knapp 17 Prozent der Studierenden in Deutschland erhalten Bafög, Stipendien oder Studienkredite. Der Wert hat sich im Vergleich zum Vorjahr nur leicht verändert.</p>
                                     <div class="teaser-wide-large__metadata">
-                                                                                                                                                                                <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2024-12/professorinnen-deutschland-quote-leicht-gestiegen#comments" data-ct-label="comments" title="Kommentare anzeigen">67 Kommentare</a>
+                                                                                                                                                                                <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/2025-01/studium-bafoeg-stipendien#comments" data-ct-label="comments" title="Kommentare anzeigen">12 Kommentare</a>
                                                 </div>
                     
     </article>
@@ -1921,16 +1897,16 @@ picture alliance/dpa | Sebastian Gollnow"
             
                         
 <article class="teaser-wide-large "
-    data-unique-id="http://xml.zeit.de/2024/47/ausbildung-abitur-studium-praxis-erfahrungen">
+    data-unique-id="http://xml.zeit.de/campus/ratgeber/2025/01/breathwork-seminare-test-atem-stress-aengste" data-zplus="zplus">
 
-                    <a href="https://www.zeit.de/2024/47/ausbildung-abitur-studium-praxis-erfahrungen" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Ausbildung: &#34;Ich war nie der Typ, der gerne am Schreibtisch sitzt&#34;">Ausbildung: &#34;Ich war nie der Typ, der gerne am Schreibtisch sitzt&#34;</a>
+                    <a href="https://www.zeit.de/campus/ratgeber/2025/01/breathwork-seminare-test-atem-stress-aengste" class="teaser-wide-large__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Breathwork-Seminare: Ein, Aus, Rausch?">Breathwork-Seminare: Ein, Aus, Rausch?</a>
                 <figure class="teaser-wide-large__media teaser-wide-large__media--force-mobile scaled-image variant variant--cinema">
                 <div class="teaser-wide-large__media-container ">
-            <noscript data-src="https://img.zeit.de/2024/47/theorie-langweilt-mich-schnell-bild-1/cinema__980x392">
+            <noscript data-src="https://img.zeit.de/campus/ratgeber/2025/01/ein-aus-rausch-bild-1/cinema__980x392">
                                 <img class="teaser-wide-large__media-item"
-                     alt="Ausbildung: &#34;Ich war nie der Typ, der gerne am Schreibtisch sitzt&#34;"
-                     src="https://img.zeit.de/2024/47/theorie-langweilt-mich-schnell-bild-1/cinema__980x392"
-                     data-src="https://img.zeit.de/2024/47/theorie-langweilt-mich-schnell-bild-1/cinema"
+                     alt="Breathwork-Seminare: Ein, Aus, Rausch?"
+                     src="https://img.zeit.de/campus/ratgeber/2025/01/ein-aus-rausch-bild-1/cinema__980x392"
+                     data-src="https://img.zeit.de/campus/ratgeber/2025/01/ein-aus-rausch-bild-1/cinema"
                      data-ratio="2.5"
                      decoding="async"
                      >
@@ -1940,31 +1916,31 @@ picture alliance/dpa | Sebastian Gollnow"
     {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2024/47/theorie-langweilt-mich-schnell-bild-1/cinema__980x392",
+    "url": "https://img.zeit.de/campus/ratgeber/2025/01/ein-aus-rausch-bild-1/cinema__980x392",
     "width": 980,
     "height": 392,
     "copyrightHolder": {
         "@type": "Person",
-        "name": "\u00a9\u00a0[M]: Van Santen & Bolleurs"
+        "name": "\u00a9\u00a0Julia Sang Nguyen"
     }
 }
 </script>                </figure>
 
                         <h2 class="teaser-wide-large__heading">
                 <a class="teaser-wide-large__heading-link"
-                   title="Ausbildung - &#34;Ich war nie der Typ, der gerne am Schreibtisch sitzt&#34;"
-                   href="https://www.zeit.de/2024/47/ausbildung-abitur-studium-praxis-erfahrungen"
+                   title="Breathwork-Seminare - Ein, Aus, Rausch?"
+                   href="https://www.zeit.de/campus/ratgeber/2025/01/breathwork-seminare-test-atem-stress-aengste"
                    >
                                                                         <span class="teaser-wide-large__kicker">
-                                                                                                <span>Ausbildung</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">&#34;Ich war nie der Typ, der gerne am Schreibtisch sitzt&#34;</span>
+                                                                                                <span>Breathwork-Seminare</span></span><span class="visually-hidden">: </span>                                                    <span class="teaser-wide-large__title">Ein, Aus, Rausch?</span>
                 </a>
                 </h2>
         
         
-                                    <p class="teaser-wide-large__text">Wer eine Ausbildung macht, verdient weniger und steigt nur schwer auf? Das muss nicht so sein. Zwei Azubis erklären, warum sie sich immer wieder so entscheiden würden.</p>
+                                    <p class="teaser-wide-large__text">Breathwork-Seminare versprechen: Wer seinen Atem kennenlernt, befreit sich vom Stress. Unsere Autorin probiert es aus und landet irgendwo zwischen Trance und Orgasmus.</p>
                                     <div class="teaser-wide-large__metadata">
-                                                                            <span class="teaser-wide-large__byline"> Protokoll: Marie-Charlotte Maas</span>
-                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/2024/47/ausbildung-abitur-studium-praxis-erfahrungen#comments" data-ct-label="comments" title="Kommentare anzeigen">36 Kommentare</a>
+                                                                            <span class="teaser-wide-large__byline"> Von Lisa McMinn</span>
+                                                                                                                                            <a class="teaser-wide-large__commentcount" href="https://www.zeit.de/campus/ratgeber/2025/01/breathwork-seminare-test-atem-stress-aengste#comments" data-ct-label="comments" title="Kommentare anzeigen">7 Kommentare</a>
                                                 </div>
                     
     </article>
@@ -1979,31 +1955,31 @@ picture alliance/dpa | Sebastian Gollnow"
             
                         
 <article class="teaser-lead-portrait "
-    data-unique-id="http://xml.zeit.de/2024/47/studienfinanzierung-uni-leben-kosten-geld-tipps" data-zplus="zplus">
+    data-unique-id="http://xml.zeit.de/gesellschaft/2025-01/werden-us-unis-fairer-wenn-man-sie-mit-geld-zuschuettet">
 
-                    <a href="https://www.zeit.de/2024/47/studienfinanzierung-uni-leben-kosten-geld-tipps" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Studienfinanzierung: Wie soll ich das eigentlich bezahlen?">Studienfinanzierung: Wie soll ich das eigentlich bezahlen?</a>
+                    <a href="https://www.zeit.de/gesellschaft/2025-01/werden-us-unis-fairer-wenn-man-sie-mit-geld-zuschuettet" class="teaser-lead-portrait__faux-link" tabindex="-1" aria-hidden="true" data-ct-label="link" title="Studium in den USA: Werden US-Unis fairer, wenn man sie mit Geld zuschüttet?">Studium in den USA: Werden US-Unis fairer, wenn man sie mit Geld zuschüttet?</a>
                 <figure class="teaser-lead-portrait__media teaser-lead-portrait__media--force-mobile scaled-image variant variant--portrait">
                 <div class="teaser-lead-portrait__media-container ">
-            <noscript data-src="https://img.zeit.de/2024/47/wer-soll-das-bezahlen-teaser/portrait__612x816">
+            <noscript data-src="https://img.zeit.de/gesellschaft/2025-01/werden-us-unis-fairer-wenn-man-sie-mit-geld-zuschuettet-bild/portrait__612x816">
                                 <img class="teaser-lead-portrait__media-item"
-                     alt="Studienfinanzierung: braucht es eine?"
-                     src="https://img.zeit.de/2024/47/wer-soll-das-bezahlen-teaser/portrait__612x816"
-                     data-src="https://img.zeit.de/2024/47/wer-soll-das-bezahlen-teaser/portrait"
+                     alt="Studium in den USA: Werden US-Unis fairer, wenn man sie mit Geld zuschüttet?"
+                     src="https://img.zeit.de/gesellschaft/2025-01/werden-us-unis-fairer-wenn-man-sie-mit-geld-zuschuettet-bild/portrait__612x816"
+                     data-src="https://img.zeit.de/gesellschaft/2025-01/werden-us-unis-fairer-wenn-man-sie-mit-geld-zuschuettet-bild/portrait"
                      data-ratio="0.75"
                      decoding="async"
-                     data-mobile-src="https://img.zeit.de/2024/47/wer-soll-das-bezahlen-teaser/wide" data-mobile-ratio="1.77777777778">
+                     data-mobile-src="https://img.zeit.de/gesellschaft/2025-01/werden-us-unis-fairer-wenn-man-sie-mit-geld-zuschuettet-bild/wide" data-mobile-ratio="1.77777777778">
                             </noscript></div>
 
         <script type="application/ld+json">
     {
     "@context": "https://schema.org",
     "@type": "ImageObject",
-    "url": "https://img.zeit.de/2024/47/wer-soll-das-bezahlen-teaser/portrait__612x816",
+    "url": "https://img.zeit.de/gesellschaft/2025-01/werden-us-unis-fairer-wenn-man-sie-mit-geld-zuschuettet-bild/portrait__612x816",
     "width": 612,
     "height": 816,
     "copyrightHolder": {
-        "@type": "Person",
-        "name": "\u00a9\u00a0Joanne Joo f\u00fcr ZEIT Abitur"
+        "@type": "Organization",
+        "name": "\u00a9\u00a0[M]/\u200bunsplash.com"
     }
 }
 </script>                </figure>
@@ -2011,19 +1987,20 @@ picture alliance/dpa | Sebastian Gollnow"
         <div class="teaser-lead-portrait__content">
                             <h2 class="teaser-lead-portrait__heading">
                 <a class="teaser-lead-portrait__heading-link"
-                   title="Studienfinanzierung - Wie soll ich das eigentlich bezahlen?"
-                   href="https://www.zeit.de/2024/47/studienfinanzierung-uni-leben-kosten-geld-tipps"
+                   title="Studium in den USA - Werden US-Unis fairer, wenn man sie mit Geld zuschüttet?"
+                   href="https://www.zeit.de/gesellschaft/2025-01/werden-us-unis-fairer-wenn-man-sie-mit-geld-zuschuettet"
                    >
                                                                         <span class="teaser-lead-portrait__kicker">
-                                                                                                <span>Studienfinanzierung</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">Wie soll ich das eigentlich bezahlen?</span>
+                                <span class="series-label">Und was macht die Uni?</span>
+                                                                                                    <span>Studium in den USA</span></span><span class="visually-hidden">: </span>                                                                <span class="teaser-lead-portrait__title">Werden US-Unis fairer, wenn man sie mit Geld zuschüttet?</span>
                                     </a>
                 </h2>
         
         
-                                    <p class="teaser-lead-portrait__text">Miete, Mensa, Semesterbeiträge – alles wird gerade teurer. Mit den Antworten auf diese sieben Fragen bleibst du entspannt bis zum Monatsende.</p>
+                                    <p class="teaser-lead-portrait__text">Wer in den USA studiert, muss sich krass verschulden. An einem New Yorker College ist dank einer Milliardärin Schluss damit. Klingt nach Märchen, ist aber komplizierter.</p>
                                     <div class="teaser-lead-portrait__metadata">
-                                                                            <span class="teaser-lead-portrait__byline"> Von Marie-Charlotte Maas</span>
-                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/2024/47/studienfinanzierung-uni-leben-kosten-geld-tipps#comments" data-ct-label="comments" title="Kommentare anzeigen">28 Kommentare</a>
+                                                                            <span class="teaser-lead-portrait__byline"> Von Christoph Farkas und Charlotte Köhler</span>
+                                                                                                                                            <a class="teaser-lead-portrait__commentcount" href="https://www.zeit.de/gesellschaft/2025-01/werden-us-unis-fairer-wenn-man-sie-mit-geld-zuschuettet#comments" data-ct-label="comments" title="Kommentare anzeigen">8 Kommentare</a>
                                                 </div>
                     
     
@@ -2156,9 +2133,9 @@ picture alliance/dpa | Sebastian Gollnow"
     </script>
 </div>
     
-    <script src="https://static.zeit.de/p/zeit.web/js/mausabhaengigeszaehlinstrument.7054e0a035ecda636949.js" async></script>
-    <script src="https://static.zeit.de/p/zeit.web/js/images.5101e851b3d21662543e.js" async></script>
-    <script src="https://static.zeit.de/p/zeit.web/js/campus.c3f70a4315393bdab9ea.js" defer></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/mausabhaengigeszaehlinstrument.833c8d6a4136d268201b.js" async></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/images.329457b84106f186ac8e.js" async></script>
+    <script src="https://static.zeit.de/p/zeit.web/js/campus.8c57ec567f81d7ce7c3e.js" defer></script>
 
     
 
@@ -2340,7 +2317,7 @@ picture alliance/dpa | Sebastian Gollnow"
             <a href="https://meine.zeit.de/anmelden?url=https%3A//www.zeit.de/campus/index&entry_service=merkliste" data-ct-label="login">Hier anmelden</a>.
         </p>
     </form>
-</dialog><div class="navigation-backdrop" hidden></div>
-
+</dialog>        <div class="navigation-backdrop" hidden></div>
+    
 </body>
 </html>
