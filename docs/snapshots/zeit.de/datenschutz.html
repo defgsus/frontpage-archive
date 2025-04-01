@@ -24,36 +24,53 @@
 
 
                 <script>
-                    document.addEventListener("DOMContentLoaded", function() {
+                     document.addEventListener("DOMContentLoaded", function () {
+    // loads sourcepoint consent tools
     window._sp_ = {
-        config: {
-            accountId: 692,
-            baseEndpoint: "https://consent-cdn.zeit.de"
-        }
+      config: {
+        accountId: 692,
+        baseEndpoint: "https://consent-cdn.zeit.de"
+      }
     };
     const script = document.createElement('script');
     script.src =
-        "https://consent-cdn.zeit.de/wrapperMessagingWithoutDetection.js";
+      "https://consent-cdn.zeit.de/wrapperMessagingWithoutDetection.js";
     document.body.appendChild(script);
+
+    // generates consent button
     const consentButton = document.getElementById("consentbutton");
     if ((document.cookie.indexOf('consentUUID') === -1)) {
-        consentButton.innerHTML = "<button title='Zustimmung erteilen' aria-label='Zustimmung erteilen' style='padding: 10px 15px; margin: 0px 10px 10px 0px; border-width: 0px; border-color: rgb(0, 0, 0); border-radius: 5px; border-style: solid; font-size: 15px; font-weight: 700; color: rgb(255, 255, 255); font-family: arial, helvetica, sans-serif; width: 241px; background: rgb(24, 126, 67); cursor: pointer;'>Zustimmung erteilen</button>"            
-        document.getElementById("consentbutton").onclick = function() {window.location.href = "https://www.zeit.de";};
+      consentButton.innerHTML = "<button title='Zustimmung erteilen' aria-label='Zustimmung erteilen' style='padding: 10px 15px; margin: 0px 10px 10px 0px; border-width: 0px; border-color: rgb(0, 0, 0); border-radius: 5px; border-style: solid; font-size: 15px; font-weight: 700; color: rgb(255, 255, 255); font-family: arial, helvetica, sans-serif; width: 241px; background: rgb(24, 126, 67); cursor: pointer;'>Zustimmung erteilen</button>"
+      document.getElementById("consentbutton").onclick = function () { window.location.href = "https://www.zeit.de"; };
     } else {
-        consentButton.innerHTML = "<button title='Zustimmung widerrufen' aria-label='Zustimmung widerrufen' style='padding: 10px 15px; margin: 0px 10px 10px 0px; border-width: 0px; border-color: rgb(0, 0, 0); border-radius: 5px; border-style: solid; font-size: 15px; font-weight: 700; color: rgb(255, 255, 255); font-family: arial, helvetica, sans-serif; width: 241px; background: rgb(186, 18, 10); cursor: pointer;'>Zustimmung widerrufen</button>"
-        document.getElementById("consentbutton").onclick = function() {rejectConsent()};
-        //function that executes postRejectAll command
-        function rejectConsent() {
-        __tcfapi('postRejectAll', 2, function (postRejectAllResponse, success) {
-                document.cookie = "consentUUID=; expires = Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=zeit.de;";
-                document.cookie = "zonconsent=; expires = Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=zeit.de;";
-                console.log("postRejectAllResponse: ", postRejectAllResponse);
-                console.log('postRejectAllResponse was successful: ' + success)
-                window.location.reload();
-            });
+      consentButton.innerHTML = "<button title='Zustimmung widerrufen' aria-label='Zustimmung widerrufen' style='padding: 10px 15px; margin: 0px 10px 10px 0px; border-width: 0px; border-color: rgb(0, 0, 0); border-radius: 5px; border-style: solid; font-size: 15px; font-weight: 700; color: rgb(255, 255, 255); font-family: arial, helvetica, sans-serif; width: 241px; background: rgb(186, 18, 10); cursor: pointer;'>Zustimmung widerrufen</button>"
+      document.getElementById("consentbutton").onclick = function () { rejectConsent() };
+      // function to send rejection info to app
+      window.zappiPostMessage = function (event) {
+        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.pageHandler) {
+          // iOS
+          window.webkit.messageHandlers.pageHandler.postMessage(event);
+        } else if (window.appInterface && window.appInterface.handlePageEvent) {
+          // Andoid
+          window.appInterface.handlePageEvent(JSON.stringify(event));
         }
+      }
+      //function that executes postRejectAll command
+      function rejectConsent() {
+        __tcfapi('postRejectAll', 2, function (postRejectAllResponse, success) {
+          window.zappiPostMessage({
+            type: 'useractioncomplete',
+            consent: null,
+          });
+          document.cookie = "consentUUID=; expires = Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=zeit.de;";
+          document.cookie = "zonconsent=; expires = Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=zeit.de;";
+          console.log("postRejectAllResponse: ", postRejectAllResponse);
+          console.log('postRejectAllResponse was successful: ' + success)
+          window.location.reload();
+        });
+      }
     }
-});
+  });
                 </script>
 
     </head>
@@ -1073,7 +1090,7 @@
                                     
                                     
                                             <h3 id="logfiles" class="declaration-chapter-h">
-                                                Logfiles
+                                                Logdaten
                                             </h3>
                                     <div class="declaration-chapter-p" data-collapsible="true">
                                       <div><p>Beim Aufrufen unserer Website werden durch den auf Ihrem EndgerÃ¤t zum Einsatz kommenden Browser automatisch Informationen an den Server unserer Website gesendet. Diese Informationen werden temporÃ¤r in einem sog. Logfile gespeichert.</p>
@@ -1104,7 +1121,7 @@
                                     <div class="declaration-chapter-p" data-collapsible="true">
                                       <div><p>Sie kÃ¶nnen unser Z+ Podcast Angebot auch auf Drittplattformen (z.B. Apple Music oder Spotify) nutzen. Um Ihnen das zu ermÃ¶glichen, mÃ¼ssen personenbezogene Daten pseudonymisiert Ã¼bergeben werden. Dies geschieht nur, wenn Sie Ihre Z+ Angebote auf der Drittplattform aktiv freischalten. Weitere personenbezogene Daten zu Ihrem ZEIT Nutzerkonto werden nicht verarbeitet.</p>
                                     <p>Die Datenverarbeitung ist zur Abwicklung des zustande kommenden Vertrags gesetzlich erlaubt (Art. 6 Abs. 1 b) DSGVO). Die Weitergabe der oben genannten personenbezogenen Daten ist erforderlich, um Ihnen die MÃ¶glichkeit zu bieten, Inhalte auf Drittplattformen nutzen zu kÃ¶nnen.</p>
-                                    <p>Sobald Sie das Z+ Podcast Angebot nicht mehr auf einer Drittplattform nutzen kÃ¶nnen oder wollen, werden die zuvor Ã¼bergebenen Daten dort gelÃ¶scht.</p>
+                                    <p>Informationen zur Speicherdauer finden Sie auf der jeweiligen Drittplattform.</p>
                                     </div>
                                         
                                     </div>
@@ -2285,6 +2302,7 @@
                                     <div class="quarter-section-2"><p>GeschÃ¤ftsfÃ¼hrung: Dr. Rainer Esser, Christian RÃ¶pke, Enrique Tarragona</p>
             </div>
                                     <div class="half-section" ><p><a href="mailto:kontakt@zeit.de">kontakt@zeit.de</a><br>+49 40 3280 0</p>
+            <p>FÃ¼r Datenschutzanfragen siehe &quot;Betroffenenrechte und Kontakt&quot;</p>
             </div>
                                 </div>
                                 </div>
