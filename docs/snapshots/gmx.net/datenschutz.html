@@ -25,14 +25,61 @@
         <link color="#333333" rel="mask-icon" href="https://img.ui-portal.de/ux/gmx/icons/safari-pinned-tab.svg">
 
                     <link rel="stylesheet" type="text/css" href="//js.ui-portal.de/cd/products/gmx.net/5.11.3/products.css"/>
-                
-            <script src="//s.uicdn.com/fd/jquery/3.7.1/jquery.min.js"></script>
-                    
-    <script src="//js.ui-portal.de/prompt/permission/latest/connector.min.js?group=portal&amp;portal=gmxnet"></script>
+                                <script type="text/javascript" src="https://s.uicdn.com/tcf/live/v1/js/tcf-api.js"></script>
+    <script type="text/javascript" src="https://dl.gmx.net/permission/live/v1/ppp/js/permission-client.js"></script>
 
-    <script nonce="MP8lfzI4PUDsQdW5Y+M51A==" type="text/javascript">
-        $(document).ready(function () {
-            $("a[data-permission-client='init']").click(function (event) {
+<script nonce="tf6Dh5KIZOLrKGgnRUZGcg==" type="application/javascript">
+    window.waitForRedirect = true;
+    window.addEventListener('load', function() {
+        if (navigator.cookieEnabled) {
+            if (typeof window.__tcfapi === 'function') {
+                initializePermissionClient();
+            } else {
+                document.addEventListener('tcfLoad', function(event) {
+                    initializePermissionClient();
+                });
+            }
+        }
+    });
+
+    function initializePermissionClient() {
+        var layerDisplayed = false;
+
+        if (typeof PermissionClient?.init !== 'function') {
+            console.error('PermissionClient not available');
+            window.dispatchEvent(new CustomEvent('noredirect'));
+            return;
+        }
+
+        PermissionClient.init({
+            portal: 'gmx',
+            category: 'permission',
+            stage: 'live',
+            section: '',
+            onShowLayer: function() {
+                layerDisplayed = true;
+            },
+            onComplete: function() {
+                window.dispatchEvent(new CustomEvent('consentLayerClosed', { detail: { layerDisplayed } }));
+            },
+        }).catch(function (error) {             console.error('PermissionClient initialization failed:', error);
+            window.dispatchEvent(new CustomEvent('noredirect'));
+        });
+    }
+
+        window.addEventListener('consentLayerClosed', function (event) {
+        console.log('consentLayerClosed', event.detail.layerDisplayed);
+        if (event.detail.layerDisplayed) {
+            window.location.reload();
+        } else {
+            window.dispatchEvent(new CustomEvent('noredirect'));
+        }
+    });
+
+        document.addEventListener('DOMContentLoaded', function () {
+        const links = document.querySelectorAll("a[data-permission-client='init']");
+        links.forEach(function (link) {
+            link.addEventListener('click', function (event) {
                 event.preventDefault();
 
                 PermissionClient.init({
@@ -46,13 +93,14 @@
                 });
 
                 return false;
-            })
+            });
         });
-    </script>
-    </head>
+    });
+
+</script>    </head>
 
     <body id="top"  data-brand="gmx" data-product="products">
-    <script nonce="MP8lfzI4PUDsQdW5Y+M51A==">/*<[CDATA[*/document.body.className += ' js' + (!!('ontouchstart' in window) ? ' touch' : '') + (document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#Image", "1.1") ? '' : ' no-svg') + ('f0OF0MozF0WebkitF0msF'.replace(/[^0]+/g, function(f) { return +(f + 'lexWrap' in document.body.style) }) > 0 && !/4\.4\.2.*?samsung gt-i9195/i.test(navigator.userAgent) ? '' : ' no-flex'); (screen.width < 320 || screen.height < 320) && (function(meta) { meta.setAttribute('content', meta.getAttribute('content').replace(/device-width/, '320')); })(document.getElementsByName('viewport')[0]);/*]]>*/</script>
+    <script nonce="tf6Dh5KIZOLrKGgnRUZGcg==">/*<[CDATA[*/document.body.className += ' js' + (!!('ontouchstart' in window) ? ' touch' : '') + (document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#Image", "1.1") ? '' : ' no-svg') + ('f0OF0MozF0WebkitF0msF'.replace(/[^0]+/g, function(f) { return +(f + 'lexWrap' in document.body.style) }) > 0 && !/4\.4\.2.*?samsung gt-i9195/i.test(navigator.userAgent) ? '' : ' no-flex'); (screen.width < 320 || screen.height < 320) && (function(meta) { meta.setAttribute('content', meta.getAttribute('content').replace(/device-width/, '320')); })(document.getElementsByName('viewport')[0]);/*]]>*/</script>
 
     <div class="grid">
                 
@@ -132,7 +180,7 @@
                         </li>
                                    
                                             <li role="menuitem" >
-                            <a href="https://www.gmx.net/produkte/apps/mail/#.produkte.int.nav.mail-app"   >
+                            <a href="https://www.gmx.net/produkte/apps/#.produkte.int.nav.mail-app"   >
                                                                 Mail App
                             </a>
                         </li>
@@ -1428,7 +1476,7 @@ datenschutz@gmxnet.de
                                 </a>
                             </li>
                                                                                                 <li >
-                                <a href="https://www.gmx.net/produkte/apps/mail/#.produkte.int.footer.mail-app"
+                                <a href="https://www.gmx.net/produkte/apps/#.produkte.int.footer.mail-app"
                                       
                                        tabindex="0">
                                                                             <span class="m service apps icon">
@@ -1628,9 +1676,10 @@ datenschutz@gmxnet.de
 
     </div>
     <script src="//js.ui-portal.de/cd/products/gmx.net/5.11.3/products.js"></script>
-                    
+                <script src="//s.uicdn.com/fd/jquery/3.7.1/jquery.min.js"></script>
+            
     
-<script nonce="MP8lfzI4PUDsQdW5Y+M51A==" type="text/javascript">
+<script nonce="tf6Dh5KIZOLrKGgnRUZGcg==" type="text/javascript">
     window.utag_data = {
         "agof": "89",
         "appEnvironment": "standalone",
@@ -1641,14 +1690,14 @@ datenschutz@gmxnet.de
         "contentCountry": "DE",
         "pageType": "overview",
         "softwareName": "cmfspa",
-        "softwareVersion": "9.28.0",
+        "softwareVersion": "9.30.0",
         "campaign": window.location.hash.replace(/[^0-9a-z._-]/gi, '').replace(/^./, ''),
         "contentName": "pc_datenschutz",
     };
 </script>
 
-<script nonce="MP8lfzI4PUDsQdW5Y+M51A==" type="text/javascript">
-    window.addEventListener(window.waitForRedirect ? 'noredirect' : 'load', function (event) {
+<script nonce="tf6Dh5KIZOLrKGgnRUZGcg==" type="text/javascript">
+    window.addEventListener('load', function (event) {
         (function(a,b,c,d) {
             a='https://s.uicdn.com/t/prod/iq/mam/green/daq.js';
             b=document;c='script';d=b.createElement(c);d.src=a;
@@ -1657,7 +1706,7 @@ datenschutz@gmxnet.de
     });
 </script>
 
-<script nonce="MP8lfzI4PUDsQdW5Y+M51A==" type="text/javascript">
+<script nonce="tf6Dh5KIZOLrKGgnRUZGcg==" type="text/javascript">
     window.tr_config = {
         events: {
             userAction: [
@@ -1695,7 +1744,7 @@ datenschutz@gmxnet.de
         }
     }
 </script>
-        <script nonce="MP8lfzI4PUDsQdW5Y+M51A==" type="text/javascript">
+        <script nonce="tf6Dh5KIZOLrKGgnRUZGcg==" type="text/javascript">
     var anchor = window.location.hash.substr(1);
     if (anchor && anchor.indexOf('.') === -1 && $('#' + anchor).length) {
         $anchor = $('#' + anchor);
