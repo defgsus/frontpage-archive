@@ -11,7 +11,7 @@
 	<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<meta name="format-detection" content="telephone=no">
 
-	<link rel="stylesheet" href="https://www.bild.de/kaufberater/wp-content/themes/unitb-child/static/css/kaufberater-modules.css?v=1751281461270">
+	<link rel="stylesheet" href="https://www.bild.de/kaufberater/wp-content/themes/unitb-child/static/css/kaufberater-modules.css?v=1752829698885">
 	
   <link rel="dns-prefetch" href="https://a.bildstatic.de/" >
   <link rel="preload" href="https://www.bild.de/kaufberater/wp-content/themes/unitb-child/static/fonts/3FF86ACA2E0D4CD65.woff2" as="font" type="font/woff2" crossorigin>
@@ -31,6 +31,7 @@
 
 <!-- CMP start -->
 <script>
+    console.log("cmp Start")
   !function () { var e = function () { var e, t = "__tcfapiLocator", a = [], n = window; for (; n;) { try { if (n.frames[t]) { e = n; break } } catch (e) { } if (n === window.top) break; n = n.parent } e || (!function e() { var a = n.document, r = !!n.frames[t]; if (!r) if (a.body) { var i = a.createElement("iframe"); i.style.cssText = "display:none", i.name = t, a.body.appendChild(i) } else setTimeout(e, 5); return !r }(), n.__tcfapi = function () { for (var e, t = arguments.length, n = new Array(t), r = 0; r < t; r++)n[r] = arguments[r]; if (!n.length) return a; if ("setGdprApplies" === n[0]) n.length > 3 && 2 === parseInt(n[1], 10) && "boolean" == typeof n[3] && (e = n[3], "function" == typeof n[2] && n[2]("set", !0)); else if ("ping" === n[0]) { var i = { gdprApplies: e, cmpLoaded: !1, cmpStatus: "stub" }; "function" == typeof n[2] && n[2](i) } else a.push(n) }, n.addEventListener("message", (function (e) { var t = "string" == typeof e.data, a = {}; try { a = t ? JSON.parse(e.data) : e.data } catch (e) { } var n = a.__tcfapiCall; n && window.__tcfapi(n.command, n.version, (function (a, r) { var i = { __tcfapiReturn: { returnValue: a, success: r, callId: n.callId } }; t && (i = JSON.stringify(i)), e.source.postMessage(i, "*") }), n.parameter) }), !1)) }; "undefined" != typeof module ? module.exports = e : e() }();
 
 </script>
@@ -163,6 +164,10 @@
         initTealium();
         document.body.classList.add('cmp-initialized');
       }
+
+      if (tcData.eventStatus === 'useractioncomplete') {
+         document.dispatchEvent(new Event("userAcceptedCmp"));
+      }
     });
 
     function initTealium() {
@@ -196,6 +201,7 @@
           } else if (window.utag_data) {
             window.utag_data.cmp_onConsentReady = messageType.eventStatus;
           }
+          document.dispatchEvent(new Event("cmpLoaded"));
       }
 
     const scriptTag = document.createElement('script');
@@ -260,7 +266,103 @@
 
 </script>
 
+<script type='text/javascript'>
+    // open cmp
+    function showPrivacyManager() {
+              _sp_.gdpr.loadPrivacyManagerModal('134074');
+            }
+    // hole script block is needed for youtube embed
+      function initilizeContent(elements) {
+        for (i = 0; i < elements.length; ++i) {
+          var element = elements[i];
+          if(element.tagName === 'SCRIPT') {
+            if(element.getAttribute('type') === 'text/plain') {
+              element.setAttribute('type', 'text/javascript')
+
+              var newScriptTag = document.createElement('script');
+              newScriptTag.type = 'text/javascript';
+              newScriptTag.innerHTML = element.innerHTML;
+              element.parentNode.insertBefore(newScriptTag, element);
+              element.remove();
+            }
+          } else {
+            element.innerHTML = elements[i].dataset.html;
+            element.classList.remove("u-cmp-iframe-wrapper--with-loading")
+          }
+        }
+      }
+
+      function loadContentOfPurpose(purposeId) {
+        // console.log("[CMP] loadContentOfPurpose(" + purposeId + ")");
+        const elements = document.querySelectorAll('[data-cmp-purpose="' + purposeId + '"]');
+        initilizeContent(elements);
+      }
+
+      function loadContentOfVendor(vendorId) {
+        // console.log("[CMP] loadContentOfVendor(" + vendorId + ")");
+        const elements = document.querySelectorAll('[data-cmp-vendor="' + vendorId + '"]');
+        initilizeContent(elements);
+      }
+
+      function grantConsentForPurpose(purposeId) {
+        __tcfapi('postCustomConsent', 2, (data) => {},
+          [], [purposeId], []
+        );
+
+        loadContentOfPurpose(purposeId);
+      }
+
+      function grantConsentForVendor(vendorId) {
+        __tcfapi('postCustomConsent', 2, (data) => {},
+          [vendorId], [], []
+        );
+
+        loadContentOfVendor(vendorId);
+      }
+
+      function loadContentOfConsentedVendorsAndPurposes() {
+        __tcfapi('getCustomVendorConsents', 2, function(vendorConsents, success) {
+          if (success) {
+            console.log('[CMP] init')
+            for (var purpose of vendorConsents.consentedPurposes) {
+              loadContentOfPurpose(purpose._id);
+            }
+
+            Object.keys(vendorConsents.grants).forEach(function(key) {
+              // console.log('[CMP] key: ', key)
+              if(vendorConsents.grants[key].vendorGrant) {
+                loadContentOfVendor(key);
+              }
+            });
+          }
+        });
+      }
+
+      __tcfapi('addEventListener', 2, function(tcData,success) {
+        if (success && (tcData.eventStatus === 'tcloaded' || tcData.eventStatus === 'useractioncomplete')) {
+          loadContentOfConsentedVendorsAndPurposes();
+          document.body.classList.add('cmp-initialized');
+        }
+      });
+    </script>
+
 <!-- CMP end -->
+
+    <script> document.addEventListener("cmpLoaded", ()=> {
+        console.log("cmp loaded");
+        window.dispatchEvent(new Event("startAdvertising"));
+        console.log('[adSSetup]: ', adSSetup)
+        })
+    </script>
+
+    <script>
+        document.addEventListener("userAcceptedCmp", () => {
+            const target = document.querySelector(location.hash)
+            if(target) {
+                target.scrollIntoView( {behavior: "smooth"})
+            }
+        })
+    </script>
 
 	<link rel="shortcut icon" sizes="16x16" href="https://a.bildstatic.de/img/favicon-16x16.6f7457d7.png">
 	<link rel="shortcut icon" sizes="32x32" href="https://a.bildstatic.de/img/favicon-32x32.e1cb5133.png">
@@ -283,7 +385,7 @@
 	<meta property="og:url" content="https://www.bild.de/kaufberater/auto/" />
 	<meta property="og:site_name" content="BILD Kaufberater" />
 	<meta name="twitter:card" content="summary_large_image" />
-	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","@id":"https://www.bild.de/kaufberater/auto/","url":"https://www.bild.de/kaufberater/auto/","name":"Auto: Testberichte und Kaufberatung | BILD Kaufberater","isPartOf":{"@id":"https://www.bild.de/kaufberater/#website"},"primaryImageOfPage":{"@id":"https://www.bild.de/kaufberater/auto/#primaryimage"},"image":{"@id":"https://www.bild.de/kaufberater/auto/#primaryimage"},"thumbnailUrl":"https://www.bild.de/kaufberater/data/uploads/2025/05/21112147/Hochdruckreiniger_SKR035.psdONLY-scaled.jpg","description":"Alles rund ums Auto im Test | Kaufberatungen zu Autozubehör, Reifen und mehr | Top-Produkte und Preistipps beim BILD Kaufberater entdecken!","breadcrumb":{"@id":"https://www.bild.de/kaufberater/auto/#breadcrumb"},"inLanguage":"de"},{"@type":"ImageObject","inLanguage":"de","@id":"https://www.bild.de/kaufberater/auto/#primaryimage","url":"https://www.bild.de/kaufberater/data/uploads/2025/05/21112147/Hochdruckreiniger_SKR035.psdONLY-scaled.jpg","contentUrl":"https://www.bild.de/kaufberater/data/uploads/2025/05/21112147/Hochdruckreiniger_SKR035.psdONLY-scaled.jpg","width":2560,"height":1707,"caption":"Acht Hochdruckreiniger aufgereiht, dahinter ein Golf 1 Cabriolet, daneben steht der Redakteur."},{"@type":"BreadcrumbList","@id":"https://www.bild.de/kaufberater/auto/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Kaufberater","item":"https://www.bild.de/kaufberater/"},{"@type":"ListItem","position":2,"name":"Auto"}]},{"@type":"WebSite","@id":"https://www.bild.de/kaufberater/#website","url":"https://www.bild.de/kaufberater/","name":"BILD Kaufberater","description":"","publisher":{"@id":"https://www.bild.de/kaufberater/#organization"},"potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://www.bild.de/kaufberater/?s={search_term_string}"},"query-input":{"@type":"PropertyValueSpecification","valueRequired":true,"valueName":"search_term_string"}}],"inLanguage":"de"},{"@type":"Organization","@id":"https://www.bild.de/kaufberater/#organization","name":"Die BESTEN bei BILD","url":"https://www.bild.de/kaufberater/","logo":{"@type":"ImageObject","inLanguage":"de","@id":"https://www.bild.de/kaufberater/#/schema/logo/image/","url":"","contentUrl":"","caption":"Die BESTEN bei BILD"},"image":{"@id":"https://www.bild.de/kaufberater/#/schema/logo/image/"},"sameAs":["https://www.facebook.com/bild"]}]}</script>
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","@id":"https://www.bild.de/kaufberater/auto/","url":"https://www.bild.de/kaufberater/auto/","name":"Auto: Testberichte und Kaufberatung | BILD Kaufberater","isPartOf":{"@id":"https://www.bild.de/kaufberater/#website"},"primaryImageOfPage":{"@id":"https://www.bild.de/kaufberater/auto/#primaryimage"},"image":{"@id":"https://www.bild.de/kaufberater/auto/#primaryimage"},"thumbnailUrl":"https://www.bild.de/kaufberater/data/uploads/2025/04/28163241/Handyhalterungen-im-Test-2867-6000x4000-1-scaled.jpg","description":"Alles rund ums Auto im Test | Kaufberatungen zu Autozubehör, Reifen und mehr | Top-Produkte und Preistipps beim BILD Kaufberater entdecken!","breadcrumb":{"@id":"https://www.bild.de/kaufberater/auto/#breadcrumb"},"inLanguage":"de"},{"@type":"ImageObject","inLanguage":"de","@id":"https://www.bild.de/kaufberater/auto/#primaryimage","url":"https://www.bild.de/kaufberater/data/uploads/2025/04/28163241/Handyhalterungen-im-Test-2867-6000x4000-1-scaled.jpg","contentUrl":"https://www.bild.de/kaufberater/data/uploads/2025/04/28163241/Handyhalterungen-im-Test-2867-6000x4000-1-scaled.jpg","width":2560,"height":1707,"caption":"Neun Handyhalter sind zum Test angetreten. Die Preisspanne ist groß."},{"@type":"BreadcrumbList","@id":"https://www.bild.de/kaufberater/auto/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Kaufberater","item":"https://www.bild.de/kaufberater/"},{"@type":"ListItem","position":2,"name":"Auto"}]},{"@type":"WebSite","@id":"https://www.bild.de/kaufberater/#website","url":"https://www.bild.de/kaufberater/","name":"BILD Kaufberater","description":"","publisher":{"@id":"https://www.bild.de/kaufberater/#organization"},"potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://www.bild.de/kaufberater/?s={search_term_string}"},"query-input":{"@type":"PropertyValueSpecification","valueRequired":true,"valueName":"search_term_string"}}],"inLanguage":"de"},{"@type":"Organization","@id":"https://www.bild.de/kaufberater/#organization","name":"Die BESTEN bei BILD","url":"https://www.bild.de/kaufberater/","logo":{"@type":"ImageObject","inLanguage":"de","@id":"https://www.bild.de/kaufberater/#/schema/logo/image/","url":"","contentUrl":"","caption":"Die BESTEN bei BILD"},"image":{"@id":"https://www.bild.de/kaufberater/#/schema/logo/image/"},"sameAs":["https://www.facebook.com/bild"]}]}</script>
 	<!-- / Yoast SEO Premium plugin. -->
 
 
@@ -807,7 +909,25 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/15
 		}
 	</script>
 
-	</head>
+	
+	<script type="text/javascript">
+            let pageName = "section"
+            if("page" === "post") {
+                pageName = "article"
+            }
+            adSSetup = {
+                siteName: "bild",  // will be provided individually
+                pageName: pageName,  // maybe static - normally dynamically represents the section and pageType of the page like "entertainment_article"
+                autoStart: false,  // if you need to check user status or else before loading the adlib use false but also
+                hasPageAdMi: false,
+                hasPageAdTmi: false,
+                partners: false
+            }
+        </script>
+        <script>
+            ((i,p)=>{i.adSSetup?.siteName?{addPlaceholder:function(a){let o=0,r=0,d=i.adSSetup,t=this.getWinWidth(),e="m"===d.view&&!JSON.stringify(d.adSlotSizes[a]).includes("300,600"),n={"728x600":["100%",90],"1000x600":["100%",90],"1000x300":[300,300],"993x90":[970,90],"320x480":[300,300],"300x600":[300,e?300:600],"640x360":["100%","auto"],"1x1":[0,0],"2x2":[0,0],"3x3":[0,0],"4x4":[0,0],"5x5":[0,0],"500x1000":[0,0],"1000x1000":[0,0],"290x79":[0,0],"427x23":[0,0]};if(a&&!/sky|betad/.test(a)&&d.adSlotSizes[a]&&!p.getElementById("plhcss_"+a)){d.adSlotSizes[a].forEach(e=>{e.sizes.forEach(e=>{var t,i;"string"==typeof e||(t=e.join("x"),/640x360|16x9|9x16/.test(t))||"1000x300"===t&&"d"===d.view||("100%"===(i=(n[t]||e)[0])?r="100%":parseInt(i)>r&&(r=parseInt(i)),i=(n[t]||e)[1],Number.isNaN(i)?o="100%":parseInt(i)>o&&(o=parseInt(i)))})});var l=d.placeholder.disablePlaceholders||d.placeholder[a]?.disable||!1;if(0<o&&!l){let i="";if(d.placeholder[a]?.custom)i=d.placeholder[a].custom;else if(d.placeholder[a]||d.placeholder.default){var l=(r+"px").replace("%px","%"),s=(o+"px").replace("%px","%"),h=d.placeholder[a]||d.placeholder.default,c=h["border-color"];let e="border: "+(h.border||"solid 1px "+c)+";";if("banner"!==a&&t!==r||(e=`border-top: solid 1px ${c}; border-bottom: solid 1px ${c};`),i=`#${a} {margin:auto;left:0;right:0;min-width: ${l};min-height: ${s};background: ${h["background-color"]};${e}box-sizing: border-box;position: relative;} #${a} > div {margin-top:-1px;margin-left:-1px;}`,h.after&&(i+=`div#${a}::after `+h.after),h.before)i+=`div#${a}::before `+h.before;else if(-1===h.admarkPosition?.indexOf("hidden")){c=h.admarkPosition.split(" ");let e=(c[0]||"bottom")+": 1px;",t=(c[1]||"right")+": 5px;";"center"===c[0]&&(e="top:0;bottom:0;"),"center"===c[1]&&(t="left:0;right:0;text-align: center;"),i+=`#${a}::before {content: "${h.markerText||"ANZEIGE"}";margin: auto;position: absolute;${e+t}color: ${h.color};font-size: ${h["font-size"]};height: ${h["font-size"]};line-height: ${h["font-size"]};font-family: ${h["font-family"]};}`}}i&&((l=p.createElement("style")).id="plhcss_"+a,l.innerHTML=i,p.getElementsByTagName("head")[0].appendChild(l))}}},getWinHeight:function(){return Number.isNaN(this.metaWidth)?!this.isMobile&&(p.documentElement?.clientHeight||p.body?.clientHeight)||i.innerHeight:this.metaWidth/i.screen.width*i.innerHeight},getWinWidth:function(){return Number.isNaN(this.metaWidth)?this.isMobile?i.outerWidth:p.body?.clientWidth||p.documentElement?.clientWidth||i.innerWidth:this.metaWidth},init:function(){var e=p.querySelector("meta[name=viewport]");e&&"m"===i.adSSetup.view&&(e=/width=(\d+)/i.exec(e.getAttribute("content")))&&(this.metaWidth=parseInt(e[1])),i.adSSetup.placeholder&&i.adSSetup.adPlacements.forEach(e=>{this.addPlaceholder(e)}),!1!==i.adSSetup.autoStart?this.startLib():i.addEventListener("startAdvertising",this.startLib,!1)},startLib:function(){var e=p.createElement("script");e.async=!0,e.src=`https://www.asadcdn.com/adlib/pages/${adSSetup.siteName}.js`,p.querySelector("script").parentNode.appendChild(e)},isMobile:/Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),metaWidth:0}.init():console.log("In order to load the adlib for your domain, please add 'siteName' property to the adSSetup.")})(window,document);
+        </script>
+</head>
 	
 	<body class="u-page--page u-theme-default u-font--gotham-xnarrow" data-post-id="39146">
         <!-- IVW pixel start -->
@@ -1469,6 +1589,23 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/15
 >Reisen</a>                    </div>
             </li>
 
+                                            <li class="u-main-menu__list-item splide__slide">
+        <div class="u-main-menu__list-item-header">
+            
+
+
+
+
+    <a href="https://www.bild.de/kaufberater/freizeit/tierbedarf/" 
+                                                                                                                                    class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-78325 u-main-menu__item-link u-link   "
+        
+ 
+                    target="_self"
+                    rel=""
+        
+>Tierbedarf</a>                    </div>
+            </li>
+
                             </ul>
             </li>
 
@@ -1680,8 +1817,8 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/15
 				target="_blank"
 				rel="noopener noreferrer nofollow">
 				<picture>
-		<source media="(max-width: 47.9375rem)" srcSet="https://www.bild.de/kaufberater/data/uploads/2025/06/30213905/992x300_Kaufberater_Page-Teaser_v3.jpg" />
-		<img decoding="async" src="https://www.bild.de/kaufberater/data/uploads/2025/06/30213903/992x150_Kaufberater_Page-Teaser_v2.jpg" alt={ '' } />
+		<source media="(max-width: 47.9375rem)" srcSet="https://www.bild.de/kaufberater/data/uploads/2025/07/04192019/992x300_Kaufberater_Page-Teaser_v2-2-1.jpg" />
+		<img decoding="async" src="https://www.bild.de/kaufberater/data/uploads/2025/07/04192021/992x150_Kaufberater_Page-Teaser_v2-1.jpg" alt={ '' } />
     </picture>
 			</a></section>
 
@@ -1713,7 +1850,7 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/15
                                                                                                                                     class="u-category-teaser u-theme-default "
         
  
-                    href="https://www.bild.de/kaufberater/hochdruckreiniger-test/"
+                    href="https://www.bild.de/kaufberater/handyhalterung-fuers-auto-test/"
                     data-post-id=""
         
 >
@@ -1735,18 +1872,18 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/15
                     style="--height: 394; --width: 700"
         
 >
-                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/05/21112210/Hochdruckreiniger_SKR035.psdONLY-700x394.webp 1x, https://www.bild.de/kaufberater/data/uploads/2025/05/21112211/Hochdruckreiniger_SKR035.psdONLY-1400x788.webp 2x" type="image/webp">
-                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/05/21112147/Hochdruckreiniger_SKR035.psdONLY-700x394.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/05/21112147/Hochdruckreiniger_SKR035.psdONLY-1400x788.jpg 2x" type="image/jpeg">
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/04/28163303/Handyhalterungen-im-Test-2867-6000x4000-1-700x394.webp 1x, https://www.bild.de/kaufberater/data/uploads/2025/04/28163304/Handyhalterungen-im-Test-2867-6000x4000-1-1400x788.webp 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/04/28163241/Handyhalterungen-im-Test-2867-6000x4000-1-700x394.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/04/28163241/Handyhalterungen-im-Test-2867-6000x4000-1-1400x788.jpg 2x" type="image/jpeg">
                         <img fetchpriority="high" decoding="async" 
                                                                                                                                     class=" "
         
- src="https://www.bild.de/kaufberater/data/uploads/2025/05/21112147/Hochdruckreiniger_SKR035.psdONLY-700x394.jpg" alt="Acht Hochdruckreiniger aufgereiht, dahinter ein Golf 1 Cabriolet, daneben steht der Redakteur." width="700" height="394" loading="eager" />
+ src="https://www.bild.de/kaufberater/data/uploads/2025/04/28163241/Handyhalterungen-im-Test-2867-6000x4000-1-700x394.jpg" alt="" width="700" height="394" loading="eager" />
 
                     </picture>
 
 
     <div class="u-category-teaser__content-wrapper">
-                    <h2 class="u-category-teaser__headline">Hochdruckreiniger im Test: Diese Modelle schlagen Kärcher!</h2>
+                    <h2 class="u-category-teaser__headline">Handyhalterungen fürs Auto im Test: Diese Modelle überzeugen (nicht)!</h2>
             </div>
 </a>
 
@@ -1761,7 +1898,7 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/15
                                                                                                                                     class="u-category-teaser u-theme-default "
         
  
-                    href="https://www.bild.de/kaufberater/feuerloescher-test/"
+                    href="https://www.bild.de/kaufberater/tierhaarentferner-test/"
                     data-post-id=""
         
 >
@@ -1783,18 +1920,18 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/15
                     style="--height: 178; --width: 318"
         
 >
-                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/04/02111245/Feuerloescher_SKR220-318x178.webp 1x, https://www.bild.de/kaufberater/data/uploads/2025/04/02111245/Feuerloescher_SKR220-654x366.webp 2x" type="image/webp">
-                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/04/02111228/Feuerloescher_SKR220-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/04/02111228/Feuerloescher_SKR220-654x366.jpg 2x" type="image/jpeg">
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-318x178.webp?cacheBreak=1752657630 1x, https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-654x366.webp?cacheBreak=1752657630 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-654x366.jpg 2x" type="image/jpeg">
                         <img decoding="async" 
                                                                                                                                     class=" "
         
- src="https://www.bild.de/kaufberater/data/uploads/2025/04/02111228/Feuerloescher_SKR220-318x178.jpg" alt="Redakteur kniet vor einem Golf 1 Cabriolet. Vor ihm aufgereiht sind elf kompakte Feuerlöscher. Im Hintergrund steht ein Unfall-Peugeot Kombi und brennt." width="318" height="178" loading="lazy" />
+ src="https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-318x178.jpg" alt="Archie_Bibi_Tierhaarentf." width="318" height="178" loading="lazy" />
 
                     </picture>
 
 
     <div class="u-category-teaser__content-wrapper">
-                    <h2 class="u-category-teaser__headline">Das sind die besten kompakten Feuerlöscher</h2>
+                    <h2 class="u-category-teaser__headline">Fell &#038; Furious – welche Tierhaarentferner sind leistungsstark?</h2>
             </div>
 </a>
 
@@ -1809,7 +1946,7 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/15
                                                                                                                                     class="u-category-teaser u-theme-default "
         
  
-                    href="https://www.bild.de/kaufberater/kratzerentferner-test/"
+                    href="https://www.bild.de/kaufberater/sommer-scheibenreiniger-test/"
                     data-post-id=""
         
 >
@@ -1831,18 +1968,18 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/15
                     style="--height: 178; --width: 318"
         
 >
-                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/06/11133858/TestKratzerentferner_SBA08-318x178.webp 1x, https://www.bild.de/kaufberater/data/uploads/2025/06/11133857/TestKratzerentferner_SBA08-654x366.webp 2x" type="image/webp">
-                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/06/11133842/TestKratzerentferner_SBA08-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/06/11133842/TestKratzerentferner_SBA08-654x366.jpg 2x" type="image/jpeg">
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/05/28110516/Sommerscheibenreinigerkonzentratetest_SBA035-318x178.webp 1x, https://www.bild.de/kaufberater/data/uploads/2025/05/28110516/Sommerscheibenreinigerkonzentratetest_SBA035-654x366.webp 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/05/28110454/Sommerscheibenreinigerkonzentratetest_SBA035-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/05/28110454/Sommerscheibenreinigerkonzentratetest_SBA035-654x366.jpg 2x" type="image/jpeg">
                         <img decoding="async" 
                                                                                                                                     class=" "
         
- src="https://www.bild.de/kaufberater/data/uploads/2025/06/11133842/TestKratzerentferner_SBA08-318x178.jpg" alt="Kratzerentferner aufgereiht auf der Stoßstange eines roten VW Käfer." width="318" height="178" loading="lazy" />
+ src="https://www.bild.de/kaufberater/data/uploads/2025/05/28110454/Sommerscheibenreinigerkonzentratetest_SBA035-318x178.jpg" alt="Redakteur steht an offener Motorhaube, auf Schlossträger stehen aufgestellt Konzentratflaschen mit Sommer-Scheibenreiniger" width="318" height="178" loading="lazy" />
 
                     </picture>
 
 
     <div class="u-category-teaser__content-wrapper">
-                    <h2 class="u-category-teaser__headline">Kratzerentferner im Test: Welcher hilft gegen fiese Lacknarben?</h2>
+                    <h2 class="u-category-teaser__headline">Das ist der beste Scheibenreiniger für Ihr Auto</h2>
             </div>
 </a>
 
@@ -2064,6 +2201,6 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/15
 </style>
 
 
-		<script src="https://www.bild.de/kaufberater/wp-content/themes/unitb-child/static/js/kaufberater-modules.min.js?v=1751281461270"></script>
+		<script src="https://www.bild.de/kaufberater/wp-content/themes/unitb-child/static/js/kaufberater-modules.min.js?v=1752829698885"></script>
 	</body>
 </html>
