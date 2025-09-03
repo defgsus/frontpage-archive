@@ -37,9 +37,16 @@ to work for long :-(
 
 ## UPDATE
 
-Okay, raw data is just too much. The snapshot rate is now set
-to **once a month**. I'll try to scrape just the article 
-headlines and archive them in another repository.  
+Okay, raw html requires just too much space. The snapshot rate is now set
+to **once a month**. This is still useful to analyse what scripts and services are used over time.
+
+The plain article headlines and some meta info is stored once per hour in these repos: 
+
+- https://github.com/defgsus/frontpage-archive-2 (from 2022)
+- https://github.com/defgsus/frontpage-archive-2023
+- https://github.com/defgsus/frontpage-archive-2024
+- https://github.com/defgsus/frontpage-archive-2025
+- ...
 
 
 ### TODO
