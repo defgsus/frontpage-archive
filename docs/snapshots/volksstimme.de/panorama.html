@@ -58,11 +58,12 @@
 
   <!-- vs category-page -->
 <script>
-    function consentEnableCleverpush() {
-        var s = document.createElement('script');
-        s.src = 'https://static.cleverpush.com/channel/loader/z5mjk7M6AD3Ze6keS.js';
-        document.head.append(s);
-    }
+    var s = document.createElement('script');
+    s.dataset.cmpSrc = 'https://static.cleverpush.com/channel/loader/z5mjk7M6AD3Ze6keS.js';
+	s.dataset.cmpVendor = "s2658";
+	s.type = "text/plain";
+	s.className = "cmplazyload";
+	document.head.append(s);
 </script>
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -78,64 +79,14 @@
 <script type="text/javascript" src="https://data-11c63b1cbc.volksstimme.de/iomm/latest/bootstrap/loader.js"></script>
 <!-- end preload of IOM web manager -->
 <script>
-	if (document.location.host.includes("publishing") == false) {    
-	var consents = [];
-    if (typeof dataLayer == "undefined") {
-        var dataLayer = [];
-    }
-    dataLayer.push({"consents": consents});
-
-    var addJs = function(id) {
-        consents.push(id);
-        dataLayer.push({'consents': consents});
-    }
-
-    function initiateSourcePoint(subscriptions) {
-        userType =  (!(subscriptions == undefined || subscriptions.pur == undefined || subscriptions.pur.length == 0)) ? "pur-pur" : "pur-anon";
-        !function () { var e = function () { var e, t = "__tcfapiLocator", a = [], n = window; for (; n;) { try { if (n.frames[t]) { e = n; break } } catch (e) { } if (n === window.top) break; n = n.parent } e || (!function e() { var a = n.document, r = !!n.frames[t]; if (!r) if (a.body) { var i = a.createElement("iframe"); i.style.cssText = "display:none", i.name = t, a.body.appendChild(i) } else setTimeout(e, 5); return !r }(), n.__tcfapi = function () { for (var e, t = arguments.length, n = new Array(t), r = 0; r < t; r++)n[r] = arguments[r]; if (!n.length) return a; if ("setGdprApplies" === n[0]) n.length > 3 && 2 === parseInt(n[1], 10) && "boolean" == typeof n[3] && (e = n[3], "function" == typeof n[2] && n[2]("set", !0)); else if ("ping" === n[0]) { var i = { gdprApplies: e, cmpLoaded: !1, cmpStatus: "stub" }; "function" == typeof n[2] && n[2](i) } else a.push(n) }, n.addEventListener("message", (function (e) { var t = "string" == typeof e.data, a = {}; try { a = t ? JSON.parse(e.data) : e.data } catch (e) { } var n = a.__tcfapiCall; n && window.__tcfapi(n.command, n.version, (function (a, r) { var i = { __tcfapiReturn: { returnValue: a, success: r, callId: n.callId } }; t && (i = JSON.stringify(i)), e.source.postMessage(i, "*") }), n.parameter) }), !1)) }; "undefined" != typeof module ? module.exports = e : e() }();
-        window._sp_ = {
-            config: {
-                accountId: 1473,
-                baseEndpoint: 'https://cmp.volksstimme.de',
-                propertyHref: '',
-                ...(!!userType ? { targetingParams: { userType } } : []),
-            }
-        }
-
-        __tcfapi('addEventListener', 2, function (tcData, success) {
-            if (tcData.eventStatus === 'useractioncomplete') {
-                document.location.reload();
-            }
-            if (tcData.eventStatus === 'tcloaded') {
-                if (userType == "pur-pur" && Object.keys(tcData.vendor?.consents ?? []).length != 0) {
-                    __tcfapi('postRejectAll', 2, function (postRejectAllResponse, success) {
-                        success && document.location.reload();
-                    });
-                }
-                __tcfapi('getCustomVendorConsents', 2, function (data) {
-                    for (var i = 0; i < data.consentedVendors.length; i++) {
-                        addJs(data.consentedVendors[i]._id);
-                    }
-                });
-            }
-            
-        });
-        
-        var script = document.createElement('script');
-        script.src = "https://cmp.volksstimme.de/wrapperMessagingWithoutDetection.js";
-        document.head.appendChild(script);
-    }
-        
-}
-</script>
-<script>
-    function consentEnableNativendo() {
         var s = document.createElement('script');
         s.async = true;
-        s.src = 'https://d.nativendo.de/cds/delivery/init?oms_zone=' + window.ad_channel;
+        s.dataset.cmpSrc = 'https://d.nativendo.de/cds/delivery/init?oms_zone=' + window.ad_channel;
+		s.dataset.cmpVendor = "s1016";
+		s.type = "text/plain";
+		s.className = "cmplazyload";
         var sc = document.getElementsByTagName('script')[0];
         sc.parentNode.insertBefore(s, sc);
-    }
 </script>
 <!-- Facebook Pixel Code -->
 <script>
@@ -155,7 +106,352 @@
         fbq('track', 'PageView');
     }
 </script>
-<script async="" id="ebx" src="//applets.ebxcdn.com/ebx.js"></script></head>
+<script async="" id="ebx" src="//applets.ebxcdn.com/ebx.js"></script>
+<script>
+
+        function initiateSourcePoint(subscriptions) { }
+
+        var consents = [];
+        if (typeof dataLayer == "undefined") {
+            var dataLayer = [];
+        }
+        dataLayer.push({ "consents": consents });
+
+        var addJs = function (id) {
+            consents.push(id);
+            dataLayer.push({ 'consents': consents });
+        }
+
+        window.cmp_waitforimport = 10000;
+        window.cmp_pur_enable = true;
+		window.cmp_macro_redirect = document.location.href;
+        fetchUserLoginStatusTEST = function () {
+            // When we login, we have a request header C1-Session-ID. We ask the delivery for the existence of this header.
+            // If it exists, then we know we are logged in.
+            return fetch('/api/public/user-session')
+                .then(function (res) { return res.json(); })
+                .catch(function (err) {
+                    console.error(err)
+
+                    // In case there is a problem with the API call, we assume the user isn't logged in.
+                    // This will allow the script depending on the emitting of the "logged in" event
+                    // to run.
+                    return { isLoggedIn: false }
+                })
+        }
+
+
+        fetchUserLoginStatusTEST().then(function (data) {
+            console.log(data);
+            isLoggedIn = data.isLoggedIn;
+            subscriptions = data.subscriptions;
+            id = data.id;
+
+            if (subscriptions) {
+                userType = subscriptions.userType;
+                if (userType == undefined)
+                    userType == "pur-anon";
+                permissions = subscriptions.permissions;
+                if (permissions == undefined)
+                    permissions = [];
+
+                // handle SourcePoint, i.e. the PUR Subscription product
+                if (typeof initiateSourcePointTEST === 'function') {
+                    initiateSourcePointTEST(subscriptions)
+                }
+            } else { // Im Fehlerfall wird SourcePoint ohne Daten initialisiert, daher pur-anon
+                initiateSourcePointTEST();
+            }
+
+
+        });
+
+        function initiateSourcePointTEST(subscriptions) {
+            userType = (!(subscriptions == undefined || subscriptions.pur == undefined || subscriptions.pur.length == 0)) ? "pur-pur" : "pur-anon";
+            // HIER ABARBEITEN, da haben wir selber Kontrolle drüber
+        }
+        function initiateSourcePointTEST(subscriptions) {
+            var userType = (!(subscriptions == undefined || subscriptions.pur == undefined || subscriptions.pur.length == 0))
+                ? "pur-pur"
+                : "pur-anon";
+            console.log("Benutzer-Abonnementstatus:", userType); // Hier wird der Abonnementstatus ausgegeben
+            // Setzt den globalen Wert für den Pur-Status
+            window.cmp_pur_loggedin = (userType === "pur-pur");
+
+            var checkcmp = window.setInterval(function () {
+                if (typeof __cmp == "function") {
+                    if (userType === "pur-pur")
+                        __cmp('setPurposeConsent', ["c2", 0, true]);
+                    __cmp('cancelwait');
+					var checktcf = window.setInterval(function () {
+					    if (typeof __tcfapi == "function") {
+					        __tcfapi('addEventListener', 2, function (tcData, success) {
+					            if (tcData.eventStatus === 'useractioncomplete') {
+					                document.location.reload();
+					            }
+					        });
+				    	    window.clearInterval(checktcf);
+					    }
+					}, 250);
+
+                    __cmp("addEventListener",["settings",() => {
+                      var registeredVendors = { 
+                        42: () => {
+                        var timerConsentEnableTaboola = window.setInterval(() => {
+                          if ("function" == typeof consentEnableTaboola) {
+                            window.clearInterval(timerConsentEnableTaboola);
+                            consentEnableTaboola();
+                          }
+                        },250)
+                      },
+					  c73647: () => { dataLayer.push({'event': 'BitmovinConsent'}); },
+                      s30: () => { dataLayer.push({'event': 'YoutubeConsent'}); },
+                      c57383: () => { dataLayer.push({'event': '23degreesConsent'}); },
+                      s7: () => { dataLayer.push({'event': 'FacebookConsent'}); },
+                      s1104: () => { dataLayer.push({'event': 'GoogleMapsConsent'}); },
+                      s14: () => { dataLayer.push({'event': 'InstagramConsent'}); },
+                      c78424: () => { dataLayer.push({'event': 'TickarooConsent'}); },
+                      s2536: () => { dataLayer.push({'event': 'TikTokConsent'}); },
+                      s34: () => { dataLayer.push({'event': 'XConsent'}); },
+                      s1318: () => { dataLayer.push({'event': 'ShowherosConsent'}); },
+                    };
+                    
+                    __cmp("getCMPData", null, (e) => {
+                      consentIds = Object.keys(e.vendorConsents);
+                      if (window.cmp_pur_enable && cmp_pur_loggedin) {
+                        //for (var vendorId in registeredVendors) {
+                        //  registeredVendors[vendorId]();
+                        //}
+                      } else if (e.choiceType == 0) {
+                      } else if (e.choiceType == 1) {
+                        for (var vendorId in registeredVendors) {
+                          registeredVendors[vendorId]();
+                        }
+                      } else if (e.choiceType == 2) {
+                        vendors = Object.keys(registeredVendors);
+                        for (var vendorId in registeredVendors) {
+                            if (consentIds.includes(vendorId)) {
+                              registeredVendors[vendorId]();
+                            }
+                          }
+                        } 
+                      }, true);
+                    },false],null);
+
+					
+                    window.clearTimeout(checkcmp);
+                }
+            }, 250);
+        }
+
+</script>
+
+<script>
+
+
+        if (document.location.host.includes("publishing") !== false) {
+            if (!("cmp_cdid" in window)) { window.cmp_cdid = "222923b842c63" }
+        } else {
+            if (!("cmp_cdid" in window)) { window.cmp_cdid = "a522d62a318b2" }
+        }
+        if (!("gdprAppliesGlobally" in window)) { window.gdprAppliesGlobally = true }
+        if (!("cmp_id" in window) || window.cmp_id < 1) { window.cmp_id = 0 }
+        if (!("cmp_params" in window)) { window.cmp_params = "" }
+        if (!("cmp_host" in window)) { window.cmp_host = "a.delivery.consentmanager.net" }
+        if (!("cmp_cdn" in window)) { window.cmp_cdn = "cdn.consentmanager.net" }
+        if (!("cmp_proto" in window)) { window.cmp_proto = "https:" }
+        if (!("cmp_codesrc" in window)) { window.cmp_codesrc = "0" }
+        window.cmp_getsupportedLangs = function () { var b = ["DE", "EN", "FR", "IT", "NO", "DA", "FI", "ES", "PT", "RO", "BG", "ET", "EL", "GA", "HR", "LV", "LT", "MT", "NL", "PL", "SV", "SK", "SL", "CS", "HU", "RU", "SR", "ZH", "TR", "UK", "AR", "BS", "JA", "CY"]; if ("cmp_customlanguages" in window) { for (var a = 0; a < window.cmp_customlanguages.length; a++) { b.push(window.cmp_customlanguages[a].l.toUpperCase()) } } return b };
+        window.cmp_getRTLLangs = function () { var a = ["AR"]; if ("cmp_customlanguages" in window) { for (var b = 0; b < window.cmp_customlanguages.length; b++) { if ("r" in window.cmp_customlanguages[b] && window.cmp_customlanguages[b].r) { a.push(window.cmp_customlanguages[b].l) } } } return a };
+        window.cmp_getlang = function (a) { if (typeof (a) != "boolean") { a = true } if (a && typeof (cmp_getlang.usedlang) == "string" && cmp_getlang.usedlang !== "") { return cmp_getlang.usedlang } return window.cmp_getlangs()[0] };
+        window.cmp_extractlang = function (a) { if (a.indexOf("cmplang=") != -1) { a = a.substr(a.indexOf("cmplang=") + 8, 2).toUpperCase(); if (a.indexOf("&") != -1) { a = a.substr(0, a.indexOf("&")) } } else { a = "" } return a };
+        window.cmp_getlangs = function () { var h = window.cmp_getsupportedLangs(); var g = []; var a = location.hash; var f = location.search; var e = "cmp_params" in window ? window.cmp_params : ""; if (cmp_extractlang(a) != "") { g.push(cmp_extractlang(a)) } else { if (cmp_extractlang(f) != "") { g.push(cmp_extractlang(f)) } else { if (cmp_extractlang(e) != "") { g.push(cmp_extractlang(e)) } else { if ("cmp_setlang" in window && window.cmp_setlang != "") { g.push(window.cmp_setlang.toUpperCase()) } else { if ("cmp_langdetect" in window && window.cmp_langdetect == 1) { g.push(window.cmp_getPageLang()) } else { g = window.cmp_getBrowserLangs() } } } } } var c = []; for (var d = 0; d < g.length; d++) { var b = g[d].toUpperCase(); if (b.length < 2) { continue } if (h.indexOf(b) != -1) { c.push(b) } else { if (b.indexOf("-") != -1) { b = b.substr(0, 2) } if (h.indexOf(b) != -1) { c.push(b) } } } if (c.length == 0 && typeof (cmp_getlang.defaultlang) == "string" && cmp_getlang.defaultlang !== "") { return [cmp_getlang.defaultlang.toUpperCase()] } else { return c.length > 0 ? c : ["EN"] } };
+        window.cmp_getPageLangs = function () {
+            var a = window.cmp_getXMLLang(); if (a != "") { a = [a.toUpperCase()] } else { a = [] }
+            a = a.concat(window.cmp_getLangsFromURL()); return a.length > 0 ? a : ["EN"]
+        };
+        window.cmp_getPageLang = function () { var a = window.cmp_getPageLangs(); return a.length > 0 ? a[0] : "" };
+        window.cmp_getLangsFromURL = function () {
+            var c = window.cmp_getsupportedLangs(); var b = location; var m = "toUpperCase"; var g = b.hostname[m]() + "."; var a = "/" + b.pathname[m]() + "/";
+            a = a.split("_").join("-");
+            a = a.split("//").join("/");
+            a = a.split("//").join("/"); var f = []; for (var e = 0; e < c.length; e++) { var j = a.substring(0, c[e].length + 2); if (g.substring(0, c[e].length + 1) == c[e] + ".") { f.push(c[e][m]()) } else { if (c[e].length == 5) { var k = c[e].substring(3, 5) + "-" + c[e].substring(0, 2); if (g.substring(0, k.length + 1) == k + ".") { f.push(c[e][m]()) } } else { if (j == "/" + c[e] + "/" || j == "/" + c[e] + "-") { f.push(c[e][m]()) } else { if (j == "/" + c[e].replace("-", "/") + "/" || j == "/" + c[e].replace("-", "/") + "/") { f.push(c[e][m]()) } else { if (c[e].length == 5) { var k = c[e].substring(3, 5) + "-" + c[e].substring(0, 2); var h = a.substring(0, k.length + 1); if (h == "/" + k + "/" || h == "/" + k.replace("-", "/") + "/") { f.push(c[e][m]()) } } } } } } } return f
+        };
+        window.cmp_getXMLLang = function () { var c = document.getElementsByTagName("html"); if (c.length > 0) { c = c[0] } else { c = document.documentElement } if (c && c.getAttribute) { var a = c.getAttribute("xml:lang"); if (typeof (a) != "string" || a == "") { a = c.getAttribute("lang") } if (typeof (a) == "string" && a != "") { a = a.split("_").join("-").toUpperCase(); var b = window.cmp_getsupportedLangs(); return b.indexOf(a) != -1 || b.indexOf(a.substr(0, 2)) != -1 ? a : "" } else { return "" } } };
+        window.cmp_getBrowserLangs = function () { var c = "languages" in navigator ? navigator.languages : []; var b = []; if (c.length > 0) { for (var a = 0; a < c.length; a++) { b.push(c[a]) } } if ("language" in navigator) { b.push(navigator.language) } if ("userLanguage" in navigator) { b.push(navigator.userLanguage) } return b };
+        (function () {
+            var C = document; var o = window; var t = ""; var h = ""; var k = ""; var E = function (e) {
+                var i = "cmp_" + e;
+                e = "cmp" + e + "="; var d = ""; var l = e.length; var J = location; var K = J.hash; var w = J.search; var u = K.indexOf(e); var I = w.indexOf(e); if (u != -1) { d = K.substring(u + l, 9999) } else { if (I != -1) { d = w.substring(I + l, 9999) } else { return i in o && typeof (o[i]) !== "function" ? o[i] : "" } } var H = d.indexOf("&"); if (H != -1) { d = d.substring(0, H) } return d
+            }; var j = E("lang"); if (j != "") {
+                t = j;
+                k = t
+            } else {
+                if ("cmp_getlang" in o) {
+                    t = o.cmp_getlang().toLowerCase();
+                    h = o.cmp_getlangs().slice(0, 3).join("_");
+                    k = o.cmp_getPageLangs().slice(0, 3).join("_"); if ("cmp_customlanguages" in o) { var m = o.cmp_customlanguages; for (var y = 0; y < m.length; y++) { var a = m[y].l.toLowerCase(); if (a == t) { t = "en" } } }
+                }
+            } var q = ("cmp_proto" in o) ? o.cmp_proto : "https:"; if (q != "http:" && q != "https:") { q = "https:" } var n = ("cmp_ref" in o) ? o.cmp_ref : location.href; if (n.length > 300) { n = n.substring(0, 300) } var A = function (l) {
+                var J = document; var M = "getElementsByTagName"; var O = J.createElement("script");
+                O.setAttribute("data-cmp-ab", "1");
+                O.type = "text/javascript";
+                O.async = true;
+                O.src = l; var N = ["body", "div", "span", "script", "head"]; var H = "currentScript"; var K = "parentElement"; var u = "appendChild"; var L = "body"; if (J[H] && J[H][K]) { J[H][K][u](O) } else { if (J[L]) { J[L][u](O) } else { for (var w = 0; w < N.length; w++) { var I = J[M](N[w]); if (I.length > 0) { I[0][u](O); break } } } }
+            }; var b = E("design"); var c = E("regulationkey"); var z = E("gppkey"); var s = E("att"); var f = o.encodeURIComponent; var g; try { g = C.cookie.length > 0 } catch (B) { g = false } var x = E("darkmode"); if (x == "0") { x = 0 } else { if (x == "1") { x = 1 } else { try { if ("matchMedia" in window && window.matchMedia) { var G = window.matchMedia("(prefers-color-scheme: dark)"); if ("matches" in G && G.matches) { x = 1 } } } catch (B) { x = 0 } } } var p = q + "//" + o.cmp_host + "/delivery/cmp.php?";
+            p += ("cmp_id" in o && o.cmp_id > 0 ? "id=" + o.cmp_id : "") + ("cmp_cdid" in o ? "&cdid=" + o.cmp_cdid : "") + "&h=" + f(n);
+            p += (b != "" ? "&cmpdesign=" + f(b) : "") + (c != "" ? "&cmpregulationkey=" + f(c) : "") + (z != "" ? "&cmpgppkey=" + f(z) : "");
+            p += (s != "" ? "&cmpatt=" + f(s) : "") + ("cmp_params" in o ? "&" + o.cmp_params : "") + (g ? "&__cmpfcc=1" : "");
+            p += (x > 0 ? "&cmpdarkmode=1" : "");
+            A(p + "&l=" + f(t) + "&ls=" + f(h) + "&lp=" + f(k) + "&o=" + (new Date()).getTime()); if (!("cmp_quickstub" in window)) {
+                var r = "js"; var v = E("debugunminimized") != "" ? "" : ".min"; if (E("debugcoverage") == "1") {
+                    r = "instrumented";
+                    v = ""
+                } if (E("debugtest") == "1") {
+                    r = "jstests";
+                    v = ""
+                } var F = new Date(); var D = F.getFullYear() + "-" + (F.getMonth() + 1) + "-" + F.getDate();
+                A(q + "//" + o.cmp_cdn + "/delivery/" + r + "/cmp_final" + v + ".js?t=" + D)
+            }
+        })();
+        window.cmp_rc = function (c, b) {
+            var l; try { l = document.cookie } catch (h) { l = "" } var j = ""; var f = 0; var g = false; while (l != "" && f < 100) {
+                f++; while (l.substr(0, 1) == " ") { l = l.substr(1, l.length) } var k = l.substring(0, l.indexOf("=")); if (l.indexOf(";") != -1) { var m = l.substring(l.indexOf("=") + 1, l.indexOf(";")) } else { var m = l.substr(l.indexOf("=") + 1, l.length) } if (c == k) {
+                    j = m;
+                    g = true
+                } var d = l.indexOf(";") + 1; if (d == 0) { d = l.length }
+                l = l.substring(d, l.length)
+            } if (!g && typeof (b) == "string") { j = b } return (j)
+        };
+        window.cmp_stub = function () {
+            var a = arguments;
+            __cmp.a = __cmp.a || []; if (!a.length) { return __cmp.a } else { if (a[0] === "ping") { if (a[1] === 2) { a[2]({ gdprApplies: gdprAppliesGlobally, cmpLoaded: false, cmpStatus: "stub", displayStatus: "hidden", apiVersion: "2.2", cmpId: 31 }, true) } else { a[2](false, true) } } else { if (a[0] === "getTCData") { __cmp.a.push([].slice.apply(a)) } else { if (a[0] === "addEventListener" || a[0] === "removeEventListener") { __cmp.a.push([].slice.apply(a)) } else { if (a.length == 4 && a[3] === false) { a[2]({}, false) } else { __cmp.a.push([].slice.apply(a)) } } } } }
+        };
+        window.cmp_dsastub = function () {
+            var a = arguments;
+            a[0] = "dsa." + a[0];
+            window.cmp_gppstub(a)
+        };
+        window.cmp_gppstub = function () {
+            var c = arguments;
+            __gpp.q = __gpp.q || []; if (!c.length) { return __gpp.q } var h = c[0]; var g = c.length > 1 ? c[1] : null; var f = c.length > 2 ? c[2] : null; var a = null; var j = false; if (h === "ping") {
+                a = window.cmp_gpp_ping();
+                j = true
+            } else {
+                if (h === "addEventListener") {
+                    __gpp.e = __gpp.e || []; if (!("lastId" in __gpp)) { __gpp.lastId = 0 }
+                    __gpp.lastId++; var d = __gpp.lastId;
+                    __gpp.e.push({ id: d, callback: g });
+                    a = { eventName: "listenerRegistered", listenerId: d, data: true, pingData: window.cmp_gpp_ping() };
+                    j = true
+                } else {
+                    if (h === "removeEventListener") {
+                        __gpp.e = __gpp.e || [];
+                        a = false; for (var e = 0; e < __gpp.e.length; e++) {
+                            if (__gpp.e[e].id == f) {
+                                __gpp.e[e].splice(e, 1);
+                                a = true; break
+                            }
+                        }
+                        j = true
+                    } else { __gpp.q.push([].slice.apply(c)) }
+                }
+            } if (a !== null && typeof (g) === "function") { g(a, j) }
+        };
+        window.cmp_gpp_ping = function () { return { gppVersion: "1.1", cmpStatus: "stub", cmpDisplayStatus: "hidden", signalStatus: "not ready", supportedAPIs: ["2:tcfeuv2", "5:tcfcav1", "7:usnat", "8:usca", "9:usva", "10:usco", "11:usut", "12:usct", "13:usfl", "14:usmt", "15:usor", "16:ustx", "17:usde", "18:usia", "19:usne", "20:usnh", "21:usnj", "22:ustn", "23:usmn"], cmpId: 31, sectionList: [], applicableSections: [0], gppString: "", parsedSections: {} } };
+        window.cmp_addFrame = function (b) {
+            if (!window.frames[b]) {
+                if (document.body) {
+                    var a = document.createElement("iframe");
+                    a.style.cssText = "display:none"; if ("cmp_cdn" in window && "cmp_ultrablocking" in window && window.cmp_ultrablocking > 0) { a.src = "//" + window.cmp_cdn + "/delivery/empty.html" }
+                    a.name = b;
+                    a.setAttribute("title", "Intentionally hidden, please ignore");
+                    a.setAttribute("role", "none");
+                    a.setAttribute("tabindex", "-1");
+                    document.body.appendChild(a)
+                } else { window.setTimeout(window.cmp_addFrame, 10, b) }
+            }
+        };
+        window.cmp_msghandler = function (d) {
+            var a = typeof d.data === "string"; try { var c = a ? JSON.parse(d.data) : d.data } catch (f) { var c = null } if (typeof (c) === "object" && c !== null && "__cmpCall" in c) {
+                var b = c.__cmpCall;
+                window.__cmp(b.command, b.parameter, function (h, g) {
+                    var e = { __cmpReturn: { returnValue: h, success: g, callId: b.callId } };
+                    d.source.postMessage(a ? JSON.stringify(e) : e, "*")
+                })
+            } if (typeof (c) === "object" && c !== null && "__tcfapiCall" in c) {
+                var b = c.__tcfapiCall;
+                window.__tcfapi(b.command, b.version, function (h, g) {
+                    var e = { __tcfapiReturn: { returnValue: h, success: g, callId: b.callId } };
+                    d.source.postMessage(a ? JSON.stringify(e) : e, "*")
+                }, b.parameter)
+            } if (typeof (c) === "object" && c !== null && "__gppCall" in c) {
+                var b = c.__gppCall;
+                window.__gpp(b.command, function (h, g) {
+                    var e = { __gppReturn: { returnValue: h, success: g, callId: b.callId } };
+                    d.source.postMessage(a ? JSON.stringify(e) : e, "*")
+                }, "parameter" in b ? b.parameter : null, "version" in b ? b.version : 1)
+            } if (typeof (c) === "object" && c !== null && "__dsaCall" in c) {
+                var b = c.__dsaCall;
+                window.__dsa(b.command, function (h, g) {
+                    var e = { __dsaReturn: { returnValue: h, success: g, callId: b.callId } };
+                    d.source.postMessage(a ? JSON.stringify(e) : e, "*")
+                }, "parameter" in b ? b.parameter : null, "version" in b ? b.version : 1)
+            }
+        };
+        window.cmp_setStub = function (a) {
+            if (!(a in window) || (typeof (window[a]) !== "function" && typeof (window[a]) !== "object" && (typeof (window[a]) === "undefined" || window[a] !== null))) {
+                window[a] = window.cmp_stub;
+                window[a].msgHandler = window.cmp_msghandler;
+                window.addEventListener("message", window.cmp_msghandler, false)
+            }
+        };
+        window.cmp_setGppStub = function (a) {
+            if (!(a in window) || (typeof (window[a]) !== "function" && typeof (window[a]) !== "object" && (typeof (window[a]) === "undefined" || window[a] !== null))) {
+                window[a] = window.cmp_gppstub;
+                window[a].msgHandler = window.cmp_msghandler;
+                window.addEventListener("message", window.cmp_msghandler, false)
+            }
+        };
+        if (!("cmp_noiframepixel" in window)) { window.cmp_addFrame("__cmpLocator") }
+        if ((!("cmp_disabletcf" in window) || !window.cmp_disabletcf) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__tcfapiLocator") }
+        if ((!("cmp_disablegpp" in window) || !window.cmp_disablegpp) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__gppLocator") }
+        if ((!("cmp_disabledsa" in window) || !window.cmp_disabledsa) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__dsaLocator") }
+        window.cmp_setStub("__cmp");
+        if (!("cmp_disabletcf" in window) || !window.cmp_disabletcf) { window.cmp_setStub("__tcfapi") }
+        if (!("cmp_disablegpp" in window) || !window.cmp_disablegpp) { window.cmp_setGppStub("__gpp") }
+        if (!("cmp_disabledsa" in window) || !window.cmp_disabledsa) { window.cmp_setGppStub("__dsa") };
+
+
+</script>
+<script>
+    if (document.location.host.includes("publishing")) {
+        var adHandler = adHandler || { cmd: [] };
+        adHandler.cmd.push(function () {
+            adHandler.service.setTargeting("hour", new Date().getHours());
+            pagetype = "";
+            articleIds = document.location.pathname.match(/[\d]{5,8}$/i);
+            if (articleIds != undefined && articleIds.length == 1) {
+                pagetype="article";
+            } else if (document.location.pathname == "/") {
+                pagetype = "homepage";
+            } else {
+                pagetype = "ressort";
+            }
+            adHandler.service.setTargeting("pagetype", pagetype);
+            adchannels = window.ad_channel.split("/");
+            if (window.ad_channel.includes("localnews/")) {  
+                adHandler.service.setTargeting("region", adchannels[1]);
+            }
+            adHandler.service.setTargeting("mvd_category", adchannels[0]);
+            adHandler.service.request();
+        });
+        elem = document.createElement("script");
+        elem.src = "https://showroom.click-performance.com/staging/DMN/volksstimme.de/volksstimme.de_ROS.js";
+        elem.type = "text/javascript";
+        document.head.appendChild(elem);
+    }
+</script></head>
 
   <body lang="en"><!-- vs category-page -->
 <!-- Google Tag Manager (noscript) -->
@@ -385,15 +681,15 @@
                             </a>
                         </div>
     <div class="fp-main-header__weather-widget">
-        <div class="fp-main-header__weather-widget--top wolkig">
+        <div class="fp-main-header__weather-widget--top regenschauer">
             <span class="weather-icon-img">
-                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/wolkig.svg" alt="weather">
+                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/regenschauer.svg" alt="weather">
             </span>
-            <span class="fp-main-header__weather-widget--tooltip">wolkig</span>
+            <span class="fp-main-header__weather-widget--tooltip">regenschauer</span>
             <aside>
-                <span class="fp-main-header__weather-widget--day-temp">14°</span>
+                <span class="fp-main-header__weather-widget--day-temp">16°</span>
                 <span>/</span>
-                <span class="fp-main-header__weather-widget--night-temp">3°</span>
+                <span class="fp-main-header__weather-widget--night-temp">10°</span>
             </aside>
         </div>
         <div class="fp-main-header__weather-widget--bottom">
@@ -418,6 +714,12 @@
 ">
                     <a class="text-14--bold" href="/sachsen-anhalt" target="_self">
                       Sachsen-Anhalt
+                    </a>
+                  </li>
+                  <li class="fp-main-nav__list-item
+">
+                    <a class="text-14--bold" href="/live">
+                      Live
                     </a>
                   </li>
                   <li class="fp-main-nav__list-item
@@ -455,12 +757,6 @@
 ">
                     <a class="text-14--bold" href="/blaulicht" target="_self">
                       Blaulicht
-                    </a>
-                  </li>
-                  <li class="fp-main-nav__list-item
-">
-                    <a class="text-14--bold" href="/live">
-                      Live
                     </a>
                   </li>
                   <li class="fp-main-nav__list-item
@@ -557,6 +853,12 @@
                   </li>
                   <li class="fp-main-nav__list-item
 ">
+                    <a class="text-14--bold" href="/live">
+                      Live
+                    </a>
+                  </li>
+                  <li class="fp-main-nav__list-item
+">
                     <a class="text-14--bold" href="/sport" target="_self">
                       Sport
                     </a>
@@ -590,12 +892,6 @@
 ">
                     <a class="text-14--bold" href="/blaulicht" target="_self">
                       Blaulicht
-                    </a>
-                  </li>
-                  <li class="fp-main-nav__list-item
-">
-                    <a class="text-14--bold" href="/live">
-                      Live
                     </a>
                   </li>
                   <li class="fp-main-nav__list-item
@@ -823,6 +1119,24 @@
                     <li class="fp-sidebar-menu__nav--item">
                       <a class="text-16--regular" href="/sachsen-anhalt/tourismus">
                         Tourismus
+                      </a>
+                    </li>
+            </ul>
+            <div class="fp-sidebar-menu__nav--header">
+              <span>
+                  <a href="/live">Live
+                  </a>
+              </span>
+            </div>
+            <ul class="fp-sidebar-menu__nav--list">
+                    <li class="fp-sidebar-menu__nav--item">
+                      <a class="text-16--regular" href="/live/fussball-regionalliga-nordost">
+                        Fußball-Regionalliga Nordost
+                      </a>
+                    </li>
+                    <li class="fp-sidebar-menu__nav--item">
+                      <a class="text-16--regular" href="/live/fussball-verbandsliga-sachsen-anhalt">
+                        Fußball-Verbandsliga Sachsen-Anhalt
                       </a>
                     </li>
             </ul>
@@ -1141,24 +1455,6 @@
             </ul>
             <div class="fp-sidebar-menu__nav--header">
               <span>
-                  <a href="/live">Live
-                  </a>
-              </span>
-            </div>
-            <ul class="fp-sidebar-menu__nav--list">
-                    <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="/live/fussball-regionalliga-nordost">
-                        Fußball-Regionalliga Nordost
-                      </a>
-                    </li>
-                    <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="/live/fussball-verbandsliga-sachsen-anhalt">
-                        Fußball-Verbandsliga Sachsen-Anhalt
-                      </a>
-                    </li>
-            </ul>
-            <div class="fp-sidebar-menu__nav--header">
-              <span>
                   <a href="/video" target="_self">Video
                   </a>
               </span>
@@ -1447,48 +1743,48 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/zusammenstoss-von-tram-und-bus-unfallstelle-wieder-frei-4124452">
+            <a href="/panorama/messerscharfe-zahne-heidi-klum-gibt-gruseligen-einblick-4141144">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/10/01/85ab825a-7504-4791-b6d8-d57a0660d0fb.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/01/85ab825a-7504-4791-b6d8-d57a0660d0fb.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/01/85ab825a-7504-4791-b6d8-d57a0660d0fb.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/01/85ab825a-7504-4791-b6d8-d57a0660d0fb.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/01/85ab825a-7504-4791-b6d8-d57a0660d0fb.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/01/85ab825a-7504-4791-b6d8-d57a0660d0fb.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/01/85ab825a-7504-4791-b6d8-d57a0660d0fb.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Reisebus und Straßenbahn wurden bei dem Unfall zerstört." data-source="Michael Ukas/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/11/01/569efeee-3862-4986-b305-33696e9be2d2.jpeg?rect=0%2C157%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/11/01/569efeee-3862-4986-b305-33696e9be2d2.jpeg?rect=0%2C157%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/11/01/569efeee-3862-4986-b305-33696e9be2d2.jpeg?rect=0%2C157%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/11/01/569efeee-3862-4986-b305-33696e9be2d2.jpeg?rect=0%2C157%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/11/01/569efeee-3862-4986-b305-33696e9be2d2.jpeg?rect=0%2C157%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/11/01/569efeee-3862-4986-b305-33696e9be2d2.jpeg?rect=0%2C157%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/11/01/569efeee-3862-4986-b305-33696e9be2d2.jpeg?rect=0%2C157%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Heidi Klum gewährt einen kleinen Einblick bei ihrer Halloween-Kostümierung." data-source="Evan Agostini/Invision/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Berliner Alexanderplatz</h4>
-                <h3 class="fp-article__title text-xl--bold ">Zusammenstoß von Tram und Bus – Unfallstelle wieder frei</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Kostüme</h4>
+                <h3 class="fp-article__title text-xl--bold ">Messerscharfe Zähne - Heidi Klum gibt gruseligen Einblick</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/projekt-aus-angermunde-bekommt-nachbarschaftspreis-4124437">
+            <a href="/panorama/drohnensichtung-flugbetrieb-in-berlin-am-abend-unterbrochen-4141142">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/31870aea-a4df-4e92-a684-473c91149d0c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/31870aea-a4df-4e92-a684-473c91149d0c.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/31870aea-a4df-4e92-a684-473c91149d0c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/31870aea-a4df-4e92-a684-473c91149d0c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/31870aea-a4df-4e92-a684-473c91149d0c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/31870aea-a4df-4e92-a684-473c91149d0c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/31870aea-a4df-4e92-a684-473c91149d0c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bei dem Projekt in Angermünde geht es auch um das spielerische Erlernen der deutschen Sprache. (Symbolbild)" data-source="Uwe Anspach/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/f3cf4ccd-fbea-433c-8666-6a5069a4e40f.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/f3cf4ccd-fbea-433c-8666-6a5069a4e40f.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/f3cf4ccd-fbea-433c-8666-6a5069a4e40f.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/f3cf4ccd-fbea-433c-8666-6a5069a4e40f.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/f3cf4ccd-fbea-433c-8666-6a5069a4e40f.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/f3cf4ccd-fbea-433c-8666-6a5069a4e40f.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/f3cf4ccd-fbea-433c-8666-6a5069a4e40f.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Flughafen wurde am späten Abend gesperrt. (Symbolbild)" data-source="Soeren Stache/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Miteinander</h4>
-                <h3 class="fp-article__title text-xl--bold ">Projekt aus Angermünde bekommt Nachbarschaftspreis</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Berliner Hauptstadtflughafen</h4>
+                <h3 class="fp-article__title text-xl--bold ">Drohnensichtung: Flugbetrieb in Berlin am Abend unterbrochen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/haseloff-warnt-es-geht-ums-ganze-wir-oder-die-4124436">
+            <a href="/panorama/auto-erfasst-fussgangerin-21-jahrige-stirbt-4141140">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/3a24091a-284f-49af-abad-c6e15e444994.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/3a24091a-284f-49af-abad-c6e15e444994.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/3a24091a-284f-49af-abad-c6e15e444994.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/3a24091a-284f-49af-abad-c6e15e444994.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/3a24091a-284f-49af-abad-c6e15e444994.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/3a24091a-284f-49af-abad-c6e15e444994.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/3a24091a-284f-49af-abad-c6e15e444994.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Reiner Haseloff ist seit 2011 Ministerpräsident in Sachsen-Anhalt. (Archivbild)" data-source="Klaus-Dietmar Gabbert/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/f94b861f-ff6d-4cd0-9e12-75adb74b21ff.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/f94b861f-ff6d-4cd0-9e12-75adb74b21ff.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/f94b861f-ff6d-4cd0-9e12-75adb74b21ff.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/f94b861f-ff6d-4cd0-9e12-75adb74b21ff.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/f94b861f-ff6d-4cd0-9e12-75adb74b21ff.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/f94b861f-ff6d-4cd0-9e12-75adb74b21ff.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/f94b861f-ff6d-4cd0-9e12-75adb74b21ff.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die junge Frau wurde in ein Krankenhaus geflogen, wo sie starb. (Symbolbild)" data-source="Jan Woitas/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Nach Umfrageergebnissen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Haseloff warnt: „Es geht ums Ganze. Wir oder die“</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Zittau</h4>
+                <h3 class="fp-article__title text-xl--bold ">Auto erfasst Fußgängerin - 21-Jährige stirbt</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/bayerns-basketballer-verlieren-zum-start-in-die-euroleague-4124435">
+            <a href="/panorama/drohnen-sichtung-flughafen-ber-fur-zwei-stunden-gesperrt-4141137">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/b3e6c6fb-5163-4c29-9789-3765e101d04c.jpeg?rect=0%2C131%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/b3e6c6fb-5163-4c29-9789-3765e101d04c.jpeg?rect=0%2C131%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/b3e6c6fb-5163-4c29-9789-3765e101d04c.jpeg?rect=0%2C131%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/b3e6c6fb-5163-4c29-9789-3765e101d04c.jpeg?rect=0%2C131%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/b3e6c6fb-5163-4c29-9789-3765e101d04c.jpeg?rect=0%2C131%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/b3e6c6fb-5163-4c29-9789-3765e101d04c.jpeg?rect=0%2C131%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/b3e6c6fb-5163-4c29-9789-3765e101d04c.jpeg?rect=0%2C131%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Herbert sah eine Niederlage seiner Bayern." data-source="Jan-Philipp Strobel/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/c251ca54-94db-4921-a9e0-38e7ae4b4545.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/c251ca54-94db-4921-a9e0-38e7ae4b4545.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/c251ca54-94db-4921-a9e0-38e7ae4b4545.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/c251ca54-94db-4921-a9e0-38e7ae4b4545.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/c251ca54-94db-4921-a9e0-38e7ae4b4545.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/c251ca54-94db-4921-a9e0-38e7ae4b4545.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/c251ca54-94db-4921-a9e0-38e7ae4b4545.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wegen einer Drohnen-Sichtung musste der Flughafen BER am Abend zeitweise aus Sicherheitsgründen schließen. (Archivfoto)" data-source="Soeren Stache/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Saisonauftakt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Bayerns Basketballer verlieren zum Start in die Euroleague</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Störung Hauptstadtflughafen</h4>
+                <h3 class="fp-article__title text-xl--bold ">Drohnen-Sichtung - Flughafen BER für zwei Stunden gesperrt</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/chancenwucher-bestraft-cottbus-siegt-in-rostock-4124432">
+            <a href="/panorama/drohnen-sichtung-hauptstadtflughafen-vorubergehend-gesperrt-4141127">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/6cd0430a-d913-4e1e-bc7b-06b9136bd12d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/6cd0430a-d913-4e1e-bc7b-06b9136bd12d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/6cd0430a-d913-4e1e-bc7b-06b9136bd12d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/6cd0430a-d913-4e1e-bc7b-06b9136bd12d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/6cd0430a-d913-4e1e-bc7b-06b9136bd12d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/6cd0430a-d913-4e1e-bc7b-06b9136bd12d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/6cd0430a-d913-4e1e-bc7b-06b9136bd12d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Erik Engelhardt traf zur Vorentscheidung in Rostock." data-source="Robert Michael/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/7a2c2042-f7e4-4ea0-95ed-51823bea5e99.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/7a2c2042-f7e4-4ea0-95ed-51823bea5e99.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/7a2c2042-f7e4-4ea0-95ed-51823bea5e99.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/7a2c2042-f7e4-4ea0-95ed-51823bea5e99.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/7a2c2042-f7e4-4ea0-95ed-51823bea5e99.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/7a2c2042-f7e4-4ea0-95ed-51823bea5e99.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/7a2c2042-f7e4-4ea0-95ed-51823bea5e99.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Flughafen wurde am späten Abend gesperrt. (Symbolbild)" data-source="Soeren Stache/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> 3. Fußball-Liga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Chancenwucher bestraft: Cottbus siegt in Rostock</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Flugbetrieb</h4>
+                <h3 class="fp-article__title text-xl--bold ">Drohnen-Sichtung: Hauptstadtflughafen vorübergehend gesperrt</h3>
             </a>
         </article>
 </div>
@@ -1500,12 +1796,12 @@
 <h2 class="fp-most-popular-section-title">Meistgelesen</h2>
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/panorama/grosseinsatz-der-feuerwehr-wegen-brennender-scheune-4123530">
+      <a href="/panorama/frau-fahrt-in-parkendes-auto-und-wird-schwer-verletzt-4140949">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">1.</span>
             <header>
-              <h4 class="fp-article__catchline"> Landkreis Harz</h4>
-              <h3 class="fp-article__title text-xxl--bold">Großeinsatz der Feuerwehr wegen brennender Scheune</h3>
+              <h4 class="fp-article__catchline"> Unfall im Burgenlandkreis</h4>
+              <h3 class="fp-article__title text-xxl--bold">Frau fährt in parkendes Auto und wird schwer verletzt</h3>
             </header>
         </div>
       </a>
@@ -1513,12 +1809,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/panorama/13-jahrige-nach-e-scooter-unfall-gestorben-4124077">
+      <a href="/panorama/grossbrand-zerstort-weihnachtsmarkt-buden-auf-lkw-anhangern-4140919">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">2.</span>
             <header>
-              <h4 class="fp-article__catchline"> Mit Auto kollidiert</h4>
-              <h3 class="fp-article__title text-xxl--bold">13-Jährige nach E-Scooter-Unfall gestorben</h3>
+              <h4 class="fp-article__catchline"> Feuer auf Schausteller-Gelände</h4>
+              <h3 class="fp-article__title text-xxl--bold">Großbrand zerstört Weihnachtsmarkt-Buden auf Lkw-Anhängern</h3>
             </header>
         </div>
       </a>
@@ -1526,12 +1822,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/panorama/von-auto-angefahren-14-jahrige-fussgangerin-stirbt-in-klinik-4123650">
+      <a href="/panorama/baba-wanga-hellseherin-vorhersage-prophezeiung-2026-krieg-ausserirdische-naturkatstrophen-nostradamus-4026209">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">3.</span>
             <header>
-              <h4 class="fp-article__catchline"> Rotlicht überfahren</h4>
-              <h3 class="fp-article__title text-xxl--bold">Von Auto angefahren: 14-jährige Fußgängerin stirbt in Klinik</h3>
+              <h4 class="fp-article__catchline"> Außerirdische, Krieg, Naturkatstrophen</h4>
+              <h3 class="fp-article__title text-xxl--bold">Schockierende Prophezeiungen: Das sagte blinde Hellseherin Baba Wanga für 2026 voraus</h3>
             </header>
         </div>
       </a>
@@ -1539,12 +1835,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/panorama/artistin-sturzt-im-zirkus-zuschauer-sehen-todliches-drama-4122715">
+      <a href="/panorama/rebecca-reusch-suche-vermisst-chronik-spur-schwager-grosseltern-3787279">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">4.</span>
             <header>
-              <h4 class="fp-article__catchline"> Tödlicher Sturz</h4>
-              <h3 class="fp-article__title text-xxl--bold">Artistin stürzt im Zirkus - Zuschauer sehen tödliches Drama</h3>
+              <h4 class="fp-article__catchline"> Spektakulärer Vermisstenfall</h4>
+              <h3 class="fp-article__title text-xxl--bold">Rebecca Reusch: Warum das Grundstück der Großeltern von Florian R. erst jetzt durchsucht wurde</h3>
             </header>
         </div>
       </a>
@@ -1562,50 +1858,48 @@
             </a>
         </aside>
     </header>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/youtube-soll-trump-einen-ballsaal-finanzieren-4124397">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/0460feaa-188b-4573-91a2-c60b5a530bf0.jpeg?rect=0%2C55%2C770%2C433&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/0460feaa-188b-4573-91a2-c60b5a530bf0.jpeg?rect=0%2C55%2C770%2C433&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/0460feaa-188b-4573-91a2-c60b5a530bf0.jpeg?rect=0%2C55%2C770%2C433&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/0460feaa-188b-4573-91a2-c60b5a530bf0.jpeg?rect=0%2C55%2C770%2C433&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/0460feaa-188b-4573-91a2-c60b5a530bf0.jpeg?rect=0%2C55%2C770%2C433&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/0460feaa-188b-4573-91a2-c60b5a530bf0.jpeg?rect=0%2C55%2C770%2C433&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/0460feaa-188b-4573-91a2-c60b5a530bf0.jpeg?rect=0%2C55%2C770%2C433&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ballsaal-Fan Donald Trump" data-source="Foto: AP/DPA">
-                </picture>
+        <article class="fp-article  ratio secondary-teaser fp-article__no-img" data-ratio="16:9">
+            <a href="/panorama/aufgespiesst/rettet-unsere-strassenschilder-4138914">
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Youtube soll Trump einen Ballsaal finanzieren</h3>
+                <h3 class="fp-article__title text-xl--bold ">Rettet unsere Straßenschilder</h3>
+                    <p class="fp-article__excerpt">Polizei kämpft gegen neuen Trend auf TikTok.</p>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/das-nutella-problem-von-malmo-4123738">
+            <a href="/panorama/aufgespiesst/hier-gibt-es-was-auf-die-nase-4138365">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/29/0ea2d1e2-b325-42b7-8cd6-d766417f35a1.jpeg?rect=0%2C1178%2C1536%2C864&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/29/0ea2d1e2-b325-42b7-8cd6-d766417f35a1.jpeg?rect=0%2C1178%2C1536%2C864&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/29/0ea2d1e2-b325-42b7-8cd6-d766417f35a1.jpeg?rect=0%2C1178%2C1536%2C864&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/29/0ea2d1e2-b325-42b7-8cd6-d766417f35a1.jpeg?rect=0%2C1178%2C1536%2C864&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/29/0ea2d1e2-b325-42b7-8cd6-d766417f35a1.jpeg?rect=0%2C1178%2C1536%2C864&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/29/0ea2d1e2-b325-42b7-8cd6-d766417f35a1.jpeg?rect=0%2C1178%2C1536%2C864&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/29/0ea2d1e2-b325-42b7-8cd6-d766417f35a1.jpeg?rect=0%2C1178%2C1536%2C864&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wer nur soll die beschlagnahmten 2.260 Nutella-Gläser in Malmö auslöffeln?" data-source="dpa/Stadt Malmö">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/27/b843ddb1-554b-4e32-9cce-8c319283e096.jpeg?rect=120%2C7%2C601%2C472&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/27/b843ddb1-554b-4e32-9cce-8c319283e096.jpeg?rect=120%2C7%2C601%2C472&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/27/b843ddb1-554b-4e32-9cce-8c319283e096.jpeg?rect=120%2C7%2C601%2C472&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/27/b843ddb1-554b-4e32-9cce-8c319283e096.jpeg?rect=120%2C7%2C601%2C472&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/27/b843ddb1-554b-4e32-9cce-8c319283e096.jpeg?rect=120%2C7%2C601%2C472&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/27/b843ddb1-554b-4e32-9cce-8c319283e096.jpeg?rect=120%2C7%2C601%2C472&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/27/b843ddb1-554b-4e32-9cce-8c319283e096.jpeg?rect=120%2C7%2C601%2C472&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Duftnote Benzin bitte." data-source="Foto: imago">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Das Nutella-Problem von Malmö</h3>
+                <h3 class="fp-article__title text-xl--bold ">Hier gibt es was auf die Nase</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/gar-nicht-geizig-diese-schwaben-4121254">
+            <a href="/panorama/aufgespiesst/reich-durch-trinken-4137035">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/25/08b7bf3a-2f09-48d6-9405-f630911aa338.jpeg?rect=0%2C0%2C4000%2C2852&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/25/08b7bf3a-2f09-48d6-9405-f630911aa338.jpeg?rect=0%2C0%2C4000%2C2852&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/25/08b7bf3a-2f09-48d6-9405-f630911aa338.jpeg?rect=0%2C0%2C4000%2C2852&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/25/08b7bf3a-2f09-48d6-9405-f630911aa338.jpeg?rect=0%2C0%2C4000%2C2852&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/25/08b7bf3a-2f09-48d6-9405-f630911aa338.jpeg?rect=0%2C0%2C4000%2C2852&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/25/08b7bf3a-2f09-48d6-9405-f630911aa338.jpeg?rect=0%2C0%2C4000%2C2852&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/25/08b7bf3a-2f09-48d6-9405-f630911aa338.jpeg?rect=0%2C0%2C4000%2C2852&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="<source><sha1>Wd85F9ewsf6Chc3mmgg8R6b0kc7</sha1><p>600.000 Euro ist ein Batzen Geld. Dafür bekommt man in Sachsen-Anhalt je nach Lage bis zu sechs veritable Einfamilienhäuser. Die Stadt Stuttgart hat 600.000 Euro in ein Toilettenhäuschen investiert, Kritiker formulieren drastischer: Im Klo versenkt.</p><p>Eine wirklich hübsche kleine Bedürfnisanstalt haben sich die Schwaben in ihr Naherholungsgebiet Egelseer Heide gestellt. Mit Frischwasserver- und Abwasserentsorgungsleitungen sowie Strom kostet die Design-Immobilie tatsächlich, um hier nochmals auf die nicht unbeträchtliche finanzielle Dimension zu verweisen, 600.000 Euro. </p><p>Ist doch alles hightech und auch noch selbstreinigend, argumentiert die Stadt. Das reduziert schließlich auch den Personalaufwand für Putz- und Wartungsarbeiten. Der Bund der Steuerzahler hält den Aufwand schlicht für übertrieben (ohne explizit das naheliegende Attribut „sch...teuer“ zu verwenden). Insbesondere in Bezug auf die anstehende kalte Jahreszeit, in der sich wohl kaum jemand  in das Naherholungsgebiet verirrt.  </p><p>Verschwendung von öffentlichem Geld lautet der mitschwingende Vorwurf. Andererseits: Ist ja ein öffentliches Klo.  </p>" data-source="dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/24/1fd24db9-9aa9-4a17-a472-d3a9561f1153.jpeg?rect=488%2C340%2C2928%2C2304&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/24/1fd24db9-9aa9-4a17-a472-d3a9561f1153.jpeg?rect=488%2C340%2C2928%2C2304&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/24/1fd24db9-9aa9-4a17-a472-d3a9561f1153.jpeg?rect=488%2C340%2C2928%2C2304&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/24/1fd24db9-9aa9-4a17-a472-d3a9561f1153.jpeg?rect=488%2C340%2C2928%2C2304&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/24/1fd24db9-9aa9-4a17-a472-d3a9561f1153.jpeg?rect=488%2C340%2C2928%2C2304&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/24/1fd24db9-9aa9-4a17-a472-d3a9561f1153.jpeg?rect=488%2C340%2C2928%2C2304&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/24/1fd24db9-9aa9-4a17-a472-d3a9561f1153.jpeg?rect=488%2C340%2C2928%2C2304&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Jede Menge Spar-Potenzial." data-source="Foto: AFP">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Gar nicht geizig, diese Schwaben</h3>
+                <h3 class="fp-article__title text-xl--bold ">Reich durch Trinken</h3>
             </a>
         </article>
 <div id="nativendo-nativendo-infeed"></div>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/klatsch-4120681">
+            <a href="/panorama/aufgespiesst/jetzt-wird-s-eng-4136209">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/24/c6f93d1a-c635-4020-ae5c-c379e6963acc.jpeg?rect=473%2C189%2C2730%2C2147&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/24/c6f93d1a-c635-4020-ae5c-c379e6963acc.jpeg?rect=473%2C189%2C2730%2C2147&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/24/c6f93d1a-c635-4020-ae5c-c379e6963acc.jpeg?rect=473%2C189%2C2730%2C2147&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/24/c6f93d1a-c635-4020-ae5c-c379e6963acc.jpeg?rect=473%2C189%2C2730%2C2147&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/24/c6f93d1a-c635-4020-ae5c-c379e6963acc.jpeg?rect=473%2C189%2C2730%2C2147&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/24/c6f93d1a-c635-4020-ae5c-c379e6963acc.jpeg?rect=473%2C189%2C2730%2C2147&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/24/c6f93d1a-c635-4020-ae5c-c379e6963acc.jpeg?rect=473%2C189%2C2730%2C2147&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Beifall  im Flieger." data-source="Foto: imago">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/23/844af07c-b070-4e6d-9967-ca6c401013ed.jpeg?rect=120%2C0%2C600%2C472&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/23/844af07c-b070-4e6d-9967-ca6c401013ed.jpeg?rect=120%2C0%2C600%2C472&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/23/844af07c-b070-4e6d-9967-ca6c401013ed.jpeg?rect=120%2C0%2C600%2C472&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/23/844af07c-b070-4e6d-9967-ca6c401013ed.jpeg?rect=120%2C0%2C600%2C472&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/23/844af07c-b070-4e6d-9967-ca6c401013ed.jpeg?rect=120%2C0%2C600%2C472&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/23/844af07c-b070-4e6d-9967-ca6c401013ed.jpeg?rect=120%2C0%2C600%2C472&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/23/844af07c-b070-4e6d-9967-ca6c401013ed.jpeg?rect=120%2C0%2C600%2C472&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Lehne verstellen kostet extra. " data-source="Foto: IMAGO">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Klatsch!</h3>
+                <h3 class="fp-article__title text-xl--bold ">Jetzt wird’s eng</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/bernd-the-bread-4119952">
+            <a href="/panorama/aufgespiesst/puller-alarm-bei-der-polizei-4135662">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/23/3ae4c06f-44bb-475b-acd8-5d859e5ec931.jpeg?rect=10%2C47%2C593%2C468&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/23/3ae4c06f-44bb-475b-acd8-5d859e5ec931.jpeg?rect=10%2C47%2C593%2C468&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/23/3ae4c06f-44bb-475b-acd8-5d859e5ec931.jpeg?rect=10%2C47%2C593%2C468&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/23/3ae4c06f-44bb-475b-acd8-5d859e5ec931.jpeg?rect=10%2C47%2C593%2C468&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/23/3ae4c06f-44bb-475b-acd8-5d859e5ec931.jpeg?rect=10%2C47%2C593%2C468&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/23/3ae4c06f-44bb-475b-acd8-5d859e5ec931.jpeg?rect=10%2C47%2C593%2C468&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/23/3ae4c06f-44bb-475b-acd8-5d859e5ec931.jpeg?rect=10%2C47%2C593%2C468&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Brot über den großen Teich." data-source="Foto:dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/22/6c75cb71-e66b-4612-b009-4f7e805c34b6.jpeg?rect=0%2C0%2C600%2C472&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/22/6c75cb71-e66b-4612-b009-4f7e805c34b6.jpeg?rect=0%2C0%2C600%2C472&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/22/6c75cb71-e66b-4612-b009-4f7e805c34b6.jpeg?rect=0%2C0%2C600%2C472&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/22/6c75cb71-e66b-4612-b009-4f7e805c34b6.jpeg?rect=0%2C0%2C600%2C472&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/22/6c75cb71-e66b-4612-b009-4f7e805c34b6.jpeg?rect=0%2C0%2C600%2C472&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/22/6c75cb71-e66b-4612-b009-4f7e805c34b6.jpeg?rect=0%2C0%2C600%2C472&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/22/6c75cb71-e66b-4612-b009-4f7e805c34b6.jpeg?rect=0%2C0%2C600%2C472&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Echter Drogentest. " data-source="Foto: dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Bernd the bread</h3>
+                <h3 class="fp-article__title text-xl--bold ">Puller-Alarm bei der Polizei</h3>
             </a>
         </article>
 </div>
@@ -1626,48 +1920,48 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/staatsanwaltschaft-fordert-elf-jahre-haft-fur-sean-combs-4124050">
+            <a href="/panorama/stars/neue-sicherheitsvorkehrungen-fur-louvre-noch-in-diesem-jahr-4141019">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/659738cd-079b-4638-b01e-87145b9e36cd.jpeg?rect=0%2C219%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/659738cd-079b-4638-b01e-87145b9e36cd.jpeg?rect=0%2C219%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/659738cd-079b-4638-b01e-87145b9e36cd.jpeg?rect=0%2C219%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/659738cd-079b-4638-b01e-87145b9e36cd.jpeg?rect=0%2C219%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/659738cd-079b-4638-b01e-87145b9e36cd.jpeg?rect=0%2C219%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/659738cd-079b-4638-b01e-87145b9e36cd.jpeg?rect=0%2C219%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/659738cd-079b-4638-b01e-87145b9e36cd.jpeg?rect=0%2C219%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Am Freitag soll die Strafe gegen den US-Rapper verkündet werden. (Archivbild)" data-source="Mark Von Holden/Invision via AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/c64a32e6-de4c-4b7b-ab4a-7cad4f8c5510.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/c64a32e6-de4c-4b7b-ab4a-7cad4f8c5510.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/c64a32e6-de4c-4b7b-ab4a-7cad4f8c5510.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/c64a32e6-de4c-4b7b-ab4a-7cad4f8c5510.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/c64a32e6-de4c-4b7b-ab4a-7cad4f8c5510.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/c64a32e6-de4c-4b7b-ab4a-7cad4f8c5510.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/c64a32e6-de4c-4b7b-ab4a-7cad4f8c5510.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Frankreichs Kulturministerin sagt noch in diesem Jahr neue Sicherheitsmaßnahmen für das Louvre-Museum zu. (Archivbild)" data-source="Emma Da Silva/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> US-Rapper</h4>
-                <h3 class="fp-article__title text-xl--bold ">Staatsanwaltschaft fordert elf Jahre Haft für Sean Combs</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Nach Schmuck-Diebstahl</h4>
+                <h3 class="fp-article__title text-xl--bold ">Neue Sicherheitsvorkehrungen für Louvre noch in diesem Jahr</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/niederlandische-kronprinzessin-beginnt-militardienst-4124339">
+            <a href="/panorama/stars/150-zombies-tanzen-zu-thriller-im-hamburger-hauptbahnhof-4141001">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/8055539a-e3c2-43af-bced-cef0b413a422.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/8055539a-e3c2-43af-bced-cef0b413a422.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/8055539a-e3c2-43af-bced-cef0b413a422.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/8055539a-e3c2-43af-bced-cef0b413a422.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/8055539a-e3c2-43af-bced-cef0b413a422.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/8055539a-e3c2-43af-bced-cef0b413a422.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/8055539a-e3c2-43af-bced-cef0b413a422.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="König Willem-Alexander der Niederlande und seine Tochter Prinzessin Amalia treffen auf dem Paradeplatz der Prinz-Bernhard-Kaserne in Amersfoort ein." data-source="Remko De Waal/ANP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/f2bd65b6-5ac9-4678-910d-653c51857a56.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/f2bd65b6-5ac9-4678-910d-653c51857a56.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/f2bd65b6-5ac9-4678-910d-653c51857a56.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/f2bd65b6-5ac9-4678-910d-653c51857a56.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/f2bd65b6-5ac9-4678-910d-653c51857a56.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/f2bd65b6-5ac9-4678-910d-653c51857a56.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/f2bd65b6-5ac9-4678-910d-653c51857a56.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Das Lied ist aus den 1980er Jahren." data-source="Marcus Golejewski/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Niederlande</h4>
-                <h3 class="fp-article__title text-xl--bold ">Niederländische Kronprinzessin beginnt Militärdienst</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Halloween</h4>
+                <h3 class="fp-article__title text-xl--bold ">150 Zombies tanzen zu „Thriller“ im Hamburger Hauptbahnhof</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/claudia-cardinale-letzte-ehre-ohne-blumen-4124310">
+            <a href="/panorama/stars/finale-demutigung-fur-andrew-im-epstein-skandal-4140730">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/684278fc-f7ca-45ff-9f6b-2c6a37c08f9b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/684278fc-f7ca-45ff-9f6b-2c6a37c08f9b.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/684278fc-f7ca-45ff-9f6b-2c6a37c08f9b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/684278fc-f7ca-45ff-9f6b-2c6a37c08f9b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/684278fc-f7ca-45ff-9f6b-2c6a37c08f9b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/684278fc-f7ca-45ff-9f6b-2c6a37c08f9b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/684278fc-f7ca-45ff-9f6b-2c6a37c08f9b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ohne Blumen und Souvenirs - so wollte es die Familie." data-source="Michel Euler/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/5f293141-e6d9-4f36-a0f5-63df94e52880.jpeg?rect=114%2C0%2C1820%2C1024&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/5f293141-e6d9-4f36-a0f5-63df94e52880.jpeg?rect=114%2C0%2C1820%2C1024&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/5f293141-e6d9-4f36-a0f5-63df94e52880.jpeg?rect=114%2C0%2C1820%2C1024&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/5f293141-e6d9-4f36-a0f5-63df94e52880.jpeg?rect=114%2C0%2C1820%2C1024&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/5f293141-e6d9-4f36-a0f5-63df94e52880.jpeg?rect=114%2C0%2C1820%2C1024&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/5f293141-e6d9-4f36-a0f5-63df94e52880.jpeg?rect=114%2C0%2C1820%2C1024&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/5f293141-e6d9-4f36-a0f5-63df94e52880.jpeg?rect=114%2C0%2C1820%2C1024&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Andrew verliert auch die verbliebenen Titel und Ehren. (Archivbild)" data-source="Toby Melville/Pool Reuters/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Frankreich</h4>
-                <h3 class="fp-article__title text-xl--bold ">Claudia Cardinale: Letzte Ehre ohne Blumen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Britische Royals</h4>
+                <h3 class="fp-article__title text-xl--bold ">„Finale Demütigung“ für Andrew im Epstein-Skandal</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/er-starb-mit-nur-41-star-designer-abloh-bekommt-grosse-schau-4124167">
+            <a href="/panorama/stars/ex-juwelendieb-louvre-beute-bringt-nur-wenige-millionen-4140881">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/55fdfddb-8400-48ed-ae5a-b9ff5b4c356c.jpeg?rect=0%2C159%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/55fdfddb-8400-48ed-ae5a-b9ff5b4c356c.jpeg?rect=0%2C159%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/55fdfddb-8400-48ed-ae5a-b9ff5b4c356c.jpeg?rect=0%2C159%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/55fdfddb-8400-48ed-ae5a-b9ff5b4c356c.jpeg?rect=0%2C159%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/55fdfddb-8400-48ed-ae5a-b9ff5b4c356c.jpeg?rect=0%2C159%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/55fdfddb-8400-48ed-ae5a-b9ff5b4c356c.jpeg?rect=0%2C159%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/55fdfddb-8400-48ed-ae5a-b9ff5b4c356c.jpeg?rect=0%2C159%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Mit über 700 Exponaten ist es die bislang umfassendste Retrospektive Virgil Ablohs in Europa. (Archivbild)" data-source="Evan Agostini/Invision via AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/92bfdd4b-5bf2-419a-b6ee-4f07f3287499.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/92bfdd4b-5bf2-419a-b6ee-4f07f3287499.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/92bfdd4b-5bf2-419a-b6ee-4f07f3287499.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/92bfdd4b-5bf2-419a-b6ee-4f07f3287499.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/92bfdd4b-5bf2-419a-b6ee-4f07f3287499.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/92bfdd4b-5bf2-419a-b6ee-4f07f3287499.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/92bfdd4b-5bf2-419a-b6ee-4f07f3287499.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Beute aus dem Einbruch in den Louvre wird den Tätern nach Einschätzung eines Ex-Kriminellen nur einen Bruchteil des tatsächlichen Werts einbringen. (Archivbild)" data-source="Thibault Camus/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Mode</h4>
-                <h3 class="fp-article__title text-xl--bold ">Er starb mit nur 41: Star-Designer Abloh bekommt große Schau</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Kriminalität</h4>
+                <h3 class="fp-article__title text-xl--bold ">Ex-Juwelendieb: Louvre-Beute bringt nur wenige Millionen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/horst-lichter-bares-fuer-rares-gehalt-zdf-verdienst-geld-4124132">
+            <a href="/panorama/stars/warum-boris-pistorius-im-neuen-asterix-auftritt-4140737">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/1a1af1d3-f106-4e55-90e5-dc03e0930675.jpeg?rect=0%2C0%2C4000%2C2250&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/1a1af1d3-f106-4e55-90e5-dc03e0930675.jpeg?rect=0%2C0%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/1a1af1d3-f106-4e55-90e5-dc03e0930675.jpeg?rect=0%2C0%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/1a1af1d3-f106-4e55-90e5-dc03e0930675.jpeg?rect=0%2C0%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/1a1af1d3-f106-4e55-90e5-dc03e0930675.jpeg?rect=0%2C0%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/1a1af1d3-f106-4e55-90e5-dc03e0930675.jpeg?rect=0%2C0%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/1a1af1d3-f106-4e55-90e5-dc03e0930675.jpeg?rect=0%2C0%2C4000%2C2250&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Horst Lichter gehört beim ZDF zu den Topverdienern." data-source="(Foto: Imago/Panama Pictures)">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/d746c27a-858d-4f1a-87a8-968acbe27367.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/d746c27a-858d-4f1a-87a8-968acbe27367.jpeg?rect=0%2C192%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/d746c27a-858d-4f1a-87a8-968acbe27367.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/d746c27a-858d-4f1a-87a8-968acbe27367.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/d746c27a-858d-4f1a-87a8-968acbe27367.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/d746c27a-858d-4f1a-87a8-968acbe27367.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/d746c27a-858d-4f1a-87a8-968acbe27367.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Im gerade erschienenen Band „Asterix in Lusitanien“ gibt es eine Figur namens Pistorius." data-source="Christof Bock/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Topverdiener im ZDF</h4>
-                <h3 class="fp-article__title text-xl--bold ">Trödel funktioniert nicht im TV? So viel verdient Horst Lichter bei "Bares für Rares"</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Comics</h4>
+                <h3 class="fp-article__title text-xl--bold ">Warum Boris Pistorius im neuen „Asterix“ auftritt</h3>
             </a>
         </article>
 </div>
@@ -1688,6 +1982,15 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/vermischtes/mond-2025-vollmond-supermond-nebelmond-kalender-mythen-bedeutung-ueberblick-fakten-3701104">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/08/be48ef69-2387-4035-a05e-b81975cdd74c.jpeg?rect=0%2C184%2C3536%2C1989&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/08/be48ef69-2387-4035-a05e-b81975cdd74c.jpeg?rect=0%2C184%2C3536%2C1989&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/08/be48ef69-2387-4035-a05e-b81975cdd74c.jpeg?rect=0%2C184%2C3536%2C1989&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/08/be48ef69-2387-4035-a05e-b81975cdd74c.jpeg?rect=0%2C184%2C3536%2C1989&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/08/be48ef69-2387-4035-a05e-b81975cdd74c.jpeg?rect=0%2C184%2C3536%2C1989&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/08/be48ef69-2387-4035-a05e-b81975cdd74c.jpeg?rect=0%2C184%2C3536%2C1989&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/08/be48ef69-2387-4035-a05e-b81975cdd74c.jpeg?rect=0%2C184%2C3536%2C1989&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Im November erwartet uns ein sogenannter Nebelmond." data-source="Symbolbild: Imago/Wolfgang Maria Weber">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Zyklus und Mythen</h4>
+                <h3 class="fp-article__title text-xl--bold ">Mondkalender 2025: Wann ist der nächste Vollmond – und was steckt dahinter?</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
             <a href="/panorama/vermischtes/flughafen-halle-leipzig-red-arrow-kunstflieger-royal-air-force-4117853">
                 <picture class="fp-article__image">
                     <img src="https://bmg-images.forward-publishing.io/2025/09/19/219efd12-82c6-4cfe-9886-aaa02819aa49.jpeg?rect=0%2C106%2C1170%2C658&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/19/219efd12-82c6-4cfe-9886-aaa02819aa49.jpeg?rect=0%2C106%2C1170%2C658&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/19/219efd12-82c6-4cfe-9886-aaa02819aa49.jpeg?rect=0%2C106%2C1170%2C658&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/19/219efd12-82c6-4cfe-9886-aaa02819aa49.jpeg?rect=0%2C106%2C1170%2C658&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/19/219efd12-82c6-4cfe-9886-aaa02819aa49.jpeg?rect=0%2C106%2C1170%2C658&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/19/219efd12-82c6-4cfe-9886-aaa02819aa49.jpeg?rect=0%2C106%2C1170%2C658&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/19/219efd12-82c6-4cfe-9886-aaa02819aa49.jpeg?rect=0%2C106%2C1170%2C658&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die rot lackierten Jets der Roayal Air Force landeten am Donnerstag unerwartet am Flughafen Halle/Leipzig." data-source="Foto: <a href=&quot;https://www.instagram.com/p/DOvpw_KCI0F/?img_index=2&quot;>Instagram/rafredarrows</a>">
@@ -1703,15 +2006,6 @@
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
                 <h3 class="fp-article__title text-xl--bold ">Bart-Rebellion im Cockpit</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/vermischtes/mond-vollmond-2025-kalender-mythen-bedeutung-ueberblick-fakten-3701104">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/08/08/4ae47b85-d74f-4287-9149-96369e81c42b.jpeg?rect=175%2C258%2C2747%2C1545&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/08/08/4ae47b85-d74f-4287-9149-96369e81c42b.jpeg?rect=175%2C258%2C2747%2C1545&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/08/08/4ae47b85-d74f-4287-9149-96369e81c42b.jpeg?rect=175%2C258%2C2747%2C1545&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/08/08/4ae47b85-d74f-4287-9149-96369e81c42b.jpeg?rect=175%2C258%2C2747%2C1545&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/08/08/4ae47b85-d74f-4287-9149-96369e81c42b.jpeg?rect=175%2C258%2C2747%2C1545&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/08/08/4ae47b85-d74f-4287-9149-96369e81c42b.jpeg?rect=175%2C258%2C2747%2C1545&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/08/08/4ae47b85-d74f-4287-9149-96369e81c42b.jpeg?rect=175%2C258%2C2747%2C1545&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Vollmond in seiner ganzen Pracht: Aber heulen Wölfe ihn wirklich an?" data-source="Foto: dpa | Markus Lenhardt">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Zyklus und Mythen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Mondkalender 2025: Wann ist der nächste Vollmond – und was steckt dahinter?</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
@@ -1750,48 +2044,48 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/zweiter-sieg-nacheinander-aue-gewinnt-auch-in-aachen-4124430">
+            <a href="/panorama/polizeieinsatz-selbst-an-heizung-gefesselt-ohne-schlussel-4141131">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/f2443329-9dfc-475e-ae0c-12c357b8799c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/f2443329-9dfc-475e-ae0c-12c357b8799c.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/f2443329-9dfc-475e-ae0c-12c357b8799c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/f2443329-9dfc-475e-ae0c-12c357b8799c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/f2443329-9dfc-475e-ae0c-12c357b8799c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/f2443329-9dfc-475e-ae0c-12c357b8799c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/f2443329-9dfc-475e-ae0c-12c357b8799c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Pascal Fallmann erzielte in Aachen die Auer Führung." data-source="Sebastian Kahnert/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/7650b26d-49c5-4fc6-9ec1-18e5b5ab1f1a.jpeg?rect=0%2C129%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/7650b26d-49c5-4fc6-9ec1-18e5b5ab1f1a.jpeg?rect=0%2C129%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/7650b26d-49c5-4fc6-9ec1-18e5b5ab1f1a.jpeg?rect=0%2C129%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/7650b26d-49c5-4fc6-9ec1-18e5b5ab1f1a.jpeg?rect=0%2C129%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/7650b26d-49c5-4fc6-9ec1-18e5b5ab1f1a.jpeg?rect=0%2C129%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/7650b26d-49c5-4fc6-9ec1-18e5b5ab1f1a.jpeg?rect=0%2C129%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/7650b26d-49c5-4fc6-9ec1-18e5b5ab1f1a.jpeg?rect=0%2C129%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Polizei stellte die Handschellen sicher. (Symbolbild)" data-source="Soeren Stache/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> 3. Fußball-Liga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Zweiter Sieg nacheinander: Aue gewinnt auch in Aachen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Notfälle</h4>
+                <h3 class="fp-article__title text-xl--bold ">Polizeieinsatz: Selbst an Heizung gefesselt - ohne Schlüssel</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/fussganger-von-strassenbahn-erfasst-und-todlich-verletzt-4124428">
+            <a href="/panorama/jenas-basketballer-schrammen-an-sensation-vorbei-4141132">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/db92c0e9-536b-4278-8596-62c23b4e0b49.jpeg?rect=0%2C60%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/db92c0e9-536b-4278-8596-62c23b4e0b49.jpeg?rect=0%2C60%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/db92c0e9-536b-4278-8596-62c23b4e0b49.jpeg?rect=0%2C60%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/db92c0e9-536b-4278-8596-62c23b4e0b49.jpeg?rect=0%2C60%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/db92c0e9-536b-4278-8596-62c23b4e0b49.jpeg?rect=0%2C60%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/db92c0e9-536b-4278-8596-62c23b4e0b49.jpeg?rect=0%2C60%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/db92c0e9-536b-4278-8596-62c23b4e0b49.jpeg?rect=0%2C60%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Straßenbahn kam trotz Gefahrenbremsung nicht mehr rechtzeitig zum Stehen. (Symbolbild)" data-source="Klaus-Dietmar Gabbert/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/1240a262-c462-4622-bbcc-ee821302cc74.jpeg?rect=0%2C80%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/1240a262-c462-4622-bbcc-ee821302cc74.jpeg?rect=0%2C80%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/1240a262-c462-4622-bbcc-ee821302cc74.jpeg?rect=0%2C80%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/1240a262-c462-4622-bbcc-ee821302cc74.jpeg?rect=0%2C80%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/1240a262-c462-4622-bbcc-ee821302cc74.jpeg?rect=0%2C80%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/1240a262-c462-4622-bbcc-ee821302cc74.jpeg?rect=0%2C80%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/1240a262-c462-4622-bbcc-ee821302cc74.jpeg?rect=0%2C80%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Björn Harmsens Schützlinge zwingen Würzburg in die Verlängerung." data-source="Arne Immanuel Bänsch/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Schwerer Unfall</h4>
-                <h3 class="fp-article__title text-xl--bold ">Fußgänger von Straßenbahn erfasst und tödlich verletzt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Basketball</h4>
+                <h3 class="fp-article__title text-xl--bold ">Jenas Basketballer schrammen an Sensation vorbei</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/gewalttat-mit-vier-toten-gedenkminute-auf-kramermarkt-4124234">
+            <a href="/panorama/eisbaren-berlin-gewinnen-in-schwenningen-nach-verlangerung-4141121">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/eedfa5ad-41f3-45b1-93b1-cc231dc549f2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/eedfa5ad-41f3-45b1-93b1-cc231dc549f2.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/eedfa5ad-41f3-45b1-93b1-cc231dc549f2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/eedfa5ad-41f3-45b1-93b1-cc231dc549f2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/eedfa5ad-41f3-45b1-93b1-cc231dc549f2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/eedfa5ad-41f3-45b1-93b1-cc231dc549f2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/eedfa5ad-41f3-45b1-93b1-cc231dc549f2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Kurzes Innehalten auf dem Kramermarkt in Oldenburg in Gedenken an die schreckliche Tat vom Vortag." data-source="Hauke-Christian Dittrich/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/1f2becf4-f380-46fc-b501-9b1447f19437.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/1f2becf4-f380-46fc-b501-9b1447f19437.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/1f2becf4-f380-46fc-b501-9b1447f19437.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/1f2becf4-f380-46fc-b501-9b1447f19437.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/1f2becf4-f380-46fc-b501-9b1447f19437.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/1f2becf4-f380-46fc-b501-9b1447f19437.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/1f2becf4-f380-46fc-b501-9b1447f19437.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Angreifer Markus Vikingstad (m.) erzielte den Siegtreffer der Eisbären Berlin gegen Schwenningen." data-source="Andreas Gora/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Oldenburg</h4>
-                <h3 class="fp-article__title text-xl--bold ">Gewalttat mit vier Toten - Gedenkminute auf Kramermarkt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Deutsche Eishockey Liga</h4>
+                <h3 class="fp-article__title text-xl--bold ">Eisbären Berlin gewinnen in Schwenningen nach Verlängerung</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/starkes-erdbeben-vor-den-philippinen-4124418">
+            <a href="/panorama/polizei-in-rio-neun-drogenchefs-unter-den-rund-120-toten-4141118">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/bcd12fde-6007-4011-921c-5727f45a850e.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/bcd12fde-6007-4011-921c-5727f45a850e.jpeg?rect=0%2C192%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/bcd12fde-6007-4011-921c-5727f45a850e.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/bcd12fde-6007-4011-921c-5727f45a850e.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/bcd12fde-6007-4011-921c-5727f45a850e.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/bcd12fde-6007-4011-921c-5727f45a850e.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/bcd12fde-6007-4011-921c-5727f45a850e.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bei dem Erdbeben wurde auch eine Kirche beschädigt." data-source="Stringer/XinHua/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/c39ff024-0353-4f8a-bf81-4dde144b5fdf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/c39ff024-0353-4f8a-bf81-4dde144b5fdf.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/c39ff024-0353-4f8a-bf81-4dde144b5fdf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/c39ff024-0353-4f8a-bf81-4dde144b5fdf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/c39ff024-0353-4f8a-bf81-4dde144b5fdf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/c39ff024-0353-4f8a-bf81-4dde144b5fdf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/c39ff024-0353-4f8a-bf81-4dde144b5fdf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nach dem blutigen Polizeieinsatz wird um die Getöteten getrauert. Menschenrechtsorganisationen fordern eine Untersuchung." data-source="Tomaz Silva/Agencia Brazil/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Erdbeben</h4>
-                <h3 class="fp-article__title text-xl--bold ">Starkes Erdbeben vor den Philippinen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Nach blutigem Polizeieinsatz</h4>
+                <h3 class="fp-article__title text-xl--bold ">Polizei in Rio: Neun Drogenchefs unter den rund 120 Toten</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/costa-rica-forscher-uberlebt-hai-attacke-in-40-meter-tiefe-4124407">
+            <a href="/panorama/bouchama-fuhrt-munster-nach-ruckstand-noch-zum-sieg-4141113">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/e67d5878-69a6-450f-9a75-bbf39578dd2c.jpeg?rect=0%2C77%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/e67d5878-69a6-450f-9a75-bbf39578dd2c.jpeg?rect=0%2C77%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/e67d5878-69a6-450f-9a75-bbf39578dd2c.jpeg?rect=0%2C77%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/e67d5878-69a6-450f-9a75-bbf39578dd2c.jpeg?rect=0%2C77%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/e67d5878-69a6-450f-9a75-bbf39578dd2c.jpeg?rect=0%2C77%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/e67d5878-69a6-450f-9a75-bbf39578dd2c.jpeg?rect=0%2C77%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/e67d5878-69a6-450f-9a75-bbf39578dd2c.jpeg?rect=0%2C77%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Wissenschaftler versah Haie vor der Kokos-Insel mit Markierungen, als er angegriffen wurde. (Symbolbild)" data-source="Helmut Fohringer/EPA/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/2c58c299-e15d-4ec5-97e5-b61e64d19a54.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/2c58c299-e15d-4ec5-97e5-b61e64d19a54.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/2c58c299-e15d-4ec5-97e5-b61e64d19a54.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/2c58c299-e15d-4ec5-97e5-b61e64d19a54.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/2c58c299-e15d-4ec5-97e5-b61e64d19a54.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/2c58c299-e15d-4ec5-97e5-b61e64d19a54.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/2c58c299-e15d-4ec5-97e5-b61e64d19a54.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Kiel traf früh zum 1:0." data-source="Bernd Thissen/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Angriff vor Kokos-Insel</h4>
-                <h3 class="fp-article__title text-xl--bold ">Costa Rica: Forscher überlebt Hai-Attacke in 40 Meter Tiefe</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> 2. Fußball-Bundesliga</h4>
+                <h3 class="fp-article__title text-xl--bold ">Bouchama führt Münster nach Rückstand noch zum Sieg</h3>
             </a>
         </article>
 </div>
@@ -1812,172 +2106,172 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/tram-und-reisebus-stossen-in-mitte-zusammen-fahrer-verletzt-4124168">
+            <a href="/panorama/elversberg-und-hannover-trennen-sich-2-2-4141111">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/1931246c-cf1b-4b92-8803-683e77d6ed96.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/1931246c-cf1b-4b92-8803-683e77d6ed96.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/1931246c-cf1b-4b92-8803-683e77d6ed96.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/1931246c-cf1b-4b92-8803-683e77d6ed96.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/1931246c-cf1b-4b92-8803-683e77d6ed96.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/1931246c-cf1b-4b92-8803-683e77d6ed96.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/1931246c-cf1b-4b92-8803-683e77d6ed96.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ein Reisebus und eine Tram stoßen nahe dem Alexanderplatz zusammen." data-source="Torsten Holtz/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/5bad3a5f-ec2a-45a5-9815-354bc2ba57fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/5bad3a5f-ec2a-45a5-9815-354bc2ba57fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/5bad3a5f-ec2a-45a5-9815-354bc2ba57fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/5bad3a5f-ec2a-45a5-9815-354bc2ba57fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/5bad3a5f-ec2a-45a5-9815-354bc2ba57fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/5bad3a5f-ec2a-45a5-9815-354bc2ba57fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/5bad3a5f-ec2a-45a5-9815-354bc2ba57fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Lukas Petkov erzielt das 1:0 und war mit bester Mann auf dem Platz." data-source="Sebastian Bach/Fußball-News Saarland/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Schwerer Unfall</h4>
-                <h3 class="fp-article__title text-xl--bold ">Tram und Reisebus stoßen in Mitte zusammen - Fahrer verletzt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> 2. Bundesliga</h4>
+                <h3 class="fp-article__title text-xl--bold ">Elversberg und Hannover trennen sich 2:2</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/polizei-stellt-waffen-und-drogen-bei-razzia-sicher-4123915">
+            <a href="/panorama/mit-43-jahren-gulcan-kamps-erwartet-baby-nr-2-4141106">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/1253ec20-191d-4303-bd1f-3880f7521a3c.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/1253ec20-191d-4303-bd1f-3880f7521a3c.jpeg?rect=0%2C127%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/1253ec20-191d-4303-bd1f-3880f7521a3c.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/1253ec20-191d-4303-bd1f-3880f7521a3c.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/1253ec20-191d-4303-bd1f-3880f7521a3c.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/1253ec20-191d-4303-bd1f-3880f7521a3c.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/1253ec20-191d-4303-bd1f-3880f7521a3c.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Auch in Weil der Stadt bei Stuttgart waren die Beamten im Einsatz." data-source="Bernd Weißbrod/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/7ff05a21-980a-4171-a527-4235bbdc0595.jpeg?rect=0%2C112%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/7ff05a21-980a-4171-a527-4235bbdc0595.jpeg?rect=0%2C112%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/7ff05a21-980a-4171-a527-4235bbdc0595.jpeg?rect=0%2C112%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/7ff05a21-980a-4171-a527-4235bbdc0595.jpeg?rect=0%2C112%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/7ff05a21-980a-4171-a527-4235bbdc0595.jpeg?rect=0%2C112%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/7ff05a21-980a-4171-a527-4235bbdc0595.jpeg?rect=0%2C112%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/7ff05a21-980a-4171-a527-4235bbdc0595.jpeg?rect=0%2C112%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Gülcan Kamps ist schwanger. (Archivbild)" data-source="Karl-Josef Hildenbrand/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Einsatz</h4>
-                <h3 class="fp-article__title text-xl--bold ">Polizei stellt Waffen und Drogen bei Razzia sicher</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Leute</h4>
+                <h3 class="fp-article__title text-xl--bold ">Mit 43 Jahren: Gülcan Kamps erwartet Baby Nr. 2</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/auch-kretschmer-fordert-aufweichung-der-klimaziele-4124403">
+            <a href="/panorama/dortmunds-schlotterbeck-auch-fur-duell-mit-city-fraglich-4141105">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/5009f3a6-30be-4699-a74a-af13f2b90432.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/5009f3a6-30be-4699-a74a-af13f2b90432.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/5009f3a6-30be-4699-a74a-af13f2b90432.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/5009f3a6-30be-4699-a74a-af13f2b90432.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/5009f3a6-30be-4699-a74a-af13f2b90432.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/5009f3a6-30be-4699-a74a-af13f2b90432.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/5009f3a6-30be-4699-a74a-af13f2b90432.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Michael Kretschmer fordert, über Anpassungen der Klimaziele zu diskutieren. (Archivbild)" data-source="Michael Kappeler/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/6907e399-326f-453c-9631-6c152baba76d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/6907e399-326f-453c-9631-6c152baba76d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/6907e399-326f-453c-9631-6c152baba76d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/6907e399-326f-453c-9631-6c152baba76d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/6907e399-326f-453c-9631-6c152baba76d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/6907e399-326f-453c-9631-6c152baba76d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/6907e399-326f-453c-9631-6c152baba76d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Niko Kovac sprach vor der Partie in Augsburg auch über seinen Abwehrchef Nico Schlotterbeck." data-source="Tom Weller/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Klimaneutralität 2045</h4>
-                <h3 class="fp-article__title text-xl--bold ">Auch Kretschmer fordert Aufweichung der Klimaziele</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Fußball</h4>
+                <h3 class="fp-article__title text-xl--bold ">Dortmunds Schlotterbeck auch für Duell mit City fraglich</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/kein-titel-sc-magdeburg-verpasst-finale-der-club-wm-4124384">
+            <a href="/panorama/halloween-in-berlin-polizei-vereitelt-gefahrliche-aktion-4141084">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/22821940-a776-4a99-b0da-926b042e365c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/22821940-a776-4a99-b0da-926b042e365c.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/22821940-a776-4a99-b0da-926b042e365c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/22821940-a776-4a99-b0da-926b042e365c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/22821940-a776-4a99-b0da-926b042e365c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/22821940-a776-4a99-b0da-926b042e365c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/22821940-a776-4a99-b0da-926b042e365c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Tim Hornke war bei der Halbfinalniederlage des SCM bester Torschütze" data-source="Marius Becker/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/4da21802-1e3c-4b71-91ca-0184a16cf186.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/4da21802-1e3c-4b71-91ca-0184a16cf186.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/4da21802-1e3c-4b71-91ca-0184a16cf186.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/4da21802-1e3c-4b71-91ca-0184a16cf186.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/4da21802-1e3c-4b71-91ca-0184a16cf186.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/4da21802-1e3c-4b71-91ca-0184a16cf186.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/4da21802-1e3c-4b71-91ca-0184a16cf186.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Berliner Polizei ist auch in diesem Jahr zu Halloween verstärkt in der Stadt unterwegs. (Symbolbild)" data-source="Sebastian Gollnow/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Polizeieinsatz</h4>
+                <h3 class="fp-article__title text-xl--bold ">Halloween in Berlin - Polizei vereitelt gefährliche Aktion</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/nach-hurrikan-melissa-touristen-konnen-jamaika-verlassen-4141094">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/00c0e58a-0b76-4276-ac8a-197a6eb11abf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/00c0e58a-0b76-4276-ac8a-197a6eb11abf.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/00c0e58a-0b76-4276-ac8a-197a6eb11abf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/00c0e58a-0b76-4276-ac8a-197a6eb11abf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/00c0e58a-0b76-4276-ac8a-197a6eb11abf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/00c0e58a-0b76-4276-ac8a-197a6eb11abf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/00c0e58a-0b76-4276-ac8a-197a6eb11abf.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die auch bei Touristen beliebte Ortschaft Black River, die im 17. Jahrhundert gegründet wurde, ist komplett zerstört." data-source="Matias Delacroix/AP/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Tödlicher Wirbelsturm</h4>
+                <h3 class="fp-article__title text-xl--bold ">Nach Hurrikan „Melissa“: Touristen können Jamaika verlassen</h3>
+            </a>
+        </article>
+</div>
+
+
+
+
+</div></section><section class="fp-related-articles embed fp-section hide-heading"><div data-service="category-teasers-list"><!-- Display grid solution  -->
+<div class="fp-article-list">
+    <header class="fp-category-name-header">
+        <aside class="fp-category-name-header__content">
+            <a href="/panorama">
+                <h2 class="fp-category-name-header__text">Panorama</h2>
+                <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13 6L9.5 3L6 0V5H0V7H6V12L13 6Z" fill="#16417C"></path>
+                </svg>
+            </a>
+        </aside>
+    </header>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/63-jahriger-stirbt-bei-frontalzusammenstoss-in-lingen-4141085">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/73c0b10f-679a-4934-8828-9e51b97a6c4d.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/73c0b10f-679a-4934-8828-9e51b97a6c4d.jpeg?rect=0%2C192%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/73c0b10f-679a-4934-8828-9e51b97a6c4d.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/73c0b10f-679a-4934-8828-9e51b97a6c4d.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/73c0b10f-679a-4934-8828-9e51b97a6c4d.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/73c0b10f-679a-4934-8828-9e51b97a6c4d.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/73c0b10f-679a-4934-8828-9e51b97a6c4d.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der 63-jährige Autofahrer starb am Unfallort, die Familie aus dem anderen Wagen wurde ins Krankenhaus gebracht." data-source="Matthias Brüning/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Tödlicher Unfall</h4>
+                <h3 class="fp-article__title text-xl--bold ">63-Jähriger stirbt bei Frontalzusammenstoß in Lingen</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/schusse-auf-berlins-strassen-polizei-weitet-ermittlungen-aus-4140960">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/489a0d3c-cccc-40d1-ab87-f652d5523a82.jpeg?rect=0%2C198%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/489a0d3c-cccc-40d1-ab87-f652d5523a82.jpeg?rect=0%2C198%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/489a0d3c-cccc-40d1-ab87-f652d5523a82.jpeg?rect=0%2C198%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/489a0d3c-cccc-40d1-ab87-f652d5523a82.jpeg?rect=0%2C198%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/489a0d3c-cccc-40d1-ab87-f652d5523a82.jpeg?rect=0%2C198%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/489a0d3c-cccc-40d1-ab87-f652d5523a82.jpeg?rect=0%2C198%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/489a0d3c-cccc-40d1-ab87-f652d5523a82.jpeg?rect=0%2C198%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Berlins Polizeipräsidentin will nach einer Häufung von Schüssen auf Berlins Straßen stärker gegen kriminelle Strukturen und Konflikte mit Waffengewalt vorgehen." data-source="Bernd von Jutrczenka/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Gewaltkriminalität</h4>
+                <h3 class="fp-article__title text-xl--bold ">Schüsse auf Berlins Straßen: Polizei weitet Ermittlungen aus</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/vogelgrippe-greift-auf-immer-mehr-geflugel-betriebe-uber-4140995">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/750fce6e-6f53-498f-8f07-9810de4608a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/750fce6e-6f53-498f-8f07-9810de4608a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/750fce6e-6f53-498f-8f07-9810de4608a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/750fce6e-6f53-498f-8f07-9810de4608a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/750fce6e-6f53-498f-8f07-9810de4608a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/750fce6e-6f53-498f-8f07-9810de4608a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/750fce6e-6f53-498f-8f07-9810de4608a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die auch als Vogelgrippe bezeichnete Geflügelpest hat sich mittlerweile fast über ganz Deutschland ausgebreitet. (Archivbild)" data-source="Christophe Gateau/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Krankheiten</h4>
+                <h3 class="fp-article__title text-xl--bold ">Vogelgrippe greift auf immer mehr Geflügel-Betriebe über</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/vogelgrippe-im-kreis-vechta-fast-150-000-tiere-betroffen-4141056">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/547380fb-b263-4fbd-9f04-d165c5344b29.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/547380fb-b263-4fbd-9f04-d165c5344b29.jpeg?rect=0%2C97%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/547380fb-b263-4fbd-9f04-d165c5344b29.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/547380fb-b263-4fbd-9f04-d165c5344b29.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/547380fb-b263-4fbd-9f04-d165c5344b29.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/547380fb-b263-4fbd-9f04-d165c5344b29.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/547380fb-b263-4fbd-9f04-d165c5344b29.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Im Landkreis Vechta sollen wegen der Vogelgrippe in einem Betrieb 130.000 Legehennen getötet werden. (Symbolbild)" data-source="Julian Stratenschulte/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Tierseuche</h4>
+                <h3 class="fp-article__title text-xl--bold ">Vogelgrippe im Kreis Vechta - fast 150.000 Tiere betroffen</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/senat-will-wohnen-auf-zeit-einschranken-4141054">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/5bc2531b-4159-4490-973c-3c45fc8688e1.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/5bc2531b-4159-4490-973c-3c45fc8688e1.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/5bc2531b-4159-4490-973c-3c45fc8688e1.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/5bc2531b-4159-4490-973c-3c45fc8688e1.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/5bc2531b-4159-4490-973c-3c45fc8688e1.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/5bc2531b-4159-4490-973c-3c45fc8688e1.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/5bc2531b-4159-4490-973c-3c45fc8688e1.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Kurzzeitwohnen soll in Berlin künftig eingeschränkt werden. (Foto - Illustration)" data-source="Monika Skolimowska/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Mieten</h4>
+                <h3 class="fp-article__title text-xl--bold ">Senat will Wohnen auf Zeit einschränken</h3>
+            </a>
+        </article>
+</div>
+
+
+
+
+</div></section><section class="fp-related-articles embed fp-section hide-heading"><div data-service="category-teasers-list"><!-- Display grid solution  -->
+<div class="fp-article-list">
+    <header class="fp-category-name-header">
+        <aside class="fp-category-name-header__content">
+            <a href="/panorama">
+                <h2 class="fp-category-name-header__text">Panorama</h2>
+                <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13 6L9.5 3L6 0V5H0V7H6V12L13 6Z" fill="#16417C"></path>
+                </svg>
+            </a>
+        </aside>
+    </header>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/verletzungspech-berlins-nationalspieler-lichtlein-fallt-aus-4141052">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/440a1f3c-321a-4d6a-b5b7-bfca9c04b2cc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/440a1f3c-321a-4d6a-b5b7-bfca9c04b2cc.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/440a1f3c-321a-4d6a-b5b7-bfca9c04b2cc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/440a1f3c-321a-4d6a-b5b7-bfca9c04b2cc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/440a1f3c-321a-4d6a-b5b7-bfca9c04b2cc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/440a1f3c-321a-4d6a-b5b7-bfca9c04b2cc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/440a1f3c-321a-4d6a-b5b7-bfca9c04b2cc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nils Lichtlein fällt mehrere Wochen aus." data-source="Andreas Gora/dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
-                <h3 class="fp-article__title text-xl--bold ">Kein Titel: SC Magdeburg verpasst Finale der Club-WM</h3>
+                <h3 class="fp-article__title text-xl--bold ">Verletzungspech: Berlins Nationalspieler Lichtlein fällt aus</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/bauarbeiten-an-der-elsenbrucke-verzogern-sich-4124393">
+            <a href="/panorama/halloween-blutspende-in-berlin-mit-besonderem-anreiz-4140713">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/2cfd6999-6dcd-43bd-9f38-5ada4ede81b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/2cfd6999-6dcd-43bd-9f38-5ada4ede81b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/2cfd6999-6dcd-43bd-9f38-5ada4ede81b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/2cfd6999-6dcd-43bd-9f38-5ada4ede81b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/2cfd6999-6dcd-43bd-9f38-5ada4ede81b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/2cfd6999-6dcd-43bd-9f38-5ada4ede81b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/2cfd6999-6dcd-43bd-9f38-5ada4ede81b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Auf dem neuen Abschnitt der A100 kommt es regelmäßig zu Verkehrsbehinderungen. (Archivbild)" data-source="Jörg Carstensen/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/3b97d14b-524e-47a3-b1c1-a08c8d52b3d8.jpeg?rect=0%2C111%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/3b97d14b-524e-47a3-b1c1-a08c8d52b3d8.jpeg?rect=0%2C111%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/3b97d14b-524e-47a3-b1c1-a08c8d52b3d8.jpeg?rect=0%2C111%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/3b97d14b-524e-47a3-b1c1-a08c8d52b3d8.jpeg?rect=0%2C111%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/3b97d14b-524e-47a3-b1c1-a08c8d52b3d8.jpeg?rect=0%2C111%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/3b97d14b-524e-47a3-b1c1-a08c8d52b3d8.jpeg?rect=0%2C111%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/3b97d14b-524e-47a3-b1c1-a08c8d52b3d8.jpeg?rect=0%2C111%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Zwischen Halloween-Deko und im Kostüm spendet eine Frau Blut." data-source="Soeren Stache/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Stau an der Elsenbrücke</h4>
-                <h3 class="fp-article__title text-xl--bold ">Bauarbeiten an der Elsenbrücke verzögern sich</h3>
-            </a>
-        </article>
-</div>
-
-
-
-
-</div></section><section class="fp-related-articles embed fp-section hide-heading"><div data-service="category-teasers-list"><!-- Display grid solution  -->
-<div class="fp-article-list">
-    <header class="fp-category-name-header">
-        <aside class="fp-category-name-header__content">
-            <a href="/panorama">
-                <h2 class="fp-category-name-header__text">Panorama</h2>
-                <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M13 6L9.5 3L6 0V5H0V7H6V12L13 6Z" fill="#16417C"></path>
-                </svg>
-            </a>
-        </aside>
-    </header>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/205-neue-kommissare-bei-sachsischer-polizei-4124388">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/f6f0459c-48a7-4a13-9b47-2091f571807e.jpeg?rect=0%2C103%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/f6f0459c-48a7-4a13-9b47-2091f571807e.jpeg?rect=0%2C103%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/f6f0459c-48a7-4a13-9b47-2091f571807e.jpeg?rect=0%2C103%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/f6f0459c-48a7-4a13-9b47-2091f571807e.jpeg?rect=0%2C103%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/f6f0459c-48a7-4a13-9b47-2091f571807e.jpeg?rect=0%2C103%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/f6f0459c-48a7-4a13-9b47-2091f571807e.jpeg?rect=0%2C103%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/f6f0459c-48a7-4a13-9b47-2091f571807e.jpeg?rect=0%2C103%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die neuen Polizisten treten ihren Dienst bereits am Mittwoch an." data-source="Hendrik Schmidt/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Studienabschluss</h4>
-                <h3 class="fp-article__title text-xl--bold ">205 neue Kommissare bei sächsischer Polizei</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Gesundheit</h4>
+                <h3 class="fp-article__title text-xl--bold ">Halloween-Blutspende in Berlin mit besonderem Anreiz</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/brandenburg-will-schnelles-ja-aus-brussel-fur-ol-pipeline-4124379">
+            <a href="/panorama/pierre-m-krause-uber-tumor-erkrankung-war-ein-hollenritt-4141025">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/b74a298b-3de2-4b9f-b338-e15f8f6d9ebc.jpeg?rect=0%2C158%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/b74a298b-3de2-4b9f-b338-e15f8f6d9ebc.jpeg?rect=0%2C158%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/b74a298b-3de2-4b9f-b338-e15f8f6d9ebc.jpeg?rect=0%2C158%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/b74a298b-3de2-4b9f-b338-e15f8f6d9ebc.jpeg?rect=0%2C158%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/b74a298b-3de2-4b9f-b338-e15f8f6d9ebc.jpeg?rect=0%2C158%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/b74a298b-3de2-4b9f-b338-e15f8f6d9ebc.jpeg?rect=0%2C158%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/b74a298b-3de2-4b9f-b338-e15f8f6d9ebc.jpeg?rect=0%2C158%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Brandenburger Landesregierung dringt auf eine zügige Entscheidung der EU-Kommission für die Ertüchtigung der Pipeline von Schwedt nach Rostock (Archivbild)." data-source="Patrick Pleul/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/b6ad82d1-40b8-42b9-b12e-a8173a6eed14.jpeg?rect=0%2C114%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/b6ad82d1-40b8-42b9-b12e-a8173a6eed14.jpeg?rect=0%2C114%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/b6ad82d1-40b8-42b9-b12e-a8173a6eed14.jpeg?rect=0%2C114%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/b6ad82d1-40b8-42b9-b12e-a8173a6eed14.jpeg?rect=0%2C114%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/b6ad82d1-40b8-42b9-b12e-a8173a6eed14.jpeg?rect=0%2C114%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/b6ad82d1-40b8-42b9-b12e-a8173a6eed14.jpeg?rect=0%2C114%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/b6ad82d1-40b8-42b9-b12e-a8173a6eed14.jpeg?rect=0%2C114%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nach einem Jahr Pause wegen schwerer Krankheit meldet sich Moderator Pierre M. Krause zurück. (Archivbild)" data-source="picture alliance / Uli Deck/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Kabinett in Brüssel</h4>
-                <h3 class="fp-article__title text-xl--bold ">Brandenburg will schnelles Ja aus Brüssel für Öl-Pipeline</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Krankheiten</h4>
+                <h3 class="fp-article__title text-xl--bold ">Pierre M. Krause über Tumor-Erkrankung: „War ein Höllenritt“</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/betonplatte-auf-autobahn-geworfen-mordversuchs-anklage-4124378">
+            <a href="/panorama/china-startet-nachste-crew-zur-raumstation-tiangong-4141045">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/390f612e-fbc6-4785-9fcb-d5afe4370324.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/390f612e-fbc6-4785-9fcb-d5afe4370324.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/390f612e-fbc6-4785-9fcb-d5afe4370324.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/390f612e-fbc6-4785-9fcb-d5afe4370324.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/390f612e-fbc6-4785-9fcb-d5afe4370324.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/390f612e-fbc6-4785-9fcb-d5afe4370324.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/390f612e-fbc6-4785-9fcb-d5afe4370324.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Zwei Männer sollen Gegenstände von Autobahnbrücken geworfen haben und sind deshalb nun wegen versuchten Mordes angeklagt." data-source="Michael Matthey/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/c0e177b0-c4dc-45e6-a4e9-d87724b6e5a5.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/c0e177b0-c4dc-45e6-a4e9-d87724b6e5a5.jpeg?rect=0%2C91%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/c0e177b0-c4dc-45e6-a4e9-d87724b6e5a5.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/c0e177b0-c4dc-45e6-a4e9-d87724b6e5a5.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/c0e177b0-c4dc-45e6-a4e9-d87724b6e5a5.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/c0e177b0-c4dc-45e6-a4e9-d87724b6e5a5.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/c0e177b0-c4dc-45e6-a4e9-d87724b6e5a5.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Mit der Mission „Shenzhou 21“ setzt China sein ehrgeiziges Raumfahrtprogramm fort." data-source="Wang Jiangbo/XinHua/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Würfe von Autobahnbrücken</h4>
-                <h3 class="fp-article__title text-xl--bold ">Betonplatte auf Autobahn geworfen - Mordversuchs-Anklage</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Raumfahrt</h4>
+                <h3 class="fp-article__title text-xl--bold ">China startet nächste Crew zur Raumstation „Tiangong“</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/verdacht-auf-angriffe-razzia-gegen-junge-rechtsextremisten-4124015">
+            <a href="/panorama/25-jahriger-bei-auseinandersetzung-lebensgefahrlich-verletzt-4141043">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/923391a7-f529-4467-8cff-c2fc3adf4760.jpeg?rect=0%2C156%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/923391a7-f529-4467-8cff-c2fc3adf4760.jpeg?rect=0%2C156%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/923391a7-f529-4467-8cff-c2fc3adf4760.jpeg?rect=0%2C156%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/923391a7-f529-4467-8cff-c2fc3adf4760.jpeg?rect=0%2C156%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/923391a7-f529-4467-8cff-c2fc3adf4760.jpeg?rect=0%2C156%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/923391a7-f529-4467-8cff-c2fc3adf4760.jpeg?rect=0%2C156%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/923391a7-f529-4467-8cff-c2fc3adf4760.jpeg?rect=0%2C156%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Polizei durchsucht Wohnungen von acht jungen mutmaßlichen Rechtsextremisten in Berlin und dem Umland. (Symbolbild)" data-source="Soeren Stache/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/64a27bdb-f2c8-4465-b2e7-dbd76baca949.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/64a27bdb-f2c8-4465-b2e7-dbd76baca949.jpeg?rect=0%2C98%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/64a27bdb-f2c8-4465-b2e7-dbd76baca949.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/64a27bdb-f2c8-4465-b2e7-dbd76baca949.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/64a27bdb-f2c8-4465-b2e7-dbd76baca949.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/64a27bdb-f2c8-4465-b2e7-dbd76baca949.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/64a27bdb-f2c8-4465-b2e7-dbd76baca949.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Lebensgefährliche Verletzungen hat ein 25-Jähriger bei einer Auseinandersetzung in Wolfsburg erlitten. (Symbolbild)" data-source="Julian Stratenschulte/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Extremismus</h4>
-                <h3 class="fp-article__title text-xl--bold ">Verdacht auf Angriffe – Razzia gegen junge Rechtsextremisten</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/sachsen-regelt-forderung-von-wohneigentum-neu-4124231">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/729c3591-24fc-46ac-bbfd-a73f4c108017.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/729c3591-24fc-46ac-bbfd-a73f4c108017.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/729c3591-24fc-46ac-bbfd-a73f4c108017.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/729c3591-24fc-46ac-bbfd-a73f4c108017.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/729c3591-24fc-46ac-bbfd-a73f4c108017.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/729c3591-24fc-46ac-bbfd-a73f4c108017.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/729c3591-24fc-46ac-bbfd-a73f4c108017.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Sachsen regelt die Förderung von Wohneigentum für Familien neu. (Archivbild)" data-source="Jan Woitas/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Wohneigentum</h4>
-                <h3 class="fp-article__title text-xl--bold ">Sachsen regelt Förderung von Wohneigentum neu</h3>
-            </a>
-        </article>
-</div>
-
-
-
-
-</div></section><section class="fp-related-articles embed fp-section hide-heading"><div data-service="category-teasers-list"><!-- Display grid solution  -->
-<div class="fp-article-list">
-    <header class="fp-category-name-header">
-        <aside class="fp-category-name-header__content">
-            <a href="/panorama">
-                <h2 class="fp-category-name-header__text">Panorama</h2>
-                <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M13 6L9.5 3L6 0V5H0V7H6V12L13 6Z" fill="#16417C"></path>
-                </svg>
-            </a>
-        </aside>
-    </header>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/schuster-fordert-polizei-kompetenzen-bei-drohnen-attacken-4124175">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/ec2b68c8-9978-4471-875a-71bc3289c2ef.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/ec2b68c8-9978-4471-875a-71bc3289c2ef.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/ec2b68c8-9978-4471-875a-71bc3289c2ef.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/ec2b68c8-9978-4471-875a-71bc3289c2ef.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/ec2b68c8-9978-4471-875a-71bc3289c2ef.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/ec2b68c8-9978-4471-875a-71bc3289c2ef.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/ec2b68c8-9978-4471-875a-71bc3289c2ef.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Sachsens Innenminister Armin Schuster (CDU) fordert Kompetenzen für die Polizei bei der Abwehr von Drohnen." data-source="Jan Woitas/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Drohnenabwehr</h4>
-                <h3 class="fp-article__title text-xl--bold ">Schuster fordert Polizei-Kompetenzen bei Drohnen-Attacken</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/kai-wegner-besucht-mit-astronautin-rogge-freiheitsglocke-4124358">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/35015ef2-6e27-4e95-b75c-5887c488acf2.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/35015ef2-6e27-4e95-b75c-5887c488acf2.jpeg?rect=0%2C105%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/35015ef2-6e27-4e95-b75c-5887c488acf2.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/35015ef2-6e27-4e95-b75c-5887c488acf2.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/35015ef2-6e27-4e95-b75c-5887c488acf2.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/35015ef2-6e27-4e95-b75c-5887c488acf2.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/35015ef2-6e27-4e95-b75c-5887c488acf2.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Rabea Rogge (Mitte) flog im April als erste deutsche Frau ins Weltall." data-source="Bernd von Jutrczenka/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Zum 75. Jahrestag</h4>
-                <h3 class="fp-article__title text-xl--bold ">Kai Wegner besucht mit Astronautin Rogge Freiheitsglocke</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/70-meter-hoher-hexenbesen-im-harz-eroffnet-4124355">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/846cecfe-2e38-4922-ae63-52ff830cb03d.jpeg?rect=0%2C191%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/846cecfe-2e38-4922-ae63-52ff830cb03d.jpeg?rect=0%2C191%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/846cecfe-2e38-4922-ae63-52ff830cb03d.jpeg?rect=0%2C191%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/846cecfe-2e38-4922-ae63-52ff830cb03d.jpeg?rect=0%2C191%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/846cecfe-2e38-4922-ae63-52ff830cb03d.jpeg?rect=0%2C191%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/846cecfe-2e38-4922-ae63-52ff830cb03d.jpeg?rect=0%2C191%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/846cecfe-2e38-4922-ae63-52ff830cb03d.jpeg?rect=0%2C191%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Blick auf den 70 Meter hohen „Hexenbesen“ im Harz." data-source="Matthias Bein/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Neue Attraktion</h4>
-                <h3 class="fp-article__title text-xl--bold ">70 Meter hoher Hexenbesen im Harz eröffnet</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/suedlink-letzter-abschnitt-in-niedersachsen-genehmigt-4124264">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/89c6c2ce-a3af-4499-af79-fd89d0aa6ea5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/89c6c2ce-a3af-4499-af79-fd89d0aa6ea5.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/89c6c2ce-a3af-4499-af79-fd89d0aa6ea5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/89c6c2ce-a3af-4499-af79-fd89d0aa6ea5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/89c6c2ce-a3af-4499-af79-fd89d0aa6ea5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/89c6c2ce-a3af-4499-af79-fd89d0aa6ea5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/89c6c2ce-a3af-4499-af79-fd89d0aa6ea5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Im Süden Niedersachsens wird bereits am Suedlkink gebaut. Jetzt gibt es auch weiter nördlich eine Genehmigung. (Archivbild)" data-source="Michael Matthey/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Stromtrasse</h4>
-                <h3 class="fp-article__title text-xl--bold ">Suedlink: Letzter Abschnitt in Niedersachsen genehmigt</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/kretschmer-wirbt-in-taiwan-fur-wachstum-im-silicon-saxony-4124045">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/41e15afe-e20f-4f37-9fcb-1611357e5f08.jpeg?rect=0%2C190%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/41e15afe-e20f-4f37-9fcb-1611357e5f08.jpeg?rect=0%2C190%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/41e15afe-e20f-4f37-9fcb-1611357e5f08.jpeg?rect=0%2C190%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/41e15afe-e20f-4f37-9fcb-1611357e5f08.jpeg?rect=0%2C190%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/41e15afe-e20f-4f37-9fcb-1611357e5f08.jpeg?rect=0%2C190%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/41e15afe-e20f-4f37-9fcb-1611357e5f08.jpeg?rect=0%2C190%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/41e15afe-e20f-4f37-9fcb-1611357e5f08.jpeg?rect=0%2C190%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ministerpräsident Kretschmer hat bei seiner Asienreise in Taiwan das Halbleiterunternehmen TSMC besucht. (Symbolbild)" data-source="David Chang/EPA/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Halbleiterindustrie</h4>
-                <h3 class="fp-article__title text-xl--bold ">Kretschmer wirbt in Taiwan für Wachstum im Silicon Saxony</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Kriminalität</h4>
+                <h3 class="fp-article__title text-xl--bold ">25-Jähriger bei Auseinandersetzung lebensgefährlich verletzt</h3>
             </a>
         </article>
 </div>
@@ -2129,6 +2423,24 @@
                     </li>
                     <li>
                       <a href="/sachsen-anhalt/tourismus">Tourismus
+                      </a>
+                    </li>
+                </ul>
+              </div>
+              <div class="fp-footer__inner">
+                <div class="fp-footer__category">
+                  <h4>
+                    <a href="/live">Live
+                    </a>
+                  </h4>
+                </div>
+                <ul>
+                    <li>
+                      <a href="/live/fussball-regionalliga-nordost">Fußball-Regionalliga Nordost
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/live/fussball-verbandsliga-sachsen-anhalt">Fußball-Verbandsliga Sachsen-Anhalt
                       </a>
                     </li>
                 </ul>
@@ -2408,24 +2720,6 @@
               <div class="fp-footer__inner">
                 <div class="fp-footer__category">
                   <h4>
-                    <a href="/live">Live
-                    </a>
-                  </h4>
-                </div>
-                <ul>
-                    <li>
-                      <a href="/live/fussball-regionalliga-nordost">Fußball-Regionalliga Nordost
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/live/fussball-verbandsliga-sachsen-anhalt">Fußball-Verbandsliga Sachsen-Anhalt
-                      </a>
-                    </li>
-                </ul>
-              </div>
-              <div class="fp-footer__inner">
-                <div class="fp-footer__category">
-                  <h4>
                     <a href="/video" target="_self">Video
                     </a>
                   </h4>
@@ -2549,7 +2843,13 @@
         }
     }
 </script>
-<script src="https://static.dumontnext.de/revenue/lightworks-vs.js"></script>
+<script>
+if (!document.location.host.includes("publishing")) {
+	var elemscript = document.createElement("script");
+	elemscript.src = "https://static.dumontnext.de/revenue/lightworks-vs.js";
+	document.head.appendChild(elemscript);
+}
+</script>
 <script type="text/javascript">
     var isDesktop = window.innerWidth > 550
     IOMm('configure', {
@@ -2596,5 +2896,48 @@ if (location.host.includes("volksstimme.de") || location.host.includes("mz.de"))
 		document.querySelector("[title='Homepage']").insertAdjacentHTML("afterend", '<div style="margin-left:auto"><a href="https://www.sao.de" target="_blank"><img src="https://bmg-images.forward-publishing.io/2024/06/17/bfb6ae6e-22b1-42ff-9a38-77bc54d7b7bc.png" style="height:22px;"></a></div>');
 		document.querySelector(".fp-header-responsive__top--menu").insertAdjacentHTML("beforeend", '<a href="https://www.sao.de" target="_blank"><img src="https://bmg-images.forward-publishing.io/2024/06/17/bfb6ae6e-22b1-42ff-9a38-77bc54d7b7bc.png" style="margin-left:10px; height:22px;"></a>');
 })();}
+</script>
+<script>
+document.querySelectorAll(".cookie-einstellungen").forEach(x => {
+   var elem = document.createElement("a");
+  	elem.href = "/";
+  elem.className = x.className;
+  elem.target = x.target;
+  elem.innerText = x.innerText;
+  elem.addEventListener("click", a => {
+	   if (!window.cmpmngr.eventwrapper.verifyButtonPress(a)) {
+		    return false
+  	}
+  	window.cmpmngr.eventwrapper.preventDefault(a);
+  	__cmp("showScreenAdvanced", null, null)
+  }
+  );
+  x.replaceWith(elem);
+
+});
+</script>
+<script id="stickyad">
+if (document.location.host.includes("publishing") && window.innerWidth <= 550) {
+document.querySelector("#stickyad").insertAdjacentHTML("beforebegin", `<!-- STICKY ELEMENT -->
+<div v-if="showStickyContainer && !isFlutterApp" v-show="!isTaboolaInViewport" :class="computedClasses">
+  <button
+    :id="adSlotId + '-label'"
+    class="absolute top-[-30px] right-[10px] bg-whitesmoke dark:bg-flint text-black dark:text-white rounded-t text-[12px] hover:text-darkred px-2 pt-2 pb-1"
+    @click="closeStickyAd"
+  >
+    ANZEIGE X
+  </button>
+  <div :id="adSlotId" class="flex items-center justify-center h-[100px] !w-screen bg-whitesmoke dark:bg-flint"></div>
+</div>`);
+	const closeStickyAd = () => {
+	  stickyActive.value = false;
+	  document.getElementById(adSlotId.value + '-label').style.display = 'none';
+	  const adUnit = window.adHandler?.service.getAdUnit('sticky');
+	  if (!adUnit) return;
+		  adUnit.disable('refresh');
+		  adUnit.disable('adUnit');
+		  adUnit.getContainer().style.display = 'none';
+	};
+}
 </script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"d76a01bdc713445181921d02dbeab4e3","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body></html>

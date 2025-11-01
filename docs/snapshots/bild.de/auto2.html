@@ -11,7 +11,7 @@
 	<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<meta name="format-detection" content="telephone=no">
 
-	<link rel="stylesheet" href="https://www.bild.de/kaufberater/wp-content/themes/unitb-child/static/css/kaufberater-modules.css?v=1755162619084">
+	<link rel="stylesheet" href="https://www.bild.de/kaufberater/wp-content/themes/unitb-child/static/css/kaufberater-modules.css?v=1759998030803">
 	
   <link rel="dns-prefetch" href="https://a.bildstatic.de/" >
   <link rel="preload" href="https://www.bild.de/kaufberater/wp-content/themes/unitb-child/static/fonts/3FF86ACA2E0D4CD65.woff2" as="font" type="font/woff2" crossorigin>
@@ -58,7 +58,7 @@
     window._sp_.config.targetingParams.setNonPurLayer = true;
   }
   window.__bild__cmp_config = {
-    privacyManagerId: 134074,
+    privacyManagerId: 1230133,
     propertyId: 6804,
     socialPurposeId: "5e8b11c3ebdb0627ecca27a4"
   };
@@ -266,11 +266,174 @@
 
 </script>
 
+<style>
+
+.u-cmp-dialog {
+ margin: auto;
+    border: none;
+    padding: 0;
+    max-width: calc(min(80vw, 600px));
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    background-color: #ffffffe6;
+    box-shadow: 0 0 0 9999px #000000b3, 0 2px 3px #0003, 0 6px 10px #0000001a;
+}
+     
+  .u-cmp-dialog__container {
+    margin: 0;
+    padding: 24px;
+    border-radius: 4px;
+    width: calc(100vw - 24px);
+    max-width: 600px;
+    box-sizing: border-box;
+    max-height: 356px;
+}
+
+.u-cmp-dialog__headline {
+    font-size: 1.25rem;
+    line-height: 1.2;
+    color: #212529;
+    text-align: center;
+    border-bottom: 1px solid #ced4da;
+    padding-block: 24px;
+    margin-block: 0;
+}
+
+.u-cmp-dialog__content {
+    font-size: 1rem;
+    line-height: 1.3125;
+    color: #495057;
+    white-space: break-spaces;
+    margin-inline: 24px;
+    margin-top: 24px;
+}
+
+.u-cmp-dialog__buttons {
+    display: flex;
+    flex-flow: column-reverse;
+    gap: 16px;
+    margin-top: 48px;
+    margin-bottom: 8px;
+    margin-inline: 24px;
+}
+
+.u-cmp-dialog__button {
+    display: inline-flex;
+    margin: auto 0 auto auto;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    color: #495057;
+    transition: color 
+ease-in-out .25s, background-color 
+ease-in-out .25s, opacity 
+ease-in-out .25s;
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    padding: 0 16px;
+    height: 36px;
+    font-size: 15px;
+    gap: 8px;
+    color: var(--c-white);
+    background-color: var(--c-red);
+}
+
+.u-cmp-dialog__button:hover {
+    background-color: #e9ecef;
+}
+
+</style>
+
 <script type='text/javascript'>
+
+    function showDialog(title, content) {
+      return new Promise((res) => {
+        const dialog = document.createElement('dialog');
+        dialog.classList.add('u-cmp-dialog');
+        dialog.innerHTML = `
+          <form method="dialog">
+            <h1 class="u-cmp-dialog__headline">${title}</h1>
+            <div class="u-cmp-dialog__content">${content}</div>
+            <div class="u-cmp-dialog__buttons">
+              <button class="u-cmp-dialog__button" value="close">Schließen</button>
+            </div>
+          </form>
+        `;
+        document.body.appendChild(dialog);
+        dialog.showModal();
+        dialog.addEventListener('close', (e) => {
+          dialog.close();
+          dialog.remove();
+          res();
+        });
+      });
+    }
+
     // open cmp
     function showPrivacyManager() {
-              _sp_.gdpr.loadPrivacyManagerModal('134074');
+              _sp_.gdpr.loadPrivacyManagerModal('1230133');
             }
+
+    function showRemoveTrackingAndCookies() {
+      revokeAllConsents().then(() => {
+        showDialog('Tracking und Cookies entfernen', 'Sie haben erfolgreich Ihre Einwilligung in die Nutzung von BILD mit Tracking und Cookies widerrufen. Damit entfallen alle Einwilligungen, die Sie zuvor über den (Cookie-) Einwilligungsbanner bzw. über den Privacy-Manager erteilt haben. Sie können sich jetzt erneut zwischen dem Pur-Abo und der Nutzung mit Tracking und Cookies entscheiden.\n\nBitte beachten Sie, dass dieser Widerruf aus technischen Gründen keine Wirksamkeit für sonstige Einwilligungen (z.B. in den Empfang von Newslettern) entfalten kann. Bitte wenden Sie sich diesbezüglich an datenschutz@axelspringer.de.').then(() => {
+          window.location.reload();
+        });
+      }).catch( () => {
+        showDialog('Tracking und Cookies entfernen', 'Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.').then(() => {
+          window.location.reload();
+        });
+      });
+    }
+
+    function revokeAllConsents() {
+      return new Promise( (res, reject) => {
+          if (typeof window > "u" || !window.__tcfapi) {
+              reject();
+              return
+          }
+          window.__tcfapi("postRejectAll", 2, (response, success) => {
+              if (!success) {
+                  reject(response);
+                  return
+              }
+              res(response)
+          })
+      })
+    }
+
+     function showRejectASUserRecognitionPopup() {
+      rejectASUserRecognition().then(() => {
+
+      }).catch( () => {
+        showDialog('Einwilligung zur Nutzung der Axel Springer Nutzerkennung auf BILD.de erfolgreich widerrufen', 'Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.')
+      });
+    }
+
+    function rejectASUserRecognition() {
+      return new Promise( (res, reject) => {
+        if(typeof ASCDP !== 'undefined') {
+          ASCDP.adS.sendEvent("reject_clicked"),
+          ASCDP.adS.loadModules(["rejectIds"], () => {
+            ASCDP.adS.rejectIds.reject()
+          });
+          res();
+        } else {
+          reject();
+        }
+      })
+    }
+
+
     // hole script block is needed for youtube embed
       function initilizeContent(elements) {
         for (i = 0; i < elements.length; ++i) {
@@ -386,7 +549,7 @@
 	<meta property="og:url" content="https://www.bild.de/kaufberater/auto/" />
 	<meta property="og:site_name" content="BILD Kaufberater" />
 	<meta name="twitter:card" content="summary_large_image" />
-	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","@id":"https://www.bild.de/kaufberater/auto/","url":"https://www.bild.de/kaufberater/auto/","name":"Auto: Testberichte und Kaufberatung | BILD Kaufberater","isPartOf":{"@id":"https://www.bild.de/kaufberater/#website"},"primaryImageOfPage":{"@id":"https://www.bild.de/kaufberater/auto/#primaryimage"},"image":{"@id":"https://www.bild.de/kaufberater/auto/#primaryimage"},"thumbnailUrl":"https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-scaled.jpg","description":"Alles rund ums Auto im Test | Kaufberatungen zu Autozubehör, Reifen und mehr | Top-Produkte und Preistipps beim BILD Kaufberater entdecken!","breadcrumb":{"@id":"https://www.bild.de/kaufberater/auto/#breadcrumb"},"inLanguage":"de"},{"@type":"ImageObject","inLanguage":"de","@id":"https://www.bild.de/kaufberater/auto/#primaryimage","url":"https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-scaled.jpg","contentUrl":"https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-scaled.jpg","width":2560,"height":1441,"caption":"Archie_Bibi_Tierhaarentf."},{"@type":"BreadcrumbList","@id":"https://www.bild.de/kaufberater/auto/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Kaufberater","item":"https://www.bild.de/kaufberater/"},{"@type":"ListItem","position":2,"name":"Auto"}]},{"@type":"WebSite","@id":"https://www.bild.de/kaufberater/#website","url":"https://www.bild.de/kaufberater/","name":"BILD Kaufberater","description":"","publisher":{"@id":"https://www.bild.de/kaufberater/#organization"},"potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://www.bild.de/kaufberater/?s={search_term_string}"},"query-input":{"@type":"PropertyValueSpecification","valueRequired":true,"valueName":"search_term_string"}}],"inLanguage":"de"},{"@type":"Organization","@id":"https://www.bild.de/kaufberater/#organization","name":"Die BESTEN bei BILD","url":"https://www.bild.de/kaufberater/","logo":{"@type":"ImageObject","inLanguage":"de","@id":"https://www.bild.de/kaufberater/#/schema/logo/image/","url":"","contentUrl":"","caption":"Die BESTEN bei BILD"},"image":{"@id":"https://www.bild.de/kaufberater/#/schema/logo/image/"},"sameAs":["https://www.facebook.com/bild"]}]}</script>
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","@id":"https://www.bild.de/kaufberater/auto/","url":"https://www.bild.de/kaufberater/auto/","name":"Auto: Testberichte und Kaufberatung | BILD Kaufberater","isPartOf":{"@id":"https://www.bild.de/kaufberater/#website"},"primaryImageOfPage":{"@id":"https://www.bild.de/kaufberater/auto/#primaryimage"},"image":{"@id":"https://www.bild.de/kaufberater/auto/#primaryimage"},"thumbnailUrl":"https://www.bild.de/kaufberater/data/uploads/2025/10/20165836/Bluetoothfreisprecheinrichtungen_SKR48-scaled.jpg","description":"Alles rund ums Auto im Test | Kaufberatungen zu Autozubehör, Reifen und mehr | Top-Produkte und Preistipps beim BILD Kaufberater entdecken!","breadcrumb":{"@id":"https://www.bild.de/kaufberater/auto/#breadcrumb"},"inLanguage":"de"},{"@type":"ImageObject","inLanguage":"de","@id":"https://www.bild.de/kaufberater/auto/#primaryimage","url":"https://www.bild.de/kaufberater/data/uploads/2025/10/20165836/Bluetoothfreisprecheinrichtungen_SKR48-scaled.jpg","contentUrl":"https://www.bild.de/kaufberater/data/uploads/2025/10/20165836/Bluetoothfreisprecheinrichtungen_SKR48-scaled.jpg","width":2560,"height":1707,"caption":"Untersucht wurde die Verständlichkeit der Geräte bei 50 und 100 km/h."},{"@type":"BreadcrumbList","@id":"https://www.bild.de/kaufberater/auto/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Kaufberater","item":"https://www.bild.de/kaufberater/"},{"@type":"ListItem","position":2,"name":"Auto"}]},{"@type":"WebSite","@id":"https://www.bild.de/kaufberater/#website","url":"https://www.bild.de/kaufberater/","name":"BILD Kaufberater","description":"","publisher":{"@id":"https://www.bild.de/kaufberater/#organization"},"potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://www.bild.de/kaufberater/?s={search_term_string}"},"query-input":{"@type":"PropertyValueSpecification","valueRequired":true,"valueName":"search_term_string"}}],"inLanguage":"de"},{"@type":"Organization","@id":"https://www.bild.de/kaufberater/#organization","name":"Die BESTEN bei BILD","url":"https://www.bild.de/kaufberater/","logo":{"@type":"ImageObject","inLanguage":"de","@id":"https://www.bild.de/kaufberater/#/schema/logo/image/","url":"","contentUrl":"","caption":"Die BESTEN bei BILD"},"image":{"@id":"https://www.bild.de/kaufberater/#/schema/logo/image/"},"sameAs":["https://www.facebook.com/bild"]}]}</script>
 	<!-- / Yoast SEO Premium plugin. -->
 
 
@@ -954,7 +1117,7 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                 autoStart: false,  // if you need to check user status or else before loading the adlib use false but also
                 hasPageAdMi: false,
                 hasPageAdTmi: false,
-                partners: false
+                partners: false,
             }
         </script>
         <script>
@@ -1917,7 +2080,7 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                                                                                                                                     class="u-category-teaser u-theme-default "
         
  
-                    href="https://www.bild.de/kaufberater/elektronische-parkscheiben-test/"
+                    href="https://www.bild.de/kaufberater/bluetooth-freisprecheinrichtungs-test/"
                     data-post-id=""
         
 >
@@ -1939,12 +2102,60 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                     style="--height: 394; --width: 700"
         
 >
-                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/08/04113014/Elektronische-Parkscheiben-im-Test-3051-5712x3808-1-700x394.webp?cacheBreak=1754299816 1x, https://www.bild.de/kaufberater/data/uploads/2025/08/04113014/Elektronische-Parkscheiben-im-Test-3051-5712x3808-1-1400x788.webp?cacheBreak=1754299816 2x" type="image/webp">
-                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/08/04113014/Elektronische-Parkscheiben-im-Test-3051-5712x3808-1-700x394.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/08/04113014/Elektronische-Parkscheiben-im-Test-3051-5712x3808-1-1400x788.jpg 2x" type="image/jpeg">
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/10/20165836/Bluetoothfreisprecheinrichtungen_SKR48-700x394.webp?cacheBreak=1760972319 1x, https://www.bild.de/kaufberater/data/uploads/2025/10/20165836/Bluetoothfreisprecheinrichtungen_SKR48-1400x788.webp?cacheBreak=1760972319 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/10/20165836/Bluetoothfreisprecheinrichtungen_SKR48-700x394.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/10/20165836/Bluetoothfreisprecheinrichtungen_SKR48-1400x788.jpg 2x" type="image/jpeg">
                         <img fetchpriority="high" decoding="async" 
                                                                                                                                     class=" "
         
- src="https://www.bild.de/kaufberater/data/uploads/2025/08/04113014/Elektronische-Parkscheiben-im-Test-3051-5712x3808-1-700x394.jpg" alt="" width="700" height="394" loading="eager" />
+ src="https://www.bild.de/kaufberater/data/uploads/2025/10/20165836/Bluetoothfreisprecheinrichtungen_SKR48-700x394.jpg" alt="Bluetooth-Freisprecheinrichtung Test" width="700" height="394" loading="eager" />
+
+                    </picture>
+
+
+    <div class="u-category-teaser__content-wrapper">
+                    <h2 class="u-category-teaser__headline">Klartext im Auto: Die besten Bluetooth-Freisprecheinrichtungen</h2>
+            </div>
+</a>
+
+                            
+
+
+
+
+
+
+<a 
+                                                                                                                                    class="u-category-teaser u-theme-default "
+        
+ 
+                    href="https://www.bild.de/kaufberater/elektronische-parkscheiben-test/"
+                    data-post-id=""
+        
+>
+    
+
+
+
+
+                        
+    
+                        
+                
+                
+        <picture 
+                                                                                                                                    class="u-category-teaser__picture u-picture u-picture--has-aspect-ratio "
+        
+ 
+                    data-component="Picture"
+                    style="--height: 178; --width: 318"
+        
+>
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/08/04113014/Elektronische-Parkscheiben-im-Test-3051-5712x3808-1-318x178.webp?cacheBreak=1754299817 1x, https://www.bild.de/kaufberater/data/uploads/2025/08/04113014/Elektronische-Parkscheiben-im-Test-3051-5712x3808-1-654x366.webp?cacheBreak=1754299817 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/08/04113014/Elektronische-Parkscheiben-im-Test-3051-5712x3808-1-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/08/04113014/Elektronische-Parkscheiben-im-Test-3051-5712x3808-1-654x366.jpg 2x" type="image/jpeg">
+                        <img decoding="async" 
+                                                                                                                                    class=" "
+        
+ src="https://www.bild.de/kaufberater/data/uploads/2025/08/04113014/Elektronische-Parkscheiben-im-Test-3051-5712x3808-1-318x178.jpg" alt="" width="318" height="178" loading="lazy" />
 
                     </picture>
 
@@ -1965,7 +2176,7 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                                                                                                                                     class="u-category-teaser u-theme-default "
         
  
-                    href="https://www.bild.de/kaufberater/drehmomentschluessel-test/"
+                    href="https://www.bild.de/kaufberater/kofferraum-organizer-test/"
                     data-post-id=""
         
 >
@@ -1987,66 +2198,18 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                     style="--height: 178; --width: 318"
         
 >
-                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/09/17143711/Drehmomentschluessel-S-R-Ks-Tools-Harzte-Michelin-Stahlwille-TZ-2879-4263x3200-2-318x178.webp?cacheBreak=1758112634 1x, https://www.bild.de/kaufberater/data/uploads/2025/09/17143711/Drehmomentschluessel-S-R-Ks-Tools-Harzte-Michelin-Stahlwille-TZ-2879-4263x3200-2-654x366.webp?cacheBreak=1758112635 2x" type="image/webp">
-                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/09/17143711/Drehmomentschluessel-S-R-Ks-Tools-Harzte-Michelin-Stahlwille-TZ-2879-4263x3200-2-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/09/17143711/Drehmomentschluessel-S-R-Ks-Tools-Harzte-Michelin-Stahlwille-TZ-2879-4263x3200-2-654x366.jpg 2x" type="image/jpeg">
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/05/14113926/IMG_8128-318x178.webp 1x, https://www.bild.de/kaufberater/data/uploads/2025/05/14113929/IMG_8128-654x366.webp 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/05/14113910/IMG_8128-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/05/14113910/IMG_8128-654x366.jpg 2x" type="image/jpeg">
                         <img decoding="async" 
                                                                                                                                     class=" "
         
- src="https://www.bild.de/kaufberater/data/uploads/2025/09/17143711/Drehmomentschluessel-S-R-Ks-Tools-Harzte-Michelin-Stahlwille-TZ-2879-4263x3200-2-318x178.jpg" alt="" width="318" height="178" loading="lazy" />
+ src="https://www.bild.de/kaufberater/data/uploads/2025/05/14113910/IMG_8128-318x178.jpg" alt="Redakteur sitzt im Kofferraum eines alten Volvo Kombi. Vor ihm aufgereiht liegen Kofferraum-Organizer." width="318" height="178" loading="lazy" />
 
                     </picture>
 
 
     <div class="u-category-teaser__content-wrapper">
-                    <h2 class="u-category-teaser__headline">Drehmomentschlüssel im Test: Zauberstäbe für den Reifenwechsel</h2>
-            </div>
-</a>
-
-                            
-
-
-
-
-
-
-<a 
-                                                                                                                                    class="u-category-teaser u-theme-default "
-        
- 
-                    href="https://www.bild.de/kaufberater/dab-plus-adapter-test/"
-                    data-post-id=""
-        
->
-    
-
-
-
-
-                        
-    
-                        
-                
-                
-        <picture 
-                                                                                                                                    class="u-category-teaser__picture u-picture u-picture--has-aspect-ratio "
-        
- 
-                    data-component="Picture"
-                    style="--height: 178; --width: 318"
-        
->
-                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/08/29125722/Adapter-007-1-318x178.webp?cacheBreak=1756465045 1x, https://www.bild.de/kaufberater/data/uploads/2025/08/29125722/Adapter-007-1-654x366.webp?cacheBreak=1756465045 2x" type="image/webp">
-                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/08/29125722/Adapter-007-1-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/08/29125722/Adapter-007-1-654x366.jpg 2x" type="image/jpeg">
-                        <img decoding="async" 
-                                                                                                                                    class=" "
-        
- src="https://www.bild.de/kaufberater/data/uploads/2025/08/29125722/Adapter-007-1-318x178.jpg" alt="" width="318" height="178" loading="lazy" />
-
-                    </picture>
-
-
-    <div class="u-category-teaser__content-wrapper">
-                    <h2 class="u-category-teaser__headline">DAB+-Adapter fürs Auto im Test: Mein Alter streamt jetzt auch!</h2>
+                    <h2 class="u-category-teaser__headline">Die besten Organizer und Taschen für den Kofferraum</h2>
             </div>
 </a>
 
@@ -2091,7 +2254,7 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                                                                                                                                     class="u-category-teaser u-theme-default "
         
  
-                    href="https://www.bild.de/kaufberater/tierhaarentferner-test/"
+                    href="https://www.bild.de/kaufberater/auto-trockentuecher-test/"
                     data-post-id=""
         
 >
@@ -2113,18 +2276,18 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                     style="--height: 394; --width: 700"
         
 >
-                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-700x394.webp?cacheBreak=1752657630 1x, https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-1400x788.webp?cacheBreak=1752657630 2x" type="image/webp">
-                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-700x394.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-1400x788.jpg 2x" type="image/jpeg">
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/08/15120555/PT_Auto_Trockentuch-Test_SKR123-700x394.webp?cacheBreak=1755252357 1x, https://www.bild.de/kaufberater/data/uploads/2025/08/15120555/PT_Auto_Trockentuch-Test_SKR123-1400x788.webp?cacheBreak=1755252358 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/08/15120555/PT_Auto_Trockentuch-Test_SKR123-700x394.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/08/15120555/PT_Auto_Trockentuch-Test_SKR123-1400x788.jpg 2x" type="image/jpeg">
                         <img decoding="async" 
                                                                                                                                     class=" "
         
- src="https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-700x394.jpg" alt="Archie_Bibi_Tierhaarentf." width="700" height="394" loading="lazy" />
+ src="https://www.bild.de/kaufberater/data/uploads/2025/08/15120555/PT_Auto_Trockentuch-Test_SKR123-700x394.jpg" alt="Auto Trockentücher im Test" width="700" height="394" loading="lazy" />
 
                     </picture>
 
 
     <div class="u-category-teaser__content-wrapper">
-                    <h2 class="u-category-teaser__headline">Das sind die besten Tierhaarentferner</h2>
+                    <h2 class="u-category-teaser__headline">Auto-Trockentücher im Test: Streifenfrei trocken?</h2>
             </div>
 </a>
 
@@ -2139,7 +2302,7 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                                                                                                                                     class="u-category-teaser u-theme-default "
         
  
-                    href="https://www.bild.de/kaufberater/auto-trockentuecher-test/"
+                    href="https://www.bild.de/kaufberater/tierhaarentferner-test/"
                     data-post-id=""
         
 >
@@ -2161,18 +2324,18 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                     style="--height: 178; --width: 318"
         
 >
-                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/08/15120555/PT_Auto_Trockentuch-Test_SKR123-318x178.webp?cacheBreak=1755252358 1x, https://www.bild.de/kaufberater/data/uploads/2025/08/15120555/PT_Auto_Trockentuch-Test_SKR123-654x366.webp?cacheBreak=1755252358 2x" type="image/webp">
-                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/08/15120555/PT_Auto_Trockentuch-Test_SKR123-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/08/15120555/PT_Auto_Trockentuch-Test_SKR123-654x366.jpg 2x" type="image/jpeg">
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-318x178.webp?cacheBreak=1752657630 1x, https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-654x366.webp?cacheBreak=1752657630 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-654x366.jpg 2x" type="image/jpeg">
                         <img decoding="async" 
                                                                                                                                     class=" "
         
- src="https://www.bild.de/kaufberater/data/uploads/2025/08/15120555/PT_Auto_Trockentuch-Test_SKR123-318x178.jpg" alt="Auto Trockentücher im Test" width="318" height="178" loading="lazy" />
+ src="https://www.bild.de/kaufberater/data/uploads/2025/07/16112027/IMG_0403-2-318x178.jpg" alt="Archie_Bibi_Tierhaarentf." width="318" height="178" loading="lazy" />
 
                     </picture>
 
 
     <div class="u-category-teaser__content-wrapper">
-                    <h2 class="u-category-teaser__headline">Auto-Trockentücher im Test: Streifenfrei trocken?</h2>
+                    <h2 class="u-category-teaser__headline">Das sind die besten Tierhaarentferner</h2>
             </div>
 </a>
 
@@ -2265,7 +2428,7 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                                                                                                                                     class="u-category-teaser u-theme-default "
         
  
-                    href="https://www.bild.de/kaufberater/ganzjahresreifen-fuer-kompaktwagen-test/"
+                    href="https://www.bild.de/kaufberater/ganzjahresreifen-test-215-50-r-18/"
                     data-post-id=""
         
 >
@@ -2287,18 +2450,18 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                     style="--height: 394; --width: 700"
         
 >
-                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/09/24113634/2T1A0549-700x394.webp?cacheBreak=1758706597 1x, https://www.bild.de/kaufberater/data/uploads/2025/09/24113634/2T1A0549-1400x788.webp?cacheBreak=1758706597 2x" type="image/webp">
-                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/09/24113634/2T1A0549-700x394.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/09/24113634/2T1A0549-1400x788.jpg 2x" type="image/jpeg">
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/10/22113253/Reifentest-T-Roc-R_2T1A0718-700x394.webp?cacheBreak=1761125575 1x, https://www.bild.de/kaufberater/data/uploads/2025/10/22113253/Reifentest-T-Roc-R_2T1A0718-1400x788.webp?cacheBreak=1761125575 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/10/22113253/Reifentest-T-Roc-R_2T1A0718-700x394.jpeg 1x, https://www.bild.de/kaufberater/data/uploads/2025/10/22113253/Reifentest-T-Roc-R_2T1A0718-1400x788.jpeg 2x" type="image/jpeg">
                         <img decoding="async" 
                                                                                                                                     class=" "
         
- src="https://www.bild.de/kaufberater/data/uploads/2025/09/24113634/2T1A0549-700x394.jpg" alt="Golf auf Radlader geladen steht hinter aufgestapelten Ganzjahresreifen" width="700" height="394" loading="lazy" />
+ src="https://www.bild.de/kaufberater/data/uploads/2025/10/22113253/Reifentest-T-Roc-R_2T1A0718-700x394.jpeg" alt="" width="700" height="394" loading="lazy" />
 
                     </picture>
 
 
     <div class="u-category-teaser__content-wrapper">
-                    <h2 class="u-category-teaser__headline">Welcher Allwetterreifen hält, was er verspricht?</h2>
+                    <h2 class="u-category-teaser__headline">Ganzjahresreifen-Test 215/50 R 18: Sicher in der Spur!</h2>
             </div>
 </a>
 
@@ -2313,7 +2476,7 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                                                                                                                                     class="u-category-teaser u-theme-default "
         
  
-                    href="https://www.bild.de/kaufberater/sommerreifen-test/"
+                    href="https://www.bild.de/kaufberater/kompakt-suv-winterreifen-test/"
                     data-post-id=""
         
 >
@@ -2335,18 +2498,66 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                     style="--height: 178; --width: 318"
         
 >
-                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/03/05162109/2T1A1067-318x178.webp 1x, https://www.bild.de/kaufberater/data/uploads/2025/03/05162109/2T1A1067-654x366.webp 2x" type="image/webp">
-                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/03/05162053/2T1A1067-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/03/05162053/2T1A1067-654x366.jpg 2x" type="image/jpeg">
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/10/15101827/2T1A2960-318x178.webp?cacheBreak=1760516310 1x, https://www.bild.de/kaufberater/data/uploads/2025/10/15101827/2T1A2960-654x366.webp?cacheBreak=1760516310 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/10/15101827/2T1A2960-318x178.jpeg 1x, https://www.bild.de/kaufberater/data/uploads/2025/10/15101827/2T1A2960-654x366.jpeg 2x" type="image/jpeg">
                         <img decoding="async" 
                                                                                                                                     class=" "
         
- src="https://www.bild.de/kaufberater/data/uploads/2025/03/05162053/2T1A1067-318x178.jpg" alt="Sommerreifentest 2025" width="318" height="178" loading="lazy" />
+ src="https://www.bild.de/kaufberater/data/uploads/2025/10/15101827/2T1A2960-318x178.jpeg" alt="" width="318" height="178" loading="lazy" />
 
                     </picture>
 
 
     <div class="u-category-teaser__content-wrapper">
-                    <h2 class="u-category-teaser__headline">Sommerreifen im Test: Sicher durch den Sommer</h2>
+                    <h2 class="u-category-teaser__headline">Winterreifen-Test 215/55 R 17: Haftpflicht mit diesen Reifen!</h2>
+            </div>
+</a>
+
+                            
+
+
+
+
+
+
+<a 
+                                                                                                                                    class="u-category-teaser u-theme-default "
+        
+ 
+                    href="https://www.bild.de/kaufberater/winterreifen-kompaktwagen-test/"
+                    data-post-id=""
+        
+>
+    
+
+
+
+
+                        
+    
+                        
+                
+                
+        <picture 
+                                                                                                                                    class="u-category-teaser__picture u-picture u-picture--has-aspect-ratio "
+        
+ 
+                    data-component="Picture"
+                    style="--height: 178; --width: 318"
+        
+>
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/10/07155336/Aufma_TBA_02-318x178.webp?cacheBreak=1759845219 1x, https://www.bild.de/kaufberater/data/uploads/2025/10/07155336/Aufma_TBA_02-654x366.webp?cacheBreak=1759845219 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/10/07155336/Aufma_TBA_02-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/10/07155336/Aufma_TBA_02-654x366.jpg 2x" type="image/jpeg">
+                        <img decoding="async" 
+                                                                                                                                    class=" "
+        
+ src="https://www.bild.de/kaufberater/data/uploads/2025/10/07155336/Aufma_TBA_02-318x178.jpg" alt="" width="318" height="178" loading="lazy" />
+
+                    </picture>
+
+
+    <div class="u-category-teaser__content-wrapper">
+                    <h2 class="u-category-teaser__headline">Winterreifen im XXL-Test: Nur 20 schaffen es ins Ziel!</h2>
             </div>
 </a>
 
@@ -2397,7 +2608,12 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
         </button>
 
         <ul class="u-footer__menu u-hide-on-print">
-                            <li class="u-footer__menu-item">
+                    
+
+            
+                                    
+
+            <li class="u-footer__menu-item">
                 
 
 
@@ -2411,7 +2627,12 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                     rel=""
         
 >Über Uns</a>            </li>
-                            <li class="u-footer__menu-item">
+                    
+
+            
+                                    
+
+            <li class="u-footer__menu-item">
                 
 
 
@@ -2425,7 +2646,12 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                     rel=""
         
 >AGB</a>            </li>
-                            <li class="u-footer__menu-item">
+                    
+
+            
+                                    
+
+            <li class="u-footer__menu-item">
                 
 
 
@@ -2439,7 +2665,12 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                     rel=""
         
 >Datenschutz</a>            </li>
-                            <li class="u-footer__menu-item">
+                    
+
+            
+                                    
+
+            <li class="u-footer__menu-item">
                 
 
 
@@ -2453,7 +2684,12 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                     rel=""
         
 >Impressum</a>            </li>
-                            <li class="u-footer__menu-item">
+                    
+
+            
+                                                                
+
+            <li class="u-footer__menu-item">
                 
 
 
@@ -2466,12 +2702,99 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                     target="_self"
                     rel=""
         
->Privatsphäre</a>            </li>
+>Privacy-Manager</a>            </li>
+                    
+
+            
+                                                                
+
+            <li class="u-footer__menu-item">
+                
+
+
+
+
+    <a href="javascript:showRemoveTrackingAndCookies()" 
+                                                                                                                                    class="u-remove-tracking-and-cookies menu-item menu-item-type-custom menu-item-object-custom menu-item-85702 u-footer__menu-link u-font--uppercase u-link   "
+        
+ 
+                    target="_self"
+                    rel=""
+        
+>Widerruf Tracking und Cookies</a>            </li>
+                    
+
+            
+                                    
+
+            <li class="u-footer__menu-item">
+                
+
+
+
+
+    <a href="https://www.bild.de/sonstiges/corporate-site/bild-erklaerung-zur-barrierefreiheit-684bf64cc500125714a3aed7" 
+                                                                                                                                    class="menu-item menu-item-type-custom menu-item-object-custom menu-item-85703 u-footer__menu-link u-font--uppercase u-link   "
+        
+ 
+                    target="_self"
+                    rel=""
+        
+>Barrierefreiheit</a>            </li>
+                    
+
+            
+                                    
+
+            <li class="u-footer__menu-item">
+                
+
+
+
+
+    <a href="https://www.bild.de/sonstiges/corporate-site/einwilligung-zur-nutzung-verwalten-sie-die-utiq-technologie-66573a2eaad9b31829419956" 
+                                                                                                                                    class="menu-item menu-item-type-custom menu-item-object-custom menu-item-85704 u-footer__menu-link u-font--uppercase u-link   "
+        
+ 
+                    target="_self"
+                    rel=""
+        
+>Utiq verwalten</a>            </li>
+                    
+
+            
+                                    
+
+            <li class="u-footer__menu-item">
+                
+
+
+
+
+    <a href="https://www.bild.de/corporate/site/bild-de/widerruf-nutzerkennungen-79224906.bild.html" 
+                                                                                                                                    class="u-reject-as-user-tracking menu-item menu-item-type-custom menu-item-object-custom menu-item-85705 u-footer__menu-link u-font--uppercase u-link   "
+        
+ 
+                    target="_self"
+                    rel=""
+        
+>Widerruf Nutzerkennungen</a>            </li>
                 </ul>
 
         <p class="u-footer__copyright">© BILD 2025</p>
     </div>
 </footer>
+
+<script>
+    const uRejectAsUserTracking = document.querySelector('.u-reject-as-user-tracking');
+    if (uRejectAsUserTracking) {
+        uRejectAsUserTracking.addEventListener('click', function(e) {
+            e.preventDefault();
+            showRejectASUserRecognitionPopup();
+        });
+        
+    }
+</script>
 
     </div>
 
@@ -2490,6 +2813,6 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
 </style>
 
 
-		<script src="https://www.bild.de/kaufberater/wp-content/themes/unitb-child/static/js/kaufberater-modules.min.js?v=1755162619084"></script>
+		<script src="https://www.bild.de/kaufberater/wp-content/themes/unitb-child/static/js/kaufberater-modules.min.js?v=1759998030803"></script>
 	</body>
 </html>

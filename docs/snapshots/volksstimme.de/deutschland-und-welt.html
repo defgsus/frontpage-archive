@@ -58,11 +58,12 @@
 
   <!-- vs category-page -->
 <script>
-    function consentEnableCleverpush() {
-        var s = document.createElement('script');
-        s.src = 'https://static.cleverpush.com/channel/loader/z5mjk7M6AD3Ze6keS.js';
-        document.head.append(s);
-    }
+    var s = document.createElement('script');
+    s.dataset.cmpSrc = 'https://static.cleverpush.com/channel/loader/z5mjk7M6AD3Ze6keS.js';
+	s.dataset.cmpVendor = "s2658";
+	s.type = "text/plain";
+	s.className = "cmplazyload";
+	document.head.append(s);
 </script>
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -78,64 +79,14 @@
 <script type="text/javascript" src="https://data-11c63b1cbc.volksstimme.de/iomm/latest/bootstrap/loader.js"></script>
 <!-- end preload of IOM web manager -->
 <script>
-	if (document.location.host.includes("publishing") == false) {    
-	var consents = [];
-    if (typeof dataLayer == "undefined") {
-        var dataLayer = [];
-    }
-    dataLayer.push({"consents": consents});
-
-    var addJs = function(id) {
-        consents.push(id);
-        dataLayer.push({'consents': consents});
-    }
-
-    function initiateSourcePoint(subscriptions) {
-        userType =  (!(subscriptions == undefined || subscriptions.pur == undefined || subscriptions.pur.length == 0)) ? "pur-pur" : "pur-anon";
-        !function () { var e = function () { var e, t = "__tcfapiLocator", a = [], n = window; for (; n;) { try { if (n.frames[t]) { e = n; break } } catch (e) { } if (n === window.top) break; n = n.parent } e || (!function e() { var a = n.document, r = !!n.frames[t]; if (!r) if (a.body) { var i = a.createElement("iframe"); i.style.cssText = "display:none", i.name = t, a.body.appendChild(i) } else setTimeout(e, 5); return !r }(), n.__tcfapi = function () { for (var e, t = arguments.length, n = new Array(t), r = 0; r < t; r++)n[r] = arguments[r]; if (!n.length) return a; if ("setGdprApplies" === n[0]) n.length > 3 && 2 === parseInt(n[1], 10) && "boolean" == typeof n[3] && (e = n[3], "function" == typeof n[2] && n[2]("set", !0)); else if ("ping" === n[0]) { var i = { gdprApplies: e, cmpLoaded: !1, cmpStatus: "stub" }; "function" == typeof n[2] && n[2](i) } else a.push(n) }, n.addEventListener("message", (function (e) { var t = "string" == typeof e.data, a = {}; try { a = t ? JSON.parse(e.data) : e.data } catch (e) { } var n = a.__tcfapiCall; n && window.__tcfapi(n.command, n.version, (function (a, r) { var i = { __tcfapiReturn: { returnValue: a, success: r, callId: n.callId } }; t && (i = JSON.stringify(i)), e.source.postMessage(i, "*") }), n.parameter) }), !1)) }; "undefined" != typeof module ? module.exports = e : e() }();
-        window._sp_ = {
-            config: {
-                accountId: 1473,
-                baseEndpoint: 'https://cmp.volksstimme.de',
-                propertyHref: '',
-                ...(!!userType ? { targetingParams: { userType } } : []),
-            }
-        }
-
-        __tcfapi('addEventListener', 2, function (tcData, success) {
-            if (tcData.eventStatus === 'useractioncomplete') {
-                document.location.reload();
-            }
-            if (tcData.eventStatus === 'tcloaded') {
-                if (userType == "pur-pur" && Object.keys(tcData.vendor?.consents ?? []).length != 0) {
-                    __tcfapi('postRejectAll', 2, function (postRejectAllResponse, success) {
-                        success && document.location.reload();
-                    });
-                }
-                __tcfapi('getCustomVendorConsents', 2, function (data) {
-                    for (var i = 0; i < data.consentedVendors.length; i++) {
-                        addJs(data.consentedVendors[i]._id);
-                    }
-                });
-            }
-            
-        });
-        
-        var script = document.createElement('script');
-        script.src = "https://cmp.volksstimme.de/wrapperMessagingWithoutDetection.js";
-        document.head.appendChild(script);
-    }
-        
-}
-</script>
-<script>
-    function consentEnableNativendo() {
         var s = document.createElement('script');
         s.async = true;
-        s.src = 'https://d.nativendo.de/cds/delivery/init?oms_zone=' + window.ad_channel;
+        s.dataset.cmpSrc = 'https://d.nativendo.de/cds/delivery/init?oms_zone=' + window.ad_channel;
+		s.dataset.cmpVendor = "s1016";
+		s.type = "text/plain";
+		s.className = "cmplazyload";
         var sc = document.getElementsByTagName('script')[0];
         sc.parentNode.insertBefore(s, sc);
-    }
 </script>
 <!-- Facebook Pixel Code -->
 <script>
@@ -155,7 +106,352 @@
         fbq('track', 'PageView');
     }
 </script>
-<script async="" id="ebx" src="//applets.ebxcdn.com/ebx.js"></script></head>
+<script async="" id="ebx" src="//applets.ebxcdn.com/ebx.js"></script>
+<script>
+
+        function initiateSourcePoint(subscriptions) { }
+
+        var consents = [];
+        if (typeof dataLayer == "undefined") {
+            var dataLayer = [];
+        }
+        dataLayer.push({ "consents": consents });
+
+        var addJs = function (id) {
+            consents.push(id);
+            dataLayer.push({ 'consents': consents });
+        }
+
+        window.cmp_waitforimport = 10000;
+        window.cmp_pur_enable = true;
+		window.cmp_macro_redirect = document.location.href;
+        fetchUserLoginStatusTEST = function () {
+            // When we login, we have a request header C1-Session-ID. We ask the delivery for the existence of this header.
+            // If it exists, then we know we are logged in.
+            return fetch('/api/public/user-session')
+                .then(function (res) { return res.json(); })
+                .catch(function (err) {
+                    console.error(err)
+
+                    // In case there is a problem with the API call, we assume the user isn't logged in.
+                    // This will allow the script depending on the emitting of the "logged in" event
+                    // to run.
+                    return { isLoggedIn: false }
+                })
+        }
+
+
+        fetchUserLoginStatusTEST().then(function (data) {
+            console.log(data);
+            isLoggedIn = data.isLoggedIn;
+            subscriptions = data.subscriptions;
+            id = data.id;
+
+            if (subscriptions) {
+                userType = subscriptions.userType;
+                if (userType == undefined)
+                    userType == "pur-anon";
+                permissions = subscriptions.permissions;
+                if (permissions == undefined)
+                    permissions = [];
+
+                // handle SourcePoint, i.e. the PUR Subscription product
+                if (typeof initiateSourcePointTEST === 'function') {
+                    initiateSourcePointTEST(subscriptions)
+                }
+            } else { // Im Fehlerfall wird SourcePoint ohne Daten initialisiert, daher pur-anon
+                initiateSourcePointTEST();
+            }
+
+
+        });
+
+        function initiateSourcePointTEST(subscriptions) {
+            userType = (!(subscriptions == undefined || subscriptions.pur == undefined || subscriptions.pur.length == 0)) ? "pur-pur" : "pur-anon";
+            // HIER ABARBEITEN, da haben wir selber Kontrolle drüber
+        }
+        function initiateSourcePointTEST(subscriptions) {
+            var userType = (!(subscriptions == undefined || subscriptions.pur == undefined || subscriptions.pur.length == 0))
+                ? "pur-pur"
+                : "pur-anon";
+            console.log("Benutzer-Abonnementstatus:", userType); // Hier wird der Abonnementstatus ausgegeben
+            // Setzt den globalen Wert für den Pur-Status
+            window.cmp_pur_loggedin = (userType === "pur-pur");
+
+            var checkcmp = window.setInterval(function () {
+                if (typeof __cmp == "function") {
+                    if (userType === "pur-pur")
+                        __cmp('setPurposeConsent', ["c2", 0, true]);
+                    __cmp('cancelwait');
+					var checktcf = window.setInterval(function () {
+					    if (typeof __tcfapi == "function") {
+					        __tcfapi('addEventListener', 2, function (tcData, success) {
+					            if (tcData.eventStatus === 'useractioncomplete') {
+					                document.location.reload();
+					            }
+					        });
+				    	    window.clearInterval(checktcf);
+					    }
+					}, 250);
+
+                    __cmp("addEventListener",["settings",() => {
+                      var registeredVendors = { 
+                        42: () => {
+                        var timerConsentEnableTaboola = window.setInterval(() => {
+                          if ("function" == typeof consentEnableTaboola) {
+                            window.clearInterval(timerConsentEnableTaboola);
+                            consentEnableTaboola();
+                          }
+                        },250)
+                      },
+					  c73647: () => { dataLayer.push({'event': 'BitmovinConsent'}); },
+                      s30: () => { dataLayer.push({'event': 'YoutubeConsent'}); },
+                      c57383: () => { dataLayer.push({'event': '23degreesConsent'}); },
+                      s7: () => { dataLayer.push({'event': 'FacebookConsent'}); },
+                      s1104: () => { dataLayer.push({'event': 'GoogleMapsConsent'}); },
+                      s14: () => { dataLayer.push({'event': 'InstagramConsent'}); },
+                      c78424: () => { dataLayer.push({'event': 'TickarooConsent'}); },
+                      s2536: () => { dataLayer.push({'event': 'TikTokConsent'}); },
+                      s34: () => { dataLayer.push({'event': 'XConsent'}); },
+                      s1318: () => { dataLayer.push({'event': 'ShowherosConsent'}); },
+                    };
+                    
+                    __cmp("getCMPData", null, (e) => {
+                      consentIds = Object.keys(e.vendorConsents);
+                      if (window.cmp_pur_enable && cmp_pur_loggedin) {
+                        //for (var vendorId in registeredVendors) {
+                        //  registeredVendors[vendorId]();
+                        //}
+                      } else if (e.choiceType == 0) {
+                      } else if (e.choiceType == 1) {
+                        for (var vendorId in registeredVendors) {
+                          registeredVendors[vendorId]();
+                        }
+                      } else if (e.choiceType == 2) {
+                        vendors = Object.keys(registeredVendors);
+                        for (var vendorId in registeredVendors) {
+                            if (consentIds.includes(vendorId)) {
+                              registeredVendors[vendorId]();
+                            }
+                          }
+                        } 
+                      }, true);
+                    },false],null);
+
+					
+                    window.clearTimeout(checkcmp);
+                }
+            }, 250);
+        }
+
+</script>
+
+<script>
+
+
+        if (document.location.host.includes("publishing") !== false) {
+            if (!("cmp_cdid" in window)) { window.cmp_cdid = "222923b842c63" }
+        } else {
+            if (!("cmp_cdid" in window)) { window.cmp_cdid = "a522d62a318b2" }
+        }
+        if (!("gdprAppliesGlobally" in window)) { window.gdprAppliesGlobally = true }
+        if (!("cmp_id" in window) || window.cmp_id < 1) { window.cmp_id = 0 }
+        if (!("cmp_params" in window)) { window.cmp_params = "" }
+        if (!("cmp_host" in window)) { window.cmp_host = "a.delivery.consentmanager.net" }
+        if (!("cmp_cdn" in window)) { window.cmp_cdn = "cdn.consentmanager.net" }
+        if (!("cmp_proto" in window)) { window.cmp_proto = "https:" }
+        if (!("cmp_codesrc" in window)) { window.cmp_codesrc = "0" }
+        window.cmp_getsupportedLangs = function () { var b = ["DE", "EN", "FR", "IT", "NO", "DA", "FI", "ES", "PT", "RO", "BG", "ET", "EL", "GA", "HR", "LV", "LT", "MT", "NL", "PL", "SV", "SK", "SL", "CS", "HU", "RU", "SR", "ZH", "TR", "UK", "AR", "BS", "JA", "CY"]; if ("cmp_customlanguages" in window) { for (var a = 0; a < window.cmp_customlanguages.length; a++) { b.push(window.cmp_customlanguages[a].l.toUpperCase()) } } return b };
+        window.cmp_getRTLLangs = function () { var a = ["AR"]; if ("cmp_customlanguages" in window) { for (var b = 0; b < window.cmp_customlanguages.length; b++) { if ("r" in window.cmp_customlanguages[b] && window.cmp_customlanguages[b].r) { a.push(window.cmp_customlanguages[b].l) } } } return a };
+        window.cmp_getlang = function (a) { if (typeof (a) != "boolean") { a = true } if (a && typeof (cmp_getlang.usedlang) == "string" && cmp_getlang.usedlang !== "") { return cmp_getlang.usedlang } return window.cmp_getlangs()[0] };
+        window.cmp_extractlang = function (a) { if (a.indexOf("cmplang=") != -1) { a = a.substr(a.indexOf("cmplang=") + 8, 2).toUpperCase(); if (a.indexOf("&") != -1) { a = a.substr(0, a.indexOf("&")) } } else { a = "" } return a };
+        window.cmp_getlangs = function () { var h = window.cmp_getsupportedLangs(); var g = []; var a = location.hash; var f = location.search; var e = "cmp_params" in window ? window.cmp_params : ""; if (cmp_extractlang(a) != "") { g.push(cmp_extractlang(a)) } else { if (cmp_extractlang(f) != "") { g.push(cmp_extractlang(f)) } else { if (cmp_extractlang(e) != "") { g.push(cmp_extractlang(e)) } else { if ("cmp_setlang" in window && window.cmp_setlang != "") { g.push(window.cmp_setlang.toUpperCase()) } else { if ("cmp_langdetect" in window && window.cmp_langdetect == 1) { g.push(window.cmp_getPageLang()) } else { g = window.cmp_getBrowserLangs() } } } } } var c = []; for (var d = 0; d < g.length; d++) { var b = g[d].toUpperCase(); if (b.length < 2) { continue } if (h.indexOf(b) != -1) { c.push(b) } else { if (b.indexOf("-") != -1) { b = b.substr(0, 2) } if (h.indexOf(b) != -1) { c.push(b) } } } if (c.length == 0 && typeof (cmp_getlang.defaultlang) == "string" && cmp_getlang.defaultlang !== "") { return [cmp_getlang.defaultlang.toUpperCase()] } else { return c.length > 0 ? c : ["EN"] } };
+        window.cmp_getPageLangs = function () {
+            var a = window.cmp_getXMLLang(); if (a != "") { a = [a.toUpperCase()] } else { a = [] }
+            a = a.concat(window.cmp_getLangsFromURL()); return a.length > 0 ? a : ["EN"]
+        };
+        window.cmp_getPageLang = function () { var a = window.cmp_getPageLangs(); return a.length > 0 ? a[0] : "" };
+        window.cmp_getLangsFromURL = function () {
+            var c = window.cmp_getsupportedLangs(); var b = location; var m = "toUpperCase"; var g = b.hostname[m]() + "."; var a = "/" + b.pathname[m]() + "/";
+            a = a.split("_").join("-");
+            a = a.split("//").join("/");
+            a = a.split("//").join("/"); var f = []; for (var e = 0; e < c.length; e++) { var j = a.substring(0, c[e].length + 2); if (g.substring(0, c[e].length + 1) == c[e] + ".") { f.push(c[e][m]()) } else { if (c[e].length == 5) { var k = c[e].substring(3, 5) + "-" + c[e].substring(0, 2); if (g.substring(0, k.length + 1) == k + ".") { f.push(c[e][m]()) } } else { if (j == "/" + c[e] + "/" || j == "/" + c[e] + "-") { f.push(c[e][m]()) } else { if (j == "/" + c[e].replace("-", "/") + "/" || j == "/" + c[e].replace("-", "/") + "/") { f.push(c[e][m]()) } else { if (c[e].length == 5) { var k = c[e].substring(3, 5) + "-" + c[e].substring(0, 2); var h = a.substring(0, k.length + 1); if (h == "/" + k + "/" || h == "/" + k.replace("-", "/") + "/") { f.push(c[e][m]()) } } } } } } } return f
+        };
+        window.cmp_getXMLLang = function () { var c = document.getElementsByTagName("html"); if (c.length > 0) { c = c[0] } else { c = document.documentElement } if (c && c.getAttribute) { var a = c.getAttribute("xml:lang"); if (typeof (a) != "string" || a == "") { a = c.getAttribute("lang") } if (typeof (a) == "string" && a != "") { a = a.split("_").join("-").toUpperCase(); var b = window.cmp_getsupportedLangs(); return b.indexOf(a) != -1 || b.indexOf(a.substr(0, 2)) != -1 ? a : "" } else { return "" } } };
+        window.cmp_getBrowserLangs = function () { var c = "languages" in navigator ? navigator.languages : []; var b = []; if (c.length > 0) { for (var a = 0; a < c.length; a++) { b.push(c[a]) } } if ("language" in navigator) { b.push(navigator.language) } if ("userLanguage" in navigator) { b.push(navigator.userLanguage) } return b };
+        (function () {
+            var C = document; var o = window; var t = ""; var h = ""; var k = ""; var E = function (e) {
+                var i = "cmp_" + e;
+                e = "cmp" + e + "="; var d = ""; var l = e.length; var J = location; var K = J.hash; var w = J.search; var u = K.indexOf(e); var I = w.indexOf(e); if (u != -1) { d = K.substring(u + l, 9999) } else { if (I != -1) { d = w.substring(I + l, 9999) } else { return i in o && typeof (o[i]) !== "function" ? o[i] : "" } } var H = d.indexOf("&"); if (H != -1) { d = d.substring(0, H) } return d
+            }; var j = E("lang"); if (j != "") {
+                t = j;
+                k = t
+            } else {
+                if ("cmp_getlang" in o) {
+                    t = o.cmp_getlang().toLowerCase();
+                    h = o.cmp_getlangs().slice(0, 3).join("_");
+                    k = o.cmp_getPageLangs().slice(0, 3).join("_"); if ("cmp_customlanguages" in o) { var m = o.cmp_customlanguages; for (var y = 0; y < m.length; y++) { var a = m[y].l.toLowerCase(); if (a == t) { t = "en" } } }
+                }
+            } var q = ("cmp_proto" in o) ? o.cmp_proto : "https:"; if (q != "http:" && q != "https:") { q = "https:" } var n = ("cmp_ref" in o) ? o.cmp_ref : location.href; if (n.length > 300) { n = n.substring(0, 300) } var A = function (l) {
+                var J = document; var M = "getElementsByTagName"; var O = J.createElement("script");
+                O.setAttribute("data-cmp-ab", "1");
+                O.type = "text/javascript";
+                O.async = true;
+                O.src = l; var N = ["body", "div", "span", "script", "head"]; var H = "currentScript"; var K = "parentElement"; var u = "appendChild"; var L = "body"; if (J[H] && J[H][K]) { J[H][K][u](O) } else { if (J[L]) { J[L][u](O) } else { for (var w = 0; w < N.length; w++) { var I = J[M](N[w]); if (I.length > 0) { I[0][u](O); break } } } }
+            }; var b = E("design"); var c = E("regulationkey"); var z = E("gppkey"); var s = E("att"); var f = o.encodeURIComponent; var g; try { g = C.cookie.length > 0 } catch (B) { g = false } var x = E("darkmode"); if (x == "0") { x = 0 } else { if (x == "1") { x = 1 } else { try { if ("matchMedia" in window && window.matchMedia) { var G = window.matchMedia("(prefers-color-scheme: dark)"); if ("matches" in G && G.matches) { x = 1 } } } catch (B) { x = 0 } } } var p = q + "//" + o.cmp_host + "/delivery/cmp.php?";
+            p += ("cmp_id" in o && o.cmp_id > 0 ? "id=" + o.cmp_id : "") + ("cmp_cdid" in o ? "&cdid=" + o.cmp_cdid : "") + "&h=" + f(n);
+            p += (b != "" ? "&cmpdesign=" + f(b) : "") + (c != "" ? "&cmpregulationkey=" + f(c) : "") + (z != "" ? "&cmpgppkey=" + f(z) : "");
+            p += (s != "" ? "&cmpatt=" + f(s) : "") + ("cmp_params" in o ? "&" + o.cmp_params : "") + (g ? "&__cmpfcc=1" : "");
+            p += (x > 0 ? "&cmpdarkmode=1" : "");
+            A(p + "&l=" + f(t) + "&ls=" + f(h) + "&lp=" + f(k) + "&o=" + (new Date()).getTime()); if (!("cmp_quickstub" in window)) {
+                var r = "js"; var v = E("debugunminimized") != "" ? "" : ".min"; if (E("debugcoverage") == "1") {
+                    r = "instrumented";
+                    v = ""
+                } if (E("debugtest") == "1") {
+                    r = "jstests";
+                    v = ""
+                } var F = new Date(); var D = F.getFullYear() + "-" + (F.getMonth() + 1) + "-" + F.getDate();
+                A(q + "//" + o.cmp_cdn + "/delivery/" + r + "/cmp_final" + v + ".js?t=" + D)
+            }
+        })();
+        window.cmp_rc = function (c, b) {
+            var l; try { l = document.cookie } catch (h) { l = "" } var j = ""; var f = 0; var g = false; while (l != "" && f < 100) {
+                f++; while (l.substr(0, 1) == " ") { l = l.substr(1, l.length) } var k = l.substring(0, l.indexOf("=")); if (l.indexOf(";") != -1) { var m = l.substring(l.indexOf("=") + 1, l.indexOf(";")) } else { var m = l.substr(l.indexOf("=") + 1, l.length) } if (c == k) {
+                    j = m;
+                    g = true
+                } var d = l.indexOf(";") + 1; if (d == 0) { d = l.length }
+                l = l.substring(d, l.length)
+            } if (!g && typeof (b) == "string") { j = b } return (j)
+        };
+        window.cmp_stub = function () {
+            var a = arguments;
+            __cmp.a = __cmp.a || []; if (!a.length) { return __cmp.a } else { if (a[0] === "ping") { if (a[1] === 2) { a[2]({ gdprApplies: gdprAppliesGlobally, cmpLoaded: false, cmpStatus: "stub", displayStatus: "hidden", apiVersion: "2.2", cmpId: 31 }, true) } else { a[2](false, true) } } else { if (a[0] === "getTCData") { __cmp.a.push([].slice.apply(a)) } else { if (a[0] === "addEventListener" || a[0] === "removeEventListener") { __cmp.a.push([].slice.apply(a)) } else { if (a.length == 4 && a[3] === false) { a[2]({}, false) } else { __cmp.a.push([].slice.apply(a)) } } } } }
+        };
+        window.cmp_dsastub = function () {
+            var a = arguments;
+            a[0] = "dsa." + a[0];
+            window.cmp_gppstub(a)
+        };
+        window.cmp_gppstub = function () {
+            var c = arguments;
+            __gpp.q = __gpp.q || []; if (!c.length) { return __gpp.q } var h = c[0]; var g = c.length > 1 ? c[1] : null; var f = c.length > 2 ? c[2] : null; var a = null; var j = false; if (h === "ping") {
+                a = window.cmp_gpp_ping();
+                j = true
+            } else {
+                if (h === "addEventListener") {
+                    __gpp.e = __gpp.e || []; if (!("lastId" in __gpp)) { __gpp.lastId = 0 }
+                    __gpp.lastId++; var d = __gpp.lastId;
+                    __gpp.e.push({ id: d, callback: g });
+                    a = { eventName: "listenerRegistered", listenerId: d, data: true, pingData: window.cmp_gpp_ping() };
+                    j = true
+                } else {
+                    if (h === "removeEventListener") {
+                        __gpp.e = __gpp.e || [];
+                        a = false; for (var e = 0; e < __gpp.e.length; e++) {
+                            if (__gpp.e[e].id == f) {
+                                __gpp.e[e].splice(e, 1);
+                                a = true; break
+                            }
+                        }
+                        j = true
+                    } else { __gpp.q.push([].slice.apply(c)) }
+                }
+            } if (a !== null && typeof (g) === "function") { g(a, j) }
+        };
+        window.cmp_gpp_ping = function () { return { gppVersion: "1.1", cmpStatus: "stub", cmpDisplayStatus: "hidden", signalStatus: "not ready", supportedAPIs: ["2:tcfeuv2", "5:tcfcav1", "7:usnat", "8:usca", "9:usva", "10:usco", "11:usut", "12:usct", "13:usfl", "14:usmt", "15:usor", "16:ustx", "17:usde", "18:usia", "19:usne", "20:usnh", "21:usnj", "22:ustn", "23:usmn"], cmpId: 31, sectionList: [], applicableSections: [0], gppString: "", parsedSections: {} } };
+        window.cmp_addFrame = function (b) {
+            if (!window.frames[b]) {
+                if (document.body) {
+                    var a = document.createElement("iframe");
+                    a.style.cssText = "display:none"; if ("cmp_cdn" in window && "cmp_ultrablocking" in window && window.cmp_ultrablocking > 0) { a.src = "//" + window.cmp_cdn + "/delivery/empty.html" }
+                    a.name = b;
+                    a.setAttribute("title", "Intentionally hidden, please ignore");
+                    a.setAttribute("role", "none");
+                    a.setAttribute("tabindex", "-1");
+                    document.body.appendChild(a)
+                } else { window.setTimeout(window.cmp_addFrame, 10, b) }
+            }
+        };
+        window.cmp_msghandler = function (d) {
+            var a = typeof d.data === "string"; try { var c = a ? JSON.parse(d.data) : d.data } catch (f) { var c = null } if (typeof (c) === "object" && c !== null && "__cmpCall" in c) {
+                var b = c.__cmpCall;
+                window.__cmp(b.command, b.parameter, function (h, g) {
+                    var e = { __cmpReturn: { returnValue: h, success: g, callId: b.callId } };
+                    d.source.postMessage(a ? JSON.stringify(e) : e, "*")
+                })
+            } if (typeof (c) === "object" && c !== null && "__tcfapiCall" in c) {
+                var b = c.__tcfapiCall;
+                window.__tcfapi(b.command, b.version, function (h, g) {
+                    var e = { __tcfapiReturn: { returnValue: h, success: g, callId: b.callId } };
+                    d.source.postMessage(a ? JSON.stringify(e) : e, "*")
+                }, b.parameter)
+            } if (typeof (c) === "object" && c !== null && "__gppCall" in c) {
+                var b = c.__gppCall;
+                window.__gpp(b.command, function (h, g) {
+                    var e = { __gppReturn: { returnValue: h, success: g, callId: b.callId } };
+                    d.source.postMessage(a ? JSON.stringify(e) : e, "*")
+                }, "parameter" in b ? b.parameter : null, "version" in b ? b.version : 1)
+            } if (typeof (c) === "object" && c !== null && "__dsaCall" in c) {
+                var b = c.__dsaCall;
+                window.__dsa(b.command, function (h, g) {
+                    var e = { __dsaReturn: { returnValue: h, success: g, callId: b.callId } };
+                    d.source.postMessage(a ? JSON.stringify(e) : e, "*")
+                }, "parameter" in b ? b.parameter : null, "version" in b ? b.version : 1)
+            }
+        };
+        window.cmp_setStub = function (a) {
+            if (!(a in window) || (typeof (window[a]) !== "function" && typeof (window[a]) !== "object" && (typeof (window[a]) === "undefined" || window[a] !== null))) {
+                window[a] = window.cmp_stub;
+                window[a].msgHandler = window.cmp_msghandler;
+                window.addEventListener("message", window.cmp_msghandler, false)
+            }
+        };
+        window.cmp_setGppStub = function (a) {
+            if (!(a in window) || (typeof (window[a]) !== "function" && typeof (window[a]) !== "object" && (typeof (window[a]) === "undefined" || window[a] !== null))) {
+                window[a] = window.cmp_gppstub;
+                window[a].msgHandler = window.cmp_msghandler;
+                window.addEventListener("message", window.cmp_msghandler, false)
+            }
+        };
+        if (!("cmp_noiframepixel" in window)) { window.cmp_addFrame("__cmpLocator") }
+        if ((!("cmp_disabletcf" in window) || !window.cmp_disabletcf) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__tcfapiLocator") }
+        if ((!("cmp_disablegpp" in window) || !window.cmp_disablegpp) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__gppLocator") }
+        if ((!("cmp_disabledsa" in window) || !window.cmp_disabledsa) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__dsaLocator") }
+        window.cmp_setStub("__cmp");
+        if (!("cmp_disabletcf" in window) || !window.cmp_disabletcf) { window.cmp_setStub("__tcfapi") }
+        if (!("cmp_disablegpp" in window) || !window.cmp_disablegpp) { window.cmp_setGppStub("__gpp") }
+        if (!("cmp_disabledsa" in window) || !window.cmp_disabledsa) { window.cmp_setGppStub("__dsa") };
+
+
+</script>
+<script>
+    if (document.location.host.includes("publishing")) {
+        var adHandler = adHandler || { cmd: [] };
+        adHandler.cmd.push(function () {
+            adHandler.service.setTargeting("hour", new Date().getHours());
+            pagetype = "";
+            articleIds = document.location.pathname.match(/[\d]{5,8}$/i);
+            if (articleIds != undefined && articleIds.length == 1) {
+                pagetype="article";
+            } else if (document.location.pathname == "/") {
+                pagetype = "homepage";
+            } else {
+                pagetype = "ressort";
+            }
+            adHandler.service.setTargeting("pagetype", pagetype);
+            adchannels = window.ad_channel.split("/");
+            if (window.ad_channel.includes("localnews/")) {  
+                adHandler.service.setTargeting("region", adchannels[1]);
+            }
+            adHandler.service.setTargeting("mvd_category", adchannels[0]);
+            adHandler.service.request();
+        });
+        elem = document.createElement("script");
+        elem.src = "https://showroom.click-performance.com/staging/DMN/volksstimme.de/volksstimme.de_ROS.js";
+        elem.type = "text/javascript";
+        document.head.appendChild(elem);
+    }
+</script></head>
 
   <body lang="en"><!-- vs category-page -->
 <!-- Google Tag Manager (noscript) -->
@@ -385,15 +681,15 @@
                             </a>
                         </div>
     <div class="fp-main-header__weather-widget">
-        <div class="fp-main-header__weather-widget--top wolkig">
+        <div class="fp-main-header__weather-widget--top regenschauer">
             <span class="weather-icon-img">
-                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/wolkig.svg" alt="weather">
+                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/regenschauer.svg" alt="weather">
             </span>
-            <span class="fp-main-header__weather-widget--tooltip">wolkig</span>
+            <span class="fp-main-header__weather-widget--tooltip">regenschauer</span>
             <aside>
-                <span class="fp-main-header__weather-widget--day-temp">14°</span>
+                <span class="fp-main-header__weather-widget--day-temp">16°</span>
                 <span>/</span>
-                <span class="fp-main-header__weather-widget--night-temp">3°</span>
+                <span class="fp-main-header__weather-widget--night-temp">10°</span>
             </aside>
         </div>
         <div class="fp-main-header__weather-widget--bottom">
@@ -418,6 +714,12 @@
 ">
                     <a class="text-14--bold" href="/sachsen-anhalt" target="_self">
                       Sachsen-Anhalt
+                    </a>
+                  </li>
+                  <li class="fp-main-nav__list-item
+">
+                    <a class="text-14--bold" href="/live">
+                      Live
                     </a>
                   </li>
                   <li class="fp-main-nav__list-item
@@ -455,12 +757,6 @@
 ">
                     <a class="text-14--bold" href="/blaulicht" target="_self">
                       Blaulicht
-                    </a>
-                  </li>
-                  <li class="fp-main-nav__list-item
-">
-                    <a class="text-14--bold" href="/live">
-                      Live
                     </a>
                   </li>
                   <li class="fp-main-nav__list-item
@@ -557,6 +853,12 @@
                   </li>
                   <li class="fp-main-nav__list-item
 ">
+                    <a class="text-14--bold" href="/live">
+                      Live
+                    </a>
+                  </li>
+                  <li class="fp-main-nav__list-item
+">
                     <a class="text-14--bold" href="/sport" target="_self">
                       Sport
                     </a>
@@ -590,12 +892,6 @@
 ">
                     <a class="text-14--bold" href="/blaulicht" target="_self">
                       Blaulicht
-                    </a>
-                  </li>
-                  <li class="fp-main-nav__list-item
-">
-                    <a class="text-14--bold" href="/live">
-                      Live
                     </a>
                   </li>
                   <li class="fp-main-nav__list-item
@@ -823,6 +1119,24 @@
                     <li class="fp-sidebar-menu__nav--item">
                       <a class="text-16--regular" href="/sachsen-anhalt/tourismus">
                         Tourismus
+                      </a>
+                    </li>
+            </ul>
+            <div class="fp-sidebar-menu__nav--header">
+              <span>
+                  <a href="/live">Live
+                  </a>
+              </span>
+            </div>
+            <ul class="fp-sidebar-menu__nav--list">
+                    <li class="fp-sidebar-menu__nav--item">
+                      <a class="text-16--regular" href="/live/fussball-regionalliga-nordost">
+                        Fußball-Regionalliga Nordost
+                      </a>
+                    </li>
+                    <li class="fp-sidebar-menu__nav--item">
+                      <a class="text-16--regular" href="/live/fussball-verbandsliga-sachsen-anhalt">
+                        Fußball-Verbandsliga Sachsen-Anhalt
                       </a>
                     </li>
             </ul>
@@ -1141,24 +1455,6 @@
             </ul>
             <div class="fp-sidebar-menu__nav--header">
               <span>
-                  <a href="/live">Live
-                  </a>
-              </span>
-            </div>
-            <ul class="fp-sidebar-menu__nav--list">
-                    <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="/live/fussball-regionalliga-nordost">
-                        Fußball-Regionalliga Nordost
-                      </a>
-                    </li>
-                    <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="/live/fussball-verbandsliga-sachsen-anhalt">
-                        Fußball-Verbandsliga Sachsen-Anhalt
-                      </a>
-                    </li>
-            </ul>
-            <div class="fp-sidebar-menu__nav--header">
-              <span>
                   <a href="/video" target="_self">Video
                   </a>
               </span>
@@ -1447,93 +1743,93 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/warten-auf-hamas-antwort-trump-setzt-frist-4124456">
+            <a href="/deutschland-und-welt/politik/shutdown-amerikaner-konnen-doch-auf-lebensmittelgeld-hoffen-4141135">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/10/01/f392660d-582a-41e9-82db-23e1ab180165.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/01/f392660d-582a-41e9-82db-23e1ab180165.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/01/f392660d-582a-41e9-82db-23e1ab180165.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/01/f392660d-582a-41e9-82db-23e1ab180165.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/01/f392660d-582a-41e9-82db-23e1ab180165.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/01/f392660d-582a-41e9-82db-23e1ab180165.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/01/f392660d-582a-41e9-82db-23e1ab180165.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Zeltlager in der sogenannten humanitären Zone im Süden des Gazastreifens. (Archivbild)" data-source="Jehad Alshrafi/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/ba8b7323-6055-4056-8903-3c0c9c9a933c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/ba8b7323-6055-4056-8903-3c0c9c9a933c.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/ba8b7323-6055-4056-8903-3c0c9c9a933c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/ba8b7323-6055-4056-8903-3c0c9c9a933c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/ba8b7323-6055-4056-8903-3c0c9c9a933c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/ba8b7323-6055-4056-8903-3c0c9c9a933c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/ba8b7323-6055-4056-8903-3c0c9c9a933c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Shutdown in den USA macht sich auch bei den Lebensmitteln bemerkbar." data-source="Robert F. Bukaty/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Lage im Überblick</h4>
-                <h3 class="fp-article__title text-xl--bold ">Warten auf Hamas-Antwort - Trump setzt Frist</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Haushaltsstreit</h4>
+                <h3 class="fp-article__title text-xl--bold ">Shutdown: Amerikaner können doch auf Lebensmittelgeld hoffen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/shutdown-in-den-usa-wird-immer-wahrscheinlicher-4124450">
+            <a href="/deutschland-und-welt/politik/odessas-ausgeburgerter-burgermeister-nun-unter-hausarrest-4141116">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/10/01/754aeb27-103c-424c-bdd6-fa029edda888.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/01/754aeb27-103c-424c-bdd6-fa029edda888.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/01/754aeb27-103c-424c-bdd6-fa029edda888.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/01/754aeb27-103c-424c-bdd6-fa029edda888.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/01/754aeb27-103c-424c-bdd6-fa029edda888.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/01/754aeb27-103c-424c-bdd6-fa029edda888.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/01/754aeb27-103c-424c-bdd6-fa029edda888.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ein „Shutdown“ in den USA ist kaum noch abzuwenden." data-source="Mariam Zuhaib/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/6606c126-0ff1-40bf-9b21-0845cc2b62e9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/6606c126-0ff1-40bf-9b21-0845cc2b62e9.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/6606c126-0ff1-40bf-9b21-0845cc2b62e9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/6606c126-0ff1-40bf-9b21-0845cc2b62e9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/6606c126-0ff1-40bf-9b21-0845cc2b62e9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/6606c126-0ff1-40bf-9b21-0845cc2b62e9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/6606c126-0ff1-40bf-9b21-0845cc2b62e9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der entmachtete Bürgermeister von Odessa, Hennadij Truchanow, ist wegen angeblichen Versagens beim Hochwasserschutz nach dem Entzug seiner Staatsbürgerschaft nun unter Hausarrest gestellt worden. (Archivbild)" data-source="---/Ukrinform/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> US-Bundeshaushalt</h4>
-                <h3 class="fp-article__title text-xl--bold ">„Shutdown“ in den USA wird immer wahrscheinlicher</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Krieg in der Ukraine</h4>
+                <h3 class="fp-article__title text-xl--bold ">Odessas ausgebürgerter Bürgermeister nun unter Hausarrest</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/jugendproteste-in-madagaskar-heizen-sich-weiter-auf-4124420">
+            <a href="/deutschland-und-welt/politik/lukaschenko-blogger-protassewitsch-unser-geheimdienstagent-4141107">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/2bdcd1e7-75be-4756-b1c9-04d11a713c6d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/2bdcd1e7-75be-4756-b1c9-04d11a713c6d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/2bdcd1e7-75be-4756-b1c9-04d11a713c6d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/2bdcd1e7-75be-4756-b1c9-04d11a713c6d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/2bdcd1e7-75be-4756-b1c9-04d11a713c6d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/2bdcd1e7-75be-4756-b1c9-04d11a713c6d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/2bdcd1e7-75be-4756-b1c9-04d11a713c6d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Gen Z-Bewegung und viele Einwohner der Stadt Antananarivo prangern die wiederkehrenden Wasser- und Stromausfälle sowie die Misswirtschaft der Regierung an." data-source="Iako Randrianarivelo/ZUMA Press Wire/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/a7d0b28d-06c0-44e2-8f3e-d74c728b1e78.jpeg?rect=0%2C66%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/a7d0b28d-06c0-44e2-8f3e-d74c728b1e78.jpeg?rect=0%2C66%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/a7d0b28d-06c0-44e2-8f3e-d74c728b1e78.jpeg?rect=0%2C66%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/a7d0b28d-06c0-44e2-8f3e-d74c728b1e78.jpeg?rect=0%2C66%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/a7d0b28d-06c0-44e2-8f3e-d74c728b1e78.jpeg?rect=0%2C66%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/a7d0b28d-06c0-44e2-8f3e-d74c728b1e78.jpeg?rect=0%2C66%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/a7d0b28d-06c0-44e2-8f3e-d74c728b1e78.jpeg?rect=0%2C66%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der belarussische Blogger Roman Protassewitsch soll schon bei seiner Festnahme in einem in Minsk zur Landung gezwungenen Flugzeug für den Geheimdienst seiner Heimat gearbeitet haben. (Archivbild)" data-source="-/ONT Channel/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Strom- und Wasserausfälle</h4>
-                <h3 class="fp-article__title text-xl--bold ">Jugendproteste in Madagaskar heizen sich weiter auf</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Belarus</h4>
+                <h3 class="fp-article__title text-xl--bold ">Lukaschenko: Blogger Protassewitsch unser Geheimdienstagent</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/portugal-verscharft-auslandergesetz-mit-stimmen-der-rechten-4124406">
+            <a href="/deutschland-und-welt/wirtschaft/nexperia-stoppt-in-chipkrise-ausfuhr-von-wafern-nach-china-4140856">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/26d9c254-9262-4118-9d74-8ee6676fa5ef.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/26d9c254-9262-4118-9d74-8ee6676fa5ef.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/26d9c254-9262-4118-9d74-8ee6676fa5ef.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/26d9c254-9262-4118-9d74-8ee6676fa5ef.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/26d9c254-9262-4118-9d74-8ee6676fa5ef.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/26d9c254-9262-4118-9d74-8ee6676fa5ef.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/26d9c254-9262-4118-9d74-8ee6676fa5ef.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Unter Ministerpräsident Montenegro haben es Migranten in Portugal künftig schwerer. (Archivbild)" data-source="Armando Franca/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/48e2cac6-3e69-4755-b38a-8ea05c32ee8a.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/48e2cac6-3e69-4755-b38a-8ea05c32ee8a.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/48e2cac6-3e69-4755-b38a-8ea05c32ee8a.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/48e2cac6-3e69-4755-b38a-8ea05c32ee8a.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/48e2cac6-3e69-4755-b38a-8ea05c32ee8a.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/48e2cac6-3e69-4755-b38a-8ea05c32ee8a.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/48e2cac6-3e69-4755-b38a-8ea05c32ee8a.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nexperia hat nach eigenen Angaben die Lieferung von Wafern an seinen Montage- und Teststandort im chinesischen Dongguan ausgesetzt. (Archivbild)" data-source="David Hammersen/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Einwanderung</h4>
-                <h3 class="fp-article__title text-xl--bold ">Portugal verschärft Ausländergesetz mit Stimmen der Rechten</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Chip-Krise</h4>
+                <h3 class="fp-article__title text-xl--bold ">Nexperia stoppt in Chipkrise Ausfuhr von Wafern nach China</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/kongo-ehemaliger-prasident-kabila-zum-tode-verurteilt-4124399">
+            <a href="/deutschland-und-welt/wirtschaft/molkerei-unternehmer-toni-meggle-ist-tot-4140887">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/31a2ae3f-540c-4635-93b4-7df034801731.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/31a2ae3f-540c-4635-93b4-7df034801731.jpeg?rect=0%2C125%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/31a2ae3f-540c-4635-93b4-7df034801731.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/31a2ae3f-540c-4635-93b4-7df034801731.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/31a2ae3f-540c-4635-93b4-7df034801731.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/31a2ae3f-540c-4635-93b4-7df034801731.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/31a2ae3f-540c-4635-93b4-7df034801731.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ein Militärgericht im Kongo hat Ex-Präsidenten Joseph Kabila wegen Hochverrats und Kriegsverbrechen zum Tode verurteilt. (Archivbild)" data-source="Frank Franklin Ii/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/236bf0f4-b8ea-4311-b615-8edae71932b4.jpeg?rect=0%2C169%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/236bf0f4-b8ea-4311-b615-8edae71932b4.jpeg?rect=0%2C169%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/236bf0f4-b8ea-4311-b615-8edae71932b4.jpeg?rect=0%2C169%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/236bf0f4-b8ea-4311-b615-8edae71932b4.jpeg?rect=0%2C169%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/236bf0f4-b8ea-4311-b615-8edae71932b4.jpeg?rect=0%2C169%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/236bf0f4-b8ea-4311-b615-8edae71932b4.jpeg?rect=0%2C169%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/236bf0f4-b8ea-4311-b615-8edae71932b4.jpeg?rect=0%2C169%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Toni Meggle starb nach Angaben des Unternehmens im Alter von 94 Jahren. (Archivbild)" data-source="Ursula Düren/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Schuldspruch in Abwesenheit</h4>
-                <h3 class="fp-article__title text-xl--bold ">Kongo: Ehemaliger Präsident Kabila zum Tode verurteilt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Im Alter von 94 Jahren</h4>
+                <h3 class="fp-article__title text-xl--bold ">Molkerei-Unternehmer Toni Meggle ist tot</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/fehlverhalten-bei-vw-mehr-als-500-entlassungen-4124401">
+            <a href="/deutschland-und-welt/wirtschaft/strom-netzentgelte-konnten-deutlich-sinken-4141034">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/08dea001-8e07-4e16-804d-c69cb3865279.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/08dea001-8e07-4e16-804d-c69cb3865279.jpeg?rect=0%2C64%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/08dea001-8e07-4e16-804d-c69cb3865279.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/08dea001-8e07-4e16-804d-c69cb3865279.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/08dea001-8e07-4e16-804d-c69cb3865279.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/08dea001-8e07-4e16-804d-c69cb3865279.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/08dea001-8e07-4e16-804d-c69cb3865279.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bei unentschuldigtem Fehlen droht auch bei VW die Kündigung. (Archivbild)" data-source="Julian Stratenschulte/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/6bc2b0fb-c2bc-4981-8f51-0118298982a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/6bc2b0fb-c2bc-4981-8f51-0118298982a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/6bc2b0fb-c2bc-4981-8f51-0118298982a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/6bc2b0fb-c2bc-4981-8f51-0118298982a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/6bc2b0fb-c2bc-4981-8f51-0118298982a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/6bc2b0fb-c2bc-4981-8f51-0118298982a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/6bc2b0fb-c2bc-4981-8f51-0118298982a5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Stromkunden können mit Entlastung bei Netzentgelten rechnen (Archivbild)." data-source="Julian Stratenschulte/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Folge der VW-Dieselaffäre</h4>
-                <h3 class="fp-article__title text-xl--bold ">Fehlverhalten bei VW: Mehr als 500 Entlassungen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Energiepreise</h4>
+                <h3 class="fp-article__title text-xl--bold ">Strom-Netzentgelte könnten deutlich sinken</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/nord-stream-verdachtiger-in-polen-gefasst-4124324">
+            <a href="/deutschland-und-welt/politik/wende-in-den-niederlanden-linksliberale-siegen-4140907">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/6fc9a80c-0277-4f33-b654-faa1aa080887.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/6fc9a80c-0277-4f33-b654-faa1aa080887.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/6fc9a80c-0277-4f33-b654-faa1aa080887.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/6fc9a80c-0277-4f33-b654-faa1aa080887.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/6fc9a80c-0277-4f33-b654-faa1aa080887.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/6fc9a80c-0277-4f33-b654-faa1aa080887.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/6fc9a80c-0277-4f33-b654-faa1aa080887.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Drei Jahre nach der Sabotage der Nord-Stream-Pipelines ist in Polen ein Verdächtiger festgenommen worden (Archivbild)" data-source="-/Danish Defence Command/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/2a5e5687-4267-4ca9-ba41-c49df02d6e33.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/2a5e5687-4267-4ca9-ba41-c49df02d6e33.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/2a5e5687-4267-4ca9-ba41-c49df02d6e33.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/2a5e5687-4267-4ca9-ba41-c49df02d6e33.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/2a5e5687-4267-4ca9-ba41-c49df02d6e33.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/2a5e5687-4267-4ca9-ba41-c49df02d6e33.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/2a5e5687-4267-4ca9-ba41-c49df02d6e33.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Rob Jetten hat beste Aussichten Regierungschef zu werden." data-source="Peter Dejong/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Anschläge auf Gaspipelines</h4>
-                <h3 class="fp-article__title text-xl--bold ">Nord-Stream-Verdächtiger in Polen gefasst</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Niederlande-Wahl</h4>
+                <h3 class="fp-article__title text-xl--bold ">Wende in den Niederlanden - Linksliberale siegen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/schneider-weiter-uneins-uber-verbrenner-aus-4124348">
+            <a href="/deutschland-und-welt/deutschland/weniger-kita-kinder-aber-mehr-personal-4140789">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/4adec055-b5ac-4856-a5f2-840bec655338.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/4adec055-b5ac-4856-a5f2-840bec655338.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/4adec055-b5ac-4856-a5f2-840bec655338.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/4adec055-b5ac-4856-a5f2-840bec655338.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/4adec055-b5ac-4856-a5f2-840bec655338.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/4adec055-b5ac-4856-a5f2-840bec655338.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/4adec055-b5ac-4856-a5f2-840bec655338.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Schneider trat gemeinsam mit Wirtschaftsministerin Reiche und Forschungsministerin Dorothee Bär vor die Presse." data-source="Kay Nietfeld/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/e3553c1f-f103-4557-929d-9e06213752d7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/e3553c1f-f103-4557-929d-9e06213752d7.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/e3553c1f-f103-4557-929d-9e06213752d7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/e3553c1f-f103-4557-929d-9e06213752d7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/e3553c1f-f103-4557-929d-9e06213752d7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/e3553c1f-f103-4557-929d-9e06213752d7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/e3553c1f-f103-4557-929d-9e06213752d7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wegen sinkender Geburtenzahlen geht die Zahl der Kita-Kinder zurück. (Symbolbild)" data-source="Friso Gentsch/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Kabinett in Klausur</h4>
-                <h3 class="fp-article__title text-xl--bold ">Schneider: Weiter uneins über Verbrenner-Aus</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Geburtenrückgang</h4>
+                <h3 class="fp-article__title text-xl--bold ">Weniger Kita-Kinder, aber mehr Personal</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/studie-gas-export-in-eu-beschert-putin-milliardeneinnahmen-4124019">
+            <a href="/deutschland-und-welt/deutschland/renten-konnten-wieder-um-3-7-prozent-steigen-4140905">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/7a9a7431-28c7-4e6b-891f-17aba46f9f04.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/7a9a7431-28c7-4e6b-891f-17aba46f9f04.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/7a9a7431-28c7-4e6b-891f-17aba46f9f04.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/7a9a7431-28c7-4e6b-891f-17aba46f9f04.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/7a9a7431-28c7-4e6b-891f-17aba46f9f04.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/7a9a7431-28c7-4e6b-891f-17aba46f9f04.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/7a9a7431-28c7-4e6b-891f-17aba46f9f04.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Unternehmen aus der EU importieren noch immer russisches LNG im Milliardenwert. (Archivbild)" data-source="Uncredited/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/d95d8d6f-acd8-4f64-929f-4c85a7cc15fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/d95d8d6f-acd8-4f64-929f-4c85a7cc15fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/d95d8d6f-acd8-4f64-929f-4c85a7cc15fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/d95d8d6f-acd8-4f64-929f-4c85a7cc15fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/d95d8d6f-acd8-4f64-929f-4c85a7cc15fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/d95d8d6f-acd8-4f64-929f-4c85a7cc15fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/d95d8d6f-acd8-4f64-929f-4c85a7cc15fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Renten sollen auch 2026 stärker als die Inflation steigen. (Symbolbild)" data-source="Fernando Gutierrez-Juarez/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Ukraine-Krieg</h4>
-                <h3 class="fp-article__title text-xl--bold ">Studie: Gas-Export in EU beschert Putin Milliardeneinnahmen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Altersbezüge</h4>
+                <h3 class="fp-article__title text-xl--bold ">Renten könnten wieder um 3,7 Prozent steigen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/bundesregierung-will-schlechte-laune-vertreiben-4123839">
+            <a href="/deutschland-und-welt/wirtschaft/termin-steht-benko-muss-sich-zweitem-prozess-stellen-4140948">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/ad0c10b9-69d7-4ecc-9e88-f85941c0f99d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/ad0c10b9-69d7-4ecc-9e88-f85941c0f99d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/ad0c10b9-69d7-4ecc-9e88-f85941c0f99d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/ad0c10b9-69d7-4ecc-9e88-f85941c0f99d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/ad0c10b9-69d7-4ecc-9e88-f85941c0f99d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/ad0c10b9-69d7-4ecc-9e88-f85941c0f99d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/ad0c10b9-69d7-4ecc-9e88-f85941c0f99d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Das Kabinett will die Stimmung in Deutschland drehen." data-source="Michael Kappeler/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/4280c62b-841f-4ac8-a5f6-6f1adddba66d.jpeg?rect=0%2C270%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/4280c62b-841f-4ac8-a5f6-6f1adddba66d.jpeg?rect=0%2C270%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/4280c62b-841f-4ac8-a5f6-6f1adddba66d.jpeg?rect=0%2C270%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/4280c62b-841f-4ac8-a5f6-6f1adddba66d.jpeg?rect=0%2C270%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/4280c62b-841f-4ac8-a5f6-6f1adddba66d.jpeg?rect=0%2C270%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/4280c62b-841f-4ac8-a5f6-6f1adddba66d.jpeg?rect=0%2C270%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/4280c62b-841f-4ac8-a5f6-6f1adddba66d.jpeg?rect=0%2C270%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wenige Wochen nach seinem ersten Prozess muss sich der Ex-Milliardär René Benko erneut vor Gericht verantworten" data-source="Barbara Gindl/APA/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Schwarz-Rot unter sich</h4>
-                <h3 class="fp-article__title text-xl--bold ">Bundesregierung will schlechte Laune vertreiben</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Signa-Pleite</h4>
+                <h3 class="fp-article__title text-xl--bold ">Termin steht: Benko muss sich zweitem Prozess stellen</h3>
             </a>
         </article>
 </div>
@@ -1545,12 +1841,12 @@
 <h2 class="fp-most-popular-section-title">Meistgelesen</h2>
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/deutschland-und-welt/politik/nord-stream-verdachtiger-in-polen-gefasst-4124324">
+      <a href="/deutschland-und-welt/politik/trump-fordert-abschaffung-der-filibuster-regel-im-us-senat-4140811">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">1.</span>
             <header>
-              <h4 class="fp-article__catchline"> Anschläge auf Gaspipelines</h4>
-              <h3 class="fp-article__title text-xxl--bold">Nord-Stream-Verdächtiger in Polen gefasst</h3>
+              <h4 class="fp-article__catchline"> Shutdown in den USA</h4>
+              <h3 class="fp-article__title text-xxl--bold">Trump fordert Abschaffung der Filibuster-Regel im US-Senat</h3>
             </header>
         </div>
       </a>
@@ -1558,12 +1854,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/deutschland-und-welt/politik/jugendproteste-in-madagaskar-heizen-sich-weiter-auf-4124420">
+      <a href="/deutschland-und-welt/politik/ukrainische-drohnen-treffen-heizkraftwerk-in-russland-4140765">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">2.</span>
             <header>
-              <h4 class="fp-article__catchline"> Strom- und Wasserausfälle</h4>
-              <h3 class="fp-article__title text-xxl--bold">Jugendproteste in Madagaskar heizen sich weiter auf</h3>
+              <h4 class="fp-article__catchline"> Ukraine-Krieg</h4>
+              <h3 class="fp-article__title text-xxl--bold">Ukrainische Drohnen treffen Heizkraftwerk in Russland</h3>
             </header>
         </div>
       </a>
@@ -1571,12 +1867,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/deutschland-und-welt/deutschland/klausur-minister-in-klinik-und-abreise-wegen-todesfalls-4124151">
+      <a href="/deutschland-und-welt/politik/odessas-ausgeburgerter-burgermeister-nun-unter-hausarrest-4141116">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">3.</span>
             <header>
-              <h4 class="fp-article__catchline"> Bundesregierung</h4>
-              <h3 class="fp-article__title text-xxl--bold">Klausur: Minister in Klinik und Abreise wegen Todesfalls</h3>
+              <h4 class="fp-article__catchline"> Krieg in der Ukraine</h4>
+              <h3 class="fp-article__title text-xxl--bold">Odessas ausgebürgerter Bürgermeister nun unter Hausarrest</h3>
             </header>
         </div>
       </a>
@@ -1584,12 +1880,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/deutschland-und-welt/politik/portugal-verscharft-auslandergesetz-mit-stimmen-der-rechten-4124406">
+      <a href="/deutschland-und-welt/wirtschaft/nach-treffen-mit-trump-xi-warnt-vor-gestorten-lieferketten-4140716">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">4.</span>
             <header>
-              <h4 class="fp-article__catchline"> Einwanderung</h4>
-              <h3 class="fp-article__title text-xxl--bold">Portugal verschärft Ausländergesetz mit Stimmen der Rechten</h3>
+              <h4 class="fp-article__catchline"> Handelsstreit</h4>
+              <h3 class="fp-article__title text-xxl--bold">Nach Treffen mit Trump: Xi warnt vor gestörten Lieferketten</h3>
             </header>
         </div>
       </a>
@@ -1608,94 +1904,94 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/steuerzahler-schwarzbuch-brucke-ins-nichts-und-teure-tiere-4124023">
+            <a href="/deutschland-und-welt/deutschland/spahn-wirft-spd-unterstellung-rassistischer-narrative-vor-4140906">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/49a6923a-eeeb-4a4b-8fad-5b60af0d4507.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/49a6923a-eeeb-4a4b-8fad-5b60af0d4507.jpeg?rect=0%2C101%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/49a6923a-eeeb-4a4b-8fad-5b60af0d4507.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/49a6923a-eeeb-4a4b-8fad-5b60af0d4507.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/49a6923a-eeeb-4a4b-8fad-5b60af0d4507.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/49a6923a-eeeb-4a4b-8fad-5b60af0d4507.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/49a6923a-eeeb-4a4b-8fad-5b60af0d4507.jpeg?rect=0%2C101%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Im Schwarzbuch listet der Bund der Steuerzahler jedes Jahr Beispiele auf, wo aus seiner Sicht Steuergelder verschwendet wurden - und kritisiert unter anderem die Ausgaben des Bundestags." data-source="Britta Pedersen/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/882d398f-cda1-4d8b-9c04-4a8e9e3c2aac.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/882d398f-cda1-4d8b-9c04-4a8e9e3c2aac.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/882d398f-cda1-4d8b-9c04-4a8e9e3c2aac.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/882d398f-cda1-4d8b-9c04-4a8e9e3c2aac.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/882d398f-cda1-4d8b-9c04-4a8e9e3c2aac.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/882d398f-cda1-4d8b-9c04-4a8e9e3c2aac.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/882d398f-cda1-4d8b-9c04-4a8e9e3c2aac.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Spahn erinnert die SPD an „brutale“ Umfragewerte" data-source="Michael Kappeler/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Öffentliche Gelder</h4>
-                <h3 class="fp-article__title text-xl--bold ">Steuerzahler-Schwarzbuch: Brücke ins Nichts und teure Tiere</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> „Stadtbild“-Debatte</h4>
+                <h3 class="fp-article__title text-xl--bold ">Spahn wirft SPD Unterstellung „rassistischer Narrative“ vor</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/klausur-minister-in-klinik-und-abreise-wegen-todesfalls-4124151">
+            <a href="/deutschland-und-welt/deutschland/arbeitgeber-gegen-geplante-mutterrente-spd-bekraftigt-kurs-4140771">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/90ffc0cb-9f40-4e06-879a-e6da8dc166be.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/90ffc0cb-9f40-4e06-879a-e6da8dc166be.jpeg?rect=0%2C102%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/90ffc0cb-9f40-4e06-879a-e6da8dc166be.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/90ffc0cb-9f40-4e06-879a-e6da8dc166be.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/90ffc0cb-9f40-4e06-879a-e6da8dc166be.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/90ffc0cb-9f40-4e06-879a-e6da8dc166be.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/90ffc0cb-9f40-4e06-879a-e6da8dc166be.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Schnieder bei seiner Ankunf in der Villa – später kam er ins Krankenhaus." data-source="Michael Kappeler/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/26290679-4fe1-4a36-b5aa-382b0b2ca51e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/26290679-4fe1-4a36-b5aa-382b0b2ca51e.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/26290679-4fe1-4a36-b5aa-382b0b2ca51e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/26290679-4fe1-4a36-b5aa-382b0b2ca51e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/26290679-4fe1-4a36-b5aa-382b0b2ca51e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/26290679-4fe1-4a36-b5aa-382b0b2ca51e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/26290679-4fe1-4a36-b5aa-382b0b2ca51e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="SPD-Fraktionsgeschäftsführer Wiese verweist darauf, dass sich die Koalition auf ein Gesamtrentenpaket verständigt hat. (Archivbild)" data-source="Annette Riedl/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Bundesregierung</h4>
-                <h3 class="fp-article__title text-xl--bold ">Klausur: Minister in Klinik und Abreise wegen Todesfalls</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Rente</h4>
+                <h3 class="fp-article__title text-xl--bold ">Arbeitgeber gegen geplante Mütterrente – SPD bekräftigt Kurs</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/cdu-afd-witschas-hilse-foto-autogramm-bluesky-attacke-hoywoj-4123920">
+            <a href="/deutschland-und-welt/deutschland/wenn-arzten-fehler-passieren-spitze-des-eisbergs-4140363">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/f6c66fab-0060-4bf1-b3c4-815d502f6293.jpeg?rect=0%2C75%2C800%2C450&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/f6c66fab-0060-4bf1-b3c4-815d502f6293.jpeg?rect=0%2C75%2C800%2C450&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/f6c66fab-0060-4bf1-b3c4-815d502f6293.jpeg?rect=0%2C75%2C800%2C450&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/f6c66fab-0060-4bf1-b3c4-815d502f6293.jpeg?rect=0%2C75%2C800%2C450&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/f6c66fab-0060-4bf1-b3c4-815d502f6293.jpeg?rect=0%2C75%2C800%2C450&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/f6c66fab-0060-4bf1-b3c4-815d502f6293.jpeg?rect=0%2C75%2C800%2C450&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/f6c66fab-0060-4bf1-b3c4-815d502f6293.jpeg?rect=0%2C75%2C800%2C450&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Online-Zoff in der Lausitz: Das Landratsamt Bautzen attackiert einen User auf der Social-Media-Plattform Bluesky. Der hatte offengelegt, dass Landrat Udo Witschas ein Foto mit Autogramm eines Politikers der rechtsextremen AfD in seinem Büro stehen hat.&amp;nbsp;" data-source="Foto: Jan Woitas/dpa-Zentralbild/Symbol">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/30/ad8a7643-0d57-42a9-b395-60d791375cc7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/30/ad8a7643-0d57-42a9-b395-60d791375cc7.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/30/ad8a7643-0d57-42a9-b395-60d791375cc7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/30/ad8a7643-0d57-42a9-b395-60d791375cc7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/30/ad8a7643-0d57-42a9-b395-60d791375cc7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/30/ad8a7643-0d57-42a9-b395-60d791375cc7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/30/ad8a7643-0d57-42a9-b395-60d791375cc7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Behandlungsfehler führen laut dem Medizinischen Dienst zu Kosten in Milliardenhöhe. (Symbolbild)" data-source="Bernd Weißbrod/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Foto in sozialen Netzwerken</h4>
-                <h3 class="fp-article__title text-xl--bold ">Warum ein sächsischer CDU-Landrat ein AfD-Autogramm in seinem Büro stehen hat</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Gesundheitswesen</h4>
+                <h3 class="fp-article__title text-xl--bold ">Wenn Ärzten Fehler passieren – „Spitze des Eisbergs“</h3>
             </a>
         </article>
 <div id="nativendo-nativendo-infeed"></div>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/geisel-angehorige-hoffen-auf-hilfe-des-kanzlers-4123953">
+            <a href="/deutschland-und-welt/deutschland/haft-und-bewahrungsstrafen-wegen-spionage-fur-russland-4140290">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/f0f08480-f693-42bc-a11b-203dfec6bbb8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/f0f08480-f693-42bc-a11b-203dfec6bbb8.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/f0f08480-f693-42bc-a11b-203dfec6bbb8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/f0f08480-f693-42bc-a11b-203dfec6bbb8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/f0f08480-f693-42bc-a11b-203dfec6bbb8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/f0f08480-f693-42bc-a11b-203dfec6bbb8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/f0f08480-f693-42bc-a11b-203dfec6bbb8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bundeskanzler Merz empfing Angehörige deutscher Hamas-Geiseln sehr früh am morgen." data-source="Guido Bergmann/Bundesregierung/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/30/0e5ee63a-4f96-45f9-bc6c-0b98ee8c130d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/30/0e5ee63a-4f96-45f9-bc6c-0b98ee8c130d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/30/0e5ee63a-4f96-45f9-bc6c-0b98ee8c130d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/30/0e5ee63a-4f96-45f9-bc6c-0b98ee8c130d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/30/0e5ee63a-4f96-45f9-bc6c-0b98ee8c130d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/30/0e5ee63a-4f96-45f9-bc6c-0b98ee8c130d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/30/0e5ee63a-4f96-45f9-bc6c-0b98ee8c130d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Im Oberlandesgericht München ging es um Spionage und Kämpfe in der Ostukraine." data-source="Elke Richter/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> US-Plan für Kriegsende</h4>
-                <h3 class="fp-article__title text-xl--bold ">Geisel-Angehörige hoffen auf Hilfe des Kanzlers</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Kriminalität</h4>
+                <h3 class="fp-article__title text-xl--bold ">Haft- und Bewährungsstrafen wegen Spionage für Russland</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/studie-zu-kitaqualitat-fachkraftquote-variiert-nach-wohnort-4123865">
+            <a href="/deutschland-und-welt/deutschland/von-fernsehen-bis-minikredite-was-sich-im-november-andert-4140085">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/4896c73e-f4bf-4251-8cbe-555d3880723e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/4896c73e-f4bf-4251-8cbe-555d3880723e.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/4896c73e-f4bf-4251-8cbe-555d3880723e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/4896c73e-f4bf-4251-8cbe-555d3880723e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/4896c73e-f4bf-4251-8cbe-555d3880723e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/4896c73e-f4bf-4251-8cbe-555d3880723e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/4896c73e-f4bf-4251-8cbe-555d3880723e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Fachkraftquote fällt regional stark unterschiedlich aus. (Archivbild)" data-source="Christoph Soeder/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/30/c56d839d-3653-4098-8394-f4781bb5f21c.jpeg?rect=0%2C141%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/30/c56d839d-3653-4098-8394-f4781bb5f21c.jpeg?rect=0%2C141%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/30/c56d839d-3653-4098-8394-f4781bb5f21c.jpeg?rect=0%2C141%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/30/c56d839d-3653-4098-8394-f4781bb5f21c.jpeg?rect=0%2C141%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/30/c56d839d-3653-4098-8394-f4781bb5f21c.jpeg?rect=0%2C141%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/30/c56d839d-3653-4098-8394-f4781bb5f21c.jpeg?rect=0%2C141%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/30/c56d839d-3653-4098-8394-f4781bb5f21c.jpeg?rect=0%2C141%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Kulturpass läuft aus. (Archivbild)" data-source="Jan Woitas/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Frühkindliche Bildung</h4>
-                <h3 class="fp-article__title text-xl--bold ">Studie zu Kitaqualität: Fachkraftquote variiert nach Wohnort</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Verbraucher</h4>
+                <h3 class="fp-article__title text-xl--bold ">Von Fernsehen bis Minikredite – was sich im November ändert</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/behordenbeschaftigte-oft-beschimpfungen-ausgesetzt-4123833">
+            <a href="/deutschland-und-welt/deutschland/keine-ehrenburgerschaft-fur-trump-in-rheinland-pfalz-4139840">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/16f17af9-10c8-4bad-8b36-85ed14bbf342.jpeg?rect=0%2C33%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/16f17af9-10c8-4bad-8b36-85ed14bbf342.jpeg?rect=0%2C33%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/16f17af9-10c8-4bad-8b36-85ed14bbf342.jpeg?rect=0%2C33%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/16f17af9-10c8-4bad-8b36-85ed14bbf342.jpeg?rect=0%2C33%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/16f17af9-10c8-4bad-8b36-85ed14bbf342.jpeg?rect=0%2C33%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/16f17af9-10c8-4bad-8b36-85ed14bbf342.jpeg?rect=0%2C33%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/16f17af9-10c8-4bad-8b36-85ed14bbf342.jpeg?rect=0%2C33%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Beschäftigte von Jobcentern und anderen Behörden mit Kundenkontakt haben oft Sorge vor Übergriffen. (Archivfoto)" data-source="picture alliance / dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/29/bbf4599d-a816-4a7f-aa95-d9001d1ad636.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/29/bbf4599d-a816-4a7f-aa95-d9001d1ad636.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/29/bbf4599d-a816-4a7f-aa95-d9001d1ad636.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/29/bbf4599d-a816-4a7f-aa95-d9001d1ad636.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/29/bbf4599d-a816-4a7f-aa95-d9001d1ad636.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/29/bbf4599d-a816-4a7f-aa95-d9001d1ad636.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/29/bbf4599d-a816-4a7f-aa95-d9001d1ad636.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="US-Präsident Donald Trump hat Wurzeln in Rheinland-Pfalz." data-source="Kim Kyung-Hoon/Pool Reuters via AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Gewalt im öffentlichen Dienst</h4>
-                <h3 class="fp-article__title text-xl--bold ">Behördenbeschäftigte oft Beschimpfungen ausgesetzt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> US-Präsident</h4>
+                <h3 class="fp-article__title text-xl--bold ">Keine Ehrenbürgerschaft für Trump in Rheinland-Pfalz</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/parteien-beraten-stichwahlergebnis-afd-und-grune-verlierer-4123454">
+            <a href="/deutschland-und-welt/deutschland/cdu-gruppe-fordert-kurskorrektur-zur-mitte-4139751">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/29/71ac0e1e-c993-42e5-b725-943e94f1c005.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/29/71ac0e1e-c993-42e5-b725-943e94f1c005.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/29/71ac0e1e-c993-42e5-b725-943e94f1c005.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/29/71ac0e1e-c993-42e5-b725-943e94f1c005.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/29/71ac0e1e-c993-42e5-b725-943e94f1c005.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/29/71ac0e1e-c993-42e5-b725-943e94f1c005.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/29/71ac0e1e-c993-42e5-b725-943e94f1c005.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="In Dortmund, der drittgrößten Stadt in NRW, unterlag SPD-Amtsinhaber Thomas Westphal nach einem Kopf-an-Kopf-Rennen gegen den CDU-Herausforderer Alexander Omar Kalouti." data-source="Dieter Menne/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/29/d33fa3b1-51a0-4356-a992-f104ac47c4d5.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/29/d33fa3b1-51a0-4356-a992-f104ac47c4d5.jpeg?rect=0%2C97%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/29/d33fa3b1-51a0-4356-a992-f104ac47c4d5.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/29/d33fa3b1-51a0-4356-a992-f104ac47c4d5.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/29/d33fa3b1-51a0-4356-a992-f104ac47c4d5.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/29/d33fa3b1-51a0-4356-a992-f104ac47c4d5.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/29/d33fa3b1-51a0-4356-a992-f104ac47c4d5.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Initiative „Compass Mitte“ verlangt mehr Augenmerk auf soziale und liberale Themen. (Illustration)" data-source="Hauke-Christian Dittrich/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Stichwahlen in NRW</h4>
-                <h3 class="fp-article__title text-xl--bold ">Parteien beraten Stichwahlergebnis – AfD und Grüne Verlierer</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Parteien</h4>
+                <h3 class="fp-article__title text-xl--bold ">CDU-Gruppe fordert Kurskorrektur zur Mitte</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/cdu-feiert-wahlsiege-in-nrw-merz-appelliert-an-die-spd-4123765">
+            <a href="/deutschland-und-welt/deutschland/bundesregierung-starkt-rechte-leiblicher-vater-4139638">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/29/eb8f23c7-6b6c-4022-83a0-6c2b16d10b15.jpeg?rect=0%2C139%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/29/eb8f23c7-6b6c-4022-83a0-6c2b16d10b15.jpeg?rect=0%2C139%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/29/eb8f23c7-6b6c-4022-83a0-6c2b16d10b15.jpeg?rect=0%2C139%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/29/eb8f23c7-6b6c-4022-83a0-6c2b16d10b15.jpeg?rect=0%2C139%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/29/eb8f23c7-6b6c-4022-83a0-6c2b16d10b15.jpeg?rect=0%2C139%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/29/eb8f23c7-6b6c-4022-83a0-6c2b16d10b15.jpeg?rect=0%2C139%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/29/eb8f23c7-6b6c-4022-83a0-6c2b16d10b15.jpeg?rect=0%2C139%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bundeskanzler Friedrich Merz (CDU) hat die Wahlerfolge der CDU bei den Kommunalwahlen in NRW gelobt." data-source="Oliver Berg/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/29/2bd106fc-b1c8-40ca-9bfe-1f264ff361e8.jpeg?rect=0%2C129%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/29/2bd106fc-b1c8-40ca-9bfe-1f264ff361e8.jpeg?rect=0%2C129%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/29/2bd106fc-b1c8-40ca-9bfe-1f264ff361e8.jpeg?rect=0%2C129%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/29/2bd106fc-b1c8-40ca-9bfe-1f264ff361e8.jpeg?rect=0%2C129%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/29/2bd106fc-b1c8-40ca-9bfe-1f264ff361e8.jpeg?rect=0%2C129%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/29/2bd106fc-b1c8-40ca-9bfe-1f264ff361e8.jpeg?rect=0%2C129%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/29/2bd106fc-b1c8-40ca-9bfe-1f264ff361e8.jpeg?rect=0%2C129%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Da das Bundesverfassungsgericht eine Änderung gefordert hat, gibt es einen gewissen Zeitdruck. (Archivfoto)" data-source="Uli Deck/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Stichwahlen in NRW</h4>
-                <h3 class="fp-article__title text-xl--bold ">CDU feiert Wahlsiege in NRW – Merz appelliert an die SPD</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Familienrecht</h4>
+                <h3 class="fp-article__title text-xl--bold ">Bundesregierung stärkt Rechte leiblicher Väter</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/jung-klimaziel-steht-absage-an-forderung-aus-fraktion-4123410">
+            <a href="/deutschland-und-welt/deutschland/mehr-als-22-000-menschen-haben-geschlechtseintrag-geandert-4139589">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/29/b0f32175-2224-44e3-8db5-ae234eb2c8c2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/29/b0f32175-2224-44e3-8db5-ae234eb2c8c2.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/29/b0f32175-2224-44e3-8db5-ae234eb2c8c2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/29/b0f32175-2224-44e3-8db5-ae234eb2c8c2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/29/b0f32175-2224-44e3-8db5-ae234eb2c8c2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/29/b0f32175-2224-44e3-8db5-ae234eb2c8c2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/29/b0f32175-2224-44e3-8db5-ae234eb2c8c2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Fraktionsvize Jung widerspricht CDU-Politiker Kuban. (Archivbild)" data-source="Fabian Sommer/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/29/c59add8d-56ca-452e-a209-c8cab0ff8d03.jpeg?rect=0%2C1%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/29/c59add8d-56ca-452e-a209-c8cab0ff8d03.jpeg?rect=0%2C1%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/29/c59add8d-56ca-452e-a209-c8cab0ff8d03.jpeg?rect=0%2C1%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/29/c59add8d-56ca-452e-a209-c8cab0ff8d03.jpeg?rect=0%2C1%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/29/c59add8d-56ca-452e-a209-c8cab0ff8d03.jpeg?rect=0%2C1%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/29/c59add8d-56ca-452e-a209-c8cab0ff8d03.jpeg?rect=0%2C1%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/29/c59add8d-56ca-452e-a209-c8cab0ff8d03.jpeg?rect=0%2C1%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Seit Inkrafttreten des Selbstbestimmungsgesetzes reicht eine Erklärung beim Standesamt, um den Geschlechtseintrag zu ändern. (Archivbild)" data-source="Jens Kalaene/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Klimaneutralität 2045</h4>
-                <h3 class="fp-article__title text-xl--bold ">Jung: Klimaziel steht – Absage an Forderung aus Fraktion</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Selbstbestimmung</h4>
+                <h3 class="fp-article__title text-xl--bold ">Mehr als 22.000 Menschen haben Geschlechtseintrag geändert</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/die-sozialen-baustellen-kommt-ein-jahr-der-reformen-4123236">
+            <a href="/deutschland-und-welt/deutschland/rund-72-000-menschen-2023-ohne-krankenversicherung-4139489">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/29/1a3e2cb3-8fcc-4c92-990a-3c201b19dcf1.jpeg?rect=0%2C48%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/29/1a3e2cb3-8fcc-4c92-990a-3c201b19dcf1.jpeg?rect=0%2C48%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/29/1a3e2cb3-8fcc-4c92-990a-3c201b19dcf1.jpeg?rect=0%2C48%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/29/1a3e2cb3-8fcc-4c92-990a-3c201b19dcf1.jpeg?rect=0%2C48%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/29/1a3e2cb3-8fcc-4c92-990a-3c201b19dcf1.jpeg?rect=0%2C48%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/29/1a3e2cb3-8fcc-4c92-990a-3c201b19dcf1.jpeg?rect=0%2C48%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/29/1a3e2cb3-8fcc-4c92-990a-3c201b19dcf1.jpeg?rect=0%2C48%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Arbeitsministerin Bärbel Bas will „sehr bald“ eine Bürgergeldreform vorlegen - und als SPD-Chefin mit weiteren Ideen zum Sozialstaat vorpreschen." data-source="Bernd von Jutrczenka/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/29/a04b341c-77e8-478d-8a1b-da57e4bc015d.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/29/a04b341c-77e8-478d-8a1b-da57e4bc015d.jpeg?rect=0%2C179%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/29/a04b341c-77e8-478d-8a1b-da57e4bc015d.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/29/a04b341c-77e8-478d-8a1b-da57e4bc015d.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/29/a04b341c-77e8-478d-8a1b-da57e4bc015d.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/29/a04b341c-77e8-478d-8a1b-da57e4bc015d.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/29/a04b341c-77e8-478d-8a1b-da57e4bc015d.jpeg?rect=0%2C179%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die große Mehrheit der Deutschen ist gesetzlich krankenversichert. (Symbolbild)" data-source="Jens Kalaene/dpa-Zentralbild/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Sozialstaat</h4>
-                <h3 class="fp-article__title text-xl--bold ">Die sozialen Baustellen – Kommt ein Jahr der Reformen?</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Statistik</h4>
+                <h3 class="fp-article__title text-xl--bold ">Rund 72.000 Menschen 2023 ohne Krankenversicherung</h3>
             </a>
         </article>
 </div>
@@ -1716,93 +2012,93 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/die-knackpunkte-in-trumps-friedensplan-4123807">
+            <a href="/deutschland-und-welt/politik/verpflichtende-chatkontrolle-in-eu-vorerst-vom-tisch-4140934">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/e83ba3a1-44a9-4adb-993b-59b84f25c126.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/e83ba3a1-44a9-4adb-993b-59b84f25c126.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/e83ba3a1-44a9-4adb-993b-59b84f25c126.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/e83ba3a1-44a9-4adb-993b-59b84f25c126.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/e83ba3a1-44a9-4adb-993b-59b84f25c126.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/e83ba3a1-44a9-4adb-993b-59b84f25c126.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/e83ba3a1-44a9-4adb-993b-59b84f25c126.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Trump und Netanjahu sprachen im Weißen Haus." data-source="Alex Brandon/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/d1cdb328-6922-4efe-9a65-dc31de0a6823.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/d1cdb328-6922-4efe-9a65-dc31de0a6823.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/d1cdb328-6922-4efe-9a65-dc31de0a6823.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/d1cdb328-6922-4efe-9a65-dc31de0a6823.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/d1cdb328-6922-4efe-9a65-dc31de0a6823.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/d1cdb328-6922-4efe-9a65-dc31de0a6823.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/d1cdb328-6922-4efe-9a65-dc31de0a6823.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der führende Messengerdienst Whatsapp spricht sich klar gegen die Einführung einer Chatkontrolle in der EU aus. (Symbolbild)" data-source="Fabian Sommer/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Die Lage im Überblick</h4>
-                <h3 class="fp-article__title text-xl--bold ">Die Knackpunkte in Trumps Friedensplan</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Umstrittenes Vorhaben</h4>
+                <h3 class="fp-article__title text-xl--bold ">Verpflichtende „Chatkontrolle“ in EU vorerst vom Tisch</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/usa-vor-shutdown-diese-konsequenzen-drohen-4123913">
+            <a href="/deutschland-und-welt/politik/trump-fordert-abschaffung-der-filibuster-regel-im-us-senat-4140811">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/be71a941-dae6-4209-98ba-25914f568f4e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/be71a941-dae6-4209-98ba-25914f568f4e.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/be71a941-dae6-4209-98ba-25914f568f4e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/be71a941-dae6-4209-98ba-25914f568f4e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/be71a941-dae6-4209-98ba-25914f568f4e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/be71a941-dae6-4209-98ba-25914f568f4e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/be71a941-dae6-4209-98ba-25914f568f4e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Kommt es tatsächlich zum „Shutdown“ in den USA? (Archivfoto)" data-source="J. Scott Applewhite/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/de8c3efe-e67a-4725-b4f0-e2b8cf1a4cfd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/de8c3efe-e67a-4725-b4f0-e2b8cf1a4cfd.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/de8c3efe-e67a-4725-b4f0-e2b8cf1a4cfd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/de8c3efe-e67a-4725-b4f0-e2b8cf1a4cfd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/de8c3efe-e67a-4725-b4f0-e2b8cf1a4cfd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/de8c3efe-e67a-4725-b4f0-e2b8cf1a4cfd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/de8c3efe-e67a-4725-b4f0-e2b8cf1a4cfd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="US-Präsident Donald Trump fordert die Abschaffung der sogenannten Filibuster-Regel." data-source="Mark Schiefelbein/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Haushaltsstreit</h4>
-                <h3 class="fp-article__title text-xl--bold ">USA vor „Shutdown“: Diese Konsequenzen drohen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Shutdown in den USA</h4>
+                <h3 class="fp-article__title text-xl--bold ">Trump fordert Abschaffung der Filibuster-Regel im US-Senat</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/netanjahu-akzeptiert-us-plan-zur-beendigung-des-gaza-kriegs-4123779">
+            <a href="/deutschland-und-welt/politik/ukrainische-drohnen-treffen-heizkraftwerk-in-russland-4140765">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/67602c75-0fc1-4ec6-9693-e6bdda1ccdbd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/67602c75-0fc1-4ec6-9693-e6bdda1ccdbd.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/67602c75-0fc1-4ec6-9693-e6bdda1ccdbd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/67602c75-0fc1-4ec6-9693-e6bdda1ccdbd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/67602c75-0fc1-4ec6-9693-e6bdda1ccdbd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/67602c75-0fc1-4ec6-9693-e6bdda1ccdbd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/67602c75-0fc1-4ec6-9693-e6bdda1ccdbd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Israels Ministerpräsident Benjamin Netanjahu traf US-Präsident Donald Trump am Montag im Weißen Haus." data-source="Alex Brandon/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/62641afa-5c06-4d4a-95d0-3dd7eb9bc2ea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/62641afa-5c06-4d4a-95d0-3dd7eb9bc2ea.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/62641afa-5c06-4d4a-95d0-3dd7eb9bc2ea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/62641afa-5c06-4d4a-95d0-3dd7eb9bc2ea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/62641afa-5c06-4d4a-95d0-3dd7eb9bc2ea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/62641afa-5c06-4d4a-95d0-3dd7eb9bc2ea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/62641afa-5c06-4d4a-95d0-3dd7eb9bc2ea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Ukraine verteidigt sich durch Angriffe auf Energieanlagen im russischen Hinterland. (Archivbild)" data-source="Evgeniy Maloletka/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Nahost</h4>
-                <h3 class="fp-article__title text-xl--bold ">Netanjahu akzeptiert US-Plan zur Beendigung des Gaza-Kriegs</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Ukraine-Krieg</h4>
+                <h3 class="fp-article__title text-xl--bold ">Ukrainische Drohnen treffen Heizkraftwerk in Russland</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/mehrere-arabische-staaten-unterstutzen-trumps-gaza-plan-4123802">
+            <a href="/deutschland-und-welt/politik/wadephul-im-libanon-hisbollah-entwaffnung-im-zentrum-4140767">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/29/5953bd3c-d007-48e6-b6b6-3fa608131f57.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/29/5953bd3c-d007-48e6-b6b6-3fa608131f57.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/29/5953bd3c-d007-48e6-b6b6-3fa608131f57.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/29/5953bd3c-d007-48e6-b6b6-3fa608131f57.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/29/5953bd3c-d007-48e6-b6b6-3fa608131f57.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/29/5953bd3c-d007-48e6-b6b6-3fa608131f57.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/29/5953bd3c-d007-48e6-b6b6-3fa608131f57.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="US-Präsident Trump hat einen Plan zur Beilegung des Gaza-Kriegs vorgelegt." data-source="Avi Ohayon/Israel Gpo/ZUMA Press Wire/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/3007c99b-1195-4fda-9095-917333f4c526.jpeg?rect=0%2C6%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/3007c99b-1195-4fda-9095-917333f4c526.jpeg?rect=0%2C6%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/3007c99b-1195-4fda-9095-917333f4c526.jpeg?rect=0%2C6%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/3007c99b-1195-4fda-9095-917333f4c526.jpeg?rect=0%2C6%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/3007c99b-1195-4fda-9095-917333f4c526.jpeg?rect=0%2C6%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/3007c99b-1195-4fda-9095-917333f4c526.jpeg?rect=0%2C6%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/3007c99b-1195-4fda-9095-917333f4c526.jpeg?rect=0%2C6%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Außenminister Johann Wadephul (l, CDU) setzt seine Nahostreise im Libanon fort. In der Hauptstadt Beirut traf er seinen Amtskollegen Jussef Radschi. Unter anderem geht es um die Entwaffnung der Schiiten-Miliz Hisbollah." data-source="Marcus Brandt/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Diplomatie</h4>
-                <h3 class="fp-article__title text-xl--bold ">Mehrere arabische Staaten unterstützen Trumps Gaza-Plan</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Nahostreise</h4>
+                <h3 class="fp-article__title text-xl--bold ">Wadephul im Libanon - Hisbollah-Entwaffnung im Zentrum</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/berichte-netanjahu-entschuldigt-sich-bei-katar-4123759">
+            <a href="/deutschland-und-welt/politik/hamas-ubergibt-zwei-leichen-geiseln-identifiziert-4140539">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/29/fc25a0ca-fe94-4445-8fdb-ae40a7caf4f8.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/29/fc25a0ca-fe94-4445-8fdb-ae40a7caf4f8.jpeg?rect=0%2C127%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/29/fc25a0ca-fe94-4445-8fdb-ae40a7caf4f8.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/29/fc25a0ca-fe94-4445-8fdb-ae40a7caf4f8.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/29/fc25a0ca-fe94-4445-8fdb-ae40a7caf4f8.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/29/fc25a0ca-fe94-4445-8fdb-ae40a7caf4f8.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/29/fc25a0ca-fe94-4445-8fdb-ae40a7caf4f8.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Israels Ministerpräsident Benjamin Netanjahu soll sich bei Katar entschuldigt haben. (Archivbild)" data-source="Kay Nietfeld/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/30/b13ec41b-e460-4ee8-bb91-f1a4f01d2bf4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/30/b13ec41b-e460-4ee8-bb91-f1a4f01d2bf4.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/30/b13ec41b-e460-4ee8-bb91-f1a4f01d2bf4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/30/b13ec41b-e460-4ee8-bb91-f1a4f01d2bf4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/30/b13ec41b-e460-4ee8-bb91-f1a4f01d2bf4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/30/b13ec41b-e460-4ee8-bb91-f1a4f01d2bf4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/30/b13ec41b-e460-4ee8-bb91-f1a4f01d2bf4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bewaffnetes Hamas-Mitglied bei Übergabe von Geisel-Leichen. (Archivbild)" data-source="Yousef Al Zanoun/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Nach Angriff auf Hamas-Spitze</h4>
-                <h3 class="fp-article__title text-xl--bold ">Berichte: Netanjahu entschuldigt sich bei Katar</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Konflikt in Nahost</h4>
+                <h3 class="fp-article__title text-xl--bold ">Hamas übergibt zwei Leichen – Geiseln identifiziert</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/ukraine-russischer-hubschrauber-mit-drohne-abgeschossen-4123752">
+            <a href="/deutschland-und-welt/politik/flug-mit-afghanen-in-deutschland-gelandet-4140065">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/29/8fa50533-96c0-4ebb-8828-1fa0a9059fb1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/29/8fa50533-96c0-4ebb-8828-1fa0a9059fb1.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/29/8fa50533-96c0-4ebb-8828-1fa0a9059fb1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/29/8fa50533-96c0-4ebb-8828-1fa0a9059fb1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/29/8fa50533-96c0-4ebb-8828-1fa0a9059fb1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/29/8fa50533-96c0-4ebb-8828-1fa0a9059fb1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/29/8fa50533-96c0-4ebb-8828-1fa0a9059fb1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ferngesteuerte Drohnen spielen in der Ukraine eine wichtige Rolle. (Archivbild)" data-source="Efrem Lukatsky/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/30/1f618bf9-9d9b-46e2-8185-4ab0336d4144.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/30/1f618bf9-9d9b-46e2-8185-4ab0336d4144.jpeg?rect=0%2C98%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/30/1f618bf9-9d9b-46e2-8185-4ab0336d4144.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/30/1f618bf9-9d9b-46e2-8185-4ab0336d4144.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/30/1f618bf9-9d9b-46e2-8185-4ab0336d4144.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/30/1f618bf9-9d9b-46e2-8185-4ab0336d4144.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/30/1f618bf9-9d9b-46e2-8185-4ab0336d4144.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ankunft in der niedersächsischen Landeshauptstadt: In Hannover ist ein Flieger aus Istanbul gelandet." data-source="Moritz Frankenberg/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Bundesaufnahmeprogramm</h4>
+                <h3 class="fp-article__title text-xl--bold ">Flug mit Afghanen in Deutschland gelandet</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/deutschland-und-welt/politik/selenskyj-beklagt-neuen-angriff-und-lobt-sanktionen-4140638">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/30/96f97a6a-49b1-49e8-ae4c-9ff0077e647a.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/30/96f97a6a-49b1-49e8-ae4c-9ff0077e647a.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/30/96f97a6a-49b1-49e8-ae4c-9ff0077e647a.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/30/96f97a6a-49b1-49e8-ae4c-9ff0077e647a.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/30/96f97a6a-49b1-49e8-ae4c-9ff0077e647a.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/30/96f97a6a-49b1-49e8-ae4c-9ff0077e647a.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/30/96f97a6a-49b1-49e8-ae4c-9ff0077e647a.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nach Angaben von Selenskyj wurde nach den schweren Luftangriffen in der Nacht nun am Tag ein weiteres Kraftwerk angegriffen. (Archivbild)" data-source="Efrem Lukatsky/AP/dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Krieg in der Ukraine</h4>
-                <h3 class="fp-article__title text-xl--bold ">Ukraine: Russischer Hubschrauber mit Drohne abgeschossen</h3>
+                <h3 class="fp-article__title text-xl--bold ">Selenskyj beklagt neuen Angriff und lobt Sanktionen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/moldau-auf-eu-kurs-regierungspartei-holt-erneut-mehrheit-4123186">
+            <a href="/deutschland-und-welt/politik/wadephul-glaubt-nicht-an-rasche-ruckkehr-von-syrern-4140480">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/29/5e5d69e0-15d8-473f-a842-970930d13933.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/29/5e5d69e0-15d8-473f-a842-970930d13933.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/29/5e5d69e0-15d8-473f-a842-970930d13933.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/29/5e5d69e0-15d8-473f-a842-970930d13933.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/29/5e5d69e0-15d8-473f-a842-970930d13933.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/29/5e5d69e0-15d8-473f-a842-970930d13933.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/29/5e5d69e0-15d8-473f-a842-970930d13933.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die prowestliche Präsidentin Maia Sandu will mit einer Mehrheit prowestlicher Kräfte im Parlament den EU-Kurs des Landes fortsetzen." data-source="Vadim Ghirda/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/30/f81eb203-57d8-4c35-8156-ede4087e55a9.jpeg?rect=0%2C61%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/30/f81eb203-57d8-4c35-8156-ede4087e55a9.jpeg?rect=0%2C61%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/30/f81eb203-57d8-4c35-8156-ede4087e55a9.jpeg?rect=0%2C61%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/30/f81eb203-57d8-4c35-8156-ede4087e55a9.jpeg?rect=0%2C61%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/30/f81eb203-57d8-4c35-8156-ede4087e55a9.jpeg?rect=0%2C61%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/30/f81eb203-57d8-4c35-8156-ede4087e55a9.jpeg?rect=0%2C61%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/30/f81eb203-57d8-4c35-8156-ede4087e55a9.jpeg?rect=0%2C61%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wadephul reist als Außenminister erstmals nach Syrien." data-source="Marcus Brandt/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Parlamentswahl</h4>
-                <h3 class="fp-article__title text-xl--bold ">Moldau auf EU-Kurs: Regierungspartei holt erneut Mehrheit</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Nahostreise</h4>
+                <h3 class="fp-article__title text-xl--bold ">Wadephul glaubt nicht an rasche Rückkehr von Syrern</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/eu-setzt-iran-sanktionen-wieder-in-kraft-4123458">
+            <a href="/deutschland-und-welt/politik/usa-wollen-fluchtlingsobergrenze-drastisch-reduzieren-4140612">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/29/cfd0061b-d427-44ae-8a51-e9ed27d2f9ff.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/29/cfd0061b-d427-44ae-8a51-e9ed27d2f9ff.jpeg?rect=0%2C108%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/29/cfd0061b-d427-44ae-8a51-e9ed27d2f9ff.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/29/cfd0061b-d427-44ae-8a51-e9ed27d2f9ff.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/29/cfd0061b-d427-44ae-8a51-e9ed27d2f9ff.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/29/cfd0061b-d427-44ae-8a51-e9ed27d2f9ff.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/29/cfd0061b-d427-44ae-8a51-e9ed27d2f9ff.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Technik für Schiffe darf künftig nicht mehr in den Iran geliefert werden. (Archivbild)" data-source="Marcos Moreno/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/30/4d5f8e12-ffd7-4b35-b0ad-8816865e9155.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/30/4d5f8e12-ffd7-4b35-b0ad-8816865e9155.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/30/4d5f8e12-ffd7-4b35-b0ad-8816865e9155.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/30/4d5f8e12-ffd7-4b35-b0ad-8816865e9155.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/30/4d5f8e12-ffd7-4b35-b0ad-8816865e9155.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/30/4d5f8e12-ffd7-4b35-b0ad-8816865e9155.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/30/4d5f8e12-ffd7-4b35-b0ad-8816865e9155.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Trump hatte die Obergrenze für die Aufnahme von Flüchtlingen schon in seiner ersten Amtszeit deutlich reduziert." data-source="Mark Schiefelbein/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Atomstreit</h4>
-                <h3 class="fp-article__title text-xl--bold ">EU setzt Iran-Sanktionen wieder in Kraft</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> US-Flüchtlingspolitik</h4>
+                <h3 class="fp-article__title text-xl--bold ">USA wollen Flüchtlingsobergrenze drastisch reduzieren</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/trump-empfangt-netanjahu-gelingt-ein-gaza-deal-4123198">
+            <a href="/deutschland-und-welt/politik/medien-pentagon-will-eingreiftruppen-fur-unruhen-im-inland-4140595">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/29/7d8fda81-1f60-4cdc-b7d1-b9679c7ca0e2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/29/7d8fda81-1f60-4cdc-b7d1-b9679c7ca0e2.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/29/7d8fda81-1f60-4cdc-b7d1-b9679c7ca0e2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/29/7d8fda81-1f60-4cdc-b7d1-b9679c7ca0e2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/29/7d8fda81-1f60-4cdc-b7d1-b9679c7ca0e2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/29/7d8fda81-1f60-4cdc-b7d1-b9679c7ca0e2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/29/7d8fda81-1f60-4cdc-b7d1-b9679c7ca0e2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="US-Präsident Donald Trump (l) trifft an diesem Montag den israelischen Ministerpräsidenten Benjamin Netanjahu. (Archivbild)" data-source="Evan Vucci/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/30/6bf1aee7-aca0-43e3-bf86-e746df36c325.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/30/6bf1aee7-aca0-43e3-bf86-e746df36c325.jpeg?rect=0%2C91%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/30/6bf1aee7-aca0-43e3-bf86-e746df36c325.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/30/6bf1aee7-aca0-43e3-bf86-e746df36c325.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/30/6bf1aee7-aca0-43e3-bf86-e746df36c325.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/30/6bf1aee7-aca0-43e3-bf86-e746df36c325.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/30/6bf1aee7-aca0-43e3-bf86-e746df36c325.jpeg?rect=0%2C91%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die US-Regierung hat bereits in mehrere demokratisch regierte Großstädte Nationalgardisten entsandt - zum Teil wurde sie vorerst von Gerichten gestoppt. (Archivbild)" data-source="Stacey Wescott/TNS via ZUMA Press Wire/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Die Lage im Überblick</h4>
-                <h3 class="fp-article__title text-xl--bold ">Trump empfängt Netanjahu: Gelingt ein Gaza-Deal?</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/portland-und-oregon-verklagen-trump-wegen-militareinsatz-4123184">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/29/e574706f-1bb3-4bee-8923-1a285f5db67d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/29/e574706f-1bb3-4bee-8923-1a285f5db67d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/29/e574706f-1bb3-4bee-8923-1a285f5db67d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/29/e574706f-1bb3-4bee-8923-1a285f5db67d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/29/e574706f-1bb3-4bee-8923-1a285f5db67d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/29/e574706f-1bb3-4bee-8923-1a285f5db67d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/29/e574706f-1bb3-4bee-8923-1a285f5db67d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="In Portland gibt es seit Längerem Proteste rund um eine ICE-Einrichtung - dabei wurde im Juni auch Tränengas gegen Demonstranten eingesetzt. (Archivbild)" data-source="Jenny Kane/AP/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> USA</h4>
-                <h3 class="fp-article__title text-xl--bold ">Portland und Oregon verklagen Trump wegen Militäreinsatz</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Nationalgarde</h4>
+                <h3 class="fp-article__title text-xl--bold ">Medien: Pentagon will Eingreiftruppen für Unruhen im Inland</h3>
             </a>
         </article>
 </div>
@@ -1823,93 +2119,93 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/studie-krankheit-bleibt-wichtigster-uberschuldungsgrund-4124270">
+            <a href="/deutschland-und-welt/wirtschaft/bundeslander-grunden-allianz-zur-fusionsforschung-4140927">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/fa236f08-310d-4a3c-9c6c-2f30f56295f9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/fa236f08-310d-4a3c-9c6c-2f30f56295f9.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/fa236f08-310d-4a3c-9c6c-2f30f56295f9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/fa236f08-310d-4a3c-9c6c-2f30f56295f9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/fa236f08-310d-4a3c-9c6c-2f30f56295f9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/fa236f08-310d-4a3c-9c6c-2f30f56295f9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/fa236f08-310d-4a3c-9c6c-2f30f56295f9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Viele Haushalte in Deutschland sind überschuldet. (Symbolbild)" data-source="Hannes P Albert/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/3375dbcf-9717-4095-810f-579dfe301b5e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/3375dbcf-9717-4095-810f-579dfe301b5e.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/3375dbcf-9717-4095-810f-579dfe301b5e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/3375dbcf-9717-4095-810f-579dfe301b5e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/3375dbcf-9717-4095-810f-579dfe301b5e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/3375dbcf-9717-4095-810f-579dfe301b5e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/3375dbcf-9717-4095-810f-579dfe301b5e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Sechs Bundesländer wollen ihre Stärken bei der Fusionsforschung in der neuen „Fusionsallianz“ bündeln." data-source="Malin Wunderlich/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Überschuldungsreport 2025</h4>
-                <h3 class="fp-article__title text-xl--bold ">Studie: Krankheit bleibt wichtigster Überschuldungsgrund</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Energiegewinnung</h4>
+                <h3 class="fp-article__title text-xl--bold ">Bundesländer gründen Allianz zur Fusionsforschung</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/geld-nutzen-brussel-will-sparer-zu-anlegern-machen-4124124">
+            <a href="/deutschland-und-welt/wirtschaft/kanada-und-china-wollen-angeschlagene-beziehung-verbessern-4140894">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/463ea5e2-2306-4f17-9cbf-0b4fe1c08d23.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/463ea5e2-2306-4f17-9cbf-0b4fe1c08d23.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/463ea5e2-2306-4f17-9cbf-0b4fe1c08d23.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/463ea5e2-2306-4f17-9cbf-0b4fe1c08d23.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/463ea5e2-2306-4f17-9cbf-0b4fe1c08d23.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/463ea5e2-2306-4f17-9cbf-0b4fe1c08d23.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/463ea5e2-2306-4f17-9cbf-0b4fe1c08d23.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die EU möchte, dass sich mehr Kleinanleger an den Finanzmärkten beteiligen. (Symbolbild)" data-source="Fabian Sommer/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/e6a9bd2f-fb20-4ae3-91f5-40a7a489885f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/e6a9bd2f-fb20-4ae3-91f5-40a7a489885f.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/e6a9bd2f-fb20-4ae3-91f5-40a7a489885f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/e6a9bd2f-fb20-4ae3-91f5-40a7a489885f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/e6a9bd2f-fb20-4ae3-91f5-40a7a489885f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/e6a9bd2f-fb20-4ae3-91f5-40a7a489885f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/e6a9bd2f-fb20-4ae3-91f5-40a7a489885f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Kanadas Premierminister traf Chinas Staatschef Xi beim Apec-Gipfel" data-source="Ng Han Guan/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Kapitalmarkt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Geld nutzen: Brüssel will Sparer zu Anlegern machen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Welthandel</h4>
+                <h3 class="fp-article__title text-xl--bold ">Kanada und China wollen angeschlagene Beziehung verbessern</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/rechtsstreit-um-vw-vergleiche-muss-neu-verhandelt-werden-4124086">
+            <a href="/deutschland-und-welt/wirtschaft/grosste-deutsche-stahlfirma-erstmals-mit-frau-an-der-spitze-4140872">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/c3c8e687-1aec-4b3d-b6d6-10523e9f5400.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/c3c8e687-1aec-4b3d-b6d6-10523e9f5400.jpeg?rect=0%2C102%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/c3c8e687-1aec-4b3d-b6d6-10523e9f5400.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/c3c8e687-1aec-4b3d-b6d6-10523e9f5400.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/c3c8e687-1aec-4b3d-b6d6-10523e9f5400.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/c3c8e687-1aec-4b3d-b6d6-10523e9f5400.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/c3c8e687-1aec-4b3d-b6d6-10523e9f5400.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der BGH hat Haftungsvergleiche im Diesel-Skandal geprüft. (Archivbild)" data-source="Uli Deck/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/6b7d5f68-3020-44f0-a00e-6b5f17b482b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/6b7d5f68-3020-44f0-a00e-6b5f17b482b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/6b7d5f68-3020-44f0-a00e-6b5f17b482b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/6b7d5f68-3020-44f0-a00e-6b5f17b482b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/6b7d5f68-3020-44f0-a00e-6b5f17b482b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/6b7d5f68-3020-44f0-a00e-6b5f17b482b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/6b7d5f68-3020-44f0-a00e-6b5f17b482b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Mit nur 40 Jahren ist Marie Jaroni Chefin der Stahlfirma TKSE." data-source="Jennifer Chaaer/Thyssenkrupp/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Bundesgerichtshof</h4>
-                <h3 class="fp-article__title text-xl--bold ">Rechtsstreit um VW-Vergleiche muss neu verhandelt werden</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Stahlproduktion</h4>
+                <h3 class="fp-article__title text-xl--bold ">Größte deutsche Stahlfirma erstmals mit Frau an der Spitze</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/neues-terminal-am-frankfurter-flughafen-abgenommen-4124063">
+            <a href="/deutschland-und-welt/wirtschaft/merz-ladt-zu-stahlgipfel-am-6-november-ein-4140867">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/cbf0aa14-5097-4997-bfc1-60dc59ee4828.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/cbf0aa14-5097-4997-bfc1-60dc59ee4828.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/cbf0aa14-5097-4997-bfc1-60dc59ee4828.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/cbf0aa14-5097-4997-bfc1-60dc59ee4828.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/cbf0aa14-5097-4997-bfc1-60dc59ee4828.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/cbf0aa14-5097-4997-bfc1-60dc59ee4828.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/cbf0aa14-5097-4997-bfc1-60dc59ee4828.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Das dritte Passagierterminal in Frankfurt steht kurz vor der Eröffnung. (Archivbild)" data-source="Lando Hass/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/48eec527-76c7-45c6-a84e-b7ab94e6e16e.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/48eec527-76c7-45c6-a84e-b7ab94e6e16e.jpeg?rect=0%2C108%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/48eec527-76c7-45c6-a84e-b7ab94e6e16e.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/48eec527-76c7-45c6-a84e-b7ab94e6e16e.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/48eec527-76c7-45c6-a84e-b7ab94e6e16e.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/48eec527-76c7-45c6-a84e-b7ab94e6e16e.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/48eec527-76c7-45c6-a84e-b7ab94e6e16e.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Stahlbranche in Deutschland kämpft mit vielen Problemen (Archivbild)" data-source="Hauke-Christian Dittrich/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Betreiber Fraport</h4>
-                <h3 class="fp-article__title text-xl--bold ">Neues Terminal am Frankfurter Flughafen abgenommen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Spitzentreffen</h4>
+                <h3 class="fp-article__title text-xl--bold ">Merz lädt zu „Stahlgipfel“ am 6. November ein</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/initiative-made-for-germany-will-735-milliarden-investieren-4123984">
+            <a href="/deutschland-und-welt/wirtschaft/funf-jahre-ber-wie-lauft-es-am-hauptstadtflughafen-heute-4138035">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/c86daec3-1332-4551-a14f-7ce7d03abbd7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/c86daec3-1332-4551-a14f-7ce7d03abbd7.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/c86daec3-1332-4551-a14f-7ce7d03abbd7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/c86daec3-1332-4551-a14f-7ce7d03abbd7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/c86daec3-1332-4551-a14f-7ce7d03abbd7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/c86daec3-1332-4551-a14f-7ce7d03abbd7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/c86daec3-1332-4551-a14f-7ce7d03abbd7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Initiative „Made for Germany“, hier beim ersten Treffen im Juli im Kanzleramt, will Hunderte Milliarden in Deutschland investieren (Archivbild)" data-source="Katharina Kausche/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/1735a004-0015-4f7b-88d6-e14224fe3f75.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/1735a004-0015-4f7b-88d6-e14224fe3f75.jpeg?rect=0%2C160%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/1735a004-0015-4f7b-88d6-e14224fe3f75.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/1735a004-0015-4f7b-88d6-e14224fe3f75.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/1735a004-0015-4f7b-88d6-e14224fe3f75.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/1735a004-0015-4f7b-88d6-e14224fe3f75.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/1735a004-0015-4f7b-88d6-e14224fe3f75.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Am 31. Oktober 2020 landeten die ersten Flugzeuge am Hauptstadtflughafen BER. (Archivbild)" data-source="Michael Kappeler/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Standort Deutschland</h4>
-                <h3 class="fp-article__title text-xl--bold ">Initiative Made for Germany will 735 Milliarden investieren</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Hauptstadtflughafen</h4>
+                <h3 class="fp-article__title text-xl--bold ">Fünf Jahre BER – Wie läuft es am Hauptstadtflughafen heute?</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/verbraucher-zahlen-weniger-fur-strom-und-gas-4123931">
+            <a href="/deutschland-und-welt/wirtschaft/audi-vervielfacht-gewinn-mit-eher-schwachen-zahlen-4140776">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/0e6ebbeb-47ad-4971-baa3-537601867684.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/0e6ebbeb-47ad-4971-baa3-537601867684.jpeg?rect=0%2C104%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/0e6ebbeb-47ad-4971-baa3-537601867684.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/0e6ebbeb-47ad-4971-baa3-537601867684.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/0e6ebbeb-47ad-4971-baa3-537601867684.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/0e6ebbeb-47ad-4971-baa3-537601867684.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/0e6ebbeb-47ad-4971-baa3-537601867684.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Stromkosten für Verbraucher sind zuletzt gesunken (Archivbild)" data-source="Jens Kalaene/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/12dc758a-9b6d-403f-a40a-719d0a2dd022.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/12dc758a-9b6d-403f-a40a-719d0a2dd022.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/12dc758a-9b6d-403f-a40a-719d0a2dd022.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/12dc758a-9b6d-403f-a40a-719d0a2dd022.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/12dc758a-9b6d-403f-a40a-719d0a2dd022.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/12dc758a-9b6d-403f-a40a-719d0a2dd022.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/12dc758a-9b6d-403f-a40a-719d0a2dd022.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Geschäfte bei Audi leiden weiter unter dem schwierigen chinesischen Markt und den US-Zöllen. (Archivbild)" data-source="Daniel Löb/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Energiekosten</h4>
-                <h3 class="fp-article__title text-xl--bold ">Verbraucher zahlen weniger für Strom und Gas</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Autoindustrie</h4>
+                <h3 class="fp-article__title text-xl--bold ">Audi vervielfacht Gewinn - mit eher schwachen Zahlen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/wie-viel-mehr-verdienen-beschaftigte-in-westdeutschland-4123947">
+            <a href="/deutschland-und-welt/wirtschaft/nach-treffen-mit-trump-xi-warnt-vor-gestorten-lieferketten-4140716">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/92553f6f-de5c-4dde-bfe4-e7d6bb8b7238.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/92553f6f-de5c-4dde-bfe4-e7d6bb8b7238.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/92553f6f-de5c-4dde-bfe4-e7d6bb8b7238.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/92553f6f-de5c-4dde-bfe4-e7d6bb8b7238.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/92553f6f-de5c-4dde-bfe4-e7d6bb8b7238.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/92553f6f-de5c-4dde-bfe4-e7d6bb8b7238.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/92553f6f-de5c-4dde-bfe4-e7d6bb8b7238.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die deutsche Wiedervereinigung wurde am 3. Oktober 1990 vollendet. Auch dreieinhalb Jahrzehnte später sind die Einkommen in den alten Bundesländern jedoch immer noch höher. (Symbolbild)" data-source="Fernando Gutierrez-Juarez/dpa-Zentralbild/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/b4c50407-0740-4589-b69c-68067ee3f7b3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/b4c50407-0740-4589-b69c-68067ee3f7b3.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/b4c50407-0740-4589-b69c-68067ee3f7b3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/b4c50407-0740-4589-b69c-68067ee3f7b3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/b4c50407-0740-4589-b69c-68067ee3f7b3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/b4c50407-0740-4589-b69c-68067ee3f7b3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/b4c50407-0740-4589-b69c-68067ee3f7b3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Chinas Präsident Xi forderte von den Apec-Partnern von mehr Zusammenarbeit." data-source="Uncredited/Yonhap/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Einkommen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Wie viel mehr verdienen Beschäftigte in Westdeutschland?</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Handelsstreit</h4>
+                <h3 class="fp-article__title text-xl--bold ">Nach Treffen mit Trump: Xi warnt vor gestörten Lieferketten</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/it-system-am-flughafen-ber-konnte-bis-sonntag-wieder-laufen-4123938">
+            <a href="/deutschland-und-welt/wirtschaft/milchviehhalter-schlagen-alarm-betriebsaufgaben-drohen-4140702">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/bc3234a4-73c2-4337-8fc1-2a998d926961.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/bc3234a4-73c2-4337-8fc1-2a998d926961.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/bc3234a4-73c2-4337-8fc1-2a998d926961.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/bc3234a4-73c2-4337-8fc1-2a998d926961.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/bc3234a4-73c2-4337-8fc1-2a998d926961.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/bc3234a4-73c2-4337-8fc1-2a998d926961.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/bc3234a4-73c2-4337-8fc1-2a998d926961.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Fluggästen wird empfohlen, online einzuchecken (Archivbild)." data-source="Annette Riedl/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/953d1faa-3d4e-4192-a133-90beafab7450.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/953d1faa-3d4e-4192-a133-90beafab7450.jpeg?rect=0%2C102%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/953d1faa-3d4e-4192-a133-90beafab7450.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/953d1faa-3d4e-4192-a133-90beafab7450.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/953d1faa-3d4e-4192-a133-90beafab7450.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/953d1faa-3d4e-4192-a133-90beafab7450.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/953d1faa-3d4e-4192-a133-90beafab7450.jpeg?rect=0%2C102%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Butter spielt in der Wahrnehmung der Konsumenten eine besondere Rolle." data-source="Hendrik Schmidt/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Nach Cyberattacke</h4>
-                <h3 class="fp-article__title text-xl--bold ">IT-System am Flughafen BER könnte bis Sonntag wieder laufen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Lebensmittel</h4>
+                <h3 class="fp-article__title text-xl--bold ">Milchviehhalter schlagen Alarm: Betriebsaufgaben drohen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/flugausfalle-bei-geschaftsreisen-kosten-1-3-milliarden-euro-4123879">
+            <a href="/deutschland-und-welt/wirtschaft/preise-fur-friseur-besuch-deutlich-gestiegen-4140695">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/aa72c4bc-c498-4d39-97e2-9171f6469a64.jpeg?rect=0%2C94%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/aa72c4bc-c498-4d39-97e2-9171f6469a64.jpeg?rect=0%2C94%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/aa72c4bc-c498-4d39-97e2-9171f6469a64.jpeg?rect=0%2C94%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/aa72c4bc-c498-4d39-97e2-9171f6469a64.jpeg?rect=0%2C94%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/aa72c4bc-c498-4d39-97e2-9171f6469a64.jpeg?rect=0%2C94%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/aa72c4bc-c498-4d39-97e2-9171f6469a64.jpeg?rect=0%2C94%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/aa72c4bc-c498-4d39-97e2-9171f6469a64.jpeg?rect=0%2C94%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Flugausfälle bei Geschäftsreisen verursachen jedes Jahr hohe Kosten. (Symbolbild)" data-source="Andreas Arnold/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/bfc74f0f-34f8-481f-bb3c-807f22c1ab75.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/bfc74f0f-34f8-481f-bb3c-807f22c1ab75.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/bfc74f0f-34f8-481f-bb3c-807f22c1ab75.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/bfc74f0f-34f8-481f-bb3c-807f22c1ab75.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/bfc74f0f-34f8-481f-bb3c-807f22c1ab75.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/bfc74f0f-34f8-481f-bb3c-807f22c1ab75.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/bfc74f0f-34f8-481f-bb3c-807f22c1ab75.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Laut einer YouGov-Umfrage gibt ein Viertel der Menschen in Deutschland kein Geld für einen Haarschnitt aus. (Archivbild)" data-source="Jan Woitas/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Luftverkehr</h4>
-                <h3 class="fp-article__title text-xl--bold ">Flugausfälle bei Geschäftsreisen kosten 1,3 Milliarden Euro</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Waschen, Schneiden, Föhnen</h4>
+                <h3 class="fp-article__title text-xl--bold ">Preise für Friseur-Besuch deutlich gestiegen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/chinas-industrie-schafft-sprung-aus-stimmungstief-nicht-4123875">
+            <a href="/deutschland-und-welt/wirtschaft/ben-and-jerrys-kunftig-vielleicht-auch-ohne-ben-4140685">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/09/30/8c278b9c-d775-4d55-a7d8-37faa31e918c.jpeg?rect=0%2C111%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/09/30/8c278b9c-d775-4d55-a7d8-37faa31e918c.jpeg?rect=0%2C111%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/09/30/8c278b9c-d775-4d55-a7d8-37faa31e918c.jpeg?rect=0%2C111%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/09/30/8c278b9c-d775-4d55-a7d8-37faa31e918c.jpeg?rect=0%2C111%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/09/30/8c278b9c-d775-4d55-a7d8-37faa31e918c.jpeg?rect=0%2C111%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/09/30/8c278b9c-d775-4d55-a7d8-37faa31e918c.jpeg?rect=0%2C111%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/09/30/8c278b9c-d775-4d55-a7d8-37faa31e918c.jpeg?rect=0%2C111%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Stimmung in Chinas Industriebetrieben ist weiter gedämpft. (Symbolbild)" data-source="Liu Yang/XinHua/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2025/10/31/d8aefa18-a046-4820-9dde-69752f606209.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/31/d8aefa18-a046-4820-9dde-69752f606209.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/31/d8aefa18-a046-4820-9dde-69752f606209.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/31/d8aefa18-a046-4820-9dde-69752f606209.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/31/d8aefa18-a046-4820-9dde-69752f606209.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/31/d8aefa18-a046-4820-9dde-69752f606209.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/31/d8aefa18-a046-4820-9dde-69752f606209.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Gründer Cohen: „nicht Teil einer Firma bleiben, die ihre soziale Mission nicht verwirklichen kann“ (Archivbild)" data-source="Jacquelyn Martin/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Konjunktur</h4>
-                <h3 class="fp-article__title text-xl--bold ">Chinas Industrie schafft Sprung aus Stimmungstief nicht</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Streit mit Konzernmutter</h4>
+                <h3 class="fp-article__title text-xl--bold ">Ben &amp; Jerry's künftig vielleicht auch ohne Ben</h3>
             </a>
         </article>
 </div>
@@ -2061,6 +2357,24 @@
                     </li>
                     <li>
                       <a href="/sachsen-anhalt/tourismus">Tourismus
+                      </a>
+                    </li>
+                </ul>
+              </div>
+              <div class="fp-footer__inner">
+                <div class="fp-footer__category">
+                  <h4>
+                    <a href="/live">Live
+                    </a>
+                  </h4>
+                </div>
+                <ul>
+                    <li>
+                      <a href="/live/fussball-regionalliga-nordost">Fußball-Regionalliga Nordost
+                      </a>
+                    </li>
+                    <li>
+                      <a href="/live/fussball-verbandsliga-sachsen-anhalt">Fußball-Verbandsliga Sachsen-Anhalt
                       </a>
                     </li>
                 </ul>
@@ -2340,24 +2654,6 @@
               <div class="fp-footer__inner">
                 <div class="fp-footer__category">
                   <h4>
-                    <a href="/live">Live
-                    </a>
-                  </h4>
-                </div>
-                <ul>
-                    <li>
-                      <a href="/live/fussball-regionalliga-nordost">Fußball-Regionalliga Nordost
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/live/fussball-verbandsliga-sachsen-anhalt">Fußball-Verbandsliga Sachsen-Anhalt
-                      </a>
-                    </li>
-                </ul>
-              </div>
-              <div class="fp-footer__inner">
-                <div class="fp-footer__category">
-                  <h4>
                     <a href="/video" target="_self">Video
                     </a>
                   </h4>
@@ -2481,7 +2777,13 @@
         }
     }
 </script>
-<script src="https://static.dumontnext.de/revenue/lightworks-vs.js"></script>
+<script>
+if (!document.location.host.includes("publishing")) {
+	var elemscript = document.createElement("script");
+	elemscript.src = "https://static.dumontnext.de/revenue/lightworks-vs.js";
+	document.head.appendChild(elemscript);
+}
+</script>
 <script type="text/javascript">
     var isDesktop = window.innerWidth > 550
     IOMm('configure', {
@@ -2528,5 +2830,48 @@ if (location.host.includes("volksstimme.de") || location.host.includes("mz.de"))
 		document.querySelector("[title='Homepage']").insertAdjacentHTML("afterend", '<div style="margin-left:auto"><a href="https://www.sao.de" target="_blank"><img src="https://bmg-images.forward-publishing.io/2024/06/17/bfb6ae6e-22b1-42ff-9a38-77bc54d7b7bc.png" style="height:22px;"></a></div>');
 		document.querySelector(".fp-header-responsive__top--menu").insertAdjacentHTML("beforeend", '<a href="https://www.sao.de" target="_blank"><img src="https://bmg-images.forward-publishing.io/2024/06/17/bfb6ae6e-22b1-42ff-9a38-77bc54d7b7bc.png" style="margin-left:10px; height:22px;"></a>');
 })();}
+</script>
+<script>
+document.querySelectorAll(".cookie-einstellungen").forEach(x => {
+   var elem = document.createElement("a");
+  	elem.href = "/";
+  elem.className = x.className;
+  elem.target = x.target;
+  elem.innerText = x.innerText;
+  elem.addEventListener("click", a => {
+	   if (!window.cmpmngr.eventwrapper.verifyButtonPress(a)) {
+		    return false
+  	}
+  	window.cmpmngr.eventwrapper.preventDefault(a);
+  	__cmp("showScreenAdvanced", null, null)
+  }
+  );
+  x.replaceWith(elem);
+
+});
+</script>
+<script id="stickyad">
+if (document.location.host.includes("publishing") && window.innerWidth <= 550) {
+document.querySelector("#stickyad").insertAdjacentHTML("beforebegin", `<!-- STICKY ELEMENT -->
+<div v-if="showStickyContainer && !isFlutterApp" v-show="!isTaboolaInViewport" :class="computedClasses">
+  <button
+    :id="adSlotId + '-label'"
+    class="absolute top-[-30px] right-[10px] bg-whitesmoke dark:bg-flint text-black dark:text-white rounded-t text-[12px] hover:text-darkred px-2 pt-2 pb-1"
+    @click="closeStickyAd"
+  >
+    ANZEIGE X
+  </button>
+  <div :id="adSlotId" class="flex items-center justify-center h-[100px] !w-screen bg-whitesmoke dark:bg-flint"></div>
+</div>`);
+	const closeStickyAd = () => {
+	  stickyActive.value = false;
+	  document.getElementById(adSlotId.value + '-label').style.display = 'none';
+	  const adUnit = window.adHandler?.service.getAdUnit('sticky');
+	  if (!adUnit) return;
+		  adUnit.disable('refresh');
+		  adUnit.disable('adUnit');
+		  adUnit.getContainer().style.display = 'none';
+	};
+}
 </script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"d76a01bdc713445181921d02dbeab4e3","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body></html>
