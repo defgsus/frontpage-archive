@@ -7,7 +7,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         
-                <link rel="stylesheet" type="text/css" href="https://www.zeitfuerdieschule.de/content/themes/nucleus/style.css?ver=fc0269fca449d4dda01b4680344cb0b33604351d" />
+                <link rel="stylesheet" type="text/css" href="https://www.zeitfuerdieschule.de/content/themes/nucleus/style.css?ver=aff68c41932468249b9cd07ab4595c0848a9e3e8" />
                 
                 <script>
     
@@ -137,13 +137,23 @@
     };
 </script>
 <!-- End: Nucleus <head> scripts -->        
-                <script>
+                        <script>
             
+            /**
+             * Send error payload; swallow network errors 
+             * to avoid generating new rejections.
+             * @param {Object} data
+             * @returns {undefined}
+             */
             const ncls_log_javascript_error = data =>
             {
                 data.action = '_ncls-log-javascript-error';
                 
-                fetch(
+                /* "void" 
+                added 2025-10-23, v1.4.1, MOBRID-11:
+                Intentionally "swallow" the promise 
+                in order to prevent further errors. */
+                void fetch(
                     '/_ncls/log-javascript-error/',
                     {
                         method: 'POST',
@@ -152,63 +162,278 @@
                         },
                         body: JSON.stringify(data)
                     }
-                );
+                ).catch(() => {});
             };
             
-            /* window.onerror = (message, source, line, column, error) => {}
-            replaced by more precise
-            window.addEventListener('error', error => {}) 
-            2025-10-16, v1.4.0, MOBRID-8 */
-            window.addEventListener('error', error =>
+            /**
+             * Safe same-origin check for filenames/URLs.
+             * @since v1.4.2
+             * @param {String} uri
+             * @returns {Boolean}
+             */
+            const ncls_is_same_origin = uri =>
             {
-                const data = {
-                    message: error.message || 'Unknown error',
-                    source: error.filename 
-                        || (error.target && error.target.src)
-                        || document.location.href,
-                    line: error.lineno ?? null,
-                    column: error.colno ?? null,
-                    stack: error.error?.stack ?? null,
-                    url: window.location.href,
-                    time: Date.now()
-                };
-
                 try {
                     
-                    ncls_log_javascript_error(data);
+                    return new URL(uri, location.href).origin === location.origin;
                     
-                } catch (_) {
+                } catch {
                     
-                    /* Never throw from the logger */
+                    return true;
                 }
+            };
+            
+            /**
+             * Normalize message to string.
+             * @since v1.4.2
+             * @param {any} message
+             * @returns {String}
+             */
+            const ncls_get_message_text = message =>
+            {
+                /* Using == null to cover both 
+                null and undefined values. */
+                return null == message
+                    ? ''
+                    : String(message)
+            };
+        
+            /* Heuristics for 
+            module-load/import failures. */
+            const MODULE_LOAD_PATTERNS = [
+                /failed to load module script/i,
+                /importing a module script failed/i,
+                /mime type .*not.*valid.*javascript/i,
+                /cannot use import statement outside a module/i,
+                /failed to resolve module specifier/i,
+                /import.*failed/i
+            ];
 
-                                    
-                    return false;
+            /* Heuristics for browser/environment 
+            errors without stack/position. */
+            const ENV_PATTERNS = [
+                /out of memory/i,
+                /quota(?:\s*exceeded)?error/i,
+                /ns_error/i,
+                /notallowederror/i,
+                /securityerror/i,
+                /networkerror/i,
+                /aborterror/i
+            ];
+            
+            /* Canonical DOMException/Error
+            names for environment failures. */
+            const ENV_ERROR_NAMES = [
+                'QuotaExceededError',
+                'NotAllowedError',
+                'SecurityError',
+                'AbortError',
+                'NetworkError',
+                'NS_ERROR_FAILURE',
+                'NS_ERROR_UNEXPECTED'
+            ];
+        
+            window.addEventListener('error', event =>
+            {   
+                /* Condition 1: real runtime error. */
+                const isRuntimeError = event instanceof ErrorEvent
+                    || ('message' in event && 'undefined' !== typeof event.error);
+
+                /* Explicitly ignore 
+                the resource errors. */
+                if (!isRuntimeError) {
                     
-                                    
+                                            return false;
+                                    }
+                
+                const hasStack = !!(event.error && event.error.stack);
+                
+                /* Using != null to cover both null and undefined values. */
+                const hasPos = null != event.lineno || null != event.colno;
+                
+                const filename = event.filename || '';
+                const isSameOrigin = !filename || ncls_is_same_origin(filename);
+                const message = ncls_get_message_text(event.message);
+
+                /* Exclude cross-origin runtime errors. */
+                if (filename
+                && (!isSameOrigin)) {
+                    
+                                            return false;
+                                    }
+
+                /* Case A:
+                Same-origin runtime with position. */
+                if (hasPos
+                /* Same origin condition
+                added 2025-11-17, v1.5, MOBRID-11 */
+                && (isSameOrigin)) {
+                    
+                    const data = {
+                        type: 'runtime',
+                        code: 101,
+                        message: event.message || 'Unknown JS runtime error',
+                        source: event.filename || document.location.href,
+                        /* Using != null to cover both 
+                        null and undefined values. */
+                        line: null != event.lineno ? event.lineno : null,
+                        /* Using != null to cover both
+                        null and undefined values. */
+                        column: null != event.colno ? event.colno : null,
+                        stack: hasStack
+                            ? event.error.stack
+                            : null,
+                        url: location.href,
+                        time: Date.now()
+                    };
+                    
+                    try {
+
+                        ncls_log_javascript_error(data);
+
+                    } catch (_) {
+
+                        /* Never throw from the logger */
+                    }
+                    
+                                            return false;
+                                    }
+                
+                /* Swallow classic CORS 
+                "Script error." noise. */
+                if (/^script error\.?$/i.test(message)) {
+                    
+                                            return false;
+                                    }
+                
+                const isModuleLoadError = MODULE_LOAD_PATTERNS.some(
+                    rx => rx.test(message)
+                );
+                
+                const errorName = event.error && event.error.name
+                    ? String(event.error.name)
+                    : '';
+                    
+                const isEnvError = ENV_ERROR_NAMES.includes(errorName)
+                    || ENV_PATTERNS.some(rx => rx.test(message));
+
+                /* Case B:
+                No position & no stack.
+                → log only whitelist cases. */
+                if (isEnvError
+                || (isModuleLoadError)) {
+                    
+                    const data = {
+                        type: 'runtime',
+                        code: 101,
+                        message: message || (isModuleLoadError
+                            ? 'Module load error'
+                            : 'Browser environment error'),
+                        source: filename || document.location.href,
+                        line: null,
+                        column: null,
+                        stack: null,
+                        url: location.href,
+                        time: Date.now()
+                    };
+                    
+                    if ('' !== errorName) {
+                        
+                        data.message = errorName + ': ' + data.message;
+                    }
+                    
+                    try {
+
+                        ncls_log_javascript_error(data);
+
+                    } catch (_) {
+
+                        /* Never throw from the logger */
+                    }
+                    
+                                            return false;
+                                      
+                }
+                
+                /* Otherwise:
+                Swallow uninformative, 
+                positionless runtime errors. */
+                                    return false;
+                                
             }, true);
             
-            /* Catch also promise errors
+            /* Catch also unhandled promise rejections
             added 2025-10-16, v1.4.0, MOBRID-8 */
-            window.addEventListener('unhandledrejection', error =>
+            window.addEventListener('unhandledrejection', event =>
             {
-                const reason = error.reason;
-                
+                const reason = event.reason;
+
                 const data = {
+                    type: 'unhandledrejection',
+                    code: 103,
                     message: (reason && reason.message)
                         ? reason.message
                         : String(reason),
                     stack: reason && reason.stack
                         ? reason.stack
                         : null,
-                    url: window.location.href,
+                    url: location.href,
                     time: Date.now(),
                     source: document.location.href,
                     line: null,
                     column: null
                 };
-                
+
                 try {
+
+                    ncls_log_javascript_error(data);
+
+                } catch (_) {
+
+                    /* Never throw from the logger */
+                }
+                
+                                    return false;
+                                    
+            }, true);
+            
+            /* Log CSP violations separately 
+            (helps with blocked resources)
+            added 2025-10-23, v1.4.1, MOBRID-11 */
+            window.addEventListener('securitypolicyviolation', event =>
+            {
+                /* Build a concise, 
+                descriptive message string. */
+                const msgParts = [];
+                
+                if (event.violatedDirective) {
+                    
+                    msgParts.push(`Directive: ${event.violatedDirective}`);
+                }
+                
+                if (event.blockedURI) {
+                    
+                    msgParts.push(`Blocked URI: ${event.blockedURI}`);
+                }
+                
+                const message = 'CSP violation: ' + msgParts.join(' | ');
+                
+                const data = {
+                    type: 'cspviolation',
+                    code: 104,
+                    message: message,
+                    stack: null,
+                    url: location.href,
+                    time: Date.now(),
+                    source: event.sourceFile || null,
+                    line: 'number' === typeof event.lineNumber
+                        ? event.lineNumber
+                        : null,
+                    column: 'number' === typeof event.columnNumber
+                        ? event.columnNumber
+                        : null
+                };
+                try { 
                     
                     ncls_log_javascript_error(data);
                 
@@ -216,12 +441,16 @@
                     
                     /* Never throw from the logger */
                 }
-            });
-                        
-        </script><meta name='robots' content='noindex, follow' />
+                
+                                    return false;
+                                    
+            }, true);
+
+        </script>
+        <meta name='robots' content='noindex, follow' />
 	<style>img:is([sizes="auto" i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }</style>
 	
-	<!-- This site is optimized with the Yoast SEO plugin v26.1.1 - https://yoast.com/wordpress/plugins/seo/ -->
+	<!-- This site is optimized with the Yoast SEO plugin v26.3 - https://yoast.com/wordpress/plugins/seo/ -->
 	<meta property="og:locale" content="de_DE" />
 	<meta property="og:title" content="Seite wurde nicht gefunden. - ZEIT für die Schule" />
 	<meta property="og:site_name" content="ZEIT für die Schule" />
@@ -230,7 +459,7 @@
 
 
 <link href='https://fonts.gstatic.com' crossorigin rel='preconnect' />
-<link rel='stylesheet' id='sbi_styles-css' href='https://www.zeitfuerdieschule.de/content/plugins/instagram-feed-pro/css/sbi-styles.min.css?ver=6.8.1' media='all' />
+<link rel='stylesheet' id='sbi_styles-css' href='https://www.zeitfuerdieschule.de/content/plugins/instagram-feed-pro/css/sbi-styles.min.css?ver=6.9.0' media='all' />
 <style id='classic-theme-styles-inline-css'>
 /*! This file is auto-generated */
 .wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}
@@ -241,16 +470,16 @@
 :where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}
 :root :where(.wp-block-pullquote){font-size: 1.5em;line-height: 1.6;}
 </style>
-<link rel='stylesheet' id='woocommerce-layout-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/css/woocommerce-layout.css?ver=10.2.2' media='all' />
-<link rel='stylesheet' id='woocommerce-smallscreen-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/css/woocommerce-smallscreen.css?ver=10.2.2' media='only screen and (max-width: 768px)' />
-<link rel='stylesheet' id='woocommerce-general-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/css/woocommerce.css?ver=10.2.2' media='all' />
+<link rel='stylesheet' id='woocommerce-layout-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/css/woocommerce-layout.css?ver=10.3.5' media='all' />
+<link rel='stylesheet' id='woocommerce-smallscreen-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/css/woocommerce-smallscreen.css?ver=10.3.5' media='only screen and (max-width: 768px)' />
+<link rel='stylesheet' id='woocommerce-general-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/css/woocommerce.css?ver=10.3.5' media='all' />
 <style id='woocommerce-inline-inline-css'>
 .woocommerce form .form-row .required { visibility: visible; }
 </style>
-<link rel='stylesheet' id='brands-styles-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/css/brands.css?ver=10.2.2' media='all' />
-<link rel='stylesheet' id='borlabs-cookie-css' href='https://www.zeitfuerdieschule.de/content/cache/borlabs-cookie/borlabs-cookie_1_de.css?ver=2.3.4-47' media='all' />
-<link rel='stylesheet' id='tablepress-default-css' href='https://www.zeitfuerdieschule.de/content/plugins/tablepress/css/build/default.css?ver=3.2.3' media='all' />
-<link rel='stylesheet' id='woocommerce-gzd-layout-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce-germanized/build/static/layout-styles.css?ver=3.20.2' media='all' />
+<link rel='stylesheet' id='brands-styles-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/css/brands.css?ver=10.3.5' media='all' />
+<link rel='stylesheet' id='borlabs-cookie-css' href='https://www.zeitfuerdieschule.de/content/cache/borlabs-cookie/borlabs-cookie_1_de.css?ver=2.3.5-47' media='all' />
+<link rel='stylesheet' id='tablepress-default-css' href='https://www.zeitfuerdieschule.de/content/plugins/tablepress/css/build/default.css?ver=3.2.5' media='all' />
+<link rel='stylesheet' id='woocommerce-gzd-layout-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce-germanized/build/static/layout-styles.css?ver=3.20.3' media='all' />
 <style id='woocommerce-gzd-layout-inline-css'>
 .woocommerce-checkout .shop_table { background-color: #eeeeee; } .product p.deposit-packaging-type { font-size: 1.25em !important; } p.woocommerce-shipping-destination { display: none; }
                 .wc-gzd-nutri-score-value-a {
@@ -271,28 +500,28 @@
             
 </style>
 <script src="https://www.zeitfuerdieschule.de/content/themes/nucleus/asset/script/build/vendor/jquery/3.6.0/jquery-3.6.0.min.js?ver=3.6.0" id="jquery-core-js"></script>
-<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.min.js?ver=2.7.0-wc.10.2.2" id="jquery-blockui-js" defer="defer" data-wp-strategy="defer"></script>
-<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/js-cookie/js.cookie.min.js?ver=2.1.4-wc.10.2.2" id="js-cookie-js" defer="defer" data-wp-strategy="defer"></script>
+<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.min.js?ver=2.7.0-wc.10.3.5" id="wc-jquery-blockui-js" defer="defer" data-wp-strategy="defer"></script>
+<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/js-cookie/js.cookie.min.js?ver=2.1.4-wc.10.3.5" id="wc-js-cookie-js" defer="defer" data-wp-strategy="defer"></script>
 <script id="woocommerce-js-extra">
 /* <![CDATA[ */
 var woocommerce_params = {"ajax_url":"\/wp-admin\/admin-ajax.php","wc_ajax_url":"\/?wc-ajax=%%endpoint%%","i18n_password_show":"Passwort anzeigen","i18n_password_hide":"Passwort ausblenden"};
 /* ]]> */
 </script>
-<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/frontend/woocommerce.min.js?ver=10.2.2" id="woocommerce-js" defer="defer" data-wp-strategy="defer"></script>
-<script src="https://www.zeitfuerdieschule.de/content/themes/nucleus/vendor/ncls/nucleus-core/asset/script/hook/vendor/ua-parser/0.7.20/ua-parser.min.js?ver=fc0269fca449d4dda01b4680344cb0b33604351d" id="ua-parser-js"></script>
+<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/frontend/woocommerce.min.js?ver=10.3.5" id="woocommerce-js" defer="defer" data-wp-strategy="defer"></script>
+<script src="https://www.zeitfuerdieschule.de/content/themes/nucleus/vendor/ncls/nucleus-core/asset/script/hook/vendor/ua-parser/0.7.20/ua-parser.min.js?ver=aff68c41932468249b9cd07ab4595c0848a9e3e8" id="ua-parser-js"></script>
 <script id="old-browser-hint-js-extra">
 /* <![CDATA[ */
 var nclsOldBrowsers = {"content":"Sie verwenden einen veralteten Browser. Aktuelle Browser finden Sie <a target=\"_blank\" href=\"http:\/\/browsehappy.com\/\">hier<\/a>.","browsers":[["IE","11"]]};
 /* ]]> */
 </script>
-<script src="https://www.zeitfuerdieschule.de/content/themes/nucleus/vendor/ncls/nucleus-core/asset/script/hook/OldBrowserHint.js?ver=fc0269fca449d4dda01b4680344cb0b33604351d" id="old-browser-hint-js"></script>
+<script src="https://www.zeitfuerdieschule.de/content/themes/nucleus/vendor/ncls/nucleus-core/asset/script/hook/OldBrowserHint.js?ver=aff68c41932468249b9cd07ab4595c0848a9e3e8" id="old-browser-hint-js"></script>
 <script id="borlabs-cookie-prioritize-js-extra">
 /* <![CDATA[ */
 var borlabsCookiePrioritized = {"domain":"www.zeitfuerdieschule.de","path":"\/","version":"1","bots":"1","optInJS":{"marketing":{"facebook-pixel":"PCEtLSBGYWNlYm9vayBQaXhlbCBDb2RlIC0tPg0KPHNjcmlwdD4NCiAgIWZ1bmN0aW9uKGYsYixlLHYsbix0LHMpDQogIHtpZihmLmZicSlyZXR1cm47bj1mLmZicT1mdW5jdGlvbigpe24uY2FsbE1ldGhvZD8NCiAgbi5jYWxsTWV0aG9kLmFwcGx5KG4sYXJndW1lbnRzKTpuLnF1ZXVlLnB1c2goYXJndW1lbnRzKX07DQogIGlmKCFmLl9mYnEpZi5fZmJxPW47bi5wdXNoPW47bi5sb2FkZWQ9ITA7bi52ZXJzaW9uPScyLjAnOw0KICBuLnF1ZXVlPVtdO3Q9Yi5jcmVhdGVFbGVtZW50KGUpO3QuYXN5bmM9ITA7DQogIHQuc3JjPXY7cz1iLmdldEVsZW1lbnRzQnlUYWdOYW1lKGUpWzBdOw0KICBzLnBhcmVudE5vZGUuaW5zZXJ0QmVmb3JlKHQscyl9KHdpbmRvdywgZG9jdW1lbnQsJ3NjcmlwdCcsDQogICdodHRwczovL2Nvbm5lY3QuZmFjZWJvb2submV0L2VuX1VTL2ZiZXZlbnRzLmpzJyk7DQogIGZicSgnaW5pdCcsICcxMTI2MTMyMjE0ODM1MTcwJyk7DQogIGZicSgndHJhY2snLCAnUGFnZVZpZXcnKTsNCjwvc2NyaXB0Pg0KPCEtLSBFbmQgRmFjZWJvb2sgUGl4ZWwgQ29kZSAtLT4="}}};
 /* ]]> */
 </script>
-<script src="https://www.zeitfuerdieschule.de/content/plugins/borlabs-cookie/assets/javascript/borlabs-cookie-prioritize.min.js?ver=2.3.4" id="borlabs-cookie-prioritize-js"></script>
-<script>  var el_i13_login_captcha=null; var el_i13_register_captcha=null; </script><style>#nclsOldBrowserHint{position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('https://www.zeitfuerdieschule.de/content/themes/nucleus/asset/image/old-browser-hint-bg.png');background-repeat:repeat;color:#fff;z-index:9999;background-color:rgba(0, 0, 0, 0.65);}#nclsOldBrowserHint .message{padding-top:100px;display:block;text-align:center;font-size:20px; padding:100px 70px 0 70px;color:#fff;}#nclsOldBrowserHint .message a{color:red;}#nclsOldBrowserHint #nclsOldBrowserHintCloser{position:absolute;font-size:30px;top:20px;right:20px;color:#fff;font-weight:bold;text-decoration:none;}#nclsOldBrowserHint #nclsOldBrowserHintCloser:hover{color:red;}</style><style>.select2-results__option[id$="-DE"], .select2-results__option[id$="-AT"], .select2-results__option[id$="-CH"]{ font-weight: bold; } .select2-results__option[id$="-DE"]::after, .select2-results__option[id$="-AT"]::after, .select2-results__option[id$="-CH"]::after{ border-bottom-width: 2px; } .select2-results__option[id$="-CH"] { margin-bottom: 20px; } .select2-results__option[id$="-CH"]::after { border-bottom-width: 2px; }</style>	<noscript><style>.woocommerce-product-gallery{ opacity: 1 !important; }</style></noscript>
+<script src="https://www.zeitfuerdieschule.de/content/plugins/borlabs-cookie/assets/javascript/borlabs-cookie-prioritize.min.js?ver=2.3.5" id="borlabs-cookie-prioritize-js"></script>
+<script>  var el_i13_login_captcha=null; var el_i13_register_captcha=null; </script><style>#nclsOldBrowserHint{position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('https://www.zeitfuerdieschule.de/content/themes/nucleus/asset/image/old-browser-hint-bg.png');background-repeat:repeat;color:#fff;z-index:9999;background-color:rgba(0,0,0,0.65);}#nclsOldBrowserHint .message{padding-top:100px;display:block;text-align:center;font-size:20px; padding:100px 70px 0 70px;color:#fff;}#nclsOldBrowserHint .message a{color:red;}#nclsOldBrowserHint #nclsOldBrowserHintCloser{position:absolute;font-size:30px;top:20px;right:20px;color:#fff;font-weight:bold;text-decoration:none;}#nclsOldBrowserHint #nclsOldBrowserHintCloser:hover{color:red;}</style><style>.select2-results__option[id$="-DE"], .select2-results__option[id$="-AT"], .select2-results__option[id$="-CH"]{ font-weight: bold; } .select2-results__option[id$="-DE"]::after, .select2-results__option[id$="-AT"]::after, .select2-results__option[id$="-CH"]::after{ border-bottom-width: 2px; } .select2-results__option[id$="-CH"] { margin-bottom: 20px; } .select2-results__option[id$="-CH"]::after { border-bottom-width: 2px; }</style>	<noscript><style>.woocommerce-product-gallery{ opacity: 1 !important; }</style></noscript>
 	<link rel="icon" href="https://www.zeitfuerdieschule.de/content/uploads/2021/08/cropped-z-1-32x32.png" sizes="32x32" />
 <link rel="icon" href="https://www.zeitfuerdieschule.de/content/uploads/2021/08/cropped-z-1-192x192.png" sizes="192x192" />
 <link rel="apple-touch-icon" href="https://www.zeitfuerdieschule.de/content/uploads/2021/08/cropped-z-1-180x180.png" />
@@ -547,15 +776,6 @@ var borlabsCookiePrioritized = {"domain":"www.zeitfuerdieschule.de","path":"\/",
    href="https://www.zeitfuerdieschule.de/materialien/zeit-klassensatz-gratis/" 
    title="DIE ZEIT im Klassensatz">
     <span class="menu-item__label">DIE ZEIT im Klassensatz</span>
-</a>                       
-                                                                        
-                                </li>
-                                                                <li class="menu-item js-menu-item menu-item--level-3 sub-sub-item" >
-                                                                                                                    
-<a class="menu-item__link menu-item__link--level-3 js-menu-item-link" 
-   href="https://www.zeitfuerdieschule.de/materialien/die-zeit-im-klassensatz/sonderausgabe-lesen/" 
-   title="DIE ZEIT Sonderausgabe Lesen im Klassensatz">
-    <span class="menu-item__label">DIE ZEIT Sonderausgabe Lesen im Klassensatz</span>
 </a>                       
                                                                         
                                 </li>
@@ -993,15 +1213,6 @@ var borlabsCookiePrioritized = {"domain":"www.zeitfuerdieschule.de","path":"\/",
    href="https://www.zeitfuerdieschule.de/materialien/zeit-klassensatz-gratis/" 
    title="DIE ZEIT im Klassensatz">
     <span class="menu-item__label">DIE ZEIT im Klassensatz</span>
-</a>                       
-                                                                        
-                                </li>
-                                                                <li class="menu-item js-menu-item menu-item--level-3 sub-sub-item" >
-                                                                                                                    
-<a class="menu-item__link menu-item__link--level-3 js-menu-item-link" 
-   href="https://www.zeitfuerdieschule.de/materialien/die-zeit-im-klassensatz/sonderausgabe-lesen/" 
-   title="DIE ZEIT Sonderausgabe Lesen im Klassensatz">
-    <span class="menu-item__label">DIE ZEIT Sonderausgabe Lesen im Klassensatz</span>
 </a>                       
                                                                         
                                 </li>
@@ -2366,21 +2577,21 @@ var sbiajaxurl = "https://www.zeitfuerdieschule.de/wp-admin/admin-ajax.php";
 			document.body.className = c;
 		})();
 	</script>
-	<link rel='stylesheet' id='wc-blocks-style-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/client/blocks/wc-blocks.css?ver=wc-10.2.2' media='all' />
-<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/sourcebuster/sourcebuster.min.js?ver=10.2.2" id="sourcebuster-js-js"></script>
+	<link rel='stylesheet' id='wc-blocks-style-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/client/blocks/wc-blocks.css?ver=wc-10.3.5' media='all' />
+<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/sourcebuster/sourcebuster.min.js?ver=10.3.5" id="sourcebuster-js-js"></script>
 <script id="wc-order-attribution-js-extra">
 /* <![CDATA[ */
 var wc_order_attribution = {"params":{"lifetime":1.0e-5,"session":30,"base64":false,"ajaxurl":"https:\/\/www.zeitfuerdieschule.de\/wp-admin\/admin-ajax.php","prefix":"wc_order_attribution_","allowTracking":true},"fields":{"source_type":"current.typ","referrer":"current_add.rf","utm_campaign":"current.cmp","utm_source":"current.src","utm_medium":"current.mdm","utm_content":"current.cnt","utm_id":"current.id","utm_term":"current.trm","utm_source_platform":"current.plt","utm_creative_format":"current.fmt","utm_marketing_tactic":"current.tct","session_entry":"current_add.ep","session_start_time":"current_add.fd","session_pages":"session.pgs","session_count":"udata.vst","user_agent":"udata.uag"}};
 /* ]]> */
 </script>
-<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/frontend/order-attribution.min.js?ver=10.2.2" id="wc-order-attribution-js"></script>
+<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/frontend/order-attribution.min.js?ver=10.3.5" id="wc-order-attribution-js"></script>
 <script id="borlabs-cookie-js-extra">
 /* <![CDATA[ */
 var borlabsCookieConfig = {"ajaxURL":"https:\/\/www.zeitfuerdieschule.de\/wp-admin\/admin-ajax.php","language":"de","animation":"1","animationDelay":"","animationIn":"_brlbs-fadeInDown","animationOut":"_brlbs-fadeOutUp","blockContent":"1","boxLayout":"box","boxLayoutAdvanced":"1","automaticCookieDomainAndPath":"1","cookieDomain":"www.zeitfuerdieschule.de","cookiePath":"\/","cookieSameSite":"Lax","cookieSecure":"1","cookieLifetime":"365","cookieLifetimeEssentialOnly":"182","crossDomainCookie":[],"cookieBeforeConsent":"","cookiesForBots":"1","cookieVersion":"1","hideCookieBoxOnPages":[],"respectDoNotTrack":"","reloadAfterConsent":"","reloadAfterOptOut":"1","showCookieBox":"1","cookieBoxIntegration":"javascript","ignorePreSelectStatus":"1","cookies":{"essential":["borlabs-cookie","google-recaptcha","wordpress_logged_in","wordpress_sec","wfwaf_authcookie","woocommerce"],"internestatistiken":["webtrekk"],"statistics":[],"marketing":["facebook-pixel"],"external-media":["studiozx-game","youtube"]}};
 var borlabsCookieCookies = {"essential":{"borlabs-cookie":{"cookieNameList":{"borlabs-cookie":"borlabs-cookie"},"settings":{"blockCookiesBeforeConsent":"0","prioritize":"0"}},"google-recaptcha":{"cookieNameList":[],"settings":{"blockCookiesBeforeConsent":"0","prioritize":"0"}},"wordpress_logged_in":{"cookieNameList":{"wordpress_logged_in_[hash]":"wordpress_logged_in_[hash]"},"settings":{"blockCookiesBeforeConsent":"0","prioritize":"0"}},"wordpress_sec":{"cookieNameList":{"wordpress_sec_[hash]":"wordpress_sec_[hash]"},"settings":{"blockCookiesBeforeConsent":"0","prioritize":"0"}},"wfwaf_authcookie":{"cookieNameList":{"wfwaf-authcookie-[hash]":"wfwaf-authcookie-[hash]"},"settings":{"blockCookiesBeforeConsent":"0","prioritize":"0"}},"woocommerce":{"cookieNameList":{"woocommerce_cart_hash":"woocommerce_cart_hash","wp_woocommerce_session_[hash]":"wp_woocommerce_session_[hash]","woocommerce_items_in_cart":"woocommerce_items_in_cart"},"settings":{"blockCookiesBeforeConsent":"0","prioritize":"0"}}},"internestatistiken":{"webtrekk":{"cookieNameList":[],"settings":{"blockCookiesBeforeConsent":"0","prioritize":"0","asyncOptOutCode":"0"},"optInJS":"PHNjcmlwdD4NCnZhciB3ZWJ0cmVra1NjcmlwdCA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ3NjcmlwdCcpOw0KdmFyIHd0Ow0Kd2VidHJla2tTY3JpcHQub25sb2FkID0gZnVuY3Rpb24gKCkgew0KICAgIHZhciB3ZWJ0cmVrayA9IHsNCgkJbGlua1RyYWNrIDogImxpbmsiLA0KCQlsaW5rVHJhY2tBdHRyaWJ1dGU6ICJkYXRhLXd0LWNsaWNrIiwgDQoJCWhlYXRtYXAgOiAiMCIgDQoJfTsNCg0KCXd0ID0gbmV3IHdlYnRyZWtrVjMod2VidHJla2spOw0KCQ0KCXd0LmxpbmtUcmFja0Rvd25sb2FkcyA9ICJwZGYiOw0KDQoJd3QuY29va2llID0gIjEiOyAvLyAoM3wxLCAxc3Qgb3IgM3JkIHBhcnR5IGNvb2tpZSkgDQoNCgl3dC5jb250ZW50R3JvdXAgPSB7DQoNCgkJMTogInZlcmxhZyIsIC8vIFp1b3JkbnVuZy9CZXJlaWNoDQoJCTI6ICJhcnRpY2xlIiwgLy8gS2F0ZWdvcmllL1BhZ2V0eXBlDQoJCTM6ICJhbmdlYm90ZSIsIC8vIFJlc3NvcnQNCgkJNDogImFkdiIsIC8vIFNvdXJjZXR5cGUNCgkJNTogIiIsIC8vIFN1YnJlc3NvcnQNCgkJNjogIiIsIC8vQ2x1c3Rlcg0KCQk3OiAiIiwgLy8gZG9jLXBhdGgNCgkJODogIiIsIC8vIEJhbm5lci1DaGFubmVsDQoJCTk6ICIyMDE3LTA4LTAxIiAvLyBmaXJzdCBwdWJsaXNoZWQNCgl9Ow0KDQoJd3QuY3VzdG9tUGFyYW1ldGVyID0geyANCg0KCQkxOiAiIiwgLy8gQXV0b3INCgkJMjogIiIsIC8vIEJlemVpY2huZXIgZGVzIElWVyBUcmFja2luZy1QaXhlbHMNCgkJMzogIjEvMSIsIC8vIFNlaXRlbmFuemFobCBlaW5lciBTZWl0ZQ0KCQk0OiAiIiwgLy8gU2NobGFnd29ydGUNCgkJNjogIiIsIC8vIFRleHRsw6RuZ2UNCgkJNzogIiIsIC8vIFF1ZWxsZQ0KCQk5OiAiIiwgLy8gQmFubmVyLUNoYW5uZWwNCgkJMTI6ICIiLCAvL1NlaXRlbnZlcnNpb24gRW5kZ2Vyw6R0IA0KCQkyNTogIm9yaWdpbmFsIiAvLyBQbGF0dGZvcm0NCgl9Ow0KDQoJd3QuY29udGVudElkID0gInZlcmxhZy5hbmdlYm90ZS4uLmFydGljbGUuYWR2fCIgKyBsb2NhdGlvbi5wcm90b2NvbCArICcvLycgKyBsb2NhdGlvbi5ob3N0ICsgbG9jYXRpb24ucGF0aG5hbWU7IC8vIGNvbnRlbnQgaWQNCgl3dC5zZW5kaW5mbygpOw0KfTsNCndlYnRyZWtrU2NyaXB0LnNyYyA9ICIvY29udGVudC90aGVtZXMvbnVjbGV1cy9hc3NldC9zY3JpcHQvYnVpbGQvdmVuZG9yL3dlYnRyZWtrL3dlYnRyZWtrX3Y0LjMuNS5qcyI7DQoNCmRvY3VtZW50LmhlYWQuYXBwZW5kQ2hpbGQod2VidHJla2tTY3JpcHQpOw0KPC9zY3JpcHQ+","optOutJS":""}},"marketing":{"facebook-pixel":{"cookieNameList":{"_fbp":"_fbp","act":"act","c_user":"c_user","datr":"datr","fr":"fr","m_pixel_ration":"m_pixel_ration","pl":"pl","presence":"presence","sb":"sb","spin":"spin","wd":"wd","xs":"xs"},"settings":{"blockCookiesBeforeConsent":"0","prioritize":"1","asyncOptOutCode":"0","pixelId":"1126132214835170"},"optInJS":"","optOutJS":""}},"external-media":{"studiozx-game":{"cookieNameList":{"biodiversityUserId":"biodiversityUserId","biodiversityUserAvatar":"biodiversityUserAvatar"},"settings":{"blockCookiesBeforeConsent":"0","prioritize":"0","asyncOptOutCode":"0"},"optInJS":"PHNjcmlwdD53aW5kb3cuQm9ybGFic0Nvb2tpZS51bmJsb2NrQ29udGVudElkKCJzdHVkaW96eC1nYW1lIik7PC9zY3JpcHQ+","optOutJS":""},"youtube":{"cookieNameList":{"NID":"NID"},"settings":{"blockCookiesBeforeConsent":"0","prioritize":"0"},"optInJS":"PHNjcmlwdD5pZih0eXBlb2Ygd2luZG93LkJvcmxhYnNDb29raWUgPT09ICJvYmplY3QiKSB7IHdpbmRvdy5Cb3JsYWJzQ29va2llLnVuYmxvY2tDb250ZW50SWQoInlvdXR1YmUiKTsgfTwvc2NyaXB0Pg==","optOutJS":""}}};
 /* ]]> */
 </script>
-<script src="https://www.zeitfuerdieschule.de/content/plugins/borlabs-cookie/assets/javascript/borlabs-cookie.min.js?ver=2.3.4" id="borlabs-cookie-js"></script>
+<script src="https://www.zeitfuerdieschule.de/content/plugins/borlabs-cookie/assets/javascript/borlabs-cookie.min.js?ver=2.3.5" id="borlabs-cookie-js"></script>
 <script id="borlabs-cookie-js-after">
 /* <![CDATA[ */
 document.addEventListener("DOMContentLoaded", function (e) {
@@ -2404,7 +2615,7 @@ BorlabsCookieInitCheck();});
 </script>
 
 
-<script src="https://www.zeitfuerdieschule.de/content/themes/nucleus/asset/script/build/build.min.js?ver=fc0269fca449d4dda01b4680344cb0b33604351d"></script>
+<script src="https://www.zeitfuerdieschule.de/content/themes/nucleus/asset/script/build/build.min.js?ver=aff68c41932468249b9cd07ab4595c0848a9e3e8"></script>
 
                 
     </body>

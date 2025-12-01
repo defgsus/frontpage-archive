@@ -677,15 +677,15 @@
                             </a>
                         </div>
     <div class="fp-main-header__weather-widget">
-        <div class="fp-main-header__weather-widget--top regenschauer">
+        <div class="fp-main-header__weather-widget--top wolkig">
             <span class="weather-icon-img">
-                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/regenschauer.svg" alt="weather">
+                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/wolkig.svg" alt="weather">
             </span>
-            <span class="fp-main-header__weather-widget--tooltip">regenschauer</span>
+            <span class="fp-main-header__weather-widget--tooltip">wolkig</span>
             <aside>
-                <span class="fp-main-header__weather-widget--day-temp">16°</span>
+                <span class="fp-main-header__weather-widget--day-temp">8°</span>
                 <span>/</span>
-                <span class="fp-main-header__weather-widget--night-temp">10°</span>
+                <span class="fp-main-header__weather-widget--night-temp">0°</span>
             </aside>
         </div>
         <div class="fp-main-header__weather-widget--bottom">
@@ -2339,27 +2339,59 @@ document.querySelectorAll(".cookie-einstellungen").forEach(x => {
 });
 </script>
 <script id="stickyad">
-if (document.location.host.includes("publishing") && window.innerWidth <= 550) {
-document.querySelector("#stickyad").insertAdjacentHTML("beforebegin", `<!-- STICKY ELEMENT -->
-<div v-if="showStickyContainer && !isFlutterApp" v-show="!isTaboolaInViewport" :class="computedClasses">
+  if (document.location.host.includes("publishing") && window.innerWidth <= 550) { 
+
+ (function () {
+    const style = document.createElement('style');
+    style.textContent = `
+#sticky-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #efefef;
+  z-index: 9999;
+}
+#stickyad-label {
+  position: absolute;
+  right: 10px;
+  top: -23px;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 4px;
+}
+#sticky {
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+`;
+    document.head.appendChild(style);
+  })();
+
+
+    window.closeStickyAd = () => {
+      document.querySelector('#sticky-container').style.display = 'none';
+
+      const adUnit = window.adHandler?.service.getAdUnit('sticky');
+      if (!adUnit) return;
+
+      adUnit.disable('refresh');
+      adUnit.disable('adUnit');
+    };
+    document.querySelector("#stickyad").insertAdjacentHTML("beforebegin", ` <div id="sticky-container">
   <button
-    :id="adSlotId + '-label'"
+    id="stickyad-label"
     class="absolute top-[-30px] right-[10px] bg-whitesmoke dark:bg-flint text-black dark:text-white rounded-t text-[12px] hover:text-darkred px-2 pt-2 pb-1"
-    @click="closeStickyAd"
+    onclick="closeStickyAd()"
   >
     ANZEIGE X
   </button>
-  <div :id="adSlotId" class="flex items-center justify-center h-[100px] !w-screen bg-whitesmoke dark:bg-flint"></div>
-</div>`);
-	const closeStickyAd = () => {
-	  stickyActive.value = false;
-	  document.getElementById(adSlotId.value + '-label').style.display = 'none';
-	  const adUnit = window.adHandler?.service.getAdUnit('sticky');
-	  if (!adUnit) return;
-		  adUnit.disable('refresh');
-		  adUnit.disable('adUnit');
-		  adUnit.getContainer().style.display = 'none';
-	};
-}
+  <div id="sticky" class="h-[100px] bg-whitesmoke dark:bg-flint"></div> </div>`);
+
+  }
 </script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"d76a01bdc713445181921d02dbeab4e3","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body></html>
