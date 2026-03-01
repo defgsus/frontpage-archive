@@ -7,7 +7,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         
-                <link rel="stylesheet" type="text/css" href="https://www.zeitfuerdieschule.de/content/themes/nucleus/style.css?ver=656d31f064bb0b01c970e00c5616ef7a4609c53d" />
+                <link rel="stylesheet" type="text/css" href="https://www.zeitfuerdieschule.de/content/themes/nucleus/style.css?ver=549a85e21472683717b7ef8730c2c7e25ad38f4c" />
                 
                 <script>
     
@@ -137,323 +137,351 @@
     };
 </script>
 <!-- End: Nucleus <head> scripts -->        
-                        <script>
-            
-            /**
-             * Send error payload; swallow network errors 
-             * to avoid generating new rejections.
-             * @param {Object} data
-             * @returns {undefined}
-             */
-            const ncls_log_javascript_error = data =>
-            {
-                data.action = '_ncls-log-javascript-error';
-                
-                /* "void" 
-                added 2025-10-23, v1.4.1, MOBRID-11:
-                Intentionally "swallow" the promise 
-                in order to prevent further errors. */
-                void fetch(
-                    '/_ncls/log-javascript-error/',
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-                    }
-                ).catch(() => {});
-            };
-            
-            /**
-             * Safe same-origin check for filenames/URLs.
-             * @since v1.4.2
-             * @param {String} uri
-             * @returns {Boolean}
-             */
-            const ncls_is_same_origin = uri =>
-            {
-                try {
-                    
-                    return new URL(uri, location.href).origin === location.origin;
-                    
-                } catch {
-                    
-                    return true;
+                <script id="mobrid-head-script">
+    
+const MOBRID_JSLOG_ACTION = '_mobrid-log-javascript-error';
+const MOBRID_JSLOG_TIMESTAMP = 1772328474;
+const MOBRID_JSLOG_TOKEN = '0fca6bff875c6ecdff2ae934e70b42521e311c7a9f9bcf843c2b1f2197c15af2';
+const MOBRID_JSLOG_PATH = '/_mobrid/log-javascript-error/';
+
+/**
+ * Send error payload; swallow network errors 
+ * to avoid generating new rejections.
+ * @created 2024-09-04
+ * @updated 2026-02-13
+ * @param {Object} data
+ * @returns {undefined}
+ */
+const mobrid_jslog = data =>
+{
+    try {
+
+        data.action = MOBRID_JSLOG_ACTION;
+        data.jslogts = MOBRID_JSLOG_TIMESTAMP;
+        data.jslogtk = MOBRID_JSLOG_TOKEN;
+
+    } catch (e) {
+
+        /* Never throw from logger */
+        return;
+    }
+    
+    let bodyJson = '';
+
+    /* Serialize once
+    (and never throw while logging). */
+    try {
+
+        bodyJson = JSON.stringify(data);
+
+    } catch (e) {
+
+        bodyJson = '{"action":'
+            + '"' + MOBRID_JSLOG_ACTION + '",'
+            + '"_meta":{"json_error":"stringify_failed"}}';
+    }
+
+    /* 1)
+    Prefer sendBeacon instead of fetch() 
+    (reliable during unload/navigation)
+    added 2026-02-04, v1.6.0, MOBRID-24 */
+    try {
+
+        if (navigator
+        && ('function' === typeof navigator.sendBeacon)) {
+
+            const blob = new Blob(
+                [
+                    bodyJson
+                ],
+                {
+                    type: 'application/json'
                 }
-            };
-            
-            /**
-             * Normalize message to string.
-             * @since v1.4.2
-             * @param {any} message
-             * @returns {String}
-             */
-            const ncls_get_message_text = message =>
-            {
-                /* Using == null to cover both 
-                null and undefined values. */
-                return null == message
-                    ? ''
-                    : String(message)
-            };
+            );
+
+            /* If queued successfully, we are done. */
+            if (navigator.sendBeacon(MOBRID_JSLOG_PATH, blob)) {
+
+                return;
+            }
+
+            /* If it returns false, fallback to fetch below. */
+        }
+
+    } catch (e) {
+
+        /* Ignore and fallback to fetch. */
+    }
+
+    /* "void" 
+    added 2025-10-23, v1.4.1, MOBRID-11:
+    Intentionally "swallow" the promise 
+    in order to prevent further errors. */
+    void fetch(
+        MOBRID_JSLOG_PATH,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: bodyJson,
+            /* Keepalive flag
+            added 2026-02-04, v1.6.0, MOBRID-24 */
+            keepalive: true
+        }
+    /* Swallow promise 
+    to avoid new errors
+    added 2026-02-12, v1.6.0, MOBRID-24, MOBRID-25. */
+    ).catch(() => {});
+};
+
+/**
+ * Normalizes any value to a safe message string.
+ * @jira MOBRID-24
+ * @since v1.6.0
+ * @created 2026-02-04
+ * @updated 2026-02-12
+ * @param {*} err
+ * @returns {string}
+ */
+const mobrid_to_message = value =>
+{
+    try {
+
+        if (null === value
+        || ('undefined' === typeof value)
+        || (!value)) {
+
+            return '';
+        }
+
+        if ('string' === typeof value) {
+
+            return value;
+        }
+
+        if (value instanceof Error) {
+
+            return value.name
+                ? (value.name + ': ' + (value.message || ''))
+                : (value.message || '');
+        }
+
+        /* Try common "message" field. */
+        if ('string' === typeof value.message) {
+
+            return String(value.message);
+        }
+
+        return String(value);
         
-            /* Heuristics for 
-            module-load/import failures. */
-            const MODULE_LOAD_PATTERNS = [
-                /failed to load module script/i,
-                /importing a module script failed/i,
-                /mime type .*not.*valid.*javascript/i,
-                /cannot use import statement outside a module/i,
-                /failed to resolve module specifier/i,
-                /import.*failed/i
-            ];
+    } catch (e) {
 
-            /* Heuristics for browser/environment 
-            errors without stack/position. */
-            const ENV_PATTERNS = [
-                /out of memory/i,
-                /quota(?:\s*exceeded)?error/i,
-                /ns_error/i,
-                /notallowederror/i,
-                /securityerror/i,
-                /networkerror/i,
-                /aborterror/i
-            ];
-            
-            /* Canonical DOMException/Error
-            names for environment failures. */
-            const ENV_ERROR_NAMES = [
-                'QuotaExceededError',
-                'NotAllowedError',
-                'SecurityError',
-                'AbortError',
-                'NetworkError',
-                'NS_ERROR_FAILURE',
-                'NS_ERROR_UNEXPECTED'
-            ];
+        return '';
+    }
+}
+
+/**
+ * Extract stack from Error-like objects.
+ * @jira MOBRID-24
+ * @since v1.6.0
+ * @created 2026-02-04
+ * @updated 2026-02-12
+ * @param {any} value
+ * @returns {string|null}
+ */
+const mobrid_to_stack = obj =>
+{
+    if ('undefined' === typeof obj
+    || (!obj)) {
         
-            window.addEventListener('error', event =>
-            {   
-                /* Condition 1: real runtime error. */
-                const isRuntimeError = event instanceof ErrorEvent
-                    || ('message' in event && 'undefined' !== typeof event.error);
+        return null;
+    }
+    
+    try {
 
-                /* Explicitly ignore 
-                the resource errors. */
-                if (!isRuntimeError) {
-                    
-                                            return false;
-                                    }
-                
-                const hasStack = !!(event.error && event.error.stack);
-                
-                /* Using != null to cover both null and undefined values. */
-                const hasPos = null != event.lineno || null != event.colno;
-                
-                const filename = event.filename || '';
-                const isSameOrigin = !filename || ncls_is_same_origin(filename);
-                const message = ncls_get_message_text(event.message);
+        if ('string' === typeof obj.stack
+        && (obj.stack.length)) {
 
-                /* Exclude cross-origin runtime errors. */
-                if (filename
-                && (!isSameOrigin)) {
-                    
-                                            return false;
-                                    }
+            return obj.stack;
+        }
+        
+        if ('string' === typeof obj.trace
+        && (obj.trace.length)) {
 
-                /* Case A:
-                Same-origin runtime with position. */
-                if (hasPos
-                /* Same origin condition
-                added 2025-11-17, v1.5, MOBRID-11 */
-                && (isSameOrigin)) {
-                    
-                    const data = {
-                        type: 'runtime',
-                        code: 101,
-                        message: event.message || 'Unknown JS runtime error',
-                        source: event.filename || document.location.href,
-                        /* Using != null to cover both 
-                        null and undefined values. */
-                        line: null != event.lineno ? event.lineno : null,
-                        /* Using != null to cover both
-                        null and undefined values. */
-                        column: null != event.colno ? event.colno : null,
-                        stack: hasStack
-                            ? event.error.stack
-                            : null,
-                        url: location.href,
-                        time: Date.now()
-                    };
-                    
-                    try {
+            return obj.trace;
+        }
 
-                        ncls_log_javascript_error(data);
+        if ('string' === typeof obj.stacktrace
+        && (obj.stacktrace.length)) {
 
-                    } catch (_) {
+            return obj.stacktrace;
+        }
 
-                        /* Never throw from the logger */
-                    }
-                    
-                                            return false;
-                                    }
-                
-                /* Swallow classic CORS 
-                "Script error." noise. */
-                if (/^script error\.?$/i.test(message)) {
-                    
-                                            return false;
-                                    }
-                
-                const isModuleLoadError = MODULE_LOAD_PATTERNS.some(
-                    rx => rx.test(message)
-                );
-                
-                const errorName = event.error && event.error.name
-                    ? String(event.error.name)
-                    : '';
-                    
-                const isEnvError = ENV_ERROR_NAMES.includes(errorName)
-                    || ENV_PATTERNS.some(rx => rx.test(message));
+    } catch (e) {}
 
-                /* Case B:
-                No position & no stack.
-                → log only whitelist cases. */
-                if (isEnvError
-                || (isModuleLoadError)) {
-                    
-                    const data = {
-                        type: 'runtime',
-                        code: 101,
-                        message: message || (isModuleLoadError
-                            ? 'Module load error'
-                            : 'Browser environment error'),
-                        source: filename || document.location.href,
-                        line: null,
-                        column: null,
-                        stack: null,
-                        url: location.href,
-                        time: Date.now()
-                    };
-                    
-                    if ('' !== errorName) {
-                        
-                        data.message = errorName + ': ' + data.message;
-                    }
-                    
-                    try {
+    return null;
+};
 
-                        ncls_log_javascript_error(data);
+window.addEventListener('error', event =>
+{
+    /* Condition 1: real runtime error. */
+    const isRuntimeError = event instanceof ErrorEvent
+        || ('message' in event && 'undefined' !== typeof event.error);
 
-                    } catch (_) {
+    /* Explicitly ignore 
+    the resource errors. */
+    if (!isRuntimeError) {
 
-                        /* Never throw from the logger */
-                    }
-                    
-                                            return false;
-                                      
-                }
-                
-                /* Otherwise:
-                Swallow uninformative, 
-                positionless runtime errors. */
-                                    return false;
-                                
-            }, true);
-            
-            /* Catch also unhandled promise rejections
-            added 2025-10-16, v1.4.0, MOBRID-8 */
-            window.addEventListener('unhandledrejection', event =>
-            {
-                const reason = event.reason;
+                    return false;
+            }
 
-                const data = {
-                    type: 'unhandledrejection',
-                    code: 103,
-                    message: (reason && reason.message)
-                        ? reason.message
-                        : String(reason),
-                    stack: reason && reason.stack
-                        ? reason.stack
-                        : null,
-                    url: location.href,
-                    time: Date.now(),
-                    source: document.location.href,
-                    line: null,
-                    column: null
-                };
+    const lineno = ('number' === typeof event.lineno)
+        ? event.lineno
+        : null;
 
-                try {
+    const colno = ('number' === typeof event.colno)
+        ? event.colno
+        : null;
+        
+    const data = {
+        type: 'runtime',
+        code: 101,
+        message: mobrid_to_message(event && event.message),
+        source: event && event.filename
+            ? String(event.filename)
+            : (document.location
+                ? document.location.href
+                : null
+            ),
+        line: null !== lineno && 0 < lineno
+            ? lineno
+            : null,
+        column: null !== colno && 0 < colno
+            ? colno
+            : null,
+        stack: mobrid_to_stack(event && event.error),
+        url: location && location.href
+            ? location.href
+            : null,
+        time: Date.now()
+    };
 
-                    ncls_log_javascript_error(data);
+    try {
 
-                } catch (_) {
+        mobrid_jslog(data);
 
-                    /* Never throw from the logger */
-                }
-                
-                                    return false;
-                                    
-            }, true);
-            
-            /* Log CSP violations separately 
-            (helps with blocked resources)
-            added 2025-10-23, v1.4.1, MOBRID-11 */
-            window.addEventListener('securitypolicyviolation', event =>
-            {
-                /* Build a concise, 
-                descriptive message string. */
-                const msgParts = [];
-                
-                if (event.violatedDirective) {
-                    
-                    msgParts.push(`Directive: ${event.violatedDirective}`);
-                }
-                
-                if (event.blockedURI) {
-                    
-                    msgParts.push(`Blocked URI: ${event.blockedURI}`);
-                }
-                
-                const message = 'CSP violation: ' + msgParts.join(' | ');
-                
-                const data = {
-                    type: 'cspviolation',
-                    code: 104,
-                    message: message,
-                    stack: null,
-                    url: location.href,
-                    time: Date.now(),
-                    source: event.sourceFile || null,
-                    line: 'number' === typeof event.lineNumber
-                        ? event.lineNumber
-                        : null,
-                    column: 'number' === typeof event.columnNumber
-                        ? event.columnNumber
-                        : null
-                };
-                try { 
-                    
-                    ncls_log_javascript_error(data);
-                
-                } catch (_) {
-                    
-                    /* Never throw from the logger */
-                }
-                
-                                    return false;
-                                    
-            }, true);
+    } catch (e) {
 
-        </script>
-        <meta name='robots' content='noindex, follow' />
+        /* Never throw from the logger */
+    }
 
-	<!-- This site is optimized with the Yoast SEO plugin v26.8 - https://yoast.com/product/yoast-seo-wordpress/ -->
+            return false;
+    
+}, true);
+
+/* Catch also unhandled promise rejections
+added 2025-10-16, v1.4.0, MOBRID-8 */
+window.addEventListener('unhandledrejection', event =>
+{
+    const reason = event
+        ? event.reason
+        : null;
+        
+    const data = {
+        type: 'unhandledrejection',
+        code: 102,
+        message: mobrid_to_message(reason) || 'Unhandled promise rejection',
+        source: null,
+        line: null,
+        column: null,
+        stack: mobrid_to_stack(reason),
+        url: location && location.href
+            ? location.href
+            : null,
+        time: Date.now()
+    };
+    
+    try {
+
+        mobrid_jslog(data);
+
+    } catch (e) {}
+
+            return false;
+    
+}, true);
+
+/* Log CSP violations separately 
+(helps with blocked resources)
+added 2025-10-23, v1.4.1, MOBRID-11 */
+window.addEventListener('securitypolicyviolation', event =>
+{
+    /* Safety: ensure we 
+    have an event object. */
+    if (!event) {
+
+        return false;
+    }
+    
+    const msgParts = [];
+    
+    try {
+
+        if (event.violatedDirective) {
+
+            msgParts.push(`Directive: ${event.violatedDirective}`);
+        }
+
+        if (event.blockedURI) {
+
+            msgParts.push(`Blocked URI: ${event.blockedURI}`);
+        }
+
+        if (event.documentURI) {
+
+            msgParts.push(`Doc: ${event.documentURI}`);
+        }
+
+    } catch (_) {}
+    
+    const data = {
+        type: 'cspviolation',
+        code: 104,
+        message: 'CSP violation: ' + msgParts.join(' | '),
+        stack: null,
+        url: location && location.href
+            ? location.href
+            : null,
+        time: Date.now(),
+        source: event && event.sourceFile
+            ? event.sourceFile
+            : null,
+        line: 'number' === typeof event.lineNumber
+            ? event.lineNumber
+            : null,
+        column: 'number' === typeof event.columnNumber
+            ? event.columnNumber
+            : null
+    };
+    
+    try {
+
+        mobrid_jslog(data);
+
+    } catch (_) {}
+
+            return false;
+        
+}, true);
+
+</script><meta name='robots' content='noindex, follow' />
+
+	<!-- This site is optimized with the Yoast SEO plugin v27.0 - https://yoast.com/product/yoast-seo-wordpress/ -->
 	<meta property="og:locale" content="de_DE" />
 	<meta property="og:title" content="Seite wurde nicht gefunden. - ZEIT für die Schule" />
 	<meta property="og:site_name" content="ZEIT für die Schule" />
-	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://www.zeitfuerdieschule.de/#website","url":"https://www.zeitfuerdieschule.de/","name":"ZEIT für die Schule","description":"","publisher":{"@id":"https://www.zeitfuerdieschule.de/#organization"},"potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://www.zeitfuerdieschule.de/?s={search_term_string}"},"query-input":{"@type":"PropertyValueSpecification","valueRequired":true,"valueName":"search_term_string"}}],"inLanguage":"de"},{"@type":"Organization","@id":"https://www.zeitfuerdieschule.de/#organization","name":"ZEIT für die Schule","url":"https://www.zeitfuerdieschule.de/","logo":{"@type":"ImageObject","inLanguage":"de","@id":"https://www.zeitfuerdieschule.de/#/schema/logo/image/","url":"https://www.zeitfuerdieschule.de/content/uploads/2022/08/ZfdS-Logo.jpg","contentUrl":"https://www.zeitfuerdieschule.de/content/uploads/2022/08/ZfdS-Logo.jpg","width":1430,"height":675,"caption":"ZEIT für die Schule"},"image":{"@id":"https://www.zeitfuerdieschule.de/#/schema/logo/image/"}}]}</script>
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"http://www.zeitfuerdieschule.de/#website","url":"http://www.zeitfuerdieschule.de/","name":"ZEIT für die Schule","description":"","publisher":{"@id":"http://www.zeitfuerdieschule.de/#organization"},"potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"http://www.zeitfuerdieschule.de/?s={search_term_string}"},"query-input":{"@type":"PropertyValueSpecification","valueRequired":true,"valueName":"search_term_string"}}],"inLanguage":"de"},{"@type":"Organization","@id":"http://www.zeitfuerdieschule.de/#organization","name":"ZEIT für die Schule","url":"http://www.zeitfuerdieschule.de/","logo":{"@type":"ImageObject","inLanguage":"de","@id":"http://www.zeitfuerdieschule.de/#/schema/logo/image/","url":"https://www.zeitfuerdieschule.de/content/uploads/2022/08/ZfdS-Logo.jpg","contentUrl":"https://www.zeitfuerdieschule.de/content/uploads/2022/08/ZfdS-Logo.jpg","width":1430,"height":675,"caption":"ZEIT für die Schule"},"image":{"@id":"http://www.zeitfuerdieschule.de/#/schema/logo/image/"}}]}</script>
 	<!-- / Yoast SEO plugin. -->
 
 
@@ -468,16 +496,16 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 .wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}
 /*# sourceURL=/wp-includes/css/classic-themes.min.css */
 </style>
-<link rel='stylesheet' id='woocommerce-layout-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/css/woocommerce-layout.css?ver=10.4.3' media='all' />
-<link rel='stylesheet' id='woocommerce-smallscreen-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/css/woocommerce-smallscreen.css?ver=10.4.3' media='only screen and (max-width: 768px)' />
-<link rel='stylesheet' id='woocommerce-general-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/css/woocommerce.css?ver=10.4.3' media='all' />
+<link rel='stylesheet' id='woocommerce-layout-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/css/woocommerce-layout.css?ver=10.5.2' media='all' />
+<link rel='stylesheet' id='woocommerce-smallscreen-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/css/woocommerce-smallscreen.css?ver=10.5.2' media='only screen and (max-width: 768px)' />
+<link rel='stylesheet' id='woocommerce-general-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/css/woocommerce.css?ver=10.5.2' media='all' />
 <style id='woocommerce-inline-inline-css'>
 .woocommerce form .form-row .required { visibility: visible; }
 /*# sourceURL=woocommerce-inline-inline-css */
 </style>
 <link rel='stylesheet' id='borlabs-cookie-css' href='https://www.zeitfuerdieschule.de/content/cache/borlabs-cookie/borlabs-cookie_1_de.css?ver=2.3.6-48' media='all' />
-<link rel='stylesheet' id='tablepress-default-css' href='https://www.zeitfuerdieschule.de/content/plugins/tablepress/css/build/default.css?ver=3.2.6' media='all' />
-<link rel='stylesheet' id='woocommerce-gzd-layout-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce-germanized/build/static/layout-styles.css?ver=3.20.5' media='all' />
+<link rel='stylesheet' id='tablepress-default-css' href='https://www.zeitfuerdieschule.de/content/plugins/tablepress/css/build/default.css?ver=3.2.7' media='all' />
+<link rel='stylesheet' id='woocommerce-gzd-layout-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce-germanized/build/static/layout-styles.css?ver=3.20.7' media='all' />
 <style id='woocommerce-gzd-layout-inline-css'>
 .woocommerce-checkout .shop_table { background-color: #eeeeee; } .product p.deposit-packaging-type { font-size: 1.25em !important; } p.woocommerce-shipping-destination { display: none; }
                 .wc-gzd-nutri-score-value-a {
@@ -499,23 +527,23 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 /*# sourceURL=woocommerce-gzd-layout-inline-css */
 </style>
 <script src="https://www.zeitfuerdieschule.de/content/themes/nucleus/asset/script/build/vendor/jquery/3.6.0/jquery-3.6.0.min.js?ver=3.6.0" id="jquery-core-js"></script>
-<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.min.js?ver=2.7.0-wc.10.4.3" id="wc-jquery-blockui-js" defer="defer" data-wp-strategy="defer"></script>
-<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/js-cookie/js.cookie.min.js?ver=2.1.4-wc.10.4.3" id="wc-js-cookie-js" defer="defer" data-wp-strategy="defer"></script>
+<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/jquery-blockui/jquery.blockUI.min.js?ver=2.7.0-wc.10.5.2" id="wc-jquery-blockui-js" defer="defer" data-wp-strategy="defer"></script>
+<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/js-cookie/js.cookie.min.js?ver=2.1.4-wc.10.5.2" id="wc-js-cookie-js" defer="defer" data-wp-strategy="defer"></script>
 <script id="woocommerce-js-extra">
 /* <![CDATA[ */
 var woocommerce_params = {"ajax_url":"/wp-admin/admin-ajax.php","wc_ajax_url":"/?wc-ajax=%%endpoint%%","i18n_password_show":"Passwort anzeigen","i18n_password_hide":"Passwort ausblenden"};
 //# sourceURL=woocommerce-js-extra
 /* ]]> */
 </script>
-<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/frontend/woocommerce.min.js?ver=10.4.3" id="woocommerce-js" defer="defer" data-wp-strategy="defer"></script>
-<script src="https://www.zeitfuerdieschule.de/content/themes/nucleus/vendor/ncls/nucleus-core/asset/script/hook/vendor/ua-parser/0.7.20/ua-parser.min.js?ver=656d31f064bb0b01c970e00c5616ef7a4609c53d" id="ua-parser-js"></script>
+<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/frontend/woocommerce.min.js?ver=10.5.2" id="woocommerce-js" defer="defer" data-wp-strategy="defer"></script>
+<script src="https://www.zeitfuerdieschule.de/content/themes/nucleus/vendor/ncls/nucleus-core/asset/script/hook/vendor/ua-parser/0.7.20/ua-parser.min.js?ver=549a85e21472683717b7ef8730c2c7e25ad38f4c" id="ua-parser-js"></script>
 <script id="old-browser-hint-js-extra">
 /* <![CDATA[ */
 var nclsOldBrowsers = {"content":"Sie verwenden einen veralteten Browser. Aktuelle Browser finden Sie \u003Ca target=\"_blank\" href=\"http://browsehappy.com/\"\u003Ehier\u003C/a\u003E.","browsers":[["IE","11"]]};
 //# sourceURL=old-browser-hint-js-extra
 /* ]]> */
 </script>
-<script src="https://www.zeitfuerdieschule.de/content/themes/nucleus/vendor/ncls/nucleus-core/asset/script/hook/OldBrowserHint.js?ver=656d31f064bb0b01c970e00c5616ef7a4609c53d" id="old-browser-hint-js"></script>
+<script src="https://www.zeitfuerdieschule.de/content/themes/nucleus/vendor/ncls/nucleus-core/asset/script/hook/OldBrowserHint.js?ver=549a85e21472683717b7ef8730c2c7e25ad38f4c" id="old-browser-hint-js"></script>
 <script id="borlabs-cookie-prioritize-js-extra">
 /* <![CDATA[ */
 var borlabsCookiePrioritized = {"domain":"www.zeitfuerdieschule.de","path":"/","version":"1","bots":"1","optInJS":{"marketing":{"facebook-pixel":"PCEtLSBGYWNlYm9vayBQaXhlbCBDb2RlIC0tPg0KPHNjcmlwdD4NCiAgIWZ1bmN0aW9uKGYsYixlLHYsbix0LHMpDQogIHtpZihmLmZicSlyZXR1cm47bj1mLmZicT1mdW5jdGlvbigpe24uY2FsbE1ldGhvZD8NCiAgbi5jYWxsTWV0aG9kLmFwcGx5KG4sYXJndW1lbnRzKTpuLnF1ZXVlLnB1c2goYXJndW1lbnRzKX07DQogIGlmKCFmLl9mYnEpZi5fZmJxPW47bi5wdXNoPW47bi5sb2FkZWQ9ITA7bi52ZXJzaW9uPScyLjAnOw0KICBuLnF1ZXVlPVtdO3Q9Yi5jcmVhdGVFbGVtZW50KGUpO3QuYXN5bmM9ITA7DQogIHQuc3JjPXY7cz1iLmdldEVsZW1lbnRzQnlUYWdOYW1lKGUpWzBdOw0KICBzLnBhcmVudE5vZGUuaW5zZXJ0QmVmb3JlKHQscyl9KHdpbmRvdywgZG9jdW1lbnQsJ3NjcmlwdCcsDQogICdodHRwczovL2Nvbm5lY3QuZmFjZWJvb2submV0L2VuX1VTL2ZiZXZlbnRzLmpzJyk7DQogIGZicSgnaW5pdCcsICcxMTI2MTMyMjE0ODM1MTcwJyk7DQogIGZicSgndHJhY2snLCAnUGFnZVZpZXcnKTsNCjwvc2NyaXB0Pg0KPCEtLSBFbmQgRmFjZWJvb2sgUGl4ZWwgQ29kZSAtLT4="}}};
@@ -523,11 +551,11 @@ var borlabsCookiePrioritized = {"domain":"www.zeitfuerdieschule.de","path":"/","
 /* ]]> */
 </script>
 <script src="https://www.zeitfuerdieschule.de/content/plugins/borlabs-cookie/assets/javascript/borlabs-cookie-prioritize.min.js?ver=2.3.6" id="borlabs-cookie-prioritize-js"></script>
-<script>  var el_i13_login_captcha=null; var el_i13_register_captcha=null; </script><style>#nclsOldBrowserHint{position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('https://www.zeitfuerdieschule.de/content/themes/nucleus/asset/image/old-browser-hint-bg.png');background-repeat:repeat;color:#fff;z-index:9999;background-color:rgba(0,0,0,0.65);}#nclsOldBrowserHint .message{padding-top:100px;display:block;text-align:center;font-size:20px; padding:100px 70px 0 70px;color:#fff;}#nclsOldBrowserHint .message a{color:red;}#nclsOldBrowserHint #nclsOldBrowserHintCloser{position:absolute;font-size:30px;top:20px;right:20px;color:#fff;font-weight:bold;text-decoration:none;}#nclsOldBrowserHint #nclsOldBrowserHintCloser:hover{color:red;}</style><style>.select2-results__option[id$="-DE"], .select2-results__option[id$="-AT"], .select2-results__option[id$="-CH"]{ font-weight: bold; } .select2-results__option[id$="-DE"]::after, .select2-results__option[id$="-AT"]::after, .select2-results__option[id$="-CH"]::after{ border-bottom-width: 2px; } .select2-results__option[id$="-CH"] { margin-bottom: 20px; } .select2-results__option[id$="-CH"]::after { border-bottom-width: 2px; }</style>	<noscript><style>.woocommerce-product-gallery{ opacity: 1 !important; }</style></noscript>
-	<link rel="icon" href="https://www.zeitfuerdieschule.de/content/uploads/2021/08/cropped-z-1-32x32.png" sizes="32x32" />
-<link rel="icon" href="https://www.zeitfuerdieschule.de/content/uploads/2021/08/cropped-z-1-192x192.png" sizes="192x192" />
-<link rel="apple-touch-icon" href="https://www.zeitfuerdieschule.de/content/uploads/2021/08/cropped-z-1-180x180.png" />
-<meta name="msapplication-TileImage" content="https://www.zeitfuerdieschule.de/content/uploads/2021/08/cropped-z-1-270x270.png" />
+<script>  var el_i13_login_captcha=null; var el_i13_register_captcha=null; </script><style>#nclsOldBrowserHint{position:fixed;top:0;left:0;width:100%;height:100%;background-image:url('https://www.zeitfuerdieschule.de/content/themes/nucleus/asset/image/old-browser-hint-bg.png');background-repeat:repeat;color:#fff;z-index:9999;background-color:rgba(0, 0, 0, 0.65);}#nclsOldBrowserHint .message{padding-top:100px;display:block;text-align:center;font-size:20px; padding:100px 70px 0 70px;color:#fff;}#nclsOldBrowserHint .message a{color:red;}#nclsOldBrowserHint #nclsOldBrowserHintCloser{position:absolute;font-size:30px;top:20px;right:20px;color:#fff;font-weight:bold;text-decoration:none;}#nclsOldBrowserHint #nclsOldBrowserHintCloser:hover{color:red;}</style><style>.select2-results__option[id$="-DE"], .select2-results__option[id$="-AT"], .select2-results__option[id$="-CH"]{ font-weight: bold; } .select2-results__option[id$="-DE"]::after, .select2-results__option[id$="-AT"]::after, .select2-results__option[id$="-CH"]::after{ border-bottom-width: 2px; } .select2-results__option[id$="-CH"] { margin-bottom: 20px; } .select2-results__option[id$="-CH"]::after { border-bottom-width: 2px; }</style>	<noscript><style>.woocommerce-product-gallery{ opacity: 1 !important; }</style></noscript>
+	<link rel="icon" href="https://www.zeitfuerdieschule.de/content/uploads/2021/08/cropped-z-1-100x100.png" sizes="32x32" />
+<link rel="icon" href="https://www.zeitfuerdieschule.de/content/uploads/2021/08/cropped-z-1-300x300.png" sizes="192x192" />
+<link rel="apple-touch-icon" href="https://www.zeitfuerdieschule.de/content/uploads/2021/08/cropped-z-1-300x300.png" />
+<meta name="msapplication-TileImage" content="https://www.zeitfuerdieschule.de/content/uploads/2021/08/cropped-z-1-300x300.png" />
 
         
                 
@@ -787,15 +815,6 @@ var borlabsCookiePrioritized = {"domain":"www.zeitfuerdieschule.de","path":"/","
    href="https://www.zeitfuerdieschule.de/materialien/zeit-klassensatz-gratis/" 
    title="DIE ZEIT">
     <span class="menu-item__label">DIE ZEIT</span>
-</a>                       
-                                                                        
-                                </li>
-                                                                <li class="menu-item js-menu-item menu-item--level-3 sub-sub-item" >
-                                                                                                                    
-<a class="menu-item__link menu-item__link--level-3 js-menu-item-link" 
-   href="https://www.zeitfuerdieschule.de/materialien/die-zeit-im-klassensatz/80-jahre-die-zeit-sonderausgabe/" 
-   title="Sonderausgabe „80 Jahre DIE ZEIT“">
-    <span class="menu-item__label">Sonderausgabe „80 Jahre DIE ZEIT“</span>
 </a>                       
                                                                         
                                 </li>
@@ -1242,15 +1261,6 @@ var borlabsCookiePrioritized = {"domain":"www.zeitfuerdieschule.de","path":"/","
    href="https://www.zeitfuerdieschule.de/materialien/zeit-klassensatz-gratis/" 
    title="DIE ZEIT">
     <span class="menu-item__label">DIE ZEIT</span>
-</a>                       
-                                                                        
-                                </li>
-                                                                <li class="menu-item js-menu-item menu-item--level-3 sub-sub-item" >
-                                                                                                                    
-<a class="menu-item__link menu-item__link--level-3 js-menu-item-link" 
-   href="https://www.zeitfuerdieschule.de/materialien/die-zeit-im-klassensatz/80-jahre-die-zeit-sonderausgabe/" 
-   title="Sonderausgabe „80 Jahre DIE ZEIT“">
-    <span class="menu-item__label">Sonderausgabe „80 Jahre DIE ZEIT“</span>
 </a>                       
                                                                         
                                 </li>
@@ -2615,19 +2625,19 @@ var sbiajaxurl = "https://www.zeitfuerdieschule.de/wp-admin/admin-ajax.php";
 			document.body.className = c;
 		})();
 	</script>
-	<link rel='stylesheet' id='wc-blocks-style-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/client/blocks/wc-blocks.css?ver=wc-10.4.3' media='all' />
+	<link rel='stylesheet' id='wc-blocks-style-css' href='https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/client/blocks/wc-blocks.css?ver=wc-10.5.2' media='all' />
 <style id='global-styles-inline-css'>
 :root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgb(6,147,227) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgb(252,185,0) 0%,rgb(255,105,0) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgb(255,105,0) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgb(255, 255, 255), 6px 6px rgb(0, 0, 0);--wp--preset--shadow--crisp: 6px 6px 0px rgb(0, 0, 0);}:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
 /*# sourceURL=global-styles-inline-css */
 </style>
-<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/sourcebuster/sourcebuster.min.js?ver=10.4.3" id="sourcebuster-js-js"></script>
+<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/sourcebuster/sourcebuster.min.js?ver=10.5.2" id="sourcebuster-js-js"></script>
 <script id="wc-order-attribution-js-extra">
 /* <![CDATA[ */
 var wc_order_attribution = {"params":{"lifetime":1.0e-5,"session":30,"base64":false,"ajaxurl":"https://www.zeitfuerdieschule.de/wp-admin/admin-ajax.php","prefix":"wc_order_attribution_","allowTracking":true},"fields":{"source_type":"current.typ","referrer":"current_add.rf","utm_campaign":"current.cmp","utm_source":"current.src","utm_medium":"current.mdm","utm_content":"current.cnt","utm_id":"current.id","utm_term":"current.trm","utm_source_platform":"current.plt","utm_creative_format":"current.fmt","utm_marketing_tactic":"current.tct","session_entry":"current_add.ep","session_start_time":"current_add.fd","session_pages":"session.pgs","session_count":"udata.vst","user_agent":"udata.uag"}};
 //# sourceURL=wc-order-attribution-js-extra
 /* ]]> */
 </script>
-<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/frontend/order-attribution.min.js?ver=10.4.3" id="wc-order-attribution-js"></script>
+<script src="https://www.zeitfuerdieschule.de/content/plugins/woocommerce/assets/js/frontend/order-attribution.min.js?ver=10.5.2" id="wc-order-attribution-js"></script>
 <script id="borlabs-cookie-js-extra">
 /* <![CDATA[ */
 var borlabsCookieConfig = {"ajaxURL":"https://www.zeitfuerdieschule.de/wp-admin/admin-ajax.php","language":"de","animation":"1","animationDelay":"","animationIn":"_brlbs-fadeInDown","animationOut":"_brlbs-fadeOutUp","blockContent":"1","boxLayout":"box","boxLayoutAdvanced":"1","automaticCookieDomainAndPath":"1","cookieDomain":"www.zeitfuerdieschule.de","cookiePath":"/","cookieSameSite":"Lax","cookieSecure":"1","cookieLifetime":"365","cookieLifetimeEssentialOnly":"182","crossDomainCookie":[],"cookieBeforeConsent":"","cookiesForBots":"1","cookieVersion":"1","hideCookieBoxOnPages":[],"respectDoNotTrack":"","reloadAfterConsent":"","reloadAfterOptOut":"1","showCookieBox":"1","cookieBoxIntegration":"javascript","ignorePreSelectStatus":"1","cookies":{"essential":["borlabs-cookie","google-recaptcha","wordpress_logged_in","wordpress_sec","wfwaf_authcookie","woocommerce"],"internestatistiken":["webtrekk"],"statistics":[],"marketing":["facebook-pixel"],"external-media":["studiozx-game","youtube"]}};
@@ -2660,7 +2670,7 @@ BorlabsCookieInitCheck();});
 </script>
 
 
-<script src="https://www.zeitfuerdieschule.de/content/themes/nucleus/asset/script/build/build.min.js?ver=656d31f064bb0b01c970e00c5616ef7a4609c53d"></script>
+<script src="https://www.zeitfuerdieschule.de/content/themes/nucleus/asset/script/build/build.min.js?ver=549a85e21472683717b7ef8730c2c7e25ad38f4c"></script>
 
                 
     </body>
