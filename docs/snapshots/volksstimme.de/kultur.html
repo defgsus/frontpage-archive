@@ -2,7 +2,7 @@
 
       <link rel="preload prefetch stylesheet" href="/designs/bmg_base_design/1.0.184/styles-vs.css" as="style">
 
-      <link rel="preload prefetch stylesheet" href="/static/css/styles-delivery-vs-base.e3cb9d79.css" as="style">
+      <link rel="preload prefetch stylesheet" href="/static/css/styles-delivery-vs-base.832b9264.css" as="style">
 
     <title>Kultur: Nachrichten aus TV, Kino, Musik, Buch und Kunst</title>
     <meta charset="UTF-8">
@@ -78,16 +78,6 @@
 <link rel="preload" href="https://data-11c63b1cbc.volksstimme.de/iomm/latest/bootstrap/loader.js" as="script">
 <script type="text/javascript" src="https://data-11c63b1cbc.volksstimme.de/iomm/latest/bootstrap/loader.js" data-cmp-ab="2" crossorigin></script>
 <!-- end preload of IOM web manager -->
-<script>
-        var s = document.createElement('script');
-        s.async = true;
-        s.dataset.cmpSrc = 'https://d.nativendo.de/cds/delivery/init?oms_zone=' + window.ad_channel;
-		s.dataset.cmpVendor = "s1016";
-		s.type = "text/plain";
-		s.className = "cmplazyload";
-        var sc = document.getElementsByTagName('script')[0];
-        sc.parentNode.insertBefore(s, sc);
-</script>
 <!-- Facebook Pixel Code -->
 <script>
     function consentEnableFacebook() {
@@ -109,324 +99,345 @@
 <script async="" id="ebx" src="//applets.ebxcdn.com/ebx.js"></script>
 <script>
 
-        function initiateSourcePoint(subscriptions) { }
+    var consents = [];
+    if (typeof dataLayer == "undefined") {
+        var dataLayer = [];
+    }
+    dataLayer.push({ "consents": consents });
 
-        var consents = [];
-        if (typeof dataLayer == "undefined") {
-            var dataLayer = [];
+    var addJs = function (id) {
+        consents.push(id);
+        dataLayer.push({ 'consents': consents });
+    }
+
+    window.cmp_waitforimport = 10000;
+    window.cmp_pur_enable = true;
+    window.cmp_macro_redirect = document.location.href;
+
+    // fetchUserLoginStatusTEST = function () {
+    //     // When we login, we have a request header C1-Session-ID. We ask the delivery for the existence of this header.
+    //     // If it exists, then we know we are logged in.
+    //     return fetch('/api/public/user-session')
+    //         .then(function (res) { return res.json(); })
+    //         .catch(function (err) {
+    //             console.error(err)
+
+    //             // In case there is a problem with the API call, we assume the user isn't logged in.
+    //             // This will allow the script depending on the emitting of the "logged in" event
+    //             // to run.
+    //             return { isLoggedIn: false }
+    //         })
+    // }
+
+
+    // fetchUserLoginStatusTEST().then(function (data) {
+    //     console.log(data);
+    //     isLoggedIn = data.isLoggedIn;
+    //     subscriptions = data.subscriptions;
+    //     id = data.id;
+
+    //     if (subscriptions) {
+    //         userType = subscriptions.userType;
+    //         if (userType == undefined)
+    //             userType == "pur-anon";
+    //         permissions = subscriptions.permissions;
+    //         if (permissions == undefined)
+    //             permissions = [];
+
+    //         // handle SourcePoint, i.e. the PUR Subscription product
+    //         if (typeof initiateSourcePointTEST === 'function') {
+    //             initiateSourcePointTEST(subscriptions)
+    //         }
+    //     } else { // Im Fehlerfall wird SourcePoint ohne Daten initialisiert, daher pur-anon
+    //         initiateSourcePointTEST();
+    //     }
+
+
+    // });
+
+    // function initiateSourcePointTEST(subscriptions) {
+    //     userType = (!(subscriptions == undefined || subscriptions.pur == undefined || subscriptions.pur.length == 0)) ? "pur-pur" : "pur-anon";
+    //     // HIER ABARBEITEN, da haben wir selber Kontrolle drüber
+    // }
+
+    function createCmd(isLoggedIn, isPlus, adchannels) {
+        return function () {
+            applyOrtb2Values(isLoggedIn, isPlus, adchannels, []);
         }
-        dataLayer.push({ "consents": consents });
+    }
+	
+	
 
-        var addJs = function (id) {
-            consents.push(id);
-            dataLayer.push({ 'consents': consents });
+    function initiateSourcePoint(subscriptions) {
+        var userType = (!(subscriptions == undefined || subscriptions.pur == undefined || subscriptions.pur.length == 0))
+            ? "pur-pur"
+            : "pur-anon";
+        console.log("Benutzer-Abonnementstatus:", userType); // Hier wird der Abonnementstatus ausgegeben
+        // Setzt den globalen Wert für den Pur-Status
+        window.cmp_pur_loggedin = (userType === "pur-pur");
+        try {
+            adchannels = window.ad_channel?.split("/") ?? [];	
+//            cmd = createCmd(subscriptions?.userType != "pur-anon", subscriptions != undefined && subscriptions.paywall != undefined && subscriptions.paywall.length > 0, adchannels);
+//            console.log(cmd);
+            kstahandler(subscriptions?.userType != "pur-anon",
+				subscriptions != undefined && subscriptions.paywall != undefined && subscriptions.paywall.length > 0,
+				adchannels, []);
+	        
+        } catch (e) {
+            console.log(e);
         }
 
-        window.cmp_waitforimport = 10000;
-        window.cmp_pur_enable = true;
-		window.cmp_macro_redirect = document.location.href;
-        fetchUserLoginStatusTEST = function () {
-            // When we login, we have a request header C1-Session-ID. We ask the delivery for the existence of this header.
-            // If it exists, then we know we are logged in.
-            return fetch('/api/public/user-session')
-                .then(function (res) { return res.json(); })
-                .catch(function (err) {
-                    console.error(err)
-
-                    // In case there is a problem with the API call, we assume the user isn't logged in.
-                    // This will allow the script depending on the emitting of the "logged in" event
-                    // to run.
-                    return { isLoggedIn: false }
-                })
-        }
-
-
-        fetchUserLoginStatusTEST().then(function (data) {
-            console.log(data);
-            isLoggedIn = data.isLoggedIn;
-            subscriptions = data.subscriptions;
-            id = data.id;
-
-            if (subscriptions) {
-                userType = subscriptions.userType;
-                if (userType == undefined)
-                    userType == "pur-anon";
-                permissions = subscriptions.permissions;
-                if (permissions == undefined)
-                    permissions = [];
-
-                // handle SourcePoint, i.e. the PUR Subscription product
-                if (typeof initiateSourcePointTEST === 'function') {
-                    initiateSourcePointTEST(subscriptions)
-                }
-            } else { // Im Fehlerfall wird SourcePoint ohne Daten initialisiert, daher pur-anon
-                initiateSourcePointTEST();
-            }
-
-
-        });
-
-        function initiateSourcePointTEST(subscriptions) {
-            userType = (!(subscriptions == undefined || subscriptions.pur == undefined || subscriptions.pur.length == 0)) ? "pur-pur" : "pur-anon";
-            // HIER ABARBEITEN, da haben wir selber Kontrolle drüber
-        }
-        function initiateSourcePointTEST(subscriptions) {
-            var userType = (!(subscriptions == undefined || subscriptions.pur == undefined || subscriptions.pur.length == 0))
-                ? "pur-pur"
-                : "pur-anon";
-            console.log("Benutzer-Abonnementstatus:", userType); // Hier wird der Abonnementstatus ausgegeben
-            // Setzt den globalen Wert für den Pur-Status
-            window.cmp_pur_loggedin = (userType === "pur-pur");
-
-            var checkcmp = window.setInterval(function () {
-                if (typeof __cmp == "function") {
-                    if (userType === "pur-pur")
-                        __cmp('setPurposeConsent', ["c2", 0, true]);
-                    __cmp('cancelwait');
-					var checktcf = window.setInterval(function () {
-					    if (typeof __tcfapi == "function") {
-					        __tcfapi('addEventListener', 2, function (tcData, success) {
-					            if (tcData.eventStatus === 'useractioncomplete') {
-					                document.location.reload();
-					            }
-					        });
-				    	    window.clearInterval(checktcf);
-					    }
-					}, 250);
-
-                    __cmp("addEventListener",["settings",() => {
-                      var registeredVendors = { 
-                        42: () => {
-                        var timerConsentEnableTaboola = window.setInterval(() => {
-                          if ("function" == typeof consentEnableTaboola) {
-                            window.clearInterval(timerConsentEnableTaboola);
-                            consentEnableTaboola();
-                          }
-                        },250)
-                      },
-					  c73647: () => { dataLayer.push({'event': 'BitmovinConsent'}); },
-                      s30: () => { dataLayer.push({'event': 'YoutubeConsent'}); },
-                      c57383: () => { dataLayer.push({'event': '23degreesConsent'}); },
-                      s7: () => { dataLayer.push({'event': 'FacebookConsent'}); },
-                      s1104: () => { dataLayer.push({'event': 'GoogleMapsConsent'}); },
-                      s14: () => { dataLayer.push({'event': 'InstagramConsent'}); },
-                      c78424: () => { dataLayer.push({'event': 'TickarooConsent'}); },
-                      s2536: () => { dataLayer.push({'event': 'TikTokConsent'}); },
-                      s34: () => { dataLayer.push({'event': 'XConsent'}); },
-                      s1318: () => { dataLayer.push({'event': 'ShowherosConsent'}); },
-                    };
-                    
-                    __cmp("getCMPData", null, (e) => {
-                      consentIds = Object.keys(e.vendorConsents);
-                      if (window.cmp_pur_enable && cmp_pur_loggedin) {
-                        //for (var vendorId in registeredVendors) {
-                        //  registeredVendors[vendorId]();
-                        //}
-                      } else if (e.choiceType == 0) {
-                      } else if (e.choiceType == 1) {
-                        for (var vendorId in registeredVendors) {
-                          registeredVendors[vendorId]();
-                        }
-                      } else if (e.choiceType == 2) {
-                        vendors = Object.keys(registeredVendors);
-                        for (var vendorId in registeredVendors) {
-                            if (consentIds.includes(vendorId)) {
-                              registeredVendors[vendorId]();
+        var checkcmp = window.setInterval(function () {
+            if (typeof __cmp == "function") {
+                if (userType === "pur-pur")
+                    __cmp('setPurposeConsent', ["c2", 0, true]);
+                __cmp('cancelwait');
+                var checktcf = window.setInterval(function () {
+                    if (typeof __tcfapi == "function") {
+                        __tcfapi('addEventListener', 2, function (tcData, success) {
+                            if (tcData.eventStatus === 'useractioncomplete') {
+                                document.location.reload();
                             }
-                          }
-                        } 
-                      }, true);
-                    },false],null);
+                        });
+                        window.clearInterval(checktcf);
+                    }
+                }, 250);
 
-					
-                    window.clearTimeout(checkcmp);
-                }
-            }, 250);
-        }
+                __cmp("addEventListener", ["settings", () => {
+                    var registeredVendors = {
+                        42: () => {
+                            var timerConsentEnableTaboola = window.setInterval(() => {
+                                if ("function" == typeof consentEnableTaboola) {
+                                    window.clearInterval(timerConsentEnableTaboola);
+                                    consentEnableTaboola();
+                                }
+                            }, 250)
+                        },
+                        c73647: () => { dataLayer.push({ 'event': 'BitmovinConsent' }); },
+                        s30: () => { dataLayer.push({ 'event': 'YoutubeConsent' }); },
+                        c57383: () => { dataLayer.push({ 'event': '23degreesConsent' }); },
+                        s7: () => { dataLayer.push({ 'event': 'FacebookConsent' }); },
+                        s1104: () => { dataLayer.push({ 'event': 'GoogleMapsConsent' }); },
+                        s14: () => { dataLayer.push({ 'event': 'InstagramConsent' }); },
+                        c78424: () => { dataLayer.push({ 'event': 'TickarooConsent' }); },
+                        s2536: () => { dataLayer.push({ 'event': 'TikTokConsent' }); },
+                        s34: () => { dataLayer.push({ 'event': 'XConsent' }); },
+                        s1318: () => { dataLayer.push({ 'event': 'ShowherosConsent' }); },
+                    };
+
+                    __cmp("getCMPData", null, (e) => {
+                        consentIds = Object.keys(e.vendorConsents);
+                        if (window.cmp_pur_enable && cmp_pur_loggedin) {
+                            //for (var vendorId in registeredVendors) {
+                            //  registeredVendors[vendorId]();
+                            //}
+                        } else if (e.choiceType == 0) {
+                        } else if (e.choiceType == 1) {
+                            for (var vendorId in registeredVendors) {
+                                registeredVendors[vendorId]();
+                            }
+                        } else if (e.choiceType == 2) {
+                            vendors = Object.keys(registeredVendors);
+                            for (var vendorId in registeredVendors) {
+                                if (consentIds.includes(vendorId)) {
+                                    registeredVendors[vendorId]();
+                                }
+                            }
+                        }
+                    }, true);
+                }, false], null);
+
+
+                window.clearTimeout(checkcmp);
+            }
+        }, 250);
+    }
 
 </script>
 
 <script>
 
 
-        if (document.location.host.includes("publishing") !== false) {
-            if (!("cmp_cdid" in window)) { window.cmp_cdid = "222923b842c63" }
+    if (document.location.host.includes("publishing") !== false) {
+        if (!("cmp_cdid" in window)) { window.cmp_cdid = "222923b842c63" }
+    } else {
+        if (!("cmp_cdid" in window)) { window.cmp_cdid = "a522d62a318b2" }
+    }
+    if (!("gdprAppliesGlobally" in window)) { window.gdprAppliesGlobally = true }
+    if (!("cmp_id" in window) || window.cmp_id < 1) { window.cmp_id = 0 }
+    if (!("cmp_params" in window)) { window.cmp_params = "" }
+    if (!("cmp_host" in window)) { window.cmp_host = "a.delivery.consentmanager.net" }
+    if (!("cmp_cdn" in window)) { window.cmp_cdn = "cdn.consentmanager.net" }
+    if (!("cmp_proto" in window)) { window.cmp_proto = "https:" }
+    if (!("cmp_codesrc" in window)) { window.cmp_codesrc = "0" }
+    window.cmp_getsupportedLangs = function () { var b = ["DE", "EN", "FR", "IT", "NO", "DA", "FI", "ES", "PT", "RO", "BG", "ET", "EL", "GA", "HR", "LV", "LT", "MT", "NL", "PL", "SV", "SK", "SL", "CS", "HU", "RU", "SR", "ZH", "TR", "UK", "AR", "BS", "JA", "CY"]; if ("cmp_customlanguages" in window) { for (var a = 0; a < window.cmp_customlanguages.length; a++) { b.push(window.cmp_customlanguages[a].l.toUpperCase()) } } return b };
+    window.cmp_getRTLLangs = function () { var a = ["AR"]; if ("cmp_customlanguages" in window) { for (var b = 0; b < window.cmp_customlanguages.length; b++) { if ("r" in window.cmp_customlanguages[b] && window.cmp_customlanguages[b].r) { a.push(window.cmp_customlanguages[b].l) } } } return a };
+    window.cmp_getlang = function (a) { if (typeof (a) != "boolean") { a = true } if (a && typeof (cmp_getlang.usedlang) == "string" && cmp_getlang.usedlang !== "") { return cmp_getlang.usedlang } return window.cmp_getlangs()[0] };
+    window.cmp_extractlang = function (a) { if (a.indexOf("cmplang=") != -1) { a = a.substr(a.indexOf("cmplang=") + 8, 2).toUpperCase(); if (a.indexOf("&") != -1) { a = a.substr(0, a.indexOf("&")) } } else { a = "" } return a };
+    window.cmp_getlangs = function () { var h = window.cmp_getsupportedLangs(); var g = []; var a = location.hash; var f = location.search; var e = "cmp_params" in window ? window.cmp_params : ""; if (cmp_extractlang(a) != "") { g.push(cmp_extractlang(a)) } else { if (cmp_extractlang(f) != "") { g.push(cmp_extractlang(f)) } else { if (cmp_extractlang(e) != "") { g.push(cmp_extractlang(e)) } else { if ("cmp_setlang" in window && window.cmp_setlang != "") { g.push(window.cmp_setlang.toUpperCase()) } else { if ("cmp_langdetect" in window && window.cmp_langdetect == 1) { g.push(window.cmp_getPageLang()) } else { g = window.cmp_getBrowserLangs() } } } } } var c = []; for (var d = 0; d < g.length; d++) { var b = g[d].toUpperCase(); if (b.length < 2) { continue } if (h.indexOf(b) != -1) { c.push(b) } else { if (b.indexOf("-") != -1) { b = b.substr(0, 2) } if (h.indexOf(b) != -1) { c.push(b) } } } if (c.length == 0 && typeof (cmp_getlang.defaultlang) == "string" && cmp_getlang.defaultlang !== "") { return [cmp_getlang.defaultlang.toUpperCase()] } else { return c.length > 0 ? c : ["EN"] } };
+    window.cmp_getPageLangs = function () {
+        var a = window.cmp_getXMLLang(); if (a != "") { a = [a.toUpperCase()] } else { a = [] }
+        a = a.concat(window.cmp_getLangsFromURL()); return a.length > 0 ? a : ["EN"]
+    };
+    window.cmp_getPageLang = function () { var a = window.cmp_getPageLangs(); return a.length > 0 ? a[0] : "" };
+    window.cmp_getLangsFromURL = function () {
+        var c = window.cmp_getsupportedLangs(); var b = location; var m = "toUpperCase"; var g = b.hostname[m]() + "."; var a = "/" + b.pathname[m]() + "/";
+        a = a.split("_").join("-");
+        a = a.split("//").join("/");
+        a = a.split("//").join("/"); var f = []; for (var e = 0; e < c.length; e++) { var j = a.substring(0, c[e].length + 2); if (g.substring(0, c[e].length + 1) == c[e] + ".") { f.push(c[e][m]()) } else { if (c[e].length == 5) { var k = c[e].substring(3, 5) + "-" + c[e].substring(0, 2); if (g.substring(0, k.length + 1) == k + ".") { f.push(c[e][m]()) } } else { if (j == "/" + c[e] + "/" || j == "/" + c[e] + "-") { f.push(c[e][m]()) } else { if (j == "/" + c[e].replace("-", "/") + "/" || j == "/" + c[e].replace("-", "/") + "/") { f.push(c[e][m]()) } else { if (c[e].length == 5) { var k = c[e].substring(3, 5) + "-" + c[e].substring(0, 2); var h = a.substring(0, k.length + 1); if (h == "/" + k + "/" || h == "/" + k.replace("-", "/") + "/") { f.push(c[e][m]()) } } } } } } } return f
+    };
+    window.cmp_getXMLLang = function () { var c = document.getElementsByTagName("html"); if (c.length > 0) { c = c[0] } else { c = document.documentElement } if (c && c.getAttribute) { var a = c.getAttribute("xml:lang"); if (typeof (a) != "string" || a == "") { a = c.getAttribute("lang") } if (typeof (a) == "string" && a != "") { a = a.split("_").join("-").toUpperCase(); var b = window.cmp_getsupportedLangs(); return b.indexOf(a) != -1 || b.indexOf(a.substr(0, 2)) != -1 ? a : "" } else { return "" } } };
+    window.cmp_getBrowserLangs = function () { var c = "languages" in navigator ? navigator.languages : []; var b = []; if (c.length > 0) { for (var a = 0; a < c.length; a++) { b.push(c[a]) } } if ("language" in navigator) { b.push(navigator.language) } if ("userLanguage" in navigator) { b.push(navigator.userLanguage) } return b };
+    (function () {
+        var C = document; var o = window; var t = ""; var h = ""; var k = ""; var E = function (e) {
+            var i = "cmp_" + e;
+            e = "cmp" + e + "="; var d = ""; var l = e.length; var J = location; var K = J.hash; var w = J.search; var u = K.indexOf(e); var I = w.indexOf(e); if (u != -1) { d = K.substring(u + l, 9999) } else { if (I != -1) { d = w.substring(I + l, 9999) } else { return i in o && typeof (o[i]) !== "function" ? o[i] : "" } } var H = d.indexOf("&"); if (H != -1) { d = d.substring(0, H) } return d
+        }; var j = E("lang"); if (j != "") {
+            t = j;
+            k = t
         } else {
-            if (!("cmp_cdid" in window)) { window.cmp_cdid = "a522d62a318b2" }
-        }
-        if (!("gdprAppliesGlobally" in window)) { window.gdprAppliesGlobally = true }
-        if (!("cmp_id" in window) || window.cmp_id < 1) { window.cmp_id = 0 }
-        if (!("cmp_params" in window)) { window.cmp_params = "" }
-        if (!("cmp_host" in window)) { window.cmp_host = "a.delivery.consentmanager.net" }
-        if (!("cmp_cdn" in window)) { window.cmp_cdn = "cdn.consentmanager.net" }
-        if (!("cmp_proto" in window)) { window.cmp_proto = "https:" }
-        if (!("cmp_codesrc" in window)) { window.cmp_codesrc = "0" }
-        window.cmp_getsupportedLangs = function () { var b = ["DE", "EN", "FR", "IT", "NO", "DA", "FI", "ES", "PT", "RO", "BG", "ET", "EL", "GA", "HR", "LV", "LT", "MT", "NL", "PL", "SV", "SK", "SL", "CS", "HU", "RU", "SR", "ZH", "TR", "UK", "AR", "BS", "JA", "CY"]; if ("cmp_customlanguages" in window) { for (var a = 0; a < window.cmp_customlanguages.length; a++) { b.push(window.cmp_customlanguages[a].l.toUpperCase()) } } return b };
-        window.cmp_getRTLLangs = function () { var a = ["AR"]; if ("cmp_customlanguages" in window) { for (var b = 0; b < window.cmp_customlanguages.length; b++) { if ("r" in window.cmp_customlanguages[b] && window.cmp_customlanguages[b].r) { a.push(window.cmp_customlanguages[b].l) } } } return a };
-        window.cmp_getlang = function (a) { if (typeof (a) != "boolean") { a = true } if (a && typeof (cmp_getlang.usedlang) == "string" && cmp_getlang.usedlang !== "") { return cmp_getlang.usedlang } return window.cmp_getlangs()[0] };
-        window.cmp_extractlang = function (a) { if (a.indexOf("cmplang=") != -1) { a = a.substr(a.indexOf("cmplang=") + 8, 2).toUpperCase(); if (a.indexOf("&") != -1) { a = a.substr(0, a.indexOf("&")) } } else { a = "" } return a };
-        window.cmp_getlangs = function () { var h = window.cmp_getsupportedLangs(); var g = []; var a = location.hash; var f = location.search; var e = "cmp_params" in window ? window.cmp_params : ""; if (cmp_extractlang(a) != "") { g.push(cmp_extractlang(a)) } else { if (cmp_extractlang(f) != "") { g.push(cmp_extractlang(f)) } else { if (cmp_extractlang(e) != "") { g.push(cmp_extractlang(e)) } else { if ("cmp_setlang" in window && window.cmp_setlang != "") { g.push(window.cmp_setlang.toUpperCase()) } else { if ("cmp_langdetect" in window && window.cmp_langdetect == 1) { g.push(window.cmp_getPageLang()) } else { g = window.cmp_getBrowserLangs() } } } } } var c = []; for (var d = 0; d < g.length; d++) { var b = g[d].toUpperCase(); if (b.length < 2) { continue } if (h.indexOf(b) != -1) { c.push(b) } else { if (b.indexOf("-") != -1) { b = b.substr(0, 2) } if (h.indexOf(b) != -1) { c.push(b) } } } if (c.length == 0 && typeof (cmp_getlang.defaultlang) == "string" && cmp_getlang.defaultlang !== "") { return [cmp_getlang.defaultlang.toUpperCase()] } else { return c.length > 0 ? c : ["EN"] } };
-        window.cmp_getPageLangs = function () {
-            var a = window.cmp_getXMLLang(); if (a != "") { a = [a.toUpperCase()] } else { a = [] }
-            a = a.concat(window.cmp_getLangsFromURL()); return a.length > 0 ? a : ["EN"]
-        };
-        window.cmp_getPageLang = function () { var a = window.cmp_getPageLangs(); return a.length > 0 ? a[0] : "" };
-        window.cmp_getLangsFromURL = function () {
-            var c = window.cmp_getsupportedLangs(); var b = location; var m = "toUpperCase"; var g = b.hostname[m]() + "."; var a = "/" + b.pathname[m]() + "/";
-            a = a.split("_").join("-");
-            a = a.split("//").join("/");
-            a = a.split("//").join("/"); var f = []; for (var e = 0; e < c.length; e++) { var j = a.substring(0, c[e].length + 2); if (g.substring(0, c[e].length + 1) == c[e] + ".") { f.push(c[e][m]()) } else { if (c[e].length == 5) { var k = c[e].substring(3, 5) + "-" + c[e].substring(0, 2); if (g.substring(0, k.length + 1) == k + ".") { f.push(c[e][m]()) } } else { if (j == "/" + c[e] + "/" || j == "/" + c[e] + "-") { f.push(c[e][m]()) } else { if (j == "/" + c[e].replace("-", "/") + "/" || j == "/" + c[e].replace("-", "/") + "/") { f.push(c[e][m]()) } else { if (c[e].length == 5) { var k = c[e].substring(3, 5) + "-" + c[e].substring(0, 2); var h = a.substring(0, k.length + 1); if (h == "/" + k + "/" || h == "/" + k.replace("-", "/") + "/") { f.push(c[e][m]()) } } } } } } } return f
-        };
-        window.cmp_getXMLLang = function () { var c = document.getElementsByTagName("html"); if (c.length > 0) { c = c[0] } else { c = document.documentElement } if (c && c.getAttribute) { var a = c.getAttribute("xml:lang"); if (typeof (a) != "string" || a == "") { a = c.getAttribute("lang") } if (typeof (a) == "string" && a != "") { a = a.split("_").join("-").toUpperCase(); var b = window.cmp_getsupportedLangs(); return b.indexOf(a) != -1 || b.indexOf(a.substr(0, 2)) != -1 ? a : "" } else { return "" } } };
-        window.cmp_getBrowserLangs = function () { var c = "languages" in navigator ? navigator.languages : []; var b = []; if (c.length > 0) { for (var a = 0; a < c.length; a++) { b.push(c[a]) } } if ("language" in navigator) { b.push(navigator.language) } if ("userLanguage" in navigator) { b.push(navigator.userLanguage) } return b };
-        (function () {
-            var C = document; var o = window; var t = ""; var h = ""; var k = ""; var E = function (e) {
-                var i = "cmp_" + e;
-                e = "cmp" + e + "="; var d = ""; var l = e.length; var J = location; var K = J.hash; var w = J.search; var u = K.indexOf(e); var I = w.indexOf(e); if (u != -1) { d = K.substring(u + l, 9999) } else { if (I != -1) { d = w.substring(I + l, 9999) } else { return i in o && typeof (o[i]) !== "function" ? o[i] : "" } } var H = d.indexOf("&"); if (H != -1) { d = d.substring(0, H) } return d
-            }; var j = E("lang"); if (j != "") {
-                t = j;
-                k = t
-            } else {
-                if ("cmp_getlang" in o) {
-                    t = o.cmp_getlang().toLowerCase();
-                    h = o.cmp_getlangs().slice(0, 3).join("_");
-                    k = o.cmp_getPageLangs().slice(0, 3).join("_"); if ("cmp_customlanguages" in o) { var m = o.cmp_customlanguages; for (var y = 0; y < m.length; y++) { var a = m[y].l.toLowerCase(); if (a == t) { t = "en" } } }
-                }
-            } var q = ("cmp_proto" in o) ? o.cmp_proto : "https:"; if (q != "http:" && q != "https:") { q = "https:" } var n = ("cmp_ref" in o) ? o.cmp_ref : location.href; if (n.length > 300) { n = n.substring(0, 300) } var A = function (l) {
-                var J = document; var M = "getElementsByTagName"; var O = J.createElement("script");
-                O.setAttribute("data-cmp-ab", "1");
-                O.type = "text/javascript";
-                O.async = true;
-                O.src = l; var N = ["body", "div", "span", "script", "head"]; var H = "currentScript"; var K = "parentElement"; var u = "appendChild"; var L = "body"; if (J[H] && J[H][K]) { J[H][K][u](O) } else { if (J[L]) { J[L][u](O) } else { for (var w = 0; w < N.length; w++) { var I = J[M](N[w]); if (I.length > 0) { I[0][u](O); break } } } }
-            }; var b = E("design"); var c = E("regulationkey"); var z = E("gppkey"); var s = E("att"); var f = o.encodeURIComponent; var g; try { g = C.cookie.length > 0 } catch (B) { g = false } var x = E("darkmode"); if (x == "0") { x = 0 } else { if (x == "1") { x = 1 } else { try { if ("matchMedia" in window && window.matchMedia) { var G = window.matchMedia("(prefers-color-scheme: dark)"); if ("matches" in G && G.matches) { x = 1 } } } catch (B) { x = 0 } } } var p = q + "//" + o.cmp_host + "/delivery/cmp.php?";
-            p += ("cmp_id" in o && o.cmp_id > 0 ? "id=" + o.cmp_id : "") + ("cmp_cdid" in o ? "&cdid=" + o.cmp_cdid : "") + "&h=" + f(n);
-            p += (b != "" ? "&cmpdesign=" + f(b) : "") + (c != "" ? "&cmpregulationkey=" + f(c) : "") + (z != "" ? "&cmpgppkey=" + f(z) : "");
-            p += (s != "" ? "&cmpatt=" + f(s) : "") + ("cmp_params" in o ? "&" + o.cmp_params : "") + (g ? "&__cmpfcc=1" : "");
-            p += (x > 0 ? "&cmpdarkmode=1" : "");
-            A(p + "&l=" + f(t) + "&ls=" + f(h) + "&lp=" + f(k) + "&o=" + (new Date()).getTime()); if (!("cmp_quickstub" in window)) {
-                var r = "js"; var v = E("debugunminimized") != "" ? "" : ".min"; if (E("debugcoverage") == "1") {
-                    r = "instrumented";
-                    v = ""
-                } if (E("debugtest") == "1") {
-                    r = "jstests";
-                    v = ""
-                } var F = new Date(); var D = F.getFullYear() + "-" + (F.getMonth() + 1) + "-" + F.getDate();
-                A(q + "//" + o.cmp_cdn + "/delivery/" + r + "/cmp_final" + v + ".js?t=" + D)
+            if ("cmp_getlang" in o) {
+                t = o.cmp_getlang().toLowerCase();
+                h = o.cmp_getlangs().slice(0, 3).join("_");
+                k = o.cmp_getPageLangs().slice(0, 3).join("_"); if ("cmp_customlanguages" in o) { var m = o.cmp_customlanguages; for (var y = 0; y < m.length; y++) { var a = m[y].l.toLowerCase(); if (a == t) { t = "en" } } }
             }
-        })();
-        window.cmp_rc = function (c, b) {
-            var l; try { l = document.cookie } catch (h) { l = "" } var j = ""; var f = 0; var g = false; while (l != "" && f < 100) {
-                f++; while (l.substr(0, 1) == " ") { l = l.substr(1, l.length) } var k = l.substring(0, l.indexOf("=")); if (l.indexOf(";") != -1) { var m = l.substring(l.indexOf("=") + 1, l.indexOf(";")) } else { var m = l.substr(l.indexOf("=") + 1, l.length) } if (c == k) {
-                    j = m;
-                    g = true
-                } var d = l.indexOf(";") + 1; if (d == 0) { d = l.length }
-                l = l.substring(d, l.length)
-            } if (!g && typeof (b) == "string") { j = b } return (j)
-        };
-        window.cmp_stub = function () {
-            var a = arguments;
-            __cmp.a = __cmp.a || []; if (!a.length) { return __cmp.a } else { if (a[0] === "ping") { if (a[1] === 2) { a[2]({ gdprApplies: gdprAppliesGlobally, cmpLoaded: false, cmpStatus: "stub", displayStatus: "hidden", apiVersion: "2.2", cmpId: 31 }, true) } else { a[2](false, true) } } else { if (a[0] === "getTCData") { __cmp.a.push([].slice.apply(a)) } else { if (a[0] === "addEventListener" || a[0] === "removeEventListener") { __cmp.a.push([].slice.apply(a)) } else { if (a.length == 4 && a[3] === false) { a[2]({}, false) } else { __cmp.a.push([].slice.apply(a)) } } } } }
-        };
-        window.cmp_dsastub = function () {
-            var a = arguments;
-            a[0] = "dsa." + a[0];
-            window.cmp_gppstub(a)
-        };
-        window.cmp_gppstub = function () {
-            var c = arguments;
-            __gpp.q = __gpp.q || []; if (!c.length) { return __gpp.q } var h = c[0]; var g = c.length > 1 ? c[1] : null; var f = c.length > 2 ? c[2] : null; var a = null; var j = false; if (h === "ping") {
-                a = window.cmp_gpp_ping();
+        } var q = ("cmp_proto" in o) ? o.cmp_proto : "https:"; if (q != "http:" && q != "https:") { q = "https:" } var n = ("cmp_ref" in o) ? o.cmp_ref : location.href; if (n.length > 300) { n = n.substring(0, 300) } var A = function (l) {
+            var J = document; var M = "getElementsByTagName"; var O = J.createElement("script");
+            O.setAttribute("data-cmp-ab", "1");
+            O.type = "text/javascript";
+            O.async = true;
+            O.src = l; var N = ["body", "div", "span", "script", "head"]; var H = "currentScript"; var K = "parentElement"; var u = "appendChild"; var L = "body"; if (J[H] && J[H][K]) { J[H][K][u](O) } else { if (J[L]) { J[L][u](O) } else { for (var w = 0; w < N.length; w++) { var I = J[M](N[w]); if (I.length > 0) { I[0][u](O); break } } } }
+        }; var b = E("design"); var c = E("regulationkey"); var z = E("gppkey"); var s = E("att"); var f = o.encodeURIComponent; var g; try { g = C.cookie.length > 0 } catch (B) { g = false } var x = E("darkmode"); if (x == "0") { x = 0 } else { if (x == "1") { x = 1 } else { try { if ("matchMedia" in window && window.matchMedia) { var G = window.matchMedia("(prefers-color-scheme: dark)"); if ("matches" in G && G.matches) { x = 1 } } } catch (B) { x = 0 } } } var p = q + "//" + o.cmp_host + "/delivery/cmp.php?";
+        p += ("cmp_id" in o && o.cmp_id > 0 ? "id=" + o.cmp_id : "") + ("cmp_cdid" in o ? "&cdid=" + o.cmp_cdid : "") + "&h=" + f(n);
+        p += (b != "" ? "&cmpdesign=" + f(b) : "") + (c != "" ? "&cmpregulationkey=" + f(c) : "") + (z != "" ? "&cmpgppkey=" + f(z) : "");
+        p += (s != "" ? "&cmpatt=" + f(s) : "") + ("cmp_params" in o ? "&" + o.cmp_params : "") + (g ? "&__cmpfcc=1" : "");
+        p += (x > 0 ? "&cmpdarkmode=1" : "");
+        A(p + "&l=" + f(t) + "&ls=" + f(h) + "&lp=" + f(k) + "&o=" + (new Date()).getTime()); if (!("cmp_quickstub" in window)) {
+            var r = "js"; var v = E("debugunminimized") != "" ? "" : ".min"; if (E("debugcoverage") == "1") {
+                r = "instrumented";
+                v = ""
+            } if (E("debugtest") == "1") {
+                r = "jstests";
+                v = ""
+            } var F = new Date(); var D = F.getFullYear() + "-" + (F.getMonth() + 1) + "-" + F.getDate();
+            A(q + "//" + o.cmp_cdn + "/delivery/" + r + "/cmp_final" + v + ".js?t=" + D)
+        }
+    })();
+    window.cmp_rc = function (c, b) {
+        var l; try { l = document.cookie } catch (h) { l = "" } var j = ""; var f = 0; var g = false; while (l != "" && f < 100) {
+            f++; while (l.substr(0, 1) == " ") { l = l.substr(1, l.length) } var k = l.substring(0, l.indexOf("=")); if (l.indexOf(";") != -1) { var m = l.substring(l.indexOf("=") + 1, l.indexOf(";")) } else { var m = l.substr(l.indexOf("=") + 1, l.length) } if (c == k) {
+                j = m;
+                g = true
+            } var d = l.indexOf(";") + 1; if (d == 0) { d = l.length }
+            l = l.substring(d, l.length)
+        } if (!g && typeof (b) == "string") { j = b } return (j)
+    };
+    window.cmp_stub = function () {
+        var a = arguments;
+        __cmp.a = __cmp.a || []; if (!a.length) { return __cmp.a } else { if (a[0] === "ping") { if (a[1] === 2) { a[2]({ gdprApplies: gdprAppliesGlobally, cmpLoaded: false, cmpStatus: "stub", displayStatus: "hidden", apiVersion: "2.2", cmpId: 31 }, true) } else { a[2](false, true) } } else { if (a[0] === "getTCData") { __cmp.a.push([].slice.apply(a)) } else { if (a[0] === "addEventListener" || a[0] === "removeEventListener") { __cmp.a.push([].slice.apply(a)) } else { if (a.length == 4 && a[3] === false) { a[2]({}, false) } else { __cmp.a.push([].slice.apply(a)) } } } } }
+    };
+    window.cmp_dsastub = function () {
+        var a = arguments;
+        a[0] = "dsa." + a[0];
+        window.cmp_gppstub(a)
+    };
+    window.cmp_gppstub = function () {
+        var c = arguments;
+        __gpp.q = __gpp.q || []; if (!c.length) { return __gpp.q } var h = c[0]; var g = c.length > 1 ? c[1] : null; var f = c.length > 2 ? c[2] : null; var a = null; var j = false; if (h === "ping") {
+            a = window.cmp_gpp_ping();
+            j = true
+        } else {
+            if (h === "addEventListener") {
+                __gpp.e = __gpp.e || []; if (!("lastId" in __gpp)) { __gpp.lastId = 0 }
+                __gpp.lastId++; var d = __gpp.lastId;
+                __gpp.e.push({ id: d, callback: g });
+                a = { eventName: "listenerRegistered", listenerId: d, data: true, pingData: window.cmp_gpp_ping() };
                 j = true
             } else {
-                if (h === "addEventListener") {
-                    __gpp.e = __gpp.e || []; if (!("lastId" in __gpp)) { __gpp.lastId = 0 }
-                    __gpp.lastId++; var d = __gpp.lastId;
-                    __gpp.e.push({ id: d, callback: g });
-                    a = { eventName: "listenerRegistered", listenerId: d, data: true, pingData: window.cmp_gpp_ping() };
-                    j = true
-                } else {
-                    if (h === "removeEventListener") {
-                        __gpp.e = __gpp.e || [];
-                        a = false; for (var e = 0; e < __gpp.e.length; e++) {
-                            if (__gpp.e[e].id == f) {
-                                __gpp.e[e].splice(e, 1);
-                                a = true; break
-                            }
+                if (h === "removeEventListener") {
+                    __gpp.e = __gpp.e || [];
+                    a = false; for (var e = 0; e < __gpp.e.length; e++) {
+                        if (__gpp.e[e].id == f) {
+                            __gpp.e[e].splice(e, 1);
+                            a = true; break
                         }
-                        j = true
-                    } else { __gpp.q.push([].slice.apply(c)) }
-                }
-            } if (a !== null && typeof (g) === "function") { g(a, j) }
-        };
-        window.cmp_gpp_ping = function () { return { gppVersion: "1.1", cmpStatus: "stub", cmpDisplayStatus: "hidden", signalStatus: "not ready", supportedAPIs: ["2:tcfeuv2", "5:tcfcav1", "7:usnat", "8:usca", "9:usva", "10:usco", "11:usut", "12:usct", "13:usfl", "14:usmt", "15:usor", "16:ustx", "17:usde", "18:usia", "19:usne", "20:usnh", "21:usnj", "22:ustn", "23:usmn"], cmpId: 31, sectionList: [], applicableSections: [0], gppString: "", parsedSections: {} } };
-        window.cmp_addFrame = function (b) {
-            if (!window.frames[b]) {
-                if (document.body) {
-                    var a = document.createElement("iframe");
-                    a.style.cssText = "display:none"; if ("cmp_cdn" in window && "cmp_ultrablocking" in window && window.cmp_ultrablocking > 0) { a.src = "//" + window.cmp_cdn + "/delivery/empty.html" }
-                    a.name = b;
-                    a.setAttribute("title", "Intentionally hidden, please ignore");
-                    a.setAttribute("role", "none");
-                    a.setAttribute("tabindex", "-1");
-                    document.body.appendChild(a)
-                } else { window.setTimeout(window.cmp_addFrame, 10, b) }
+                    }
+                    j = true
+                } else { __gpp.q.push([].slice.apply(c)) }
             }
-        };
-        window.cmp_msghandler = function (d) {
-            var a = typeof d.data === "string"; try { var c = a ? JSON.parse(d.data) : d.data } catch (f) { var c = null } if (typeof (c) === "object" && c !== null && "__cmpCall" in c) {
-                var b = c.__cmpCall;
-                window.__cmp(b.command, b.parameter, function (h, g) {
-                    var e = { __cmpReturn: { returnValue: h, success: g, callId: b.callId } };
-                    d.source.postMessage(a ? JSON.stringify(e) : e, "*")
-                })
-            } if (typeof (c) === "object" && c !== null && "__tcfapiCall" in c) {
-                var b = c.__tcfapiCall;
-                window.__tcfapi(b.command, b.version, function (h, g) {
-                    var e = { __tcfapiReturn: { returnValue: h, success: g, callId: b.callId } };
-                    d.source.postMessage(a ? JSON.stringify(e) : e, "*")
-                }, b.parameter)
-            } if (typeof (c) === "object" && c !== null && "__gppCall" in c) {
-                var b = c.__gppCall;
-                window.__gpp(b.command, function (h, g) {
-                    var e = { __gppReturn: { returnValue: h, success: g, callId: b.callId } };
-                    d.source.postMessage(a ? JSON.stringify(e) : e, "*")
-                }, "parameter" in b ? b.parameter : null, "version" in b ? b.version : 1)
-            } if (typeof (c) === "object" && c !== null && "__dsaCall" in c) {
-                var b = c.__dsaCall;
-                window.__dsa(b.command, function (h, g) {
-                    var e = { __dsaReturn: { returnValue: h, success: g, callId: b.callId } };
-                    d.source.postMessage(a ? JSON.stringify(e) : e, "*")
-                }, "parameter" in b ? b.parameter : null, "version" in b ? b.version : 1)
-            }
-        };
-        window.cmp_setStub = function (a) {
-            if (!(a in window) || (typeof (window[a]) !== "function" && typeof (window[a]) !== "object" && (typeof (window[a]) === "undefined" || window[a] !== null))) {
-                window[a] = window.cmp_stub;
-                window[a].msgHandler = window.cmp_msghandler;
-                window.addEventListener("message", window.cmp_msghandler, false)
-            }
-        };
-        window.cmp_setGppStub = function (a) {
-            if (!(a in window) || (typeof (window[a]) !== "function" && typeof (window[a]) !== "object" && (typeof (window[a]) === "undefined" || window[a] !== null))) {
-                window[a] = window.cmp_gppstub;
-                window[a].msgHandler = window.cmp_msghandler;
-                window.addEventListener("message", window.cmp_msghandler, false)
-            }
-        };
-        if (!("cmp_noiframepixel" in window)) { window.cmp_addFrame("__cmpLocator") }
-        if ((!("cmp_disabletcf" in window) || !window.cmp_disabletcf) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__tcfapiLocator") }
-        if ((!("cmp_disablegpp" in window) || !window.cmp_disablegpp) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__gppLocator") }
-        if ((!("cmp_disabledsa" in window) || !window.cmp_disabledsa) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__dsaLocator") }
-        window.cmp_setStub("__cmp");
-        if (!("cmp_disabletcf" in window) || !window.cmp_disabletcf) { window.cmp_setStub("__tcfapi") }
-        if (!("cmp_disablegpp" in window) || !window.cmp_disablegpp) { window.cmp_setGppStub("__gpp") }
-        if (!("cmp_disabledsa" in window) || !window.cmp_disabledsa) { window.cmp_setGppStub("__dsa") };
+        } if (a !== null && typeof (g) === "function") { g(a, j) }
+    };
+    window.cmp_gpp_ping = function () { return { gppVersion: "1.1", cmpStatus: "stub", cmpDisplayStatus: "hidden", signalStatus: "not ready", supportedAPIs: ["2:tcfeuv2", "5:tcfcav1", "7:usnat", "8:usca", "9:usva", "10:usco", "11:usut", "12:usct", "13:usfl", "14:usmt", "15:usor", "16:ustx", "17:usde", "18:usia", "19:usne", "20:usnh", "21:usnj", "22:ustn", "23:usmn"], cmpId: 31, sectionList: [], applicableSections: [0], gppString: "", parsedSections: {} } };
+    window.cmp_addFrame = function (b) {
+        if (!window.frames[b]) {
+            if (document.body) {
+                var a = document.createElement("iframe");
+                a.style.cssText = "display:none"; if ("cmp_cdn" in window && "cmp_ultrablocking" in window && window.cmp_ultrablocking > 0) { a.src = "//" + window.cmp_cdn + "/delivery/empty.html" }
+                a.name = b;
+                a.setAttribute("title", "Intentionally hidden, please ignore");
+                a.setAttribute("role", "none");
+                a.setAttribute("tabindex", "-1");
+                document.body.appendChild(a)
+            } else { window.setTimeout(window.cmp_addFrame, 10, b) }
+        }
+    };
+    window.cmp_msghandler = function (d) {
+        var a = typeof d.data === "string"; try { var c = a ? JSON.parse(d.data) : d.data } catch (f) { var c = null } if (typeof (c) === "object" && c !== null && "__cmpCall" in c) {
+            var b = c.__cmpCall;
+            window.__cmp(b.command, b.parameter, function (h, g) {
+                var e = { __cmpReturn: { returnValue: h, success: g, callId: b.callId } };
+                d.source.postMessage(a ? JSON.stringify(e) : e, "*")
+            })
+        } if (typeof (c) === "object" && c !== null && "__tcfapiCall" in c) {
+            var b = c.__tcfapiCall;
+            window.__tcfapi(b.command, b.version, function (h, g) {
+                var e = { __tcfapiReturn: { returnValue: h, success: g, callId: b.callId } };
+                d.source.postMessage(a ? JSON.stringify(e) : e, "*")
+            }, b.parameter)
+        } if (typeof (c) === "object" && c !== null && "__gppCall" in c) {
+            var b = c.__gppCall;
+            window.__gpp(b.command, function (h, g) {
+                var e = { __gppReturn: { returnValue: h, success: g, callId: b.callId } };
+                d.source.postMessage(a ? JSON.stringify(e) : e, "*")
+            }, "parameter" in b ? b.parameter : null, "version" in b ? b.version : 1)
+        } if (typeof (c) === "object" && c !== null && "__dsaCall" in c) {
+            var b = c.__dsaCall;
+            window.__dsa(b.command, function (h, g) {
+                var e = { __dsaReturn: { returnValue: h, success: g, callId: b.callId } };
+                d.source.postMessage(a ? JSON.stringify(e) : e, "*")
+            }, "parameter" in b ? b.parameter : null, "version" in b ? b.version : 1)
+        }
+    };
+    window.cmp_setStub = function (a) {
+        if (!(a in window) || (typeof (window[a]) !== "function" && typeof (window[a]) !== "object" && (typeof (window[a]) === "undefined" || window[a] !== null))) {
+            window[a] = window.cmp_stub;
+            window[a].msgHandler = window.cmp_msghandler;
+            window.addEventListener("message", window.cmp_msghandler, false)
+        }
+    };
+    window.cmp_setGppStub = function (a) {
+        if (!(a in window) || (typeof (window[a]) !== "function" && typeof (window[a]) !== "object" && (typeof (window[a]) === "undefined" || window[a] !== null))) {
+            window[a] = window.cmp_gppstub;
+            window[a].msgHandler = window.cmp_msghandler;
+            window.addEventListener("message", window.cmp_msghandler, false)
+        }
+    };
+    if (!("cmp_noiframepixel" in window)) { window.cmp_addFrame("__cmpLocator") }
+    if ((!("cmp_disabletcf" in window) || !window.cmp_disabletcf) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__tcfapiLocator") }
+    if ((!("cmp_disablegpp" in window) || !window.cmp_disablegpp) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__gppLocator") }
+    if ((!("cmp_disabledsa" in window) || !window.cmp_disabledsa) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__dsaLocator") }
+    window.cmp_setStub("__cmp");
+    if (!("cmp_disabletcf" in window) || !window.cmp_disabletcf) { window.cmp_setStub("__tcfapi") }
+    if (!("cmp_disablegpp" in window) || !window.cmp_disablegpp) { window.cmp_setGppStub("__gpp") }
+    if (!("cmp_disabledsa" in window) || !window.cmp_disabledsa) { window.cmp_setGppStub("__dsa") };
 
 
 </script>
 <script>
-    if (document.location.host.includes("publishing")) {
-        var adHandler = adHandler || { cmd: [] };
+     var adHandler = adHandler || { cmd: [] };
+function kstahandler(isLoggedIn, isPlus, adchannels) {
+   
+       
         adHandler.cmd.push(function () {
             adHandler.service.setTargeting("hour", new Date().getHours());
             pagetype = "";
@@ -446,11 +457,18 @@
             adHandler.service.setTargeting("mvd_category", adchannels[0]);
             adHandler.service.request();
         });
+		 adHandler.cmd.push(function() {
+		  if (typeof applyOrtb2Values == "function")
+           applyOrtb2Values(isLoggedIn, isPlus, adchannels, []);
+        });
         elem = document.createElement("script");
-        elem.src = "https://showroom.click-performance.com/staging/DMN/volksstimme.de/volksstimme.de_ROS.js";
+        elem.src = "https://cpg-cdn.com/adHandler360/prod/volksstimme-de/volksstimme.de_ROS.js";
         elem.type = "text/javascript";
         document.head.appendChild(elem);
-    }
+}
+if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.host.replace("www.",""))) {
+		initiateSourcePoint();
+	}
 </script></head>
 
   <body lang="en"><!-- vs category-page -->
@@ -493,9 +511,16 @@
 
     <div class="page-holder">
 
-<div class="ad-skyscraper">
-    <div id="ad-skyscraper"></div>
+<div class="ad-skyscraper-left">
+    <div id="sky-left-label" style="display: none;" class="fp-ad-label fp-ad-label-skyscraper-left">Anzeige</div>
+    <div id="sky-left" class="fp-ad fp-ad-dumont"></div>
 </div>
+
+<div class="ad-skyscraper">
+    <div id="sky-label" style="display: none;" class="fp-ad-label fp-ad-label-skyscraper">Anzeige</div>
+    <div id="sky" class="fp-ad fp-ad-dumont"></div>
+</div>
+
       <div class="fp-page-content">
 
 
@@ -692,9 +717,9 @@
             </span>
             <span class="fp-main-header__weather-widget--tooltip">wolkig</span>
             <aside>
-                <span class="fp-main-header__weather-widget--day-temp">13°</span>
+                <span class="fp-main-header__weather-widget--day-temp">12°</span>
                 <span>/</span>
-                <span class="fp-main-header__weather-widget--night-temp">3°</span>
+                <span class="fp-main-header__weather-widget--night-temp">-1°</span>
             </aside>
         </div>
         <div class="fp-main-header__weather-widget--bottom">
@@ -1738,7 +1763,7 @@
               
             </ol>
         </div>
-      <div><div class="page-header fp-breaking-news" data-t-name="Minifeature" data-fp-container-name="breaking-news-header"></div><div class="fp-container__extra-large relative-container"><div class="fp-container-2"><div id="ad-top-banner-mobile" data-screen="mobile"></div><div id="ad-top-banner" data-screen="desktop"></div></div></div><div class="fp-container"><div class="fp-free-html"><h1 class="fp-category-name-header__text">News und Informationen aus der Kultur-Welt
+      <div><div class="page-header fp-breaking-news" data-t-name="Minifeature" data-fp-container-name="breaking-news-header"></div><div id="desktop_1-wrapper" class="fp-ad-wrapper"><div id="desktop_1-label" style="display: none;" class="fp-ad-label">Anzeige</div><div id="desktop_1" data-screen="desktop" class="fp-ad fp-ad-dumont center"></div></div><div class="fp-container__extra-large relative-container"><div class="fp-container-2"></div></div><div class="fp-container"><div class="fp-free-html"><h1 class="fp-category-name-header__text">News und Informationen aus der Kultur-Welt
 </h1></div><div class="fp-page__body"><section class="fp-section ratio full-width-image fp-top-article-top-teaser" data-ratio="21:9" data-ratio-sm="16:9"></section><div></div><div><section class="fp-related-articles embed fp-section"><div data-service="category-teasers-list"><!-- Display grid solution  -->
 <div class="fp-article-list">
     <header class="fp-category-name-header">
@@ -1752,93 +1777,93 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/familiendrama-los-domingos-mit-goya-als-bester-film-geehrt-4207714">
+            <a href="/kultur/tv-und-streaming/grey-s-anatomy-bekommt-neue-staffel-kein-ende-in-sicht-4225739">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/01/c9a28a76-e614-4cd2-9504-e1efa58fd58e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/01/c9a28a76-e614-4cd2-9504-e1efa58fd58e.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/01/c9a28a76-e614-4cd2-9504-e1efa58fd58e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/01/c9a28a76-e614-4cd2-9504-e1efa58fd58e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/01/c9a28a76-e614-4cd2-9504-e1efa58fd58e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/01/c9a28a76-e614-4cd2-9504-e1efa58fd58e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/01/c9a28a76-e614-4cd2-9504-e1efa58fd58e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Das Familiendrama „Los Domingos“ (Die Sonntage) der Regisseurin Alauda Ruiz de Azúa ist als bester Film ausgezeichnet worden." data-source="Joan Mateu Parra/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/823f22c9-1165-40e0-953c-774261044efe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/823f22c9-1165-40e0-953c-774261044efe.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/823f22c9-1165-40e0-953c-774261044efe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/823f22c9-1165-40e0-953c-774261044efe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/823f22c9-1165-40e0-953c-774261044efe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/823f22c9-1165-40e0-953c-774261044efe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/823f22c9-1165-40e0-953c-774261044efe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Arztserie „Grey's Anatomy“ geht in die 23. Staffel. (Archivfoto)" data-source="Liliane Lathan/ABC/Disney+/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Spanischer Filmpreis</h4>
-                <h3 class="fp-article__title text-xl--bold ">Familiendrama „Los Domingos“ mit Goya als bester Film geehrt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Serie</h4>
+                <h3 class="fp-article__title text-xl--bold ">„Grey's Anatomy“ bekommt neue Staffel – kein Ende in Sicht</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/vom-baumarkt-in-den-einsatz-neuer-samstagskrimi-im-zdf-4207395">
+            <a href="/kultur/sexarbeiterinnen-kuratieren-ausstellung-in-bundeskunsthalle-4225613">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/939072f7-1169-464d-aad6-d88079ffe3a8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/939072f7-1169-464d-aad6-d88079ffe3a8.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/939072f7-1169-464d-aad6-d88079ffe3a8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/939072f7-1169-464d-aad6-d88079ffe3a8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/939072f7-1169-464d-aad6-d88079ffe3a8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/939072f7-1169-464d-aad6-d88079ffe3a8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/939072f7-1169-464d-aad6-d88079ffe3a8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ira Zach (Lavinia Wilson, links) und Daphne Meindl (Philine Schmölzer ) sind das neue Ermittlungsduo beim ZDF. (Archivfoto)" data-source="Linda Gschwentner/ZDF/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/901e5d16-f7cb-498b-a3aa-4588cbe9b251.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/901e5d16-f7cb-498b-a3aa-4588cbe9b251.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/901e5d16-f7cb-498b-a3aa-4588cbe9b251.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/901e5d16-f7cb-498b-a3aa-4588cbe9b251.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/901e5d16-f7cb-498b-a3aa-4588cbe9b251.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/901e5d16-f7cb-498b-a3aa-4588cbe9b251.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/901e5d16-f7cb-498b-a3aa-4588cbe9b251.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Rori ist nach eigener Aussage glücklich darüber, dass die Ausstellung „Sex Work“ in der Bundeskunsthalle ein so differenziertes Bild von Sexarbeit zeichnet." data-source="Oliver Berg/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Neue Krimireihe</h4>
-                <h3 class="fp-article__title text-xl--bold ">Vom Baumarkt in den Einsatz: Neuer Samstagskrimi im ZDF</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Ungewöhnliches Projekt</h4>
+                <h3 class="fp-article__title text-xl--bold ">Sexarbeiterinnen kuratieren Ausstellung in Bundeskunsthalle</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/grosstes-deutschsprachiges-us-filmfest-feiert-mala-emde-4207369">
+            <a href="/kultur/tv-und-streaming/ard-zdf-sender-gestrichen-serien-programm-aenderung-4225429">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/8702aa2c-5f64-49a9-922a-1bc3c591c6d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/8702aa2c-5f64-49a9-922a-1bc3c591c6d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/8702aa2c-5f64-49a9-922a-1bc3c591c6d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/8702aa2c-5f64-49a9-922a-1bc3c591c6d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/8702aa2c-5f64-49a9-922a-1bc3c591c6d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/8702aa2c-5f64-49a9-922a-1bc3c591c6d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/8702aa2c-5f64-49a9-922a-1bc3c591c6d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Mala Emde wird in Kalifornien einen Schauspiel-Preis erhalten. (Archivbild)" data-source="Felix Hörhager/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2024/04/04/a8e0769b-62f5-43f5-8566-f26b3a7f7a57.jpeg?rect=0%2C303%2C4000%2C2250&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2024/04/04/a8e0769b-62f5-43f5-8566-f26b3a7f7a57.jpeg?rect=0%2C303%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2024/04/04/a8e0769b-62f5-43f5-8566-f26b3a7f7a57.jpeg?rect=0%2C303%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2024/04/04/a8e0769b-62f5-43f5-8566-f26b3a7f7a57.jpeg?rect=0%2C303%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2024/04/04/a8e0769b-62f5-43f5-8566-f26b3a7f7a57.jpeg?rect=0%2C303%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2024/04/04/a8e0769b-62f5-43f5-8566-f26b3a7f7a57.jpeg?rect=0%2C303%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2024/04/04/a8e0769b-62f5-43f5-8566-f26b3a7f7a57.jpeg?rect=0%2C303%2C4000%2C2250&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wegen des neuen Reformstaatsvertrags streichen die ARD und das ZDF drei Sender. 19 Serien müssen deswegen um ihre Sendeplätze bangen." data-source="Foto: dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Schauspielpreis</h4>
-                <h3 class="fp-article__title text-xl--bold ">Größtes deutschsprachiges US-Filmfest feiert Mala Emde</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Wegen Sparmaßnahmen</h4>
+                <h3 class="fp-article__title text-xl--bold ">19 Serien verlieren Sendeplätze! ARD und ZDF streichen diese drei Sender</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/musik/techno-dj-vorwuerfe-machtmissbrauch-sexuelle-noetigung-carv-fantasm-shlomo-hive-ferropolis-4206016">
+            <a href="/kultur/prominente-fordern-schliessung-von-ice-haftanstalt-in-texas-4225546">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Das Hive-Festival bei Gräfenhainichen hat sich innerhalb weniger Jahre zu einem Besuchermagnet der Techno-Szene entwickelt. Die kommende Ausgabe im Juni 2026 ist bereits jetzt ausverkauft." data-source="Foto: Lea Fischer">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/ea59c537-0d9f-4c99-bf0d-51999b93f39d.jpeg?rect=0%2C145%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/ea59c537-0d9f-4c99-bf0d-51999b93f39d.jpeg?rect=0%2C145%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/ea59c537-0d9f-4c99-bf0d-51999b93f39d.jpeg?rect=0%2C145%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/ea59c537-0d9f-4c99-bf0d-51999b93f39d.jpeg?rect=0%2C145%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/ea59c537-0d9f-4c99-bf0d-51999b93f39d.jpeg?rect=0%2C145%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/ea59c537-0d9f-4c99-bf0d-51999b93f39d.jpeg?rect=0%2C145%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/ea59c537-0d9f-4c99-bf0d-51999b93f39d.jpeg?rect=0%2C145%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="US-Popdiva Madonna, andere Künstler sowie Ärzte, Journalisten und Hochschulprofessoren protestieren gegen die Inhaftierung von Kindern in einem Abschiebezentrum der Behörde ICE in Texas. (Archivbild)" data-source="Evan Agostini/Invision/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Beim Hive-Festival rausgeschmissen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Techno-Skandal um Machtmissbrauch und sexuelle Nötigung: Star-DJ beendet Karriere</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Umstrittene Einrichtung</h4>
+                <h3 class="fp-article__title text-xl--bold ">Prominente fordern Schließung von ICE-Haftanstalt in Texas</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/fast-100-jahre-spater-abituraufsatz-von-max-frisch-entdeckt-4206691">
+            <a href="/kultur/tv-und-streaming/auf-mondmission-im-film-houston-wir-haben-ein-problem-4225368">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/27/414b53b9-e0fa-453f-a7c5-0014a37babc7.jpeg?rect=0%2C150%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/27/414b53b9-e0fa-453f-a7c5-0014a37babc7.jpeg?rect=0%2C150%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/27/414b53b9-e0fa-453f-a7c5-0014a37babc7.jpeg?rect=0%2C150%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/27/414b53b9-e0fa-453f-a7c5-0014a37babc7.jpeg?rect=0%2C150%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/27/414b53b9-e0fa-453f-a7c5-0014a37babc7.jpeg?rect=0%2C150%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/27/414b53b9-e0fa-453f-a7c5-0014a37babc7.jpeg?rect=0%2C150%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/27/414b53b9-e0fa-453f-a7c5-0014a37babc7.jpeg?rect=0%2C150%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Zeitlebens ein Technikkritiker: Max Frisch. (Archivbild)" data-source="picture alliance / dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/1105d546-5831-4e8a-bfd2-7041b8c77606.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/1105d546-5831-4e8a-bfd2-7041b8c77606.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/1105d546-5831-4e8a-bfd2-7041b8c77606.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/1105d546-5831-4e8a-bfd2-7041b8c77606.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/1105d546-5831-4e8a-bfd2-7041b8c77606.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/1105d546-5831-4e8a-bfd2-7041b8c77606.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/1105d546-5831-4e8a-bfd2-7041b8c77606.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Im Dokumentarfilm Apollo 11 wurden bis dahin unbekannte Originalaufnahmen gezeigt. (Archivbild)" data-source="Neil Armstrong/NASA/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Literatur</h4>
-                <h3 class="fp-article__title text-xl--bold ">Fast 100 Jahre später: Abituraufsatz von Max Frisch entdeckt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Zur Mondmission „Artemis 2“</h4>
+                <h3 class="fp-article__title text-xl--bold ">Auf Mondmission im Film: „Houston, wir haben ein Problem“</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/theater-aus-dem-ewigen-eis-urauffuhrung-in-der-antarktis-4206598">
+            <a href="/kultur/tv-und-streaming/medien-laura-dern-spielt-in-serie-uber-jeffrey-epstein-mit-4225358">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/27/e886a156-7912-4506-a37b-30a36718ddd7.jpeg?rect=64%2C0%2C1920%2C1080&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/27/e886a156-7912-4506-a37b-30a36718ddd7.jpeg?rect=64%2C0%2C1920%2C1080&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/27/e886a156-7912-4506-a37b-30a36718ddd7.jpeg?rect=64%2C0%2C1920%2C1080&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/27/e886a156-7912-4506-a37b-30a36718ddd7.jpeg?rect=64%2C0%2C1920%2C1080&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/27/e886a156-7912-4506-a37b-30a36718ddd7.jpeg?rect=64%2C0%2C1920%2C1080&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/27/e886a156-7912-4506-a37b-30a36718ddd7.jpeg?rect=64%2C0%2C1920%2C1080&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/27/e886a156-7912-4506-a37b-30a36718ddd7.jpeg?rect=64%2C0%2C1920%2C1080&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Theater in der Antarktis - Regisseur Jan-Christoph Gockel und seine Schauspiel-Kollegen Julia Gräfner und Wolfram Koch (l-r)" data-source="Lion Bischof/Deutsches Theater Berlin/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Theater</h4>
-                <h3 class="fp-article__title text-xl--bold ">Theater aus dem ewigen Eis - Uraufführung in der Antarktis</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/hannes-jaenicke-zdf-statement-doku-im-einsatz-fuer-eingestellt-4202664">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/27/af74fd15-be5a-4af6-a2a3-62fbbe207767.jpeg?rect=104%2C56%2C3734%2C2100&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/27/af74fd15-be5a-4af6-a2a3-62fbbe207767.jpeg?rect=104%2C56%2C3734%2C2100&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/27/af74fd15-be5a-4af6-a2a3-62fbbe207767.jpeg?rect=104%2C56%2C3734%2C2100&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/27/af74fd15-be5a-4af6-a2a3-62fbbe207767.jpeg?rect=104%2C56%2C3734%2C2100&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/27/af74fd15-be5a-4af6-a2a3-62fbbe207767.jpeg?rect=104%2C56%2C3734%2C2100&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/27/af74fd15-be5a-4af6-a2a3-62fbbe207767.jpeg?rect=104%2C56%2C3734%2C2100&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/27/af74fd15-be5a-4af6-a2a3-62fbbe207767.jpeg?rect=104%2C56%2C3734%2C2100&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Einstellung der ZDF‑Reihe „Im Einsatz für…“ sorgt für Unverständnis bei Hannes Jaenicke." data-source="(Foto: Imago / HMB-Media)">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> "Das Traumschiff fährt weiter"</h4>
-                <h3 class="fp-article__title text-xl--bold ">ZDF stoppt Umwelt-Doku von Hannes Jaenicke: Schauspieler übt deutliche Kritik</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/in-aller-freundschaft-iaf-sachsenklinik-ard-4202856">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/20/3ae1e282-e7af-4858-a6a1-6379028ca3d6.jpeg?rect=226%2C333%2C3548%2C1996&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/20/3ae1e282-e7af-4858-a6a1-6379028ca3d6.jpeg?rect=226%2C333%2C3548%2C1996&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/20/3ae1e282-e7af-4858-a6a1-6379028ca3d6.jpeg?rect=226%2C333%2C3548%2C1996&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/20/3ae1e282-e7af-4858-a6a1-6379028ca3d6.jpeg?rect=226%2C333%2C3548%2C1996&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/20/3ae1e282-e7af-4858-a6a1-6379028ca3d6.jpeg?rect=226%2C333%2C3548%2C1996&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/20/3ae1e282-e7af-4858-a6a1-6379028ca3d6.jpeg?rect=226%2C333%2C3548%2C1996&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/20/3ae1e282-e7af-4858-a6a1-6379028ca3d6.jpeg?rect=226%2C333%2C3548%2C1996&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bitter für &quot;IaF&quot;-Fans: Bei &quot;In aller Freundschaft&quot; kommt es zu einem doppelten Abschied." data-source="(Foto: Imago / pictureteam)">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> "In aller Freundschaft"</h4>
-                <h3 class="fp-article__title text-xl--bold ">ARD-Serie schockt Fans: Warum zwei beliebte Sachsenklinik-Figuren die Show verlassen</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/judith-hermann-auf-den-spuren-ihres-nazi-grossvaters-4206703">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/27/d59524cf-f5a4-4079-9932-a414e1c0d68e.jpeg?rect=0%2C110%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/27/d59524cf-f5a4-4079-9932-a414e1c0d68e.jpeg?rect=0%2C110%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/27/d59524cf-f5a4-4079-9932-a414e1c0d68e.jpeg?rect=0%2C110%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/27/d59524cf-f5a4-4079-9932-a414e1c0d68e.jpeg?rect=0%2C110%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/27/d59524cf-f5a4-4079-9932-a414e1c0d68e.jpeg?rect=0%2C110%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/27/d59524cf-f5a4-4079-9932-a414e1c0d68e.jpeg?rect=0%2C110%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/27/d59524cf-f5a4-4079-9932-a414e1c0d68e.jpeg?rect=0%2C110%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Schriftstellerin Judith Hermann spürt ihrer Familiengeschichte nach. (Archivbild)" data-source="Jens Kalaene/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Neues Buch</h4>
-                <h3 class="fp-article__title text-xl--bold ">Judith Hermann auf den Spuren ihres Nazi-Großvaters</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/teyana-taylor-uber-filmkarriere-jeder-sagte-es-sei-dumm-4206670">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/27/231ac85b-9fa3-458c-9bc3-a2c4d5a6d900.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/27/231ac85b-9fa3-458c-9bc3-a2c4d5a6d900.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/27/231ac85b-9fa3-458c-9bc3-a2c4d5a6d900.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/27/231ac85b-9fa3-458c-9bc3-a2c4d5a6d900.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/27/231ac85b-9fa3-458c-9bc3-a2c4d5a6d900.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/27/231ac85b-9fa3-458c-9bc3-a2c4d5a6d900.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/27/231ac85b-9fa3-458c-9bc3-a2c4d5a6d900.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Teyana Taylor ist als beste Nebendarstellerin für einen Oscar nominiert. (Archivbild)" data-source="Jordan Strauss/Invision/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/d98703ea-6fac-46b2-9ad2-ab874c36c4d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/d98703ea-6fac-46b2-9ad2-ab874c36c4d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/d98703ea-6fac-46b2-9ad2-ab874c36c4d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/d98703ea-6fac-46b2-9ad2-ab874c36c4d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/d98703ea-6fac-46b2-9ad2-ab874c36c4d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/d98703ea-6fac-46b2-9ad2-ab874c36c4d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/d98703ea-6fac-46b2-9ad2-ab874c36c4d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Laura Dern wurde 2020 für ihre Rolle in „Marriage Story“ mit einem Oscar ausgezeichnet. (Archivbild)" data-source="Scott A Garfitt/Invision/AP/dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Leute</h4>
-                <h3 class="fp-article__title text-xl--bold ">Teyana Taylor über Filmkarriere: Jeder sagte, es sei dumm</h3>
+                <h3 class="fp-article__title text-xl--bold ">Medien: Laura Dern spielt in Serie über Jeffrey Epstein mit</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/tv-und-streaming/stellan-skarsgard-mit-dakota-fanning-in-thriller-serie-4225321">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/5171ed1a-7c8a-409d-8693-4ba7629619d6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/5171ed1a-7c8a-409d-8693-4ba7629619d6.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/5171ed1a-7c8a-409d-8693-4ba7629619d6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/5171ed1a-7c8a-409d-8693-4ba7629619d6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/5171ed1a-7c8a-409d-8693-4ba7629619d6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/5171ed1a-7c8a-409d-8693-4ba7629619d6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/5171ed1a-7c8a-409d-8693-4ba7629619d6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Stellan Skarsgard war bei den Oscars als bester Nebendarsteller nominiert. (Archivbild)" data-source="Jordan Strauss/Invision/AP/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Schauspieler</h4>
+                <h3 class="fp-article__title text-xl--bold ">Stellan Skarsgård mit Dakota Fanning in Thriller-Serie</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/tv-und-streaming/rtl-doku-uber-kultsanger-heino-ganz-entspannt-4225309">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/3d9d8bfc-44c9-454c-a341-470cf612ecc1.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/3d9d8bfc-44c9-454c-a341-470cf612ecc1.jpeg?rect=0%2C0%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/3d9d8bfc-44c9-454c-a341-470cf612ecc1.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/3d9d8bfc-44c9-454c-a341-470cf612ecc1.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/3d9d8bfc-44c9-454c-a341-470cf612ecc1.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/3d9d8bfc-44c9-454c-a341-470cf612ecc1.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/3d9d8bfc-44c9-454c-a341-470cf612ecc1.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Eine vierteilige Doku „Heino – Karamba, Karacho, Kult!“ zeigt den Sänger zu Hause, auf der Bühne und im oft gemütlichen Alltag." data-source="RTL/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Im Fernsehen und Streaming</h4>
+                <h3 class="fp-article__title text-xl--bold ">RTL-Doku über Kultsänger: Heino ganz entspannt</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/tv-und-streaming/zoo-leipzig-pfleger-hirmer-abschied-elefant-tiger-co-mdr-4220748">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/30/76fbe497-851b-4938-8fbb-8dca0803962b.png?rect=6%2C0%2C1488%2C837&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/30/76fbe497-851b-4938-8fbb-8dca0803962b.png?rect=6%2C0%2C1488%2C837&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/30/76fbe497-851b-4938-8fbb-8dca0803962b.png?rect=6%2C0%2C1488%2C837&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/30/76fbe497-851b-4938-8fbb-8dca0803962b.png?rect=6%2C0%2C1488%2C837&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/30/76fbe497-851b-4938-8fbb-8dca0803962b.png?rect=6%2C0%2C1488%2C837&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/30/76fbe497-851b-4938-8fbb-8dca0803962b.png?rect=6%2C0%2C1488%2C837&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/30/76fbe497-851b-4938-8fbb-8dca0803962b.png?rect=6%2C0%2C1488%2C837&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nach zwei Jahrzehnten im Zoo Leipzig beendet Kultpfleger Jens Hirmer seine Zeit in der Afrika‑Abteilung." data-source="(Foto: <a target=&quot;_blank&quot; href=&quot;https://www.mdr.de/tv/programm/sendung-1098348.html&quot;>Screenshot/MDR Mediathek</a>)">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> "Elefant, Tiger &amp; Co."</h4>
+                <h3 class="fp-article__title text-xl--bold ">Wenn ein Kult-Tierpfleger geht: Warum Jens Hirmer dem Zoo Leipzig den Rücken kehrt</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/tv-und-streaming/zoo-leipzig-pfleger-direktor-joerg-junhold-mdr-riverboat-4224995">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/30/d0a141ab-6bae-43ff-b9d4-77301cd786ef.jpeg?rect=366%2C62%2C3066%2C1725&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/30/d0a141ab-6bae-43ff-b9d4-77301cd786ef.jpeg?rect=366%2C62%2C3066%2C1725&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/30/d0a141ab-6bae-43ff-b9d4-77301cd786ef.jpeg?rect=366%2C62%2C3066%2C1725&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/30/d0a141ab-6bae-43ff-b9d4-77301cd786ef.jpeg?rect=366%2C62%2C3066%2C1725&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/30/d0a141ab-6bae-43ff-b9d4-77301cd786ef.jpeg?rect=366%2C62%2C3066%2C1725&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/30/d0a141ab-6bae-43ff-b9d4-77301cd786ef.jpeg?rect=366%2C62%2C3066%2C1725&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/30/d0a141ab-6bae-43ff-b9d4-77301cd786ef.jpeg?rect=366%2C62%2C3066%2C1725&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Jörg Junhold, Direktor des Zoos in Leipzig, verteilt im MDR ein großes Lob an die Tierpfleger." data-source="(Foto:&amp;nbsp;Imago/Star-Media)">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Talkshow im MDR</h4>
+                <h3 class="fp-article__title text-xl--bold ">"Nicht nur Streicheln": Warum Leipziger Zoo-Chef im Riverboat von Tierpflegern schwärmt</h3>
             </a>
         </article>
 </div>
@@ -1850,12 +1875,12 @@
 <h2 class="fp-most-popular-section-title">Meistgelesen</h2>
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/kultur/musik/techno-dj-vorwuerfe-machtmissbrauch-sexuelle-noetigung-carv-fantasm-shlomo-hive-ferropolis-4206016">
+      <a href="/kultur/tv-und-streaming/zoo-leipzig-pfleger-hirmer-abschied-elefant-tiger-co-mdr-4220748">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">1.</span>
             <header>
-              <h4 class="fp-article__catchline"> Beim Hive-Festival rausgeschmissen</h4>
-              <h3 class="fp-article__title text-xxl--bold">Techno-Skandal um Machtmissbrauch und sexuelle Nötigung: Star-DJ beendet Karriere</h3>
+              <h4 class="fp-article__catchline"> "Elefant, Tiger &amp; Co."</h4>
+              <h3 class="fp-article__title text-xxl--bold">Wenn ein Kult-Tierpfleger geht: Warum Jens Hirmer dem Zoo Leipzig den Rücken kehrt</h3>
             </header>
         </div>
       </a>
@@ -1863,12 +1888,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/kultur/tv-und-streaming/besseresser-sebastian-lege-zdf-programm-aenderung-dfb-pokal-fussball-4192199">
+      <a href="/kultur/tv-und-streaming/riverboat-kim-fisher-mdr-trauer-tod-traenen-4208405">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">2.</span>
             <header>
-              <h4 class="fp-article__catchline"> Sebastian Lege ohne Sendeplatz</h4>
-              <h3 class="fp-article__title text-xxl--bold">"BesserEsser" fliegt aus dem Programm! Deshalb muss die ZDF-Sendung weichen</h3>
+              <h4 class="fp-article__catchline"> Tod von Kollegen</h4>
+              <h3 class="fp-article__title text-xxl--bold">"Den ganzen Tag vor gegraust": Kim Fisher kämpft im "Riverboat" mit den Tränen</h3>
             </header>
         </div>
       </a>
@@ -1876,12 +1901,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/kultur/tv-und-streaming/schlagerbooom-florian-silbereisen-show-fussball-wm-4205571">
+      <a href="/kultur/tv-und-streaming/zoo-leipzig-pfleger-direktor-joerg-junhold-mdr-riverboat-4224995">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">3.</span>
             <header>
-              <h4 class="fp-article__catchline"> Show mit Florian Silbereisen</h4>
-              <h3 class="fp-article__title text-xxl--bold">"Schlagerbooom Open Air" fliegt aus dem Programm: Das ist der Grund</h3>
+              <h4 class="fp-article__catchline"> Talkshow im MDR</h4>
+              <h3 class="fp-article__title text-xxl--bold">"Nicht nur Streicheln": Warum Leipziger Zoo-Chef im Riverboat von Tierpflegern schwärmt</h3>
             </header>
         </div>
       </a>
@@ -1889,12 +1914,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/kultur/tv-und-streaming/horst-krause-serie-krimi-ard-tod-4202799">
+      <a href="/kultur/tv-und-streaming/ard-in-aller-freundschaft-renneberg-zirzow-4202856">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">4.</span>
             <header>
-              <h4 class="fp-article__catchline"> Klare Absage an "Krause"-Filme</h4>
-              <h3 class="fp-article__title text-xxl--bold">"Verpasste Chance!" Nach Tod von Horst Krause besiegelt ARD das Aus der Kult-Krimis</h3>
+              <h4 class="fp-article__catchline"> Beliebte Serie in der ARD</h4>
+              <h3 class="fp-article__title text-xxl--bold">Schicksal der Charaktere besiegelt: Diese zwei Schauspielerinnen verlassen "In aller Freundschaft"</h3>
             </header>
         </div>
       </a>
@@ -1913,94 +1938,93 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/scham-stille-und-nun-gesang-michel-houellebecq-zum-70-4205887">
+            <a href="/kultur/buch/biografische-spurensuche-in-einer-versehrten-stadt-4223452">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/26/ab37774d-6ee1-4eae-a6b5-ef28a59c8f26.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/26/ab37774d-6ee1-4eae-a6b5-ef28a59c8f26.jpeg?rect=0%2C99%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/26/ab37774d-6ee1-4eae-a6b5-ef28a59c8f26.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/26/ab37774d-6ee1-4eae-a6b5-ef28a59c8f26.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/26/ab37774d-6ee1-4eae-a6b5-ef28a59c8f26.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/26/ab37774d-6ee1-4eae-a6b5-ef28a59c8f26.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/26/ab37774d-6ee1-4eae-a6b5-ef28a59c8f26.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Wirbel um den Sexfilm „Kirac 27“ scheint ihm noch tief in den Knochen zu sitzen. (Archivbild)" data-source="Boris Roessler/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/27/e61f6cbb-516c-469c-8b44-3c18d625f1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/27/e61f6cbb-516c-469c-8b44-3c18d625f1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/27/e61f6cbb-516c-469c-8b44-3c18d625f1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/27/e61f6cbb-516c-469c-8b44-3c18d625f1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/27/e61f6cbb-516c-469c-8b44-3c18d625f1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/27/e61f6cbb-516c-469c-8b44-3c18d625f1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/27/e61f6cbb-516c-469c-8b44-3c18d625f1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die französische Autorin Maylis de Kerangal hat vielfach preisgekrönte, auch ins Deutsche übersetzte Bücher geschrieben. (Archivbild)" data-source="Marta Perez/EFE/EPA/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Neues Buch</h4>
+                <h3 class="fp-article__title text-xl--bold ">Biografische Spurensuche in einer versehrten Stadt</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/buch/nele-neuhaus-krimi-erstmals-als-miniserie-4223304">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/27/4d646ca2-b6ef-4c2c-b9ee-fe284ddd8bc3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/27/4d646ca2-b6ef-4c2c-b9ee-fe284ddd8bc3.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/27/4d646ca2-b6ef-4c2c-b9ee-fe284ddd8bc3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/27/4d646ca2-b6ef-4c2c-b9ee-fe284ddd8bc3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/27/4d646ca2-b6ef-4c2c-b9ee-fe284ddd8bc3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/27/4d646ca2-b6ef-4c2c-b9ee-fe284ddd8bc3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/27/4d646ca2-b6ef-4c2c-b9ee-fe284ddd8bc3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="„Taunuskrimi“-Autorin Nele Neuhaus freut sich, dass erstmals ein Buch von ihr als Miniserie verfilmt wird. (Archivbild)" data-source="Sebastian Gollnow/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> „Taunuskrimi“ nun bei Disney+</h4>
+                <h3 class="fp-article__title text-xl--bold ">Nele-Neuhaus-Krimi erstmals als Miniserie</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/buch/kirsten-dunst-ubernimmt-rolle-in-the-housemaid-fortsetzung-4221298">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/24/be4d4855-6a9f-4b6b-a39f-f9afaece2894.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/24/be4d4855-6a9f-4b6b-a39f-f9afaece2894.jpeg?rect=0%2C105%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/24/be4d4855-6a9f-4b6b-a39f-f9afaece2894.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/24/be4d4855-6a9f-4b6b-a39f-f9afaece2894.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/24/be4d4855-6a9f-4b6b-a39f-f9afaece2894.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/24/be4d4855-6a9f-4b6b-a39f-f9afaece2894.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/24/be4d4855-6a9f-4b6b-a39f-f9afaece2894.jpeg?rect=0%2C105%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Kirsten Dunst war zuletzt an der Seite von Channing Tatum in dem Film „Der Hochstapler - Roofman“ zu sehen. (Archivbild)" data-source="Richard Shotwell/Invision/AP/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Leute</h4>
+                <h3 class="fp-article__title text-xl--bold ">Kirsten Dunst übernimmt Rolle in „The Housemaid“-Fortsetzung</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/buch/marc-uwe-klings-kanguru-rebelliert-mal-wieder-4214559">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/12/6abc3ca7-6797-486d-b14a-da64cdc0b894.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/12/6abc3ca7-6797-486d-b14a-da64cdc0b894.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/12/6abc3ca7-6797-486d-b14a-da64cdc0b894.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/12/6abc3ca7-6797-486d-b14a-da64cdc0b894.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/12/6abc3ca7-6797-486d-b14a-da64cdc0b894.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/12/6abc3ca7-6797-486d-b14a-da64cdc0b894.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/12/6abc3ca7-6797-486d-b14a-da64cdc0b894.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Autor Marc-Uwe Kling wurde durch seine Känguru-Geschichten bekannt. (Archivbild)" data-source="Sebastian Christoph Gollnow/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Neues Buch</h4>
+                <h3 class="fp-article__title text-xl--bold ">Marc-Uwe Klings Känguru rebelliert - mal wieder</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/buch/neues-buch-von-amelie-fried-leben-wie-in-der-truman-show-4213753">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/11/5736d954-39f8-4157-af22-604382695113.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/11/5736d954-39f8-4157-af22-604382695113.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/11/5736d954-39f8-4157-af22-604382695113.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/11/5736d954-39f8-4157-af22-604382695113.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/11/5736d954-39f8-4157-af22-604382695113.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/11/5736d954-39f8-4157-af22-604382695113.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/11/5736d954-39f8-4157-af22-604382695113.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Amelie Fried" data-source="Henning Kaiser/dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Literatur</h4>
-                <h3 class="fp-article__title text-xl--bold ">Scham, Stille – und nun Gesang: Michel Houellebecq zum 70.</h3>
+                <h3 class="fp-article__title text-xl--bold ">Neues Buch von Amelie Fried: Leben wie in der Truman-Show</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/heated-rivalry-autorin-verschiebt-buch-wegen-krankheit-4205772">
+            <a href="/kultur/buch/eine-aktuelle-politsatire-von-wolfgang-schorlau-4213183">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/25/b370db66-cfa9-4686-8eba-9f6ea82b5fdc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/25/b370db66-cfa9-4686-8eba-9f6ea82b5fdc.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/25/b370db66-cfa9-4686-8eba-9f6ea82b5fdc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/25/b370db66-cfa9-4686-8eba-9f6ea82b5fdc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/25/b370db66-cfa9-4686-8eba-9f6ea82b5fdc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/25/b370db66-cfa9-4686-8eba-9f6ea82b5fdc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/25/b370db66-cfa9-4686-8eba-9f6ea82b5fdc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Serie basiert auf den Büchern von Rachel Reid. (Symbolbild)" data-source="Michael Reichel/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/10/8cfc05ad-50b2-4b2f-8669-93a0e916d18a.jpeg?rect=0%2C196%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/10/8cfc05ad-50b2-4b2f-8669-93a0e916d18a.jpeg?rect=0%2C196%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/10/8cfc05ad-50b2-4b2f-8669-93a0e916d18a.jpeg?rect=0%2C196%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/10/8cfc05ad-50b2-4b2f-8669-93a0e916d18a.jpeg?rect=0%2C196%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/10/8cfc05ad-50b2-4b2f-8669-93a0e916d18a.jpeg?rect=0%2C196%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/10/8cfc05ad-50b2-4b2f-8669-93a0e916d18a.jpeg?rect=0%2C196%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/10/8cfc05ad-50b2-4b2f-8669-93a0e916d18a.jpeg?rect=0%2C196%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Autor Schorlau 2016 bei einer Lesung." data-source="picture alliance / dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Erfolgsserie</h4>
-                <h3 class="fp-article__title text-xl--bold ">„Heated Rivalry“-Autorin verschiebt Buch wegen Krankheit</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Neues Buch</h4>
+                <h3 class="fp-article__title text-xl--bold ">Eine aktuelle Politsatire von Wolfgang Schorlau</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/von-schirachs-alexander-grundrechte-als-kinderabenteuer-4205295">
+            <a href="/kultur/buch/ddr-osten-kinderbuecher-kindheit-kult-4184494">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/25/19af2d0b-0e28-4b85-9759-6abcc85d2085.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/25/19af2d0b-0e28-4b85-9759-6abcc85d2085.jpeg?rect=0%2C100%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/25/19af2d0b-0e28-4b85-9759-6abcc85d2085.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/25/19af2d0b-0e28-4b85-9759-6abcc85d2085.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/25/19af2d0b-0e28-4b85-9759-6abcc85d2085.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/25/19af2d0b-0e28-4b85-9759-6abcc85d2085.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/25/19af2d0b-0e28-4b85-9759-6abcc85d2085.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ferdinand von Schirach hat mit „Alexander“ sein erstes Kinderbuch geschrieben. (Archivbild)" data-source="Britta Pedersen/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/06/2f5de6e1-90c6-4f82-833d-02fce6101106.jpeg?rect=0%2C187%2C4000%2C2250&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/06/2f5de6e1-90c6-4f82-833d-02fce6101106.jpeg?rect=0%2C187%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/06/2f5de6e1-90c6-4f82-833d-02fce6101106.jpeg?rect=0%2C187%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/06/2f5de6e1-90c6-4f82-833d-02fce6101106.jpeg?rect=0%2C187%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/06/2f5de6e1-90c6-4f82-833d-02fce6101106.jpeg?rect=0%2C187%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/06/2f5de6e1-90c6-4f82-833d-02fce6101106.jpeg?rect=0%2C187%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/06/2f5de6e1-90c6-4f82-833d-02fce6101106.jpeg?rect=0%2C187%2C4000%2C2250&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="In der DDR wurde viel gelesen. Mehr als 120.000 Kinder- und Jugendbücher erschienen zwischen 1945 und 1990." data-source="(Foto: Imago / Werner Schulze)">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Kinderbuch</h4>
-                <h3 class="fp-article__title text-xl--bold ">Von Schirachs „Alexander“: Grundrechte als Kinderabenteuer</h3>
-            </a>
-        </article>
-<div id="nativendo-nativendo-infeed"></div>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/erfolgsautor-suter-nicht-gleich-mit-jedem-auf-du-und-du-4204107">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/23/c720b4c1-078f-425d-9b08-3023bd049e0e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/23/c720b4c1-078f-425d-9b08-3023bd049e0e.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/23/c720b4c1-078f-425d-9b08-3023bd049e0e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/23/c720b4c1-078f-425d-9b08-3023bd049e0e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/23/c720b4c1-078f-425d-9b08-3023bd049e0e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/23/c720b4c1-078f-425d-9b08-3023bd049e0e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/23/c720b4c1-078f-425d-9b08-3023bd049e0e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Hält nichts vom allgemeinen Duzen: Martin Suter (Archivbild)" data-source="Sebastian Gollnow/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Gesellschaft</h4>
-                <h3 class="fp-article__title text-xl--bold ">Erfolgsautor Suter: nicht gleich mit jedem auf Du und Du</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Kindheit vor der Wende</h4>
+                <h3 class="fp-article__title text-xl--bold ">Ost-Kindheit zwischen den Seiten: Das sind die beliebtesten Kinderbücher der DDR</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/leipziger-buchmesse-will-begegnungen-schaffen-4202167">
+            <a href="/kultur/buch/verse-fur-dustere-zeiten-michel-houellebecqs-neues-buch-4209718">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/19/6c9e16af-146c-447b-982b-d0c0392bb4c9.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/19/6c9e16af-146c-447b-982b-d0c0392bb4c9.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/19/6c9e16af-146c-447b-982b-d0c0392bb4c9.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/19/6c9e16af-146c-447b-982b-d0c0392bb4c9.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/19/6c9e16af-146c-447b-982b-d0c0392bb4c9.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/19/6c9e16af-146c-447b-982b-d0c0392bb4c9.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/19/6c9e16af-146c-447b-982b-d0c0392bb4c9.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Leipziger Buchmesse findet vom 19. bis 22. März statt." data-source="David Hammersen/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Buchmesse</h4>
-                <h3 class="fp-article__title text-xl--bold ">Leipziger Buchmesse will Begegnungen schaffen</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/neues-von-mr-europa-menasse-novelle-lebensentscheidung-4199323">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/14/fe4fcb5d-6e6c-4dcb-ae1c-120614d88a7e.jpeg?rect=0%2C147%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/14/fe4fcb5d-6e6c-4dcb-ae1c-120614d88a7e.jpeg?rect=0%2C147%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/14/fe4fcb5d-6e6c-4dcb-ae1c-120614d88a7e.jpeg?rect=0%2C147%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/14/fe4fcb5d-6e6c-4dcb-ae1c-120614d88a7e.jpeg?rect=0%2C147%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/14/fe4fcb5d-6e6c-4dcb-ae1c-120614d88a7e.jpeg?rect=0%2C147%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/14/fe4fcb5d-6e6c-4dcb-ae1c-120614d88a7e.jpeg?rect=0%2C147%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/14/fe4fcb5d-6e6c-4dcb-ae1c-120614d88a7e.jpeg?rect=0%2C147%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Dass seine Novelle gerade in Brüssel beginnt, ist bei Menasse alles andere als Zufall. (Archiv)" data-source="Matthias Röder/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/04/e4afcafd-7d97-445f-97e6-ad89c28f8d09.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/04/e4afcafd-7d97-445f-97e6-ad89c28f8d09.jpeg?rect=0%2C99%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/04/e4afcafd-7d97-445f-97e6-ad89c28f8d09.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/04/e4afcafd-7d97-445f-97e6-ad89c28f8d09.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/04/e4afcafd-7d97-445f-97e6-ad89c28f8d09.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/04/e4afcafd-7d97-445f-97e6-ad89c28f8d09.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/04/e4afcafd-7d97-445f-97e6-ad89c28f8d09.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Houellebecqs neues Gedichtband wird höchstwahrscheinlich auch in Deutschland erscheinen." data-source="Boris Roessler/dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Literatur</h4>
-                <h3 class="fp-article__title text-xl--bold ">Neues von „Mr. Europa“: Menasse-Novelle „Lebensentscheidung“</h3>
+                <h3 class="fp-article__title text-xl--bold ">Verse für düstere Zeiten: Michel Houellebecqs neues Buch</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/staatsbibliothek-in-berlin-schliesst-ab-2030-fur-elf-jahre-4198346">
+            <a href="/kultur/buch/khiders-bittersusses-buch-uber-das-leben-im-kalifat-4208864">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/12/6a0dc587-f484-429d-bc34-86b3e5933bd1.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/12/6a0dc587-f484-429d-bc34-86b3e5933bd1.jpeg?rect=0%2C121%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/12/6a0dc587-f484-429d-bc34-86b3e5933bd1.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/12/6a0dc587-f484-429d-bc34-86b3e5933bd1.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/12/6a0dc587-f484-429d-bc34-86b3e5933bd1.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/12/6a0dc587-f484-429d-bc34-86b3e5933bd1.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/12/6a0dc587-f484-429d-bc34-86b3e5933bd1.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Staatsbibliothek an der Potsdamer Straße in Berlin-Tiergarten soll elf Jahre lang generalsaniert werden." data-source="Soeren Stache/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/03/6354c864-4e61-4a6e-9c9d-db5335c25c14.jpeg?rect=0%2C151%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/03/6354c864-4e61-4a6e-9c9d-db5335c25c14.jpeg?rect=0%2C151%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/03/6354c864-4e61-4a6e-9c9d-db5335c25c14.jpeg?rect=0%2C151%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/03/6354c864-4e61-4a6e-9c9d-db5335c25c14.jpeg?rect=0%2C151%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/03/6354c864-4e61-4a6e-9c9d-db5335c25c14.jpeg?rect=0%2C151%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/03/6354c864-4e61-4a6e-9c9d-db5335c25c14.jpeg?rect=0%2C151%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/03/6354c864-4e61-4a6e-9c9d-db5335c25c14.jpeg?rect=0%2C151%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Verblüffend ruhig und klar schreibt Abbas Khider über den Verlust von Freiheit und den Aufstieg des Fundamentalismus." data-source="Jens Kalaene/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Bibliothek wird saniert</h4>
-                <h3 class="fp-article__title text-xl--bold ">Staatsbibliothek in Berlin schließt ab 2030 für elf Jahre</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Neues Buch</h4>
+                <h3 class="fp-article__title text-xl--bold ">Khiders bittersüßes Buch über das Leben im Kalifat</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/prime-video-verfilmt-weiteren-fitzek-bestseller-4197615">
+            <a href="/kultur/buch/tranen-trost-lachen-romane-fur-gebrochene-herzen-4208300">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/11/fa0847db-0d05-456e-8e6e-3b329bf1940c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/11/fa0847db-0d05-456e-8e6e-3b329bf1940c.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/11/fa0847db-0d05-456e-8e6e-3b329bf1940c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/11/fa0847db-0d05-456e-8e6e-3b329bf1940c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/11/fa0847db-0d05-456e-8e6e-3b329bf1940c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/11/fa0847db-0d05-456e-8e6e-3b329bf1940c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/11/fa0847db-0d05-456e-8e6e-3b329bf1940c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Sebastian Fitzek kann auch lustig: Sein komödiantischer Bestseller „Der erste letzte Tag“ wird jetzt von Prime Video verfilmt." data-source="Carsten Koall/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Streaming-Film</h4>
-                <h3 class="fp-article__title text-xl--bold ">Prime Video verfilmt weiteren Fitzek-Bestseller</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/donna-leons-commissario-brunetti-macht-auch-2026-pause-4195163">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/07/de1bd604-e75b-4699-b029-10a4136b6b1e.jpeg?rect=0%2C70%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/07/de1bd604-e75b-4699-b029-10a4136b6b1e.jpeg?rect=0%2C70%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/07/de1bd604-e75b-4699-b029-10a4136b6b1e.jpeg?rect=0%2C70%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/07/de1bd604-e75b-4699-b029-10a4136b6b1e.jpeg?rect=0%2C70%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/07/de1bd604-e75b-4699-b029-10a4136b6b1e.jpeg?rect=0%2C70%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/07/de1bd604-e75b-4699-b029-10a4136b6b1e.jpeg?rect=0%2C70%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/07/de1bd604-e75b-4699-b029-10a4136b6b1e.jpeg?rect=0%2C70%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Zu beschäftigt für einen neuen Brunetti: Donna Leon. (Archivbild)" data-source="Uwe Lein/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/02/ecb72bb9-fd50-4241-93ec-5042db3d2b7a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/02/ecb72bb9-fd50-4241-93ec-5042db3d2b7a.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/02/ecb72bb9-fd50-4241-93ec-5042db3d2b7a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/02/ecb72bb9-fd50-4241-93ec-5042db3d2b7a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/02/ecb72bb9-fd50-4241-93ec-5042db3d2b7a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/02/ecb72bb9-fd50-4241-93ec-5042db3d2b7a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/02/ecb72bb9-fd50-4241-93ec-5042db3d2b7a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Gegen Kopfschmerzen helfen Tabletten, gegen Magenbeschwerden ein bisschen Natron. Doch was hilft bei Herz- und Weltschmerz?" data-source="picture alliance / dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Literatur</h4>
-                <h3 class="fp-article__title text-xl--bold ">Donna Leons Commissario Brunetti macht auch 2026 Pause</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/charlotte-casiraghi-bricht-mit-jet-set-klischees-im-buch-4190732">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/01/30/fcbe27c2-b356-434c-b90a-f9dcd3a8d344.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/01/30/fcbe27c2-b356-434c-b90a-f9dcd3a8d344.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/01/30/fcbe27c2-b356-434c-b90a-f9dcd3a8d344.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/01/30/fcbe27c2-b356-434c-b90a-f9dcd3a8d344.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/01/30/fcbe27c2-b356-434c-b90a-f9dcd3a8d344.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/01/30/fcbe27c2-b356-434c-b90a-f9dcd3a8d344.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/01/30/fcbe27c2-b356-434c-b90a-f9dcd3a8d344.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Charlotte Casiraghi, Tochter von Caroline von Monaco, gibt in einem Buch Einblick in ihr Privatleben. (Archivbild)" data-source="Mickael Chavet/ZUMA Press Wire/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Monaco</h4>
-                <h3 class="fp-article__title text-xl--bold ">Charlotte Casiraghi bricht mit Jet-Set-Klischees im Buch</h3>
+                <h3 class="fp-article__title text-xl--bold ">Tränen, Trost, Lachen: Romane für gebrochene Herzen</h3>
             </a>
         </article>
 </div>
@@ -2021,6 +2045,42 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/musik/neues-album-von-johannes-oerding-stumpf-ist-trumpf-4223445">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/27/231ba8d9-ad8c-4ed3-8bc0-a0533f703d28.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/27/231ba8d9-ad8c-4ed3-8bc0-a0533f703d28.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/27/231ba8d9-ad8c-4ed3-8bc0-a0533f703d28.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/27/231ba8d9-ad8c-4ed3-8bc0-a0533f703d28.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/27/231ba8d9-ad8c-4ed3-8bc0-a0533f703d28.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/27/231ba8d9-ad8c-4ed3-8bc0-a0533f703d28.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/27/231ba8d9-ad8c-4ed3-8bc0-a0533f703d28.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nach einer kurzen Auszeit steht Johannes Oerding bald wieder auf der Bühne. (Archivbild)" data-source="Hendrik Schmidt/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Popmusik</h4>
+                <h3 class="fp-article__title text-xl--bold ">Neues Album von Johannes Oerding: Stumpf ist Trumpf</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/musik/styles-steigt-auf-platz-eins-ein-4215644">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/13/8b0e63c1-7c3b-42a2-ae5f-882c05fb5048.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/13/8b0e63c1-7c3b-42a2-ae5f-882c05fb5048.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/13/8b0e63c1-7c3b-42a2-ae5f-882c05fb5048.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/13/8b0e63c1-7c3b-42a2-ae5f-882c05fb5048.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/13/8b0e63c1-7c3b-42a2-ae5f-882c05fb5048.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/13/8b0e63c1-7c3b-42a2-ae5f-882c05fb5048.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/13/8b0e63c1-7c3b-42a2-ae5f-882c05fb5048.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Harry Styles dominiert die deutschen Charts: Acht Songs in den Single-Charts Top 100, Nummer eins in den Album-Charts. (Archivbild)" data-source="Scott A Garfitt/Invision/AP/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Charts</h4>
+                <h3 class="fp-article__title text-xl--bold ">Styles steigt auf Platz eins ein</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/musik/wgt-wave-gotik-treffen-2026-pfingsten-bands-preise-3981032">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Konzerte und Co.: Die ersten Bands für das Wave-Gotik-Treffen 2026 in Leipzig sind bestätigt." data-source="Foto: Imago/Snapshot">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> zu Pfingsten</h4>
+                <h3 class="fp-article__title text-xl--bold ">Treffen der schwarzen Szene in Leipzig: Das ist schon über das WGT 2026 bekannt</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/musik/techno-dj-vorwuerfe-machtmissbrauch-sexuelle-noetigung-carv-fantasm-shlomo-hive-ferropolis-4206016">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Das Hive-Festival bei Gräfenhainichen hat sich innerhalb weniger Jahre zu einem Besuchermagnet der Techno-Szene entwickelt. Die kommende Ausgabe im Juni 2026 ist bereits jetzt ausverkauft." data-source="Foto: Lea Fischer">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Beim Hive-Festival rausgeschmissen</h4>
+                <h3 class="fp-article__title text-xl--bold ">Techno-Skandal um Machtmissbrauch und sexuelle Nötigung: Star-DJ beendet Karriere</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
             <a href="/kultur/musik/gorillaz-mit-the-mountain-zwischen-leben-und-verlust-4206641">
                 <picture class="fp-article__image">
                     <img src="https://bmg-images.forward-publishing.io/2026/02/27/62fa05c0-777e-48c4-957a-7ea30c3955e9.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/27/62fa05c0-777e-48c4-957a-7ea30c3955e9.jpeg?rect=0%2C160%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/27/62fa05c0-777e-48c4-957a-7ea30c3955e9.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/27/62fa05c0-777e-48c4-957a-7ea30c3955e9.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/27/62fa05c0-777e-48c4-957a-7ea30c3955e9.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/27/62fa05c0-777e-48c4-957a-7ea30c3955e9.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/27/62fa05c0-777e-48c4-957a-7ea30c3955e9.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Musiker Damon Albarn (r) und Jamie Hewlett (l) von den Gorillaz mit ihren fiktiven Charakteren Noodle, Murdoc Niccals, Russel Hobbs, und 2D (v.l.)." data-source="Reuben Bastienne-Lewis/Gorillaz/dpa">
@@ -2036,15 +2096,6 @@
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Frauenbewegung</h4>
                 <h3 class="fp-article__title text-xl--bold ">U2 widmet iranischem Opfer der Frauenbewegung einen Song</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/musik/wgt-wave-gotik-treffen-2026-pfingsten-bands-preise-3981032">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Konzerte und Co.: Die ersten Bands für das Wave-Gotik-Treffen 2026 in Leipzig sind bestätigt." data-source="Foto: Imago/Snapshot">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> zu Pfingsten</h4>
-                <h3 class="fp-article__title text-xl--bold ">Treffen der schwarzen Szene in Leipzig: Das ist schon über das WGT 2026 bekannt</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
@@ -2083,33 +2134,6 @@
                 <h3 class="fp-article__title text-xl--bold ">Nur echte Ossis kennen sie alle: Diese DDR-Lieder lösen sofort Erinnerungen aus</h3>
             </a>
         </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/musik/bekannt-von-fugees-album-us-musiker-john-forte-gestorben-4181041">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/01/14/9e05b253-fc1b-4bcb-867e-3a95d7e22e3e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/01/14/9e05b253-fc1b-4bcb-867e-3a95d7e22e3e.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/01/14/9e05b253-fc1b-4bcb-867e-3a95d7e22e3e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/01/14/9e05b253-fc1b-4bcb-867e-3a95d7e22e3e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/01/14/9e05b253-fc1b-4bcb-867e-3a95d7e22e3e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/01/14/9e05b253-fc1b-4bcb-867e-3a95d7e22e3e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/01/14/9e05b253-fc1b-4bcb-867e-3a95d7e22e3e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Vom gefeierten Fugees-Produzenten zum Häftling: John Fortés Leben war voller Brüche – und endete nun überraschend auf Martha’s Vineyard. (Archivbild)" data-source="Dario Cantatore/Invision/AP/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Tod eines US-Künstlers</h4>
-                <h3 class="fp-article__title text-xl--bold ">Bekannt von Fugees-Album: US-Musiker John Forté gestorben</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/musik/hello-again-howard-carpendale-wird-80-uber-depression-musik-und-das-glueck-4180410">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/01/13/ec92ad91-687f-4266-919b-c95e35cbe72d.jpeg?rect=2%2C275%2C3922%2C2206&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/01/13/ec92ad91-687f-4266-919b-c95e35cbe72d.jpeg?rect=2%2C275%2C3922%2C2206&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/01/13/ec92ad91-687f-4266-919b-c95e35cbe72d.jpeg?rect=2%2C275%2C3922%2C2206&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/01/13/ec92ad91-687f-4266-919b-c95e35cbe72d.jpeg?rect=2%2C275%2C3922%2C2206&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/01/13/ec92ad91-687f-4266-919b-c95e35cbe72d.jpeg?rect=2%2C275%2C3922%2C2206&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/01/13/ec92ad91-687f-4266-919b-c95e35cbe72d.jpeg?rect=2%2C275%2C3922%2C2206&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/01/13/ec92ad91-687f-4266-919b-c95e35cbe72d.jpeg?rect=2%2C275%2C3922%2C2206&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Howard Carpendale, Sänger und Entertainer" data-source="(Foto: dpa)">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> «Hello Again»</h4>
-                <h3 class="fp-article__title text-xl--bold ">Howard Carpendale wird 80: Über Depression, Musik und das Glück</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/musik/frontmann-der-country-band-the-mavericks-raul-malo-gestorben-4163210">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/12/09/8304127c-c6f7-4ac3-91ac-ebc9f6fa06b6.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/12/09/8304127c-c6f7-4ac3-91ac-ebc9f6fa06b6.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/12/09/8304127c-c6f7-4ac3-91ac-ebc9f6fa06b6.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/12/09/8304127c-c6f7-4ac3-91ac-ebc9f6fa06b6.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/12/09/8304127c-c6f7-4ac3-91ac-ebc9f6fa06b6.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/12/09/8304127c-c6f7-4ac3-91ac-ebc9f6fa06b6.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/12/09/8304127c-c6f7-4ac3-91ac-ebc9f6fa06b6.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Raul Malo von der Band The Mavericks ist im Alter von 60 Jahren gestorben." data-source="Mark Zaleski/AP/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Promi-Todesfall</h4>
-                <h3 class="fp-article__title text-xl--bold ">Frontmann der Country-Band The Mavericks Raul Malo gestorben</h3>
-            </a>
-        </article>
 </div>
 
 
@@ -2128,93 +2152,93 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/depression-nach-zu-viel-kuchen-fur-vicky-krieps-4206618">
+            <a href="/kultur/tv-und-streaming/krimi-ohne-kanten-potsdam-comeback-im-polizeiruf-110-4224323">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/27/37d32e95-68e3-40dc-9b04-9714c60283e3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/27/37d32e95-68e3-40dc-9b04-9714c60283e3.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/27/37d32e95-68e3-40dc-9b04-9714c60283e3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/27/37d32e95-68e3-40dc-9b04-9714c60283e3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/27/37d32e95-68e3-40dc-9b04-9714c60283e3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/27/37d32e95-68e3-40dc-9b04-9714c60283e3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/27/37d32e95-68e3-40dc-9b04-9714c60283e3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Schauspielerin Vicky Krieps bekam einen Zucker-Flash." data-source="Christoph Soeder/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/28/b22f1a4a-7890-4435-b37d-3e5112d9705f.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/28/b22f1a4a-7890-4435-b37d-3e5112d9705f.jpeg?rect=0%2C97%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/28/b22f1a4a-7890-4435-b37d-3e5112d9705f.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/28/b22f1a4a-7890-4435-b37d-3e5112d9705f.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/28/b22f1a4a-7890-4435-b37d-3e5112d9705f.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/28/b22f1a4a-7890-4435-b37d-3e5112d9705f.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/28/b22f1a4a-7890-4435-b37d-3e5112d9705f.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Vincent Ross (l, André Kaczmarczyk) und Karl Rogov (Frank Leo Schröder) von der deutsch-polnischen Mordkommission im Grenzort Świecko verschlägt es nach Potsdam." data-source="Christoph Assmann/rbb Presse &amp;amp; Information/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Filmbranche</h4>
-                <h3 class="fp-article__title text-xl--bold ">Depression nach zu viel Kuchen für Vicky Krieps</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Fernsehen</h4>
+                <h3 class="fp-article__title text-xl--bold ">Krimi ohne Kanten - Potsdam-Comeback im „Polizeiruf 110“</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/cesar-preise-was-uns-verbindet-bester-film-carrey-geehrt-4206551">
+            <a href="/kultur/tv-und-streaming/ostfriesenkrimi-im-zdf-wer-hat-das-leben-verdient-4224072">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/27/28a42a86-bdca-404d-9275-df39a9ed2416.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/27/28a42a86-bdca-404d-9275-df39a9ed2416.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/27/28a42a86-bdca-404d-9275-df39a9ed2416.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/27/28a42a86-bdca-404d-9275-df39a9ed2416.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/27/28a42a86-bdca-404d-9275-df39a9ed2416.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/27/28a42a86-bdca-404d-9275-df39a9ed2416.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/27/28a42a86-bdca-404d-9275-df39a9ed2416.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bei minutenlangen Ovationen bedankte sich Jim Carrey auf Französisch für die Ehrentrophäe." data-source="Thomas Samson/AFP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/28/36f296bb-7b2b-43cf-8750-aa2ff2a9dd60.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/28/36f296bb-7b2b-43cf-8750-aa2ff2a9dd60.jpeg?rect=0%2C0%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/28/36f296bb-7b2b-43cf-8750-aa2ff2a9dd60.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/28/36f296bb-7b2b-43cf-8750-aa2ff2a9dd60.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/28/36f296bb-7b2b-43cf-8750-aa2ff2a9dd60.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/28/36f296bb-7b2b-43cf-8750-aa2ff2a9dd60.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/28/36f296bb-7b2b-43cf-8750-aa2ff2a9dd60.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Kommissarin Ann Kathrin Klaasen (Picco von Groote, M.) und ihr Lebens- und Arbeitspartner Frank Weller (Tom Radisch, r.) ermitteln gegen Dr. Bernhardt Sommerfeldt (Sven Schelker, l.)" data-source="Michael Ihle/ZDF/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Bedeutende Auszeichnung</h4>
-                <h3 class="fp-article__title text-xl--bold ">César-Preise: „Was uns verbindet“ bester Film, Carrey geehrt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Fernsehen und Streaming</h4>
+                <h3 class="fp-article__title text-xl--bold ">„Ostfriesenkrimi“ im ZDF: Wer hat das Leben verdient?</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/demi-moore-und-javier-bardem-als-oscar-presenter-benannt-4206504">
+            <a href="/kultur/tv-und-streaming/love-story-komplett-jfk-jr-serie-befeuert-90er-nostalgie-4223721">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/26/5bd936cb-acbc-4d19-9e74-dfd4176c4fc4.jpeg?rect=0%2C67%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/26/5bd936cb-acbc-4d19-9e74-dfd4176c4fc4.jpeg?rect=0%2C67%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/26/5bd936cb-acbc-4d19-9e74-dfd4176c4fc4.jpeg?rect=0%2C67%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/26/5bd936cb-acbc-4d19-9e74-dfd4176c4fc4.jpeg?rect=0%2C67%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/26/5bd936cb-acbc-4d19-9e74-dfd4176c4fc4.jpeg?rect=0%2C67%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/26/5bd936cb-acbc-4d19-9e74-dfd4176c4fc4.jpeg?rect=0%2C67%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/26/5bd936cb-acbc-4d19-9e74-dfd4176c4fc4.jpeg?rect=0%2C67%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Demi Moore war im vorigen Jahr für einen Oscar nominiert. (Archivbild)" data-source="Jordan Strauss/Invision/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/27/db7a6442-c11b-4bac-91ae-90526a2c34ba.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/27/db7a6442-c11b-4bac-91ae-90526a2c34ba.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/27/db7a6442-c11b-4bac-91ae-90526a2c34ba.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/27/db7a6442-c11b-4bac-91ae-90526a2c34ba.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/27/db7a6442-c11b-4bac-91ae-90526a2c34ba.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/27/db7a6442-c11b-4bac-91ae-90526a2c34ba.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/27/db7a6442-c11b-4bac-91ae-90526a2c34ba.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Stürmische Liebe: Sarah Pidgeon als Carolyn Bessette und Paul Kelly als John F. Kennedy Jr.. (Handout)" data-source="Kurt Iswarienko/FX/Disney+/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Filmpreise</h4>
-                <h3 class="fp-article__title text-xl--bold ">Demi Moore und Javier Bardem als Oscar-„Presenter“ benannt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Streaming-Hit bei Disney+</h4>
+                <h3 class="fp-article__title text-xl--bold ">„Love Story“ komplett: JFK-Jr.-Serie befeuert 90er-Nostalgie</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/serienmoerder-rosa-riese-ard-dokumentation-wolfgang-schmidt-brandenburg-4205499">
+            <a href="/kultur/tv-und-streaming/die-zukunft-des-serienmarkts-hype-um-vertical-dramas-4223373">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/25/fa538d71-3b7d-4f93-a03d-2b7fcd2bc98b.jpeg?rect=0%2C288%2C2953%2C1661&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/25/fa538d71-3b7d-4f93-a03d-2b7fcd2bc98b.jpeg?rect=0%2C288%2C2953%2C1661&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/25/fa538d71-3b7d-4f93-a03d-2b7fcd2bc98b.jpeg?rect=0%2C288%2C2953%2C1661&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/25/fa538d71-3b7d-4f93-a03d-2b7fcd2bc98b.jpeg?rect=0%2C288%2C2953%2C1661&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/25/fa538d71-3b7d-4f93-a03d-2b7fcd2bc98b.jpeg?rect=0%2C288%2C2953%2C1661&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/25/fa538d71-3b7d-4f93-a03d-2b7fcd2bc98b.jpeg?rect=0%2C288%2C2953%2C1661&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/25/fa538d71-3b7d-4f93-a03d-2b7fcd2bc98b.jpeg?rect=0%2C288%2C2953%2C1661&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der &quot;Rosa Riese&quot; hielt sich manchmal tagelang im Wald auf und tötete vor allem Frauen." data-source="Foto: SWR/Kinescope Film/Henning Wirtz">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/27/75624be2-fcc6-4424-84dd-7019ae4ad5aa.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/27/75624be2-fcc6-4424-84dd-7019ae4ad5aa.jpeg?rect=0%2C97%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/27/75624be2-fcc6-4424-84dd-7019ae4ad5aa.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/27/75624be2-fcc6-4424-84dd-7019ae4ad5aa.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/27/75624be2-fcc6-4424-84dd-7019ae4ad5aa.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/27/75624be2-fcc6-4424-84dd-7019ae4ad5aa.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/27/75624be2-fcc6-4424-84dd-7019ae4ad5aa.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Serie „Between The Beats“ ist inspiriert von K-Dramen und der Popkultur Südkoreas." data-source="Markus Nass/Radio Bremen und SR/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Fall aus Brandenburg</h4>
-                <h3 class="fp-article__title text-xl--bold ">Serienmörder aus dem Osten: Frauen-Killer "Rosa Riese" terrorisierte einst ganze Region</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Serien fürs Smartphone</h4>
+                <h3 class="fp-article__title text-xl--bold ">Die Zukunft des Serienmarkts? Hype um „Vertical Dramas“</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/applegate-uber-ihr-leben-mit-ms-verdammt-schwer-4206146">
+            <a href="/kultur/tv-und-streaming/medien-oscargekrontes-regie-duo-plant-film-mit-gosling-4223395">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/26/65334daf-b234-49be-903f-4f27096c647f.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/26/65334daf-b234-49be-903f-4f27096c647f.jpeg?rect=0%2C127%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/26/65334daf-b234-49be-903f-4f27096c647f.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/26/65334daf-b234-49be-903f-4f27096c647f.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/26/65334daf-b234-49be-903f-4f27096c647f.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/26/65334daf-b234-49be-903f-4f27096c647f.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/26/65334daf-b234-49be-903f-4f27096c647f.jpeg?rect=0%2C127%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Trotz ihrer Schmerzen steht die Emmy-Preisträgerin Christina Applegate jeden Morgen auf, um ihre Tochter Sadie Grace LeNoble zur Schule zu bringen. (Archivbild)" data-source="Jordan Strauss/Invision via AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/27/3a6cce8c-3814-497b-9b13-851e059762be.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/27/3a6cce8c-3814-497b-9b13-851e059762be.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/27/3a6cce8c-3814-497b-9b13-851e059762be.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/27/3a6cce8c-3814-497b-9b13-851e059762be.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/27/3a6cce8c-3814-497b-9b13-851e059762be.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/27/3a6cce8c-3814-497b-9b13-851e059762be.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/27/3a6cce8c-3814-497b-9b13-851e059762be.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ryan Gosling ist in „Der Astronaut – Project Hail Mary“ in den Kinos zu sehen. (Archivbild)" data-source="Christoph Soeder/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Multiple Sklerose</h4>
-                <h3 class="fp-article__title text-xl--bold ">Applegate über ihr Leben mit MS: „Verdammt schwer“</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Film</h4>
+                <h3 class="fp-article__title text-xl--bold ">Medien: Oscargekröntes Regie-Duo plant Film mit Gosling</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/schlagerbooom-florian-silbereisen-show-fussball-wm-4205571">
+            <a href="/kultur/tv-und-streaming/disney-serie-uber-wiener-kongress-im-herbst-4223290">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/26/26260d98-d126-46b7-8dfc-f027882f3a85.jpeg?rect=0%2C0%2C3500%2C1969&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/26/26260d98-d126-46b7-8dfc-f027882f3a85.jpeg?rect=0%2C0%2C3500%2C1969&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/26/26260d98-d126-46b7-8dfc-f027882f3a85.jpeg?rect=0%2C0%2C3500%2C1969&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/26/26260d98-d126-46b7-8dfc-f027882f3a85.jpeg?rect=0%2C0%2C3500%2C1969&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/26/26260d98-d126-46b7-8dfc-f027882f3a85.jpeg?rect=0%2C0%2C3500%2C1969&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/26/26260d98-d126-46b7-8dfc-f027882f3a85.jpeg?rect=0%2C0%2C3500%2C1969&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/26/26260d98-d126-46b7-8dfc-f027882f3a85.jpeg?rect=0%2C0%2C3500%2C1969&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Das &quot;Schlagerbooom Open Air&quot; mit Florian Silbereisen wird von der ARD verschoben." data-source="(Foto: Imago/Bildagentur Monn)">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/26/e033cff0-bfe3-4848-b139-c607a592c5e6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/26/e033cff0-bfe3-4848-b139-c607a592c5e6.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/26/e033cff0-bfe3-4848-b139-c607a592c5e6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/26/e033cff0-bfe3-4848-b139-c607a592c5e6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/26/e033cff0-bfe3-4848-b139-c607a592c5e6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/26/e033cff0-bfe3-4848-b139-c607a592c5e6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/26/e033cff0-bfe3-4848-b139-c607a592c5e6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Daniel Donskoy spielt einen Bonapartisten in der Wiener-Kongress-Serie „Vienna Game“ von Disney+, die im November starten soll. (Archivbild)" data-source="Christophe Gateau/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Show mit Florian Silbereisen</h4>
-                <h3 class="fp-article__title text-xl--bold ">"Schlagerbooom Open Air" fliegt aus dem Programm: Das ist der Grund</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Europäische Geschichte</h4>
+                <h3 class="fp-article__title text-xl--bold ">Disney-Serie über Wiener Kongress im Herbst</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/esc-in-wien-stadthalle-wird-zur-hochsicherheitszone-4206086">
+            <a href="/kultur/tv-und-streaming/konkurrenz-fur-tatort-quiz-mit-joko-und-klaas-sonntags-4223157">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/26/8002fcdf-509f-4157-947e-4282c4c3469f.jpeg?rect=0%2C118%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/26/8002fcdf-509f-4157-947e-4282c4c3469f.jpeg?rect=0%2C118%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/26/8002fcdf-509f-4157-947e-4282c4c3469f.jpeg?rect=0%2C118%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/26/8002fcdf-509f-4157-947e-4282c4c3469f.jpeg?rect=0%2C118%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/26/8002fcdf-509f-4157-947e-4282c4c3469f.jpeg?rect=0%2C118%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/26/8002fcdf-509f-4157-947e-4282c4c3469f.jpeg?rect=0%2C118%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/26/8002fcdf-509f-4157-947e-4282c4c3469f.jpeg?rect=0%2C118%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Hunderte von Sicherheitsleuten, Checks wie am Flughafen - die Stadthalle beim ESC in Wien wird zur Hochsicherheitszone. (Symbolbild)" data-source="Harald Schneider/APA/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/26/04faab16-bf0f-446a-92b3-b130b1bec705.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/26/04faab16-bf0f-446a-92b3-b130b1bec705.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/26/04faab16-bf0f-446a-92b3-b130b1bec705.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/26/04faab16-bf0f-446a-92b3-b130b1bec705.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/26/04faab16-bf0f-446a-92b3-b130b1bec705.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/26/04faab16-bf0f-446a-92b3-b130b1bec705.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/26/04faab16-bf0f-446a-92b3-b130b1bec705.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Joko und Klaas starten bald wieder mit neuen Folgen von „Ein sehr gutes Quiz (mit hoher Gewinnsumme)“. (Archivbild)" data-source="Christoph Reichwein/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Sicherheit beim Song Contest</h4>
-                <h3 class="fp-article__title text-xl--bold ">ESC in Wien: Stadthalle wird zur Hochsicherheitszone</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Fernsehen</h4>
+                <h3 class="fp-article__title text-xl--bold ">Konkurrenz für „Tatort“: Quiz mit Joko und Klaas sonntags</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/extrem-niedriger-iq-trump-teilt-gegen-robert-de-niro-aus-4206005">
+            <a href="/kultur/tv-und-streaming/in-aller-freundschaft-iaf-maren-gilzer-yvonne-habermann-dschungelkoenigin-ibes-4222909">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/26/c55771cd-a209-42c2-84c8-a269cf7fbcbd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/26/c55771cd-a209-42c2-84c8-a269cf7fbcbd.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/26/c55771cd-a209-42c2-84c8-a269cf7fbcbd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/26/c55771cd-a209-42c2-84c8-a269cf7fbcbd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/26/c55771cd-a209-42c2-84c8-a269cf7fbcbd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/26/c55771cd-a209-42c2-84c8-a269cf7fbcbd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/26/c55771cd-a209-42c2-84c8-a269cf7fbcbd.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Trump und De Niro liefern sich seit Jahren einen Schlagabtausch. (Archivbild)" data-source="Kenny Holston/Pool The New York Times/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/26/6476b6f5-4839-421d-be4a-9553be84a232.jpeg?rect=397%2C68%2C708%2C398&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/26/6476b6f5-4839-421d-be4a-9553be84a232.jpeg?rect=397%2C68%2C708%2C398&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/26/6476b6f5-4839-421d-be4a-9553be84a232.jpeg?rect=397%2C68%2C708%2C398&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/26/6476b6f5-4839-421d-be4a-9553be84a232.jpeg?rect=397%2C68%2C708%2C398&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/26/6476b6f5-4839-421d-be4a-9553be84a232.jpeg?rect=397%2C68%2C708%2C398&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/26/6476b6f5-4839-421d-be4a-9553be84a232.jpeg?rect=397%2C68%2C708%2C398&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/26/6476b6f5-4839-421d-be4a-9553be84a232.jpeg?rect=397%2C68%2C708%2C398&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="So kennt man sie: Im weißen Kittel kümmerte sich Krankenschwester Yvonne Habermann bis 2014 rührend um die Patienten bei &quot;In aller Freundschaft&quot;." data-source="(Foto: MDR Fernsehen)">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Jahrelange Fehde</h4>
-                <h3 class="fp-article__title text-xl--bold ">„Extrem niedriger IQ“: Trump teilt gegen Robert De Niro aus</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> in aller freundschaft</h4>
+                <h3 class="fp-article__title text-xl--bold ">Sachsenklinik brennt! Dschungelkönigin Maren Gilzer nach mehr als zehn Jahren zurück</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/berben-lauterbach-und-ein-fast-perfekter-antrag-4205950">
+            <a href="/kultur/tv-und-streaming/iaf-in-aller-freundschaft-sachsenklinik-maria-weber-annett-renneberg-serie-tod-4200815">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/26/96acd406-b02e-4f7f-a019-156ba8ce7d21.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/26/96acd406-b02e-4f7f-a019-156ba8ce7d21.jpeg?rect=0%2C86%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/26/96acd406-b02e-4f7f-a019-156ba8ce7d21.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/26/96acd406-b02e-4f7f-a019-156ba8ce7d21.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/26/96acd406-b02e-4f7f-a019-156ba8ce7d21.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/26/96acd406-b02e-4f7f-a019-156ba8ce7d21.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/26/96acd406-b02e-4f7f-a019-156ba8ce7d21.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="„Ein fast perfekter Antrag“ startet im Kino." data-source="Sven Hoppe/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/02/17/11c33975-6d12-44c6-b676-05bcb5651e3d.jpeg?rect=1%2C0%2C2025%2C1139&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/17/11c33975-6d12-44c6-b676-05bcb5651e3d.jpeg?rect=1%2C0%2C2025%2C1139&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/17/11c33975-6d12-44c6-b676-05bcb5651e3d.jpeg?rect=1%2C0%2C2025%2C1139&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/17/11c33975-6d12-44c6-b676-05bcb5651e3d.jpeg?rect=1%2C0%2C2025%2C1139&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/17/11c33975-6d12-44c6-b676-05bcb5651e3d.jpeg?rect=1%2C0%2C2025%2C1139&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/17/11c33975-6d12-44c6-b676-05bcb5651e3d.jpeg?rect=1%2C0%2C2025%2C1139&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/17/11c33975-6d12-44c6-b676-05bcb5651e3d.jpeg?rect=1%2C0%2C2025%2C1139&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Prof. Dr. Maria Weber (Annett Renneberg, l.) und ihr Lebensgefährte Dr. Kai Hoffmann (Julian Weigend) sind sich in Folge 1129, die am 10. März ausgestrahlt wurde, so nahe wie nie zuvor." data-source="Foto: MDR/Saxonia Media/Sebastian Kiss">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Neu im Kino</h4>
-                <h3 class="fp-article__title text-xl--bold ">Berben, Lauterbach und „Ein fast perfekter Antrag“</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> ARD Schockt mit "IaF"-Serientod</h4>
+                <h3 class="fp-article__title text-xl--bold ">Fans sauer: "Reicht mit den Rauswürfen" – Auch Annett Renneberg rechnete nicht mit Aus</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/blicke-statt-worte-jarmuschs-venedig-gewinner-4205952">
+            <a href="/kultur/tv-und-streaming/schoneberger-verrat-ostereier-trick-ihres-opas-aus-kindheit-4222736">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/26/bfe7972f-5f25-4bca-af1e-fd20780abbe6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/26/bfe7972f-5f25-4bca-af1e-fd20780abbe6.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/26/bfe7972f-5f25-4bca-af1e-fd20780abbe6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/26/bfe7972f-5f25-4bca-af1e-fd20780abbe6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/26/bfe7972f-5f25-4bca-af1e-fd20780abbe6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/26/bfe7972f-5f25-4bca-af1e-fd20780abbe6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/26/bfe7972f-5f25-4bca-af1e-fd20780abbe6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Gewann beim Filmfest in Venedig den Hauptpreis: Jim Jarmusch. (Archivbild)" data-source="Alessandra Tarantino/Invision/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/26/8ca3fa57-78b5-41f9-ad25-1a9601d35838.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/26/8ca3fa57-78b5-41f9-ad25-1a9601d35838.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/26/8ca3fa57-78b5-41f9-ad25-1a9601d35838.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/26/8ca3fa57-78b5-41f9-ad25-1a9601d35838.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/26/8ca3fa57-78b5-41f9-ad25-1a9601d35838.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/26/8ca3fa57-78b5-41f9-ad25-1a9601d35838.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/26/8ca3fa57-78b5-41f9-ad25-1a9601d35838.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Moderatorin Barbara Schöneberger (Archivbild)." data-source="Georg Wendt/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Neu im Kino</h4>
-                <h3 class="fp-article__title text-xl--bold ">Blicke statt Worte: Jarmuschs Venedig-Gewinner</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Leute</h4>
+                <h3 class="fp-article__title text-xl--bold ">Schöneberger verrät Ostereier-Trick ihres Opas aus Kindheit</h3>
             </a>
         </article>
 </div>
@@ -2225,7 +2249,10 @@
 </div></section></div></div></div></div>
   </main>
 
-<div id="ad-footer" class="center" data-screen="desktop"></div><div id="ad-footer-mobile" class="center" data-screen="mobile"></div>
+            <!-- disabled in BMG001FPBM-1287 -->
+            <!-- <div id="ad-footer" class="center" data-screen="desktop"></div> -->
+            <!-- <div id="ad-footer-mobile" class="center" data-screen="mobile"></div> -->
+
 <footer class="fp-footer" data-t-name="Footer">
     <div class="fp-container__extra-large">
       <div class="fp-footer__header">
@@ -2746,12 +2773,12 @@
 
 
 
-          <script src="/static/scripts/scripts.e3cb9d79.js" defer=""></script>
+          <script src="/static/scripts/scripts.832b9264.js" defer=""></script>
 
       </div>
     </div>
 
-    <script src="/static/scripts/adScripts.e3cb9d79.js"></script>
+    <script src="/static/scripts/adScripts.832b9264.js"></script>
 
 
   
@@ -2785,13 +2812,6 @@
             tweets.forEach(x => x.parentNode.remove())
         }
     }
-</script>
-<script>
-if (!document.location.host.includes("publishing")) {
-	var elemscript = document.createElement("script");
-	elemscript.src = "https://static.dumontnext.de/revenue/lightworks-vs.js";
-	document.head.appendChild(elemscript);
-}
 </script>
 <script type="text/javascript">
     var isDesktop = window.innerWidth > 550
@@ -2859,7 +2879,7 @@ document.querySelectorAll(".cookie-einstellungen").forEach(x => {
 });
 </script>
 <script id="stickyad">
-  if (document.location.host.includes("publishing") && window.innerWidth <= 550) {
+  if (window.innerWidth <= 550) {
 
     (function () {
       const style = document.createElement('style');
@@ -2891,7 +2911,7 @@ document.querySelectorAll(".cookie-einstellungen").forEach(x => {
 `;
       document.head.appendChild(style);
     })();
-
+}
 
     window.closeStickyAd = () => {
       document.querySelector('#sticky-container').style.display = 'none';
@@ -2925,6 +2945,13 @@ document.querySelectorAll(".cookie-einstellungen").forEach(x => {
 	}
   }, 250);
   
+</script>
+<script>
+for(i = 2; i<=10;i++) {
+	elem = document.querySelector(`#mobile_${i}_script`);
+	if (elem == undefined)
+		continue;
+	elem.insertAdjacentHTML('afterend', '<div class="fp-ad-label" style="text-center">Anzeige</div>');
 }
-</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v67327c56f0bb4ef8b305cae61679db8f1769101564043" integrity="sha512-rdcWY47ByXd76cbCFzznIcEaCN71jqkWBBqlwhF1SY7KubdLKZiEGeP7AyieKZlGP9hbY/MhGrwXzJC/HulNyg==" data-cf-beacon='{"version":"2024.11.0","token":"d76a01bdc713445181921d02dbeab4e3","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"d76a01bdc713445181921d02dbeab4e3","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body></html>

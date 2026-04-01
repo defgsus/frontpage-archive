@@ -2,7 +2,7 @@
 
       <link rel="preload prefetch stylesheet" href="/designs/bmg_base_design/1.0.184/styles-vs.css" as="style">
 
-      <link rel="preload prefetch stylesheet" href="/static/css/styles-delivery-vs-base.e3cb9d79.css" as="style">
+      <link rel="preload prefetch stylesheet" href="/static/css/styles-delivery-vs-base.832b9264.css" as="style">
 
     <title>VS - Panorama</title>
     <meta charset="UTF-8">
@@ -78,16 +78,6 @@
 <link rel="preload" href="https://data-11c63b1cbc.volksstimme.de/iomm/latest/bootstrap/loader.js" as="script">
 <script type="text/javascript" src="https://data-11c63b1cbc.volksstimme.de/iomm/latest/bootstrap/loader.js" data-cmp-ab="2" crossorigin></script>
 <!-- end preload of IOM web manager -->
-<script>
-        var s = document.createElement('script');
-        s.async = true;
-        s.dataset.cmpSrc = 'https://d.nativendo.de/cds/delivery/init?oms_zone=' + window.ad_channel;
-		s.dataset.cmpVendor = "s1016";
-		s.type = "text/plain";
-		s.className = "cmplazyload";
-        var sc = document.getElementsByTagName('script')[0];
-        sc.parentNode.insertBefore(s, sc);
-</script>
 <!-- Facebook Pixel Code -->
 <script>
     function consentEnableFacebook() {
@@ -109,324 +99,345 @@
 <script async="" id="ebx" src="//applets.ebxcdn.com/ebx.js"></script>
 <script>
 
-        function initiateSourcePoint(subscriptions) { }
+    var consents = [];
+    if (typeof dataLayer == "undefined") {
+        var dataLayer = [];
+    }
+    dataLayer.push({ "consents": consents });
 
-        var consents = [];
-        if (typeof dataLayer == "undefined") {
-            var dataLayer = [];
+    var addJs = function (id) {
+        consents.push(id);
+        dataLayer.push({ 'consents': consents });
+    }
+
+    window.cmp_waitforimport = 10000;
+    window.cmp_pur_enable = true;
+    window.cmp_macro_redirect = document.location.href;
+
+    // fetchUserLoginStatusTEST = function () {
+    //     // When we login, we have a request header C1-Session-ID. We ask the delivery for the existence of this header.
+    //     // If it exists, then we know we are logged in.
+    //     return fetch('/api/public/user-session')
+    //         .then(function (res) { return res.json(); })
+    //         .catch(function (err) {
+    //             console.error(err)
+
+    //             // In case there is a problem with the API call, we assume the user isn't logged in.
+    //             // This will allow the script depending on the emitting of the "logged in" event
+    //             // to run.
+    //             return { isLoggedIn: false }
+    //         })
+    // }
+
+
+    // fetchUserLoginStatusTEST().then(function (data) {
+    //     console.log(data);
+    //     isLoggedIn = data.isLoggedIn;
+    //     subscriptions = data.subscriptions;
+    //     id = data.id;
+
+    //     if (subscriptions) {
+    //         userType = subscriptions.userType;
+    //         if (userType == undefined)
+    //             userType == "pur-anon";
+    //         permissions = subscriptions.permissions;
+    //         if (permissions == undefined)
+    //             permissions = [];
+
+    //         // handle SourcePoint, i.e. the PUR Subscription product
+    //         if (typeof initiateSourcePointTEST === 'function') {
+    //             initiateSourcePointTEST(subscriptions)
+    //         }
+    //     } else { // Im Fehlerfall wird SourcePoint ohne Daten initialisiert, daher pur-anon
+    //         initiateSourcePointTEST();
+    //     }
+
+
+    // });
+
+    // function initiateSourcePointTEST(subscriptions) {
+    //     userType = (!(subscriptions == undefined || subscriptions.pur == undefined || subscriptions.pur.length == 0)) ? "pur-pur" : "pur-anon";
+    //     // HIER ABARBEITEN, da haben wir selber Kontrolle drüber
+    // }
+
+    function createCmd(isLoggedIn, isPlus, adchannels) {
+        return function () {
+            applyOrtb2Values(isLoggedIn, isPlus, adchannels, []);
         }
-        dataLayer.push({ "consents": consents });
+    }
+	
+	
 
-        var addJs = function (id) {
-            consents.push(id);
-            dataLayer.push({ 'consents': consents });
+    function initiateSourcePoint(subscriptions) {
+        var userType = (!(subscriptions == undefined || subscriptions.pur == undefined || subscriptions.pur.length == 0))
+            ? "pur-pur"
+            : "pur-anon";
+        console.log("Benutzer-Abonnementstatus:", userType); // Hier wird der Abonnementstatus ausgegeben
+        // Setzt den globalen Wert für den Pur-Status
+        window.cmp_pur_loggedin = (userType === "pur-pur");
+        try {
+            adchannels = window.ad_channel?.split("/") ?? [];	
+//            cmd = createCmd(subscriptions?.userType != "pur-anon", subscriptions != undefined && subscriptions.paywall != undefined && subscriptions.paywall.length > 0, adchannels);
+//            console.log(cmd);
+            kstahandler(subscriptions?.userType != "pur-anon",
+				subscriptions != undefined && subscriptions.paywall != undefined && subscriptions.paywall.length > 0,
+				adchannels, []);
+	        
+        } catch (e) {
+            console.log(e);
         }
 
-        window.cmp_waitforimport = 10000;
-        window.cmp_pur_enable = true;
-		window.cmp_macro_redirect = document.location.href;
-        fetchUserLoginStatusTEST = function () {
-            // When we login, we have a request header C1-Session-ID. We ask the delivery for the existence of this header.
-            // If it exists, then we know we are logged in.
-            return fetch('/api/public/user-session')
-                .then(function (res) { return res.json(); })
-                .catch(function (err) {
-                    console.error(err)
-
-                    // In case there is a problem with the API call, we assume the user isn't logged in.
-                    // This will allow the script depending on the emitting of the "logged in" event
-                    // to run.
-                    return { isLoggedIn: false }
-                })
-        }
-
-
-        fetchUserLoginStatusTEST().then(function (data) {
-            console.log(data);
-            isLoggedIn = data.isLoggedIn;
-            subscriptions = data.subscriptions;
-            id = data.id;
-
-            if (subscriptions) {
-                userType = subscriptions.userType;
-                if (userType == undefined)
-                    userType == "pur-anon";
-                permissions = subscriptions.permissions;
-                if (permissions == undefined)
-                    permissions = [];
-
-                // handle SourcePoint, i.e. the PUR Subscription product
-                if (typeof initiateSourcePointTEST === 'function') {
-                    initiateSourcePointTEST(subscriptions)
-                }
-            } else { // Im Fehlerfall wird SourcePoint ohne Daten initialisiert, daher pur-anon
-                initiateSourcePointTEST();
-            }
-
-
-        });
-
-        function initiateSourcePointTEST(subscriptions) {
-            userType = (!(subscriptions == undefined || subscriptions.pur == undefined || subscriptions.pur.length == 0)) ? "pur-pur" : "pur-anon";
-            // HIER ABARBEITEN, da haben wir selber Kontrolle drüber
-        }
-        function initiateSourcePointTEST(subscriptions) {
-            var userType = (!(subscriptions == undefined || subscriptions.pur == undefined || subscriptions.pur.length == 0))
-                ? "pur-pur"
-                : "pur-anon";
-            console.log("Benutzer-Abonnementstatus:", userType); // Hier wird der Abonnementstatus ausgegeben
-            // Setzt den globalen Wert für den Pur-Status
-            window.cmp_pur_loggedin = (userType === "pur-pur");
-
-            var checkcmp = window.setInterval(function () {
-                if (typeof __cmp == "function") {
-                    if (userType === "pur-pur")
-                        __cmp('setPurposeConsent', ["c2", 0, true]);
-                    __cmp('cancelwait');
-					var checktcf = window.setInterval(function () {
-					    if (typeof __tcfapi == "function") {
-					        __tcfapi('addEventListener', 2, function (tcData, success) {
-					            if (tcData.eventStatus === 'useractioncomplete') {
-					                document.location.reload();
-					            }
-					        });
-				    	    window.clearInterval(checktcf);
-					    }
-					}, 250);
-
-                    __cmp("addEventListener",["settings",() => {
-                      var registeredVendors = { 
-                        42: () => {
-                        var timerConsentEnableTaboola = window.setInterval(() => {
-                          if ("function" == typeof consentEnableTaboola) {
-                            window.clearInterval(timerConsentEnableTaboola);
-                            consentEnableTaboola();
-                          }
-                        },250)
-                      },
-					  c73647: () => { dataLayer.push({'event': 'BitmovinConsent'}); },
-                      s30: () => { dataLayer.push({'event': 'YoutubeConsent'}); },
-                      c57383: () => { dataLayer.push({'event': '23degreesConsent'}); },
-                      s7: () => { dataLayer.push({'event': 'FacebookConsent'}); },
-                      s1104: () => { dataLayer.push({'event': 'GoogleMapsConsent'}); },
-                      s14: () => { dataLayer.push({'event': 'InstagramConsent'}); },
-                      c78424: () => { dataLayer.push({'event': 'TickarooConsent'}); },
-                      s2536: () => { dataLayer.push({'event': 'TikTokConsent'}); },
-                      s34: () => { dataLayer.push({'event': 'XConsent'}); },
-                      s1318: () => { dataLayer.push({'event': 'ShowherosConsent'}); },
-                    };
-                    
-                    __cmp("getCMPData", null, (e) => {
-                      consentIds = Object.keys(e.vendorConsents);
-                      if (window.cmp_pur_enable && cmp_pur_loggedin) {
-                        //for (var vendorId in registeredVendors) {
-                        //  registeredVendors[vendorId]();
-                        //}
-                      } else if (e.choiceType == 0) {
-                      } else if (e.choiceType == 1) {
-                        for (var vendorId in registeredVendors) {
-                          registeredVendors[vendorId]();
-                        }
-                      } else if (e.choiceType == 2) {
-                        vendors = Object.keys(registeredVendors);
-                        for (var vendorId in registeredVendors) {
-                            if (consentIds.includes(vendorId)) {
-                              registeredVendors[vendorId]();
+        var checkcmp = window.setInterval(function () {
+            if (typeof __cmp == "function") {
+                if (userType === "pur-pur")
+                    __cmp('setPurposeConsent', ["c2", 0, true]);
+                __cmp('cancelwait');
+                var checktcf = window.setInterval(function () {
+                    if (typeof __tcfapi == "function") {
+                        __tcfapi('addEventListener', 2, function (tcData, success) {
+                            if (tcData.eventStatus === 'useractioncomplete') {
+                                document.location.reload();
                             }
-                          }
-                        } 
-                      }, true);
-                    },false],null);
+                        });
+                        window.clearInterval(checktcf);
+                    }
+                }, 250);
 
-					
-                    window.clearTimeout(checkcmp);
-                }
-            }, 250);
-        }
+                __cmp("addEventListener", ["settings", () => {
+                    var registeredVendors = {
+                        42: () => {
+                            var timerConsentEnableTaboola = window.setInterval(() => {
+                                if ("function" == typeof consentEnableTaboola) {
+                                    window.clearInterval(timerConsentEnableTaboola);
+                                    consentEnableTaboola();
+                                }
+                            }, 250)
+                        },
+                        c73647: () => { dataLayer.push({ 'event': 'BitmovinConsent' }); },
+                        s30: () => { dataLayer.push({ 'event': 'YoutubeConsent' }); },
+                        c57383: () => { dataLayer.push({ 'event': '23degreesConsent' }); },
+                        s7: () => { dataLayer.push({ 'event': 'FacebookConsent' }); },
+                        s1104: () => { dataLayer.push({ 'event': 'GoogleMapsConsent' }); },
+                        s14: () => { dataLayer.push({ 'event': 'InstagramConsent' }); },
+                        c78424: () => { dataLayer.push({ 'event': 'TickarooConsent' }); },
+                        s2536: () => { dataLayer.push({ 'event': 'TikTokConsent' }); },
+                        s34: () => { dataLayer.push({ 'event': 'XConsent' }); },
+                        s1318: () => { dataLayer.push({ 'event': 'ShowherosConsent' }); },
+                    };
+
+                    __cmp("getCMPData", null, (e) => {
+                        consentIds = Object.keys(e.vendorConsents);
+                        if (window.cmp_pur_enable && cmp_pur_loggedin) {
+                            //for (var vendorId in registeredVendors) {
+                            //  registeredVendors[vendorId]();
+                            //}
+                        } else if (e.choiceType == 0) {
+                        } else if (e.choiceType == 1) {
+                            for (var vendorId in registeredVendors) {
+                                registeredVendors[vendorId]();
+                            }
+                        } else if (e.choiceType == 2) {
+                            vendors = Object.keys(registeredVendors);
+                            for (var vendorId in registeredVendors) {
+                                if (consentIds.includes(vendorId)) {
+                                    registeredVendors[vendorId]();
+                                }
+                            }
+                        }
+                    }, true);
+                }, false], null);
+
+
+                window.clearTimeout(checkcmp);
+            }
+        }, 250);
+    }
 
 </script>
 
 <script>
 
 
-        if (document.location.host.includes("publishing") !== false) {
-            if (!("cmp_cdid" in window)) { window.cmp_cdid = "222923b842c63" }
+    if (document.location.host.includes("publishing") !== false) {
+        if (!("cmp_cdid" in window)) { window.cmp_cdid = "222923b842c63" }
+    } else {
+        if (!("cmp_cdid" in window)) { window.cmp_cdid = "a522d62a318b2" }
+    }
+    if (!("gdprAppliesGlobally" in window)) { window.gdprAppliesGlobally = true }
+    if (!("cmp_id" in window) || window.cmp_id < 1) { window.cmp_id = 0 }
+    if (!("cmp_params" in window)) { window.cmp_params = "" }
+    if (!("cmp_host" in window)) { window.cmp_host = "a.delivery.consentmanager.net" }
+    if (!("cmp_cdn" in window)) { window.cmp_cdn = "cdn.consentmanager.net" }
+    if (!("cmp_proto" in window)) { window.cmp_proto = "https:" }
+    if (!("cmp_codesrc" in window)) { window.cmp_codesrc = "0" }
+    window.cmp_getsupportedLangs = function () { var b = ["DE", "EN", "FR", "IT", "NO", "DA", "FI", "ES", "PT", "RO", "BG", "ET", "EL", "GA", "HR", "LV", "LT", "MT", "NL", "PL", "SV", "SK", "SL", "CS", "HU", "RU", "SR", "ZH", "TR", "UK", "AR", "BS", "JA", "CY"]; if ("cmp_customlanguages" in window) { for (var a = 0; a < window.cmp_customlanguages.length; a++) { b.push(window.cmp_customlanguages[a].l.toUpperCase()) } } return b };
+    window.cmp_getRTLLangs = function () { var a = ["AR"]; if ("cmp_customlanguages" in window) { for (var b = 0; b < window.cmp_customlanguages.length; b++) { if ("r" in window.cmp_customlanguages[b] && window.cmp_customlanguages[b].r) { a.push(window.cmp_customlanguages[b].l) } } } return a };
+    window.cmp_getlang = function (a) { if (typeof (a) != "boolean") { a = true } if (a && typeof (cmp_getlang.usedlang) == "string" && cmp_getlang.usedlang !== "") { return cmp_getlang.usedlang } return window.cmp_getlangs()[0] };
+    window.cmp_extractlang = function (a) { if (a.indexOf("cmplang=") != -1) { a = a.substr(a.indexOf("cmplang=") + 8, 2).toUpperCase(); if (a.indexOf("&") != -1) { a = a.substr(0, a.indexOf("&")) } } else { a = "" } return a };
+    window.cmp_getlangs = function () { var h = window.cmp_getsupportedLangs(); var g = []; var a = location.hash; var f = location.search; var e = "cmp_params" in window ? window.cmp_params : ""; if (cmp_extractlang(a) != "") { g.push(cmp_extractlang(a)) } else { if (cmp_extractlang(f) != "") { g.push(cmp_extractlang(f)) } else { if (cmp_extractlang(e) != "") { g.push(cmp_extractlang(e)) } else { if ("cmp_setlang" in window && window.cmp_setlang != "") { g.push(window.cmp_setlang.toUpperCase()) } else { if ("cmp_langdetect" in window && window.cmp_langdetect == 1) { g.push(window.cmp_getPageLang()) } else { g = window.cmp_getBrowserLangs() } } } } } var c = []; for (var d = 0; d < g.length; d++) { var b = g[d].toUpperCase(); if (b.length < 2) { continue } if (h.indexOf(b) != -1) { c.push(b) } else { if (b.indexOf("-") != -1) { b = b.substr(0, 2) } if (h.indexOf(b) != -1) { c.push(b) } } } if (c.length == 0 && typeof (cmp_getlang.defaultlang) == "string" && cmp_getlang.defaultlang !== "") { return [cmp_getlang.defaultlang.toUpperCase()] } else { return c.length > 0 ? c : ["EN"] } };
+    window.cmp_getPageLangs = function () {
+        var a = window.cmp_getXMLLang(); if (a != "") { a = [a.toUpperCase()] } else { a = [] }
+        a = a.concat(window.cmp_getLangsFromURL()); return a.length > 0 ? a : ["EN"]
+    };
+    window.cmp_getPageLang = function () { var a = window.cmp_getPageLangs(); return a.length > 0 ? a[0] : "" };
+    window.cmp_getLangsFromURL = function () {
+        var c = window.cmp_getsupportedLangs(); var b = location; var m = "toUpperCase"; var g = b.hostname[m]() + "."; var a = "/" + b.pathname[m]() + "/";
+        a = a.split("_").join("-");
+        a = a.split("//").join("/");
+        a = a.split("//").join("/"); var f = []; for (var e = 0; e < c.length; e++) { var j = a.substring(0, c[e].length + 2); if (g.substring(0, c[e].length + 1) == c[e] + ".") { f.push(c[e][m]()) } else { if (c[e].length == 5) { var k = c[e].substring(3, 5) + "-" + c[e].substring(0, 2); if (g.substring(0, k.length + 1) == k + ".") { f.push(c[e][m]()) } } else { if (j == "/" + c[e] + "/" || j == "/" + c[e] + "-") { f.push(c[e][m]()) } else { if (j == "/" + c[e].replace("-", "/") + "/" || j == "/" + c[e].replace("-", "/") + "/") { f.push(c[e][m]()) } else { if (c[e].length == 5) { var k = c[e].substring(3, 5) + "-" + c[e].substring(0, 2); var h = a.substring(0, k.length + 1); if (h == "/" + k + "/" || h == "/" + k.replace("-", "/") + "/") { f.push(c[e][m]()) } } } } } } } return f
+    };
+    window.cmp_getXMLLang = function () { var c = document.getElementsByTagName("html"); if (c.length > 0) { c = c[0] } else { c = document.documentElement } if (c && c.getAttribute) { var a = c.getAttribute("xml:lang"); if (typeof (a) != "string" || a == "") { a = c.getAttribute("lang") } if (typeof (a) == "string" && a != "") { a = a.split("_").join("-").toUpperCase(); var b = window.cmp_getsupportedLangs(); return b.indexOf(a) != -1 || b.indexOf(a.substr(0, 2)) != -1 ? a : "" } else { return "" } } };
+    window.cmp_getBrowserLangs = function () { var c = "languages" in navigator ? navigator.languages : []; var b = []; if (c.length > 0) { for (var a = 0; a < c.length; a++) { b.push(c[a]) } } if ("language" in navigator) { b.push(navigator.language) } if ("userLanguage" in navigator) { b.push(navigator.userLanguage) } return b };
+    (function () {
+        var C = document; var o = window; var t = ""; var h = ""; var k = ""; var E = function (e) {
+            var i = "cmp_" + e;
+            e = "cmp" + e + "="; var d = ""; var l = e.length; var J = location; var K = J.hash; var w = J.search; var u = K.indexOf(e); var I = w.indexOf(e); if (u != -1) { d = K.substring(u + l, 9999) } else { if (I != -1) { d = w.substring(I + l, 9999) } else { return i in o && typeof (o[i]) !== "function" ? o[i] : "" } } var H = d.indexOf("&"); if (H != -1) { d = d.substring(0, H) } return d
+        }; var j = E("lang"); if (j != "") {
+            t = j;
+            k = t
         } else {
-            if (!("cmp_cdid" in window)) { window.cmp_cdid = "a522d62a318b2" }
-        }
-        if (!("gdprAppliesGlobally" in window)) { window.gdprAppliesGlobally = true }
-        if (!("cmp_id" in window) || window.cmp_id < 1) { window.cmp_id = 0 }
-        if (!("cmp_params" in window)) { window.cmp_params = "" }
-        if (!("cmp_host" in window)) { window.cmp_host = "a.delivery.consentmanager.net" }
-        if (!("cmp_cdn" in window)) { window.cmp_cdn = "cdn.consentmanager.net" }
-        if (!("cmp_proto" in window)) { window.cmp_proto = "https:" }
-        if (!("cmp_codesrc" in window)) { window.cmp_codesrc = "0" }
-        window.cmp_getsupportedLangs = function () { var b = ["DE", "EN", "FR", "IT", "NO", "DA", "FI", "ES", "PT", "RO", "BG", "ET", "EL", "GA", "HR", "LV", "LT", "MT", "NL", "PL", "SV", "SK", "SL", "CS", "HU", "RU", "SR", "ZH", "TR", "UK", "AR", "BS", "JA", "CY"]; if ("cmp_customlanguages" in window) { for (var a = 0; a < window.cmp_customlanguages.length; a++) { b.push(window.cmp_customlanguages[a].l.toUpperCase()) } } return b };
-        window.cmp_getRTLLangs = function () { var a = ["AR"]; if ("cmp_customlanguages" in window) { for (var b = 0; b < window.cmp_customlanguages.length; b++) { if ("r" in window.cmp_customlanguages[b] && window.cmp_customlanguages[b].r) { a.push(window.cmp_customlanguages[b].l) } } } return a };
-        window.cmp_getlang = function (a) { if (typeof (a) != "boolean") { a = true } if (a && typeof (cmp_getlang.usedlang) == "string" && cmp_getlang.usedlang !== "") { return cmp_getlang.usedlang } return window.cmp_getlangs()[0] };
-        window.cmp_extractlang = function (a) { if (a.indexOf("cmplang=") != -1) { a = a.substr(a.indexOf("cmplang=") + 8, 2).toUpperCase(); if (a.indexOf("&") != -1) { a = a.substr(0, a.indexOf("&")) } } else { a = "" } return a };
-        window.cmp_getlangs = function () { var h = window.cmp_getsupportedLangs(); var g = []; var a = location.hash; var f = location.search; var e = "cmp_params" in window ? window.cmp_params : ""; if (cmp_extractlang(a) != "") { g.push(cmp_extractlang(a)) } else { if (cmp_extractlang(f) != "") { g.push(cmp_extractlang(f)) } else { if (cmp_extractlang(e) != "") { g.push(cmp_extractlang(e)) } else { if ("cmp_setlang" in window && window.cmp_setlang != "") { g.push(window.cmp_setlang.toUpperCase()) } else { if ("cmp_langdetect" in window && window.cmp_langdetect == 1) { g.push(window.cmp_getPageLang()) } else { g = window.cmp_getBrowserLangs() } } } } } var c = []; for (var d = 0; d < g.length; d++) { var b = g[d].toUpperCase(); if (b.length < 2) { continue } if (h.indexOf(b) != -1) { c.push(b) } else { if (b.indexOf("-") != -1) { b = b.substr(0, 2) } if (h.indexOf(b) != -1) { c.push(b) } } } if (c.length == 0 && typeof (cmp_getlang.defaultlang) == "string" && cmp_getlang.defaultlang !== "") { return [cmp_getlang.defaultlang.toUpperCase()] } else { return c.length > 0 ? c : ["EN"] } };
-        window.cmp_getPageLangs = function () {
-            var a = window.cmp_getXMLLang(); if (a != "") { a = [a.toUpperCase()] } else { a = [] }
-            a = a.concat(window.cmp_getLangsFromURL()); return a.length > 0 ? a : ["EN"]
-        };
-        window.cmp_getPageLang = function () { var a = window.cmp_getPageLangs(); return a.length > 0 ? a[0] : "" };
-        window.cmp_getLangsFromURL = function () {
-            var c = window.cmp_getsupportedLangs(); var b = location; var m = "toUpperCase"; var g = b.hostname[m]() + "."; var a = "/" + b.pathname[m]() + "/";
-            a = a.split("_").join("-");
-            a = a.split("//").join("/");
-            a = a.split("//").join("/"); var f = []; for (var e = 0; e < c.length; e++) { var j = a.substring(0, c[e].length + 2); if (g.substring(0, c[e].length + 1) == c[e] + ".") { f.push(c[e][m]()) } else { if (c[e].length == 5) { var k = c[e].substring(3, 5) + "-" + c[e].substring(0, 2); if (g.substring(0, k.length + 1) == k + ".") { f.push(c[e][m]()) } } else { if (j == "/" + c[e] + "/" || j == "/" + c[e] + "-") { f.push(c[e][m]()) } else { if (j == "/" + c[e].replace("-", "/") + "/" || j == "/" + c[e].replace("-", "/") + "/") { f.push(c[e][m]()) } else { if (c[e].length == 5) { var k = c[e].substring(3, 5) + "-" + c[e].substring(0, 2); var h = a.substring(0, k.length + 1); if (h == "/" + k + "/" || h == "/" + k.replace("-", "/") + "/") { f.push(c[e][m]()) } } } } } } } return f
-        };
-        window.cmp_getXMLLang = function () { var c = document.getElementsByTagName("html"); if (c.length > 0) { c = c[0] } else { c = document.documentElement } if (c && c.getAttribute) { var a = c.getAttribute("xml:lang"); if (typeof (a) != "string" || a == "") { a = c.getAttribute("lang") } if (typeof (a) == "string" && a != "") { a = a.split("_").join("-").toUpperCase(); var b = window.cmp_getsupportedLangs(); return b.indexOf(a) != -1 || b.indexOf(a.substr(0, 2)) != -1 ? a : "" } else { return "" } } };
-        window.cmp_getBrowserLangs = function () { var c = "languages" in navigator ? navigator.languages : []; var b = []; if (c.length > 0) { for (var a = 0; a < c.length; a++) { b.push(c[a]) } } if ("language" in navigator) { b.push(navigator.language) } if ("userLanguage" in navigator) { b.push(navigator.userLanguage) } return b };
-        (function () {
-            var C = document; var o = window; var t = ""; var h = ""; var k = ""; var E = function (e) {
-                var i = "cmp_" + e;
-                e = "cmp" + e + "="; var d = ""; var l = e.length; var J = location; var K = J.hash; var w = J.search; var u = K.indexOf(e); var I = w.indexOf(e); if (u != -1) { d = K.substring(u + l, 9999) } else { if (I != -1) { d = w.substring(I + l, 9999) } else { return i in o && typeof (o[i]) !== "function" ? o[i] : "" } } var H = d.indexOf("&"); if (H != -1) { d = d.substring(0, H) } return d
-            }; var j = E("lang"); if (j != "") {
-                t = j;
-                k = t
-            } else {
-                if ("cmp_getlang" in o) {
-                    t = o.cmp_getlang().toLowerCase();
-                    h = o.cmp_getlangs().slice(0, 3).join("_");
-                    k = o.cmp_getPageLangs().slice(0, 3).join("_"); if ("cmp_customlanguages" in o) { var m = o.cmp_customlanguages; for (var y = 0; y < m.length; y++) { var a = m[y].l.toLowerCase(); if (a == t) { t = "en" } } }
-                }
-            } var q = ("cmp_proto" in o) ? o.cmp_proto : "https:"; if (q != "http:" && q != "https:") { q = "https:" } var n = ("cmp_ref" in o) ? o.cmp_ref : location.href; if (n.length > 300) { n = n.substring(0, 300) } var A = function (l) {
-                var J = document; var M = "getElementsByTagName"; var O = J.createElement("script");
-                O.setAttribute("data-cmp-ab", "1");
-                O.type = "text/javascript";
-                O.async = true;
-                O.src = l; var N = ["body", "div", "span", "script", "head"]; var H = "currentScript"; var K = "parentElement"; var u = "appendChild"; var L = "body"; if (J[H] && J[H][K]) { J[H][K][u](O) } else { if (J[L]) { J[L][u](O) } else { for (var w = 0; w < N.length; w++) { var I = J[M](N[w]); if (I.length > 0) { I[0][u](O); break } } } }
-            }; var b = E("design"); var c = E("regulationkey"); var z = E("gppkey"); var s = E("att"); var f = o.encodeURIComponent; var g; try { g = C.cookie.length > 0 } catch (B) { g = false } var x = E("darkmode"); if (x == "0") { x = 0 } else { if (x == "1") { x = 1 } else { try { if ("matchMedia" in window && window.matchMedia) { var G = window.matchMedia("(prefers-color-scheme: dark)"); if ("matches" in G && G.matches) { x = 1 } } } catch (B) { x = 0 } } } var p = q + "//" + o.cmp_host + "/delivery/cmp.php?";
-            p += ("cmp_id" in o && o.cmp_id > 0 ? "id=" + o.cmp_id : "") + ("cmp_cdid" in o ? "&cdid=" + o.cmp_cdid : "") + "&h=" + f(n);
-            p += (b != "" ? "&cmpdesign=" + f(b) : "") + (c != "" ? "&cmpregulationkey=" + f(c) : "") + (z != "" ? "&cmpgppkey=" + f(z) : "");
-            p += (s != "" ? "&cmpatt=" + f(s) : "") + ("cmp_params" in o ? "&" + o.cmp_params : "") + (g ? "&__cmpfcc=1" : "");
-            p += (x > 0 ? "&cmpdarkmode=1" : "");
-            A(p + "&l=" + f(t) + "&ls=" + f(h) + "&lp=" + f(k) + "&o=" + (new Date()).getTime()); if (!("cmp_quickstub" in window)) {
-                var r = "js"; var v = E("debugunminimized") != "" ? "" : ".min"; if (E("debugcoverage") == "1") {
-                    r = "instrumented";
-                    v = ""
-                } if (E("debugtest") == "1") {
-                    r = "jstests";
-                    v = ""
-                } var F = new Date(); var D = F.getFullYear() + "-" + (F.getMonth() + 1) + "-" + F.getDate();
-                A(q + "//" + o.cmp_cdn + "/delivery/" + r + "/cmp_final" + v + ".js?t=" + D)
+            if ("cmp_getlang" in o) {
+                t = o.cmp_getlang().toLowerCase();
+                h = o.cmp_getlangs().slice(0, 3).join("_");
+                k = o.cmp_getPageLangs().slice(0, 3).join("_"); if ("cmp_customlanguages" in o) { var m = o.cmp_customlanguages; for (var y = 0; y < m.length; y++) { var a = m[y].l.toLowerCase(); if (a == t) { t = "en" } } }
             }
-        })();
-        window.cmp_rc = function (c, b) {
-            var l; try { l = document.cookie } catch (h) { l = "" } var j = ""; var f = 0; var g = false; while (l != "" && f < 100) {
-                f++; while (l.substr(0, 1) == " ") { l = l.substr(1, l.length) } var k = l.substring(0, l.indexOf("=")); if (l.indexOf(";") != -1) { var m = l.substring(l.indexOf("=") + 1, l.indexOf(";")) } else { var m = l.substr(l.indexOf("=") + 1, l.length) } if (c == k) {
-                    j = m;
-                    g = true
-                } var d = l.indexOf(";") + 1; if (d == 0) { d = l.length }
-                l = l.substring(d, l.length)
-            } if (!g && typeof (b) == "string") { j = b } return (j)
-        };
-        window.cmp_stub = function () {
-            var a = arguments;
-            __cmp.a = __cmp.a || []; if (!a.length) { return __cmp.a } else { if (a[0] === "ping") { if (a[1] === 2) { a[2]({ gdprApplies: gdprAppliesGlobally, cmpLoaded: false, cmpStatus: "stub", displayStatus: "hidden", apiVersion: "2.2", cmpId: 31 }, true) } else { a[2](false, true) } } else { if (a[0] === "getTCData") { __cmp.a.push([].slice.apply(a)) } else { if (a[0] === "addEventListener" || a[0] === "removeEventListener") { __cmp.a.push([].slice.apply(a)) } else { if (a.length == 4 && a[3] === false) { a[2]({}, false) } else { __cmp.a.push([].slice.apply(a)) } } } } }
-        };
-        window.cmp_dsastub = function () {
-            var a = arguments;
-            a[0] = "dsa." + a[0];
-            window.cmp_gppstub(a)
-        };
-        window.cmp_gppstub = function () {
-            var c = arguments;
-            __gpp.q = __gpp.q || []; if (!c.length) { return __gpp.q } var h = c[0]; var g = c.length > 1 ? c[1] : null; var f = c.length > 2 ? c[2] : null; var a = null; var j = false; if (h === "ping") {
-                a = window.cmp_gpp_ping();
+        } var q = ("cmp_proto" in o) ? o.cmp_proto : "https:"; if (q != "http:" && q != "https:") { q = "https:" } var n = ("cmp_ref" in o) ? o.cmp_ref : location.href; if (n.length > 300) { n = n.substring(0, 300) } var A = function (l) {
+            var J = document; var M = "getElementsByTagName"; var O = J.createElement("script");
+            O.setAttribute("data-cmp-ab", "1");
+            O.type = "text/javascript";
+            O.async = true;
+            O.src = l; var N = ["body", "div", "span", "script", "head"]; var H = "currentScript"; var K = "parentElement"; var u = "appendChild"; var L = "body"; if (J[H] && J[H][K]) { J[H][K][u](O) } else { if (J[L]) { J[L][u](O) } else { for (var w = 0; w < N.length; w++) { var I = J[M](N[w]); if (I.length > 0) { I[0][u](O); break } } } }
+        }; var b = E("design"); var c = E("regulationkey"); var z = E("gppkey"); var s = E("att"); var f = o.encodeURIComponent; var g; try { g = C.cookie.length > 0 } catch (B) { g = false } var x = E("darkmode"); if (x == "0") { x = 0 } else { if (x == "1") { x = 1 } else { try { if ("matchMedia" in window && window.matchMedia) { var G = window.matchMedia("(prefers-color-scheme: dark)"); if ("matches" in G && G.matches) { x = 1 } } } catch (B) { x = 0 } } } var p = q + "//" + o.cmp_host + "/delivery/cmp.php?";
+        p += ("cmp_id" in o && o.cmp_id > 0 ? "id=" + o.cmp_id : "") + ("cmp_cdid" in o ? "&cdid=" + o.cmp_cdid : "") + "&h=" + f(n);
+        p += (b != "" ? "&cmpdesign=" + f(b) : "") + (c != "" ? "&cmpregulationkey=" + f(c) : "") + (z != "" ? "&cmpgppkey=" + f(z) : "");
+        p += (s != "" ? "&cmpatt=" + f(s) : "") + ("cmp_params" in o ? "&" + o.cmp_params : "") + (g ? "&__cmpfcc=1" : "");
+        p += (x > 0 ? "&cmpdarkmode=1" : "");
+        A(p + "&l=" + f(t) + "&ls=" + f(h) + "&lp=" + f(k) + "&o=" + (new Date()).getTime()); if (!("cmp_quickstub" in window)) {
+            var r = "js"; var v = E("debugunminimized") != "" ? "" : ".min"; if (E("debugcoverage") == "1") {
+                r = "instrumented";
+                v = ""
+            } if (E("debugtest") == "1") {
+                r = "jstests";
+                v = ""
+            } var F = new Date(); var D = F.getFullYear() + "-" + (F.getMonth() + 1) + "-" + F.getDate();
+            A(q + "//" + o.cmp_cdn + "/delivery/" + r + "/cmp_final" + v + ".js?t=" + D)
+        }
+    })();
+    window.cmp_rc = function (c, b) {
+        var l; try { l = document.cookie } catch (h) { l = "" } var j = ""; var f = 0; var g = false; while (l != "" && f < 100) {
+            f++; while (l.substr(0, 1) == " ") { l = l.substr(1, l.length) } var k = l.substring(0, l.indexOf("=")); if (l.indexOf(";") != -1) { var m = l.substring(l.indexOf("=") + 1, l.indexOf(";")) } else { var m = l.substr(l.indexOf("=") + 1, l.length) } if (c == k) {
+                j = m;
+                g = true
+            } var d = l.indexOf(";") + 1; if (d == 0) { d = l.length }
+            l = l.substring(d, l.length)
+        } if (!g && typeof (b) == "string") { j = b } return (j)
+    };
+    window.cmp_stub = function () {
+        var a = arguments;
+        __cmp.a = __cmp.a || []; if (!a.length) { return __cmp.a } else { if (a[0] === "ping") { if (a[1] === 2) { a[2]({ gdprApplies: gdprAppliesGlobally, cmpLoaded: false, cmpStatus: "stub", displayStatus: "hidden", apiVersion: "2.2", cmpId: 31 }, true) } else { a[2](false, true) } } else { if (a[0] === "getTCData") { __cmp.a.push([].slice.apply(a)) } else { if (a[0] === "addEventListener" || a[0] === "removeEventListener") { __cmp.a.push([].slice.apply(a)) } else { if (a.length == 4 && a[3] === false) { a[2]({}, false) } else { __cmp.a.push([].slice.apply(a)) } } } } }
+    };
+    window.cmp_dsastub = function () {
+        var a = arguments;
+        a[0] = "dsa." + a[0];
+        window.cmp_gppstub(a)
+    };
+    window.cmp_gppstub = function () {
+        var c = arguments;
+        __gpp.q = __gpp.q || []; if (!c.length) { return __gpp.q } var h = c[0]; var g = c.length > 1 ? c[1] : null; var f = c.length > 2 ? c[2] : null; var a = null; var j = false; if (h === "ping") {
+            a = window.cmp_gpp_ping();
+            j = true
+        } else {
+            if (h === "addEventListener") {
+                __gpp.e = __gpp.e || []; if (!("lastId" in __gpp)) { __gpp.lastId = 0 }
+                __gpp.lastId++; var d = __gpp.lastId;
+                __gpp.e.push({ id: d, callback: g });
+                a = { eventName: "listenerRegistered", listenerId: d, data: true, pingData: window.cmp_gpp_ping() };
                 j = true
             } else {
-                if (h === "addEventListener") {
-                    __gpp.e = __gpp.e || []; if (!("lastId" in __gpp)) { __gpp.lastId = 0 }
-                    __gpp.lastId++; var d = __gpp.lastId;
-                    __gpp.e.push({ id: d, callback: g });
-                    a = { eventName: "listenerRegistered", listenerId: d, data: true, pingData: window.cmp_gpp_ping() };
-                    j = true
-                } else {
-                    if (h === "removeEventListener") {
-                        __gpp.e = __gpp.e || [];
-                        a = false; for (var e = 0; e < __gpp.e.length; e++) {
-                            if (__gpp.e[e].id == f) {
-                                __gpp.e[e].splice(e, 1);
-                                a = true; break
-                            }
+                if (h === "removeEventListener") {
+                    __gpp.e = __gpp.e || [];
+                    a = false; for (var e = 0; e < __gpp.e.length; e++) {
+                        if (__gpp.e[e].id == f) {
+                            __gpp.e[e].splice(e, 1);
+                            a = true; break
                         }
-                        j = true
-                    } else { __gpp.q.push([].slice.apply(c)) }
-                }
-            } if (a !== null && typeof (g) === "function") { g(a, j) }
-        };
-        window.cmp_gpp_ping = function () { return { gppVersion: "1.1", cmpStatus: "stub", cmpDisplayStatus: "hidden", signalStatus: "not ready", supportedAPIs: ["2:tcfeuv2", "5:tcfcav1", "7:usnat", "8:usca", "9:usva", "10:usco", "11:usut", "12:usct", "13:usfl", "14:usmt", "15:usor", "16:ustx", "17:usde", "18:usia", "19:usne", "20:usnh", "21:usnj", "22:ustn", "23:usmn"], cmpId: 31, sectionList: [], applicableSections: [0], gppString: "", parsedSections: {} } };
-        window.cmp_addFrame = function (b) {
-            if (!window.frames[b]) {
-                if (document.body) {
-                    var a = document.createElement("iframe");
-                    a.style.cssText = "display:none"; if ("cmp_cdn" in window && "cmp_ultrablocking" in window && window.cmp_ultrablocking > 0) { a.src = "//" + window.cmp_cdn + "/delivery/empty.html" }
-                    a.name = b;
-                    a.setAttribute("title", "Intentionally hidden, please ignore");
-                    a.setAttribute("role", "none");
-                    a.setAttribute("tabindex", "-1");
-                    document.body.appendChild(a)
-                } else { window.setTimeout(window.cmp_addFrame, 10, b) }
+                    }
+                    j = true
+                } else { __gpp.q.push([].slice.apply(c)) }
             }
-        };
-        window.cmp_msghandler = function (d) {
-            var a = typeof d.data === "string"; try { var c = a ? JSON.parse(d.data) : d.data } catch (f) { var c = null } if (typeof (c) === "object" && c !== null && "__cmpCall" in c) {
-                var b = c.__cmpCall;
-                window.__cmp(b.command, b.parameter, function (h, g) {
-                    var e = { __cmpReturn: { returnValue: h, success: g, callId: b.callId } };
-                    d.source.postMessage(a ? JSON.stringify(e) : e, "*")
-                })
-            } if (typeof (c) === "object" && c !== null && "__tcfapiCall" in c) {
-                var b = c.__tcfapiCall;
-                window.__tcfapi(b.command, b.version, function (h, g) {
-                    var e = { __tcfapiReturn: { returnValue: h, success: g, callId: b.callId } };
-                    d.source.postMessage(a ? JSON.stringify(e) : e, "*")
-                }, b.parameter)
-            } if (typeof (c) === "object" && c !== null && "__gppCall" in c) {
-                var b = c.__gppCall;
-                window.__gpp(b.command, function (h, g) {
-                    var e = { __gppReturn: { returnValue: h, success: g, callId: b.callId } };
-                    d.source.postMessage(a ? JSON.stringify(e) : e, "*")
-                }, "parameter" in b ? b.parameter : null, "version" in b ? b.version : 1)
-            } if (typeof (c) === "object" && c !== null && "__dsaCall" in c) {
-                var b = c.__dsaCall;
-                window.__dsa(b.command, function (h, g) {
-                    var e = { __dsaReturn: { returnValue: h, success: g, callId: b.callId } };
-                    d.source.postMessage(a ? JSON.stringify(e) : e, "*")
-                }, "parameter" in b ? b.parameter : null, "version" in b ? b.version : 1)
-            }
-        };
-        window.cmp_setStub = function (a) {
-            if (!(a in window) || (typeof (window[a]) !== "function" && typeof (window[a]) !== "object" && (typeof (window[a]) === "undefined" || window[a] !== null))) {
-                window[a] = window.cmp_stub;
-                window[a].msgHandler = window.cmp_msghandler;
-                window.addEventListener("message", window.cmp_msghandler, false)
-            }
-        };
-        window.cmp_setGppStub = function (a) {
-            if (!(a in window) || (typeof (window[a]) !== "function" && typeof (window[a]) !== "object" && (typeof (window[a]) === "undefined" || window[a] !== null))) {
-                window[a] = window.cmp_gppstub;
-                window[a].msgHandler = window.cmp_msghandler;
-                window.addEventListener("message", window.cmp_msghandler, false)
-            }
-        };
-        if (!("cmp_noiframepixel" in window)) { window.cmp_addFrame("__cmpLocator") }
-        if ((!("cmp_disabletcf" in window) || !window.cmp_disabletcf) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__tcfapiLocator") }
-        if ((!("cmp_disablegpp" in window) || !window.cmp_disablegpp) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__gppLocator") }
-        if ((!("cmp_disabledsa" in window) || !window.cmp_disabledsa) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__dsaLocator") }
-        window.cmp_setStub("__cmp");
-        if (!("cmp_disabletcf" in window) || !window.cmp_disabletcf) { window.cmp_setStub("__tcfapi") }
-        if (!("cmp_disablegpp" in window) || !window.cmp_disablegpp) { window.cmp_setGppStub("__gpp") }
-        if (!("cmp_disabledsa" in window) || !window.cmp_disabledsa) { window.cmp_setGppStub("__dsa") };
+        } if (a !== null && typeof (g) === "function") { g(a, j) }
+    };
+    window.cmp_gpp_ping = function () { return { gppVersion: "1.1", cmpStatus: "stub", cmpDisplayStatus: "hidden", signalStatus: "not ready", supportedAPIs: ["2:tcfeuv2", "5:tcfcav1", "7:usnat", "8:usca", "9:usva", "10:usco", "11:usut", "12:usct", "13:usfl", "14:usmt", "15:usor", "16:ustx", "17:usde", "18:usia", "19:usne", "20:usnh", "21:usnj", "22:ustn", "23:usmn"], cmpId: 31, sectionList: [], applicableSections: [0], gppString: "", parsedSections: {} } };
+    window.cmp_addFrame = function (b) {
+        if (!window.frames[b]) {
+            if (document.body) {
+                var a = document.createElement("iframe");
+                a.style.cssText = "display:none"; if ("cmp_cdn" in window && "cmp_ultrablocking" in window && window.cmp_ultrablocking > 0) { a.src = "//" + window.cmp_cdn + "/delivery/empty.html" }
+                a.name = b;
+                a.setAttribute("title", "Intentionally hidden, please ignore");
+                a.setAttribute("role", "none");
+                a.setAttribute("tabindex", "-1");
+                document.body.appendChild(a)
+            } else { window.setTimeout(window.cmp_addFrame, 10, b) }
+        }
+    };
+    window.cmp_msghandler = function (d) {
+        var a = typeof d.data === "string"; try { var c = a ? JSON.parse(d.data) : d.data } catch (f) { var c = null } if (typeof (c) === "object" && c !== null && "__cmpCall" in c) {
+            var b = c.__cmpCall;
+            window.__cmp(b.command, b.parameter, function (h, g) {
+                var e = { __cmpReturn: { returnValue: h, success: g, callId: b.callId } };
+                d.source.postMessage(a ? JSON.stringify(e) : e, "*")
+            })
+        } if (typeof (c) === "object" && c !== null && "__tcfapiCall" in c) {
+            var b = c.__tcfapiCall;
+            window.__tcfapi(b.command, b.version, function (h, g) {
+                var e = { __tcfapiReturn: { returnValue: h, success: g, callId: b.callId } };
+                d.source.postMessage(a ? JSON.stringify(e) : e, "*")
+            }, b.parameter)
+        } if (typeof (c) === "object" && c !== null && "__gppCall" in c) {
+            var b = c.__gppCall;
+            window.__gpp(b.command, function (h, g) {
+                var e = { __gppReturn: { returnValue: h, success: g, callId: b.callId } };
+                d.source.postMessage(a ? JSON.stringify(e) : e, "*")
+            }, "parameter" in b ? b.parameter : null, "version" in b ? b.version : 1)
+        } if (typeof (c) === "object" && c !== null && "__dsaCall" in c) {
+            var b = c.__dsaCall;
+            window.__dsa(b.command, function (h, g) {
+                var e = { __dsaReturn: { returnValue: h, success: g, callId: b.callId } };
+                d.source.postMessage(a ? JSON.stringify(e) : e, "*")
+            }, "parameter" in b ? b.parameter : null, "version" in b ? b.version : 1)
+        }
+    };
+    window.cmp_setStub = function (a) {
+        if (!(a in window) || (typeof (window[a]) !== "function" && typeof (window[a]) !== "object" && (typeof (window[a]) === "undefined" || window[a] !== null))) {
+            window[a] = window.cmp_stub;
+            window[a].msgHandler = window.cmp_msghandler;
+            window.addEventListener("message", window.cmp_msghandler, false)
+        }
+    };
+    window.cmp_setGppStub = function (a) {
+        if (!(a in window) || (typeof (window[a]) !== "function" && typeof (window[a]) !== "object" && (typeof (window[a]) === "undefined" || window[a] !== null))) {
+            window[a] = window.cmp_gppstub;
+            window[a].msgHandler = window.cmp_msghandler;
+            window.addEventListener("message", window.cmp_msghandler, false)
+        }
+    };
+    if (!("cmp_noiframepixel" in window)) { window.cmp_addFrame("__cmpLocator") }
+    if ((!("cmp_disabletcf" in window) || !window.cmp_disabletcf) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__tcfapiLocator") }
+    if ((!("cmp_disablegpp" in window) || !window.cmp_disablegpp) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__gppLocator") }
+    if ((!("cmp_disabledsa" in window) || !window.cmp_disabledsa) && !("cmp_noiframepixel" in window)) { window.cmp_addFrame("__dsaLocator") }
+    window.cmp_setStub("__cmp");
+    if (!("cmp_disabletcf" in window) || !window.cmp_disabletcf) { window.cmp_setStub("__tcfapi") }
+    if (!("cmp_disablegpp" in window) || !window.cmp_disablegpp) { window.cmp_setGppStub("__gpp") }
+    if (!("cmp_disabledsa" in window) || !window.cmp_disabledsa) { window.cmp_setGppStub("__dsa") };
 
 
 </script>
 <script>
-    if (document.location.host.includes("publishing")) {
-        var adHandler = adHandler || { cmd: [] };
+     var adHandler = adHandler || { cmd: [] };
+function kstahandler(isLoggedIn, isPlus, adchannels) {
+   
+       
         adHandler.cmd.push(function () {
             adHandler.service.setTargeting("hour", new Date().getHours());
             pagetype = "";
@@ -446,11 +457,18 @@
             adHandler.service.setTargeting("mvd_category", adchannels[0]);
             adHandler.service.request();
         });
+		 adHandler.cmd.push(function() {
+		  if (typeof applyOrtb2Values == "function")
+           applyOrtb2Values(isLoggedIn, isPlus, adchannels, []);
+        });
         elem = document.createElement("script");
-        elem.src = "https://showroom.click-performance.com/staging/DMN/volksstimme.de/volksstimme.de_ROS.js";
+        elem.src = "https://cpg-cdn.com/adHandler360/prod/volksstimme-de/volksstimme.de_ROS.js";
         elem.type = "text/javascript";
         document.head.appendChild(elem);
-    }
+}
+if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.host.replace("www.",""))) {
+		initiateSourcePoint();
+	}
 </script></head>
 
   <body lang="en"><!-- vs category-page -->
@@ -493,9 +511,16 @@
 
     <div class="page-holder">
 
-<div class="ad-skyscraper">
-    <div id="ad-skyscraper"></div>
+<div class="ad-skyscraper-left">
+    <div id="sky-left-label" style="display: none;" class="fp-ad-label fp-ad-label-skyscraper-left">Anzeige</div>
+    <div id="sky-left" class="fp-ad fp-ad-dumont"></div>
 </div>
+
+<div class="ad-skyscraper">
+    <div id="sky-label" style="display: none;" class="fp-ad-label fp-ad-label-skyscraper">Anzeige</div>
+    <div id="sky" class="fp-ad fp-ad-dumont"></div>
+</div>
+
       <div class="fp-page-content">
 
 
@@ -692,9 +717,9 @@
             </span>
             <span class="fp-main-header__weather-widget--tooltip">wolkig</span>
             <aside>
-                <span class="fp-main-header__weather-widget--day-temp">13°</span>
+                <span class="fp-main-header__weather-widget--day-temp">12°</span>
                 <span>/</span>
-                <span class="fp-main-header__weather-widget--night-temp">3°</span>
+                <span class="fp-main-header__weather-widget--night-temp">-1°</span>
             </aside>
         </div>
         <div class="fp-main-header__weather-widget--bottom">
@@ -1740,7 +1765,7 @@
               
             </ol>
         </div>
-      <div><div class="page-header fp-breaking-news" data-t-name="Minifeature" data-fp-container-name="breaking-news-header"></div><div class="fp-container__extra-large relative-container"><div class="fp-container-2"><div id="ad-top-banner-mobile" data-screen="mobile"></div><div id="ad-top-banner" data-screen="desktop"></div></div></div><div class="fp-container"><div class="fp-page__body"><section class="fp-section ratio full-width-image fp-top-article-top-teaser" data-ratio="21:9" data-ratio-sm="16:9"></section><div></div><div><section class="fp-related-articles embed fp-section"><div data-service="category-teasers-list"><!-- Display grid solution  -->
+      <div><div class="page-header fp-breaking-news" data-t-name="Minifeature" data-fp-container-name="breaking-news-header"></div><div id="desktop_1-wrapper" class="fp-ad-wrapper"><div id="desktop_1-label" style="display: none;" class="fp-ad-label">Anzeige</div><div id="desktop_1" data-screen="desktop" class="fp-ad fp-ad-dumont center"></div></div><div class="fp-container__extra-large relative-container"><div class="fp-container-2"></div></div><div class="fp-container"><div class="fp-page__body"><section class="fp-section ratio full-width-image fp-top-article-top-teaser" data-ratio="21:9" data-ratio-sm="16:9"></section><div></div><div><section class="fp-related-articles embed fp-section"><div data-service="category-teasers-list"><!-- Display grid solution  -->
 <div class="fp-article-list">
     <header class="fp-category-name-header">
         <aside class="fp-category-name-header__content">
@@ -1753,48 +1778,21 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/deutschland-schickt-sangerin-sarah-engels-zum-esc-4207398">
+            <a href="/panorama/warum-vorlesen-wichtig-ist-und-worauf-es-dabei-ankommt-4225952">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/6f809a8f-6842-4779-a7eb-ca671233c554.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/6f809a8f-6842-4779-a7eb-ca671233c554.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/6f809a8f-6842-4779-a7eb-ca671233c554.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/6f809a8f-6842-4779-a7eb-ca671233c554.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/6f809a8f-6842-4779-a7eb-ca671233c554.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/6f809a8f-6842-4779-a7eb-ca671233c554.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/6f809a8f-6842-4779-a7eb-ca671233c554.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Musikerin Sarah Engels fährt für Deutschland zum ESC." data-source="Britta Pedersen/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/01/a6c8f4a6-2618-4f7e-a5a6-629d86d95695.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/01/a6c8f4a6-2618-4f7e-a5a6-629d86d95695.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/01/a6c8f4a6-2618-4f7e-a5a6-629d86d95695.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/01/a6c8f4a6-2618-4f7e-a5a6-629d86d95695.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/01/a6c8f4a6-2618-4f7e-a5a6-629d86d95695.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/01/a6c8f4a6-2618-4f7e-a5a6-629d86d95695.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/01/a6c8f4a6-2618-4f7e-a5a6-629d86d95695.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Vorlesen ist für Kinder wichtig. (Symbolbild)" data-source="Bernd Thissen/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Musik-Wettbewerb</h4>
-                <h3 class="fp-article__title text-xl--bold ">Deutschland schickt Sängerin Sarah Engels zum ESC</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Kinderbuchtag</h4>
+                <h3 class="fp-article__title text-xl--bold ">Warum Vorlesen wichtig ist - und worauf es dabei ankommt</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/ljubicic-kracher-rettet-schalke-in-furth-platz-eins-4207702">
+            <a href="/panorama/urteil-im-prozess-um-rechte-kampfsportgruppe-erwartet-4225951">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/7c8b9e3f-176a-4bfc-af85-23d805f1c1d8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/7c8b9e3f-176a-4bfc-af85-23d805f1c1d8.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/7c8b9e3f-176a-4bfc-af85-23d805f1c1d8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/7c8b9e3f-176a-4bfc-af85-23d805f1c1d8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/7c8b9e3f-176a-4bfc-af85-23d805f1c1d8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/7c8b9e3f-176a-4bfc-af85-23d805f1c1d8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/7c8b9e3f-176a-4bfc-af85-23d805f1c1d8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Dejan Ljubicic (l) traf spektakulär zum Ausgleich." data-source="Daniel Karmann/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/01/7a8378ba-20fb-43ac-96d0-a7c02e1b0628.jpeg?rect=0%2C18%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/01/7a8378ba-20fb-43ac-96d0-a7c02e1b0628.jpeg?rect=0%2C18%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/01/7a8378ba-20fb-43ac-96d0-a7c02e1b0628.jpeg?rect=0%2C18%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/01/7a8378ba-20fb-43ac-96d0-a7c02e1b0628.jpeg?rect=0%2C18%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/01/7a8378ba-20fb-43ac-96d0-a7c02e1b0628.jpeg?rect=0%2C18%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/01/7a8378ba-20fb-43ac-96d0-a7c02e1b0628.jpeg?rect=0%2C18%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/01/7a8378ba-20fb-43ac-96d0-a7c02e1b0628.jpeg?rect=0%2C18%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Im Prozess um die rechtsextremistische Kampfsportgruppierung „Knockout 51“ soll ein Urteil fallen. (Archivbild)" data-source="Martin Schutt/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> 2. Fußball-Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Ljubicic-Kracher rettet Schalke in Fürth Platz eins</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/verletztem-bvb-kapitan-can-droht-langer-ausfall-4207692">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/1c50b677-ed78-4c8a-b865-63635b88052a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/1c50b677-ed78-4c8a-b865-63635b88052a.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/1c50b677-ed78-4c8a-b865-63635b88052a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/1c50b677-ed78-4c8a-b865-63635b88052a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/1c50b677-ed78-4c8a-b865-63635b88052a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/1c50b677-ed78-4c8a-b865-63635b88052a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/1c50b677-ed78-4c8a-b865-63635b88052a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Emre Can (m) musste beim Topspiel gegen den FC Bayern ausgewechselt werden." data-source="Federico Gambarini/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Fußball-Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Verletztem BVB-Kapitän Can droht langer Ausfall</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/wegen-arger-mit-der-polizei-stille-bayern-fans-in-dortmund-4207677">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/7fbaed89-1185-48a8-9719-6092124d9ff8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/7fbaed89-1185-48a8-9719-6092124d9ff8.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/7fbaed89-1185-48a8-9719-6092124d9ff8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/7fbaed89-1185-48a8-9719-6092124d9ff8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/7fbaed89-1185-48a8-9719-6092124d9ff8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/7fbaed89-1185-48a8-9719-6092124d9ff8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/7fbaed89-1185-48a8-9719-6092124d9ff8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Gästefans des FC Bayern waren beim Topspiel in Dortmund merklich still." data-source="David Inderlied/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Bundesliga-Klassiker</h4>
-                <h3 class="fp-article__title text-xl--bold ">Wegen Ärger mit der Polizei: Stille Bayern-Fans in Dortmund</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/sc-magdeburg-schlagt-die-mt-melsungen-deutlich-4207697">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/75af7c74-c1c2-422a-a486-9407cf215c2b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/75af7c74-c1c2-422a-a486-9407cf215c2b.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/75af7c74-c1c2-422a-a486-9407cf215c2b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/75af7c74-c1c2-422a-a486-9407cf215c2b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/75af7c74-c1c2-422a-a486-9407cf215c2b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/75af7c74-c1c2-422a-a486-9407cf215c2b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/75af7c74-c1c2-422a-a486-9407cf215c2b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Felix Claar (M) war bester SCM-Schütze in Melsungen. (Archivbild)" data-source="Michael Hundt/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Handball</h4>
-                <h3 class="fp-article__title text-xl--bold ">SC Magdeburg schlägt die MT Melsungen deutlich</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Gerichtsverhandlung</h4>
+                <h3 class="fp-article__title text-xl--bold ">Urteil im Prozess um rechte Kampfsportgruppe erwartet</h3>
             </a>
         </article>
 </div>
@@ -1802,16 +1800,64 @@
 
 
 
-</div></section><section class="fp-most-popular-section fp-section"><div class="fp-article-list fp-most-popular-articles-teasers">
+</div></section><div class="fp-free-html"><script id="mobile_2_script">    
+    document.querySelector("#mobile_2_script").insertAdjacentHTML("afterend", '<div class="center" id="' + ( window.innerWidth <= 550 ? 'mobile_2' : 'desktop_2') + '"></div>');
+</script></div><section class="fp-related-articles embed fp-section hide-heading"><div data-service="category-teasers-list"><!-- Display grid solution  -->
+<div class="fp-article-list">
+    <header class="fp-category-name-header">
+        <aside class="fp-category-name-header__content">
+            <a href="/panorama">
+                <h2 class="fp-category-name-header__text">Panorama</h2>
+                <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13 6L9.5 3L6 0V5H0V7H6V12L13 6Z" fill="#16417C"></path>
+                </svg>
+            </a>
+        </aside>
+    </header>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/buckelwal-vor-ostseekuste-die-lage-bleibt-kritisch-4225946">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/01/272978d9-77ce-4c7b-8d7f-644c15ecef52.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/01/272978d9-77ce-4c7b-8d7f-644c15ecef52.jpeg?rect=0%2C69%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/01/272978d9-77ce-4c7b-8d7f-644c15ecef52.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/01/272978d9-77ce-4c7b-8d7f-644c15ecef52.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/01/272978d9-77ce-4c7b-8d7f-644c15ecef52.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/01/272978d9-77ce-4c7b-8d7f-644c15ecef52.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/01/272978d9-77ce-4c7b-8d7f-644c15ecef52.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Am Dienstag wurde die Rettungsaktion am frühen Abend vorerst beendet, um dem Wal Ruhe zu gönnen. (Archivbild)" data-source="Stefan Sauer/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Wal „Timmy“</h4>
+                <h3 class="fp-article__title text-xl--bold ">Buckelwal vor Ostseeküste: Die Lage bleibt kritisch</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/stars/trump-ende-der-us-angriffe-im-iran-in-wenigen-wochen-4225937">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/873cc212-b538-4186-9c66-2c7f3ce2b3de.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/873cc212-b538-4186-9c66-2c7f3ce2b3de.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/873cc212-b538-4186-9c66-2c7f3ce2b3de.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/873cc212-b538-4186-9c66-2c7f3ce2b3de.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/873cc212-b538-4186-9c66-2c7f3ce2b3de.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/873cc212-b538-4186-9c66-2c7f3ce2b3de.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/873cc212-b538-4186-9c66-2c7f3ce2b3de.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Stellt ein Ende der US-Angriffe im Iran in wenigen Wochen in Aussicht - US-Präsident Trump." data-source="Alex Brandon/AP/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Iran-Krieg</h4>
+                <h3 class="fp-article__title text-xl--bold ">Trump: Ende der US-Angriffe im Iran in wenigen Wochen</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/jubel-auf-berlins-strassen-nach-turkei-sieg-im-playoff-finale-4225936">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/4d7aa0d0-1449-4dc1-9cce-39c79d09407b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/4d7aa0d0-1449-4dc1-9cce-39c79d09407b.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/4d7aa0d0-1449-4dc1-9cce-39c79d09407b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/4d7aa0d0-1449-4dc1-9cce-39c79d09407b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/4d7aa0d0-1449-4dc1-9cce-39c79d09407b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/4d7aa0d0-1449-4dc1-9cce-39c79d09407b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/4d7aa0d0-1449-4dc1-9cce-39c79d09407b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Türkische Fans jubeln in Berlin über WM-Qualifikation." data-source="Manuel Genolet/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> WM-Quali</h4>
+                <h3 class="fp-article__title text-xl--bold ">Jubel auf Berlins Straßen nach Türkei-Sieg im Playoff-Finale</h3>
+            </a>
+        </article>
+</div>
+
+
+
+
+</div></section><div class="fp-free-html"><script id="mobile_3_script">    
+    document.querySelector("#mobile_3_script").insertAdjacentHTML("afterend", '<div class="center" id="' + ( window.innerWidth <= 550 ? 'mobile_3' : 'desktop_3') + '"></div>');
+</script></div><section class="fp-most-popular-section fp-section"><div class="fp-article-list fp-most-popular-articles-teasers">
 <h2 class="fp-most-popular-section-title">Meistgelesen</h2>
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/panorama/harzer-schmalspurbahnen-bauen-das-sollten-reisende-wissen-4207005">
+      <a href="/panorama/stars/laura-mueller-wendler-brust-op-4205626">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">1.</span>
             <header>
-              <h4 class="fp-article__catchline"> Tourismus</h4>
-              <h3 class="fp-article__title text-xxl--bold">Harzer Schmalspurbahnen bauen: Das sollten Reisende wissen</h3>
+              <h4 class="fp-article__catchline"> Freizügiges Foto auf Instagram</h4>
+              <h3 class="fp-article__title text-xxl--bold">Laura Müller mit neuer Oberweite: Fans von Schieflage der Brüste irritiert</h3>
             </header>
         </div>
       </a>
@@ -1819,12 +1865,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/panorama/stars/brust-op-wendler-laura-mueller-instagram-4205626">
+      <a href="/panorama/so-viele-leute-lockt-horst-schlammer-ins-kino-4224885">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">2.</span>
             <header>
-              <h4 class="fp-article__catchline"> neues Foto auf Instagram</h4>
-              <h3 class="fp-article__title text-xxl--bold">Nach Brust-OP: Warum Laura Müllers Oberweite für Diskussionen sorgt</h3>
+              <h4 class="fp-article__catchline"> Kinofilm</h4>
+              <h3 class="fp-article__title text-xxl--bold">So viele Leute lockt Horst Schlämmer ins Kino</h3>
             </header>
         </div>
       </a>
@@ -1832,12 +1878,12 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/panorama/stars/melanie-mueller-zwangsversteigerung-haus-preis-urteil-landgericht-4206083">
+      <a href="/panorama/rettungsaktion-fur-gestrandeten-buckelwal-erneut-abgebrochen-4222605">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">3.</span>
             <header>
-              <h4 class="fp-article__catchline"> Altes Bahnhofsgebäude in Leipzig</h4>
-              <h3 class="fp-article__title text-xxl--bold">Zwangsversteigerung bei Melanie Müller! Für diese Summe kann man das Haus kaufen – mindestens</h3>
+              <h4 class="fp-article__catchline"> Gestrandeter Wal</h4>
+              <h3 class="fp-article__title text-xxl--bold">Rettungsaktion für gestrandeten Buckelwal erneut abgebrochen</h3>
             </header>
         </div>
       </a>
@@ -1845,18 +1891,20 @@
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/panorama/vermisste-belgische-backpackerin-in-australien-identifiziert-4206614">
+      <a href="/panorama/moderatorin-katja-burkard-trauert-um-ihre-mutter-4216515">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">4.</span>
             <header>
-              <h4 class="fp-article__catchline"> In der Wildnis verirrt</h4>
-              <h3 class="fp-article__title text-xxl--bold">Vermisste belgische Backpackerin in Australien identifiziert</h3>
+              <h4 class="fp-article__catchline"> „Werden dich nie vergessen“</h4>
+              <h3 class="fp-article__title text-xxl--bold">Moderatorin Katja Burkard trauert um ihre Mutter</h3>
             </header>
         </div>
       </a>
     </article>
 
-</div></section><section class="fp-related-articles embed fp-section"><div data-service="subcategory-teasers-list"><!-- Display grid solution  -->
+</div></section><div class="fp-free-html"><script id="mobile_4_script">    
+    document.querySelector("#mobile_4_script").insertAdjacentHTML("afterend", '<div class="center" id="' + ( window.innerWidth <= 550 ? 'mobile_4' : 'desktop_4') + '"></div>');
+</script></div><section class="fp-related-articles embed fp-section"><div data-service="subcategory-teasers-list"><!-- Display grid solution  -->
 <div class="fp-article-list">
     <header class="fp-category-name-header">
         <aside class="fp-category-name-header__content">
@@ -1869,49 +1917,48 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/messer-und-gabel-im-bermudadreieck-4207029">
+            <a href="/panorama/aufgespiesst/dialekt-schmeckt-4225492">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/27/e0660f6f-d16e-4930-afc6-7022e8f85072.jpeg?rect=0%2C0%2C600%2C472&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/27/e0660f6f-d16e-4930-afc6-7022e8f85072.jpeg?rect=0%2C0%2C600%2C472&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/27/e0660f6f-d16e-4930-afc6-7022e8f85072.jpeg?rect=0%2C0%2C600%2C472&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/27/e0660f6f-d16e-4930-afc6-7022e8f85072.jpeg?rect=0%2C0%2C600%2C472&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/27/e0660f6f-d16e-4930-afc6-7022e8f85072.jpeg?rect=0%2C0%2C600%2C472&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/27/e0660f6f-d16e-4930-afc6-7022e8f85072.jpeg?rect=0%2C0%2C600%2C472&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/27/e0660f6f-d16e-4930-afc6-7022e8f85072.jpeg?rect=0%2C0%2C600%2C472&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Noch alle Messer im Schrank?" data-source="Foto: KNA">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/cbbd9c06-3971-4e4c-8a11-c221fb26514d.jpeg?rect=64%2C94%2C601%2C473&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/cbbd9c06-3971-4e4c-8a11-c221fb26514d.jpeg?rect=64%2C94%2C601%2C473&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/cbbd9c06-3971-4e4c-8a11-c221fb26514d.jpeg?rect=64%2C94%2C601%2C473&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/cbbd9c06-3971-4e4c-8a11-c221fb26514d.jpeg?rect=64%2C94%2C601%2C473&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/cbbd9c06-3971-4e4c-8a11-c221fb26514d.jpeg?rect=64%2C94%2C601%2C473&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/cbbd9c06-3971-4e4c-8a11-c221fb26514d.jpeg?rect=64%2C94%2C601%2C473&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/cbbd9c06-3971-4e4c-8a11-c221fb26514d.jpeg?rect=64%2C94%2C601%2C473&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Pfannkuchen? Berliner?" data-source="Foto: dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Messer und Gabel im Bermudadreieck</h3>
+                <h3 class="fp-article__title text-xl--bold ">Dialekt schmeckt</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/nicht-nur-sauber-sondern-rein-4206193">
+            <a href="/panorama/aufgespiesst/reden-ist-silber-4225152">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/26/69faf7b1-c21b-40c0-8e5a-bd88ec676736.jpeg?rect=0%2C208%2C4000%2C2251&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/26/69faf7b1-c21b-40c0-8e5a-bd88ec676736.jpeg?rect=0%2C208%2C4000%2C2251&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/26/69faf7b1-c21b-40c0-8e5a-bd88ec676736.jpeg?rect=0%2C208%2C4000%2C2251&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/26/69faf7b1-c21b-40c0-8e5a-bd88ec676736.jpeg?rect=0%2C208%2C4000%2C2251&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/26/69faf7b1-c21b-40c0-8e5a-bd88ec676736.jpeg?rect=0%2C208%2C4000%2C2251&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/26/69faf7b1-c21b-40c0-8e5a-bd88ec676736.jpeg?rect=0%2C208%2C4000%2C2251&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/26/69faf7b1-c21b-40c0-8e5a-bd88ec676736.jpeg?rect=0%2C208%2C4000%2C2251&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Menschen-Waschanlage." data-source="Eugene Hoshiko/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/30/bfda84b2-09ee-4a0a-960f-46afd1b75ef6.jpeg?rect=120%2C0%2C600%2C473&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/30/bfda84b2-09ee-4a0a-960f-46afd1b75ef6.jpeg?rect=120%2C0%2C600%2C473&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/30/bfda84b2-09ee-4a0a-960f-46afd1b75ef6.jpeg?rect=120%2C0%2C600%2C473&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/30/bfda84b2-09ee-4a0a-960f-46afd1b75ef6.jpeg?rect=120%2C0%2C600%2C473&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/30/bfda84b2-09ee-4a0a-960f-46afd1b75ef6.jpeg?rect=120%2C0%2C600%2C473&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/30/bfda84b2-09ee-4a0a-960f-46afd1b75ef6.jpeg?rect=120%2C0%2C600%2C473&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/30/bfda84b2-09ee-4a0a-960f-46afd1b75ef6.jpeg?rect=120%2C0%2C600%2C473&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wichtig: Im Gespräch bleiben." data-source="imago images/Werner Otto">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Nicht nur sauber, sondern rein</h3>
+                <h3 class="fp-article__title text-xl--bold ">Reden ist Silber ...</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/ein-herz-fur-mowen-4205494">
+            <a href="/panorama/aufgespiesst/die-teuersten-sieben-zentimeter-4224623">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/25/db155254-f403-4d75-91be-5165ff6a9064.jpeg?rect=0%2C0%2C599%2C472&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/25/db155254-f403-4d75-91be-5165ff6a9064.jpeg?rect=0%2C0%2C599%2C472&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/25/db155254-f403-4d75-91be-5165ff6a9064.jpeg?rect=0%2C0%2C599%2C472&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/25/db155254-f403-4d75-91be-5165ff6a9064.jpeg?rect=0%2C0%2C599%2C472&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/25/db155254-f403-4d75-91be-5165ff6a9064.jpeg?rect=0%2C0%2C599%2C472&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/25/db155254-f403-4d75-91be-5165ff6a9064.jpeg?rect=0%2C0%2C599%2C472&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/25/db155254-f403-4d75-91be-5165ff6a9064.jpeg?rect=0%2C0%2C599%2C472&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Möwe diesen Typs." data-source="Foto: dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/29/97133633-8390-41d5-89ab-ea3130e3567e.jpeg?rect=0%2C62%2C708%2C398&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/29/97133633-8390-41d5-89ab-ea3130e3567e.jpeg?rect=0%2C62%2C708%2C398&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/29/97133633-8390-41d5-89ab-ea3130e3567e.jpeg?rect=0%2C62%2C708%2C398&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/29/97133633-8390-41d5-89ab-ea3130e3567e.jpeg?rect=0%2C62%2C708%2C398&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/29/97133633-8390-41d5-89ab-ea3130e3567e.jpeg?rect=0%2C62%2C708%2C398&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/29/97133633-8390-41d5-89ab-ea3130e3567e.jpeg?rect=0%2C62%2C708%2C398&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/29/97133633-8390-41d5-89ab-ea3130e3567e.jpeg?rect=0%2C62%2C708%2C398&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Einfach zu niedrig." data-source="Foto: Pülicher">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Ein Herz für Möwen</h3>
-            </a>
-        </article>
-<div id="nativendo-nativendo-infeed"></div>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/der-verein-der-einfach-immer-gewinnt-4204952">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/24/7a8a7976-6ee4-49fc-a840-f77520c1da49.jpeg?rect=89%2C0%2C600%2C472&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/24/7a8a7976-6ee4-49fc-a840-f77520c1da49.jpeg?rect=89%2C0%2C600%2C472&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/24/7a8a7976-6ee4-49fc-a840-f77520c1da49.jpeg?rect=89%2C0%2C600%2C472&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/24/7a8a7976-6ee4-49fc-a840-f77520c1da49.jpeg?rect=89%2C0%2C600%2C472&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/24/7a8a7976-6ee4-49fc-a840-f77520c1da49.jpeg?rect=89%2C0%2C600%2C472&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/24/7a8a7976-6ee4-49fc-a840-f77520c1da49.jpeg?rect=89%2C0%2C600%2C472&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/24/7a8a7976-6ee4-49fc-a840-f77520c1da49.jpeg?rect=89%2C0%2C600%2C472&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Gewinner. Immer." data-source="Foto: Imago">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Der Verein, der einfach immer gewinnt</h3>
+                <h3 class="fp-article__title text-xl--bold ">Die teuersten sieben Zentimeter</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/olympia-streit-um-da-vincis-bestes-stuck-4204346">
+            <a href="/panorama/aufgespiesst/einmal-gruezi-fur-23-euro-4223659">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/23/d224c475-70a0-4a6d-9632-0daebcb217f7.jpeg?rect=49%2C94%2C600%2C471&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/23/d224c475-70a0-4a6d-9632-0daebcb217f7.jpeg?rect=49%2C94%2C600%2C471&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/23/d224c475-70a0-4a6d-9632-0daebcb217f7.jpeg?rect=49%2C94%2C600%2C471&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/23/d224c475-70a0-4a6d-9632-0daebcb217f7.jpeg?rect=49%2C94%2C600%2C471&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/23/d224c475-70a0-4a6d-9632-0daebcb217f7.jpeg?rect=49%2C94%2C600%2C471&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/23/d224c475-70a0-4a6d-9632-0daebcb217f7.jpeg?rect=49%2C94%2C600%2C471&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/23/d224c475-70a0-4a6d-9632-0daebcb217f7.jpeg?rect=49%2C94%2C600%2C471&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Da Vincis Original." data-source="Foto: DPA">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/27/c98af801-c723-4614-b9ef-5a8dd4dcd710.jpeg?rect=82%2C14%2C600%2C472&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/27/c98af801-c723-4614-b9ef-5a8dd4dcd710.jpeg?rect=82%2C14%2C600%2C472&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/27/c98af801-c723-4614-b9ef-5a8dd4dcd710.jpeg?rect=82%2C14%2C600%2C472&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/27/c98af801-c723-4614-b9ef-5a8dd4dcd710.jpeg?rect=82%2C14%2C600%2C472&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/27/c98af801-c723-4614-b9ef-5a8dd4dcd710.jpeg?rect=82%2C14%2C600%2C472&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/27/c98af801-c723-4614-b9ef-5a8dd4dcd710.jpeg?rect=82%2C14%2C600%2C472&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/27/c98af801-c723-4614-b9ef-5a8dd4dcd710.jpeg?rect=82%2C14%2C600%2C472&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Teures Pflaster Schweiz." data-source="Foto: dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Olympia-Streit um Da Vincis bestes Stück</h3>
+                <h3 class="fp-article__title text-xl--bold ">Einmal „Grüezi“ für 23 Euro</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/aufgespiesst/lechts-oder-rinks-4222811">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/26/4a5a7f53-a3b0-4d82-9c09-a4240a8e8348.jpeg?rect=0%2C0%2C599%2C472&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/26/4a5a7f53-a3b0-4d82-9c09-a4240a8e8348.jpeg?rect=0%2C0%2C599%2C472&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/26/4a5a7f53-a3b0-4d82-9c09-a4240a8e8348.jpeg?rect=0%2C0%2C599%2C472&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/26/4a5a7f53-a3b0-4d82-9c09-a4240a8e8348.jpeg?rect=0%2C0%2C599%2C472&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/26/4a5a7f53-a3b0-4d82-9c09-a4240a8e8348.jpeg?rect=0%2C0%2C599%2C472&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/26/4a5a7f53-a3b0-4d82-9c09-a4240a8e8348.jpeg?rect=0%2C0%2C599%2C472&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/26/4a5a7f53-a3b0-4d82-9c09-a4240a8e8348.jpeg?rect=0%2C0%2C599%2C472&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Mbappé lacht trotz Knie." data-source="Foto: AFP">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
+                <h3 class="fp-article__title text-xl--bold ">Lechts oder rinks?</h3>
             </a>
         </article>
 </div>
@@ -1919,7 +1966,9 @@
 
 
 
-</div></section><section class="fp-related-articles embed fp-section"><div data-service="subcategory-teasers-list"><!-- Display grid solution  -->
+</div></section><div class="fp-free-html"><script id="mobile_5_script">    
+    document.querySelector("#mobile_5_script").insertAdjacentHTML("afterend", '<div class="center" id="' + ( window.innerWidth <= 550 ? 'mobile_5' : 'desktop_5') + '"></div>');
+</script></div><section class="fp-related-articles embed fp-section"><div data-service="subcategory-teasers-list"><!-- Display grid solution  -->
 <div class="fp-article-list">
     <header class="fp-category-name-header">
         <aside class="fp-category-name-header__content">
@@ -1932,48 +1981,48 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/sohn-von-ralf-und-cora-schumacher-hat-geheiratet-4207486">
+            <a href="/panorama/stars/eurovision-song-contest-bald-mit-asien-edition-4225870">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/fbdabfdf-76d4-47a0-b5ba-3569c27d80d7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/fbdabfdf-76d4-47a0-b5ba-3569c27d80d7.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/fbdabfdf-76d4-47a0-b5ba-3569c27d80d7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/fbdabfdf-76d4-47a0-b5ba-3569c27d80d7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/fbdabfdf-76d4-47a0-b5ba-3569c27d80d7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/fbdabfdf-76d4-47a0-b5ba-3569c27d80d7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/fbdabfdf-76d4-47a0-b5ba-3569c27d80d7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="David Schumacher hat geheiratet. (Archivbild)" data-source="Christoph Soeder/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/de565bc4-fd53-4b48-bb1d-daf778aad4bd.jpeg?rect=0%2C62%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/de565bc4-fd53-4b48-bb1d-daf778aad4bd.jpeg?rect=0%2C62%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/de565bc4-fd53-4b48-bb1d-daf778aad4bd.jpeg?rect=0%2C62%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/de565bc4-fd53-4b48-bb1d-daf778aad4bd.jpeg?rect=0%2C62%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/de565bc4-fd53-4b48-bb1d-daf778aad4bd.jpeg?rect=0%2C62%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/de565bc4-fd53-4b48-bb1d-daf778aad4bd.jpeg?rect=0%2C62%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/de565bc4-fd53-4b48-bb1d-daf778aad4bd.jpeg?rect=0%2C62%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Ursprungsvariante des ESC findet in diesem Jahr in Wien statt. (Archivbild)" data-source="Georg Hochmuth/APA/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Rennfahrer David Schumacher</h4>
-                <h3 class="fp-article__title text-xl--bold ">Sohn von Ralf und Cora Schumacher hat geheiratet</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Musik-Contest</h4>
+                <h3 class="fp-article__title text-xl--bold ">Eurovision Song Contest bald mit Asien-Edition</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/oh-carol-sanger-neil-sedaka-mit-86-jahren-gestorben-4207339">
+            <a href="/panorama/stars/taylor-swift-ehrt-elizabeth-taylor-mit-neuem-video-4225804">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/9bb85adb-3abd-4ef1-971a-8a5288dbd321.jpeg?rect=0%2C141%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/9bb85adb-3abd-4ef1-971a-8a5288dbd321.jpeg?rect=0%2C141%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/9bb85adb-3abd-4ef1-971a-8a5288dbd321.jpeg?rect=0%2C141%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/9bb85adb-3abd-4ef1-971a-8a5288dbd321.jpeg?rect=0%2C141%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/9bb85adb-3abd-4ef1-971a-8a5288dbd321.jpeg?rect=0%2C141%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/9bb85adb-3abd-4ef1-971a-8a5288dbd321.jpeg?rect=0%2C141%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/9bb85adb-3abd-4ef1-971a-8a5288dbd321.jpeg?rect=0%2C141%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Neil Sedaka lieferte in seiner langen Musikkarriere viele Pop-Evergreens. (Archivfotos)" data-source="picture alliance / dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/511a2d5f-fbcc-4d6c-9a6d-b36b1be1eafa.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/511a2d5f-fbcc-4d6c-9a6d-b36b1be1eafa.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/511a2d5f-fbcc-4d6c-9a6d-b36b1be1eafa.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/511a2d5f-fbcc-4d6c-9a6d-b36b1be1eafa.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/511a2d5f-fbcc-4d6c-9a6d-b36b1be1eafa.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/511a2d5f-fbcc-4d6c-9a6d-b36b1be1eafa.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/511a2d5f-fbcc-4d6c-9a6d-b36b1be1eafa.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Taylor Swift überrascht Fans mit neuen Video" data-source="Jordan Strauss/Invision/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Pop-Evergreens</h4>
-                <h3 class="fp-article__title text-xl--bold ">„Oh! Carol“-Sänger Neil Sedaka mit 86 Jahren gestorben</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Ode an Schauspielerin</h4>
+                <h3 class="fp-article__title text-xl--bold ">Taylor Swift ehrt Elizabeth Taylor mit neuem Video</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/howard-carpendale-erstmals-an-der-spitze-der-album-charts-4207158">
+            <a href="/panorama/stars/deutscher-filmpreis-das-sind-die-favoriten-4225687">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/27/fc2c827a-5f63-40c4-a295-0b85d21d0bf1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/27/fc2c827a-5f63-40c4-a295-0b85d21d0bf1.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/27/fc2c827a-5f63-40c4-a295-0b85d21d0bf1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/27/fc2c827a-5f63-40c4-a295-0b85d21d0bf1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/27/fc2c827a-5f63-40c4-a295-0b85d21d0bf1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/27/fc2c827a-5f63-40c4-a295-0b85d21d0bf1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/27/fc2c827a-5f63-40c4-a295-0b85d21d0bf1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Howard Carpendale erobert mit seinem Album „Zeitlos“ erstmals in seiner Bühnenkarriere die Spitze der Offiziellen Deutschen Charts. (Archivbild)" data-source="Rolf Vennenbernd/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/7f5cacd6-c181-46ad-ad0e-30f4d2f1bcf9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/7f5cacd6-c181-46ad-ad0e-30f4d2f1bcf9.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/7f5cacd6-c181-46ad-ad0e-30f4d2f1bcf9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/7f5cacd6-c181-46ad-ad0e-30f4d2f1bcf9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/7f5cacd6-c181-46ad-ad0e-30f4d2f1bcf9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/7f5cacd6-c181-46ad-ad0e-30f4d2f1bcf9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/7f5cacd6-c181-46ad-ad0e-30f4d2f1bcf9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Senta Berger ist als beste Hauptdarstellerin nominiert. (Archivbild)" data-source="Felix Hörhager/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Schlagerbranche</h4>
-                <h3 class="fp-article__title text-xl--bold ">Howard Carpendale erstmals an der Spitze der Album-Charts</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Kultur</h4>
+                <h3 class="fp-article__title text-xl--bold ">Deutscher Filmpreis: Das sind die Favoriten</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/der-grosse-romantiker-bruno-mars-ist-der-konig-des-soul-4206851">
+            <a href="/panorama/stars/ich-bin-bereit-celine-dion-will-auf-die-buhne-zuruck-4225276">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/27/cdf16861-a320-441f-84e6-ef0a9e34e2b0.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/27/cdf16861-a320-441f-84e6-ef0a9e34e2b0.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/27/cdf16861-a320-441f-84e6-ef0a9e34e2b0.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/27/cdf16861-a320-441f-84e6-ef0a9e34e2b0.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/27/cdf16861-a320-441f-84e6-ef0a9e34e2b0.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/27/cdf16861-a320-441f-84e6-ef0a9e34e2b0.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/27/cdf16861-a320-441f-84e6-ef0a9e34e2b0.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Auf seinem neuen Album „The Romantic“ zelebriert Bruno Mars den Sound der 70er Jahre." data-source="Chris Pizzello/Invision/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/761e4063-6203-4ada-a332-11676bf873ae.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/761e4063-6203-4ada-a332-11676bf873ae.jpeg?rect=0%2C126%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/761e4063-6203-4ada-a332-11676bf873ae.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/761e4063-6203-4ada-a332-11676bf873ae.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/761e4063-6203-4ada-a332-11676bf873ae.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/761e4063-6203-4ada-a332-11676bf873ae.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/761e4063-6203-4ada-a332-11676bf873ae.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Dion hatte ihre Diagnose 2022 öffentlich gemacht. (Archivbild)" data-source="Evan Agostini/Invision/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Neues Album nach zehn Jahren</h4>
-                <h3 class="fp-article__title text-xl--bold ">Der große Romantiker: Bruno Mars ist der König des Soul</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Nach Krankheitspause</h4>
+                <h3 class="fp-article__title text-xl--bold ">„Ich bin bereit“: Céline Dion will auf die Bühne zurück</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/hazel-brugger-deutschland-ist-gut-im-kleinreden-beim-esc-4206909">
+            <a href="/panorama/stars/blackpink-star-lisa-kundigt-eigene-showreihe-in-las-vegas-an-4225393">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/27/e201336b-6395-4575-aa15-a03906a52919.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/27/e201336b-6395-4575-aa15-a03906a52919.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/27/e201336b-6395-4575-aa15-a03906a52919.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/27/e201336b-6395-4575-aa15-a03906a52919.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/27/e201336b-6395-4575-aa15-a03906a52919.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/27/e201336b-6395-4575-aa15-a03906a52919.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/27/e201336b-6395-4575-aa15-a03906a52919.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Im vergangenen Jahr moderierte Hazel Brugger (links) den Eurovision Song Contest in Basel - nun präsentiert sie auch den deutschen Vorentscheid. (Archivbild)" data-source="Jens Büttner/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/a3790337-426b-4184-9398-2e23033da40c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/a3790337-426b-4184-9398-2e23033da40c.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/a3790337-426b-4184-9398-2e23033da40c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/a3790337-426b-4184-9398-2e23033da40c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/a3790337-426b-4184-9398-2e23033da40c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/a3790337-426b-4184-9398-2e23033da40c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/a3790337-426b-4184-9398-2e23033da40c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Lalisa Manoban (links im Bild) und ihre K-Pop-Gruppe Blackpink werden von Millionen Fans angehimmelt. (Archivbild)" data-source="Ahn Young-joon/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> „Chill mal“</h4>
-                <h3 class="fp-article__title text-xl--bold ">Hazel Brugger: Deutschland ist gut im Kleinreden beim ESC</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Leute</h4>
+                <h3 class="fp-article__title text-xl--bold ">Blackpink-Star Lisa kündigt eigene Showreihe in Las Vegas an</h3>
             </a>
         </article>
 </div>
@@ -1981,7 +2030,9 @@
 
 
 
-</div></section><section class="fp-related-articles embed fp-section"><div data-service="subcategory-teasers-list"><!-- Display grid solution  -->
+</div></section><div class="fp-free-html"><script id="mobile_6_script">    
+    document.querySelector("#mobile_6_script").insertAdjacentHTML("afterend", '<div class="center" id="' + ( window.innerWidth <= 550 ? 'mobile_6' : 'desktop_6') + '"></div>');
+</script></div><section class="fp-related-articles embed fp-section"><div data-service="subcategory-teasers-list"><!-- Display grid solution  -->
 <div class="fp-article-list">
     <header class="fp-category-name-header">
         <aside class="fp-category-name-header__content">
@@ -1994,48 +2045,48 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/vermischtes/gesetz-deutschland-skurril-bgb-stvo-4155604">
+            <a href="/panorama/vermischtes/flughafen-leipzig-halle-ddr-concorde-landung-geschichte-4225584">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/01/14/8ba3be92-2805-49a6-9f77-dfd88565860a.jpeg?rect=0%2C16%2C4000%2C2250&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/01/14/8ba3be92-2805-49a6-9f77-dfd88565860a.jpeg?rect=0%2C16%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/01/14/8ba3be92-2805-49a6-9f77-dfd88565860a.jpeg?rect=0%2C16%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/01/14/8ba3be92-2805-49a6-9f77-dfd88565860a.jpeg?rect=0%2C16%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/01/14/8ba3be92-2805-49a6-9f77-dfd88565860a.jpeg?rect=0%2C16%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/01/14/8ba3be92-2805-49a6-9f77-dfd88565860a.jpeg?rect=0%2C16%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/01/14/8ba3be92-2805-49a6-9f77-dfd88565860a.jpeg?rect=0%2C16%2C4000%2C2250&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Es gibt Gesetze in Deutschland, die nicht jeder kennt: Wussten Sie zum Beispiel, dass man nackt Autofahren darf - theoretisch zumindest?" data-source="(Symbolfoto: Imago/Westend61)">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/0e761195-6286-46ac-968a-9035e3790233.jpeg?rect=0%2C158%2C4000%2C2250&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/0e761195-6286-46ac-968a-9035e3790233.jpeg?rect=0%2C158%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/0e761195-6286-46ac-968a-9035e3790233.jpeg?rect=0%2C158%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/0e761195-6286-46ac-968a-9035e3790233.jpeg?rect=0%2C158%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/0e761195-6286-46ac-968a-9035e3790233.jpeg?rect=0%2C158%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/0e761195-6286-46ac-968a-9035e3790233.jpeg?rect=0%2C158%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/0e761195-6286-46ac-968a-9035e3790233.jpeg?rect=0%2C158%2C4000%2C2250&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Concorde der Air France landete erstmalig 1986 am Flughafen Leipzig. Damals brachte die Maschine Gäste zur Leipziger Frühjahrsmesse." data-source="Foto: Imago/Frank Sorge">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Skurrile Regeln in Deutschland</h4>
-                <h3 class="fp-article__title text-xl--bold ">Von nackten Autofahrern bis Marschieren auf einer Brücke: Diese kuriosen Gesetze gibt es</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Zur Frühjahrsmesse</h4>
+                <h3 class="fp-article__title text-xl--bold ">Spektakulär! Wie vor 40 Jahren die erste Concorde am Flughafen Leipzig landete</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/vermischtes/geburtenfeindliche-weihnachten-4166893">
+            <a href="/panorama/vermischtes/tim-raue-sphere-soljanka-ddr-kult-gericht-fernsehturm-restaurant-4223506">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/12/16/26923c98-71b7-4f84-bd9b-81d71f4b3209.jpeg?rect=120%2C0%2C599%2C472&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/12/16/26923c98-71b7-4f84-bd9b-81d71f4b3209.jpeg?rect=120%2C0%2C599%2C472&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/12/16/26923c98-71b7-4f84-bd9b-81d71f4b3209.jpeg?rect=120%2C0%2C599%2C472&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/12/16/26923c98-71b7-4f84-bd9b-81d71f4b3209.jpeg?rect=120%2C0%2C599%2C472&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/12/16/26923c98-71b7-4f84-bd9b-81d71f4b3209.jpeg?rect=120%2C0%2C599%2C472&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/12/16/26923c98-71b7-4f84-bd9b-81d71f4b3209.jpeg?rect=120%2C0%2C599%2C472&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/12/16/26923c98-71b7-4f84-bd9b-81d71f4b3209.jpeg?rect=120%2C0%2C599%2C472&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Christkinder sind selten. " data-source="Foto: dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/27/a55d3756-0f5d-4293-9d8f-418abdfa8508.jpeg?rect=0%2C0%2C1200%2C675&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/27/a55d3756-0f5d-4293-9d8f-418abdfa8508.jpeg?rect=0%2C0%2C1200%2C675&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/27/a55d3756-0f5d-4293-9d8f-418abdfa8508.jpeg?rect=0%2C0%2C1200%2C675&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/27/a55d3756-0f5d-4293-9d8f-418abdfa8508.jpeg?rect=0%2C0%2C1200%2C675&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/27/a55d3756-0f5d-4293-9d8f-418abdfa8508.jpeg?rect=0%2C0%2C1200%2C675&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/27/a55d3756-0f5d-4293-9d8f-418abdfa8508.jpeg?rect=0%2C0%2C1200%2C675&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/27/a55d3756-0f5d-4293-9d8f-418abdfa8508.jpeg?rect=0%2C0%2C1200%2C675&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Gut drauf: Spitzenkoch Tim Raue bietet in seinem Restaurant &quot;Sphere&quot; in Berlin die ganze Bandbreite an DDR-Essen an." data-source="(Foto: Nils Hasenau)">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Geburtenfeindliche Weihnachten</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Mit besonderem Kniff</h4>
+                <h3 class="fp-article__title text-xl--bold ">Soljanka wie bei Mutti – und in luftiger Höhe! Tim Raue kocht DDR-Kultgericht im Fernsehturm</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/vermischtes/jahrhundertwinter-extremwinter-deutschland-wetter-klima-schnee-eis-kaelte-dwd-prognose-experten-4137270">
+            <a href="/panorama/vermischtes/voelkerfreundschaft-traumschiff-ddr-kult-reisen-urlaub-4218927">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/12/05/fcb8702e-ee10-4cb4-87c1-66588bf2f9c9.jpeg?rect=223%2C333%2C3555%2C1999&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/12/05/fcb8702e-ee10-4cb4-87c1-66588bf2f9c9.jpeg?rect=223%2C333%2C3555%2C1999&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/12/05/fcb8702e-ee10-4cb4-87c1-66588bf2f9c9.jpeg?rect=223%2C333%2C3555%2C1999&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/12/05/fcb8702e-ee10-4cb4-87c1-66588bf2f9c9.jpeg?rect=223%2C333%2C3555%2C1999&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/12/05/fcb8702e-ee10-4cb4-87c1-66588bf2f9c9.jpeg?rect=223%2C333%2C3555%2C1999&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/12/05/fcb8702e-ee10-4cb4-87c1-66588bf2f9c9.jpeg?rect=223%2C333%2C3555%2C1999&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/12/05/fcb8702e-ee10-4cb4-87c1-66588bf2f9c9.jpeg?rect=223%2C333%2C3555%2C1999&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Einige Prognosen warnen vor einem Jahrhundertwinter, doch lässt sich so etwas überhaupt seriös vorhersagen? Das sagen Experten." data-source="(Foto: dpa | Peter Gercke)">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/23/ad712822-fb9c-42a2-ab51-19acf92dbfb3.jpeg?rect=264%2C326%2C3473%2C1954&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/23/ad712822-fb9c-42a2-ab51-19acf92dbfb3.jpeg?rect=264%2C326%2C3473%2C1954&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/23/ad712822-fb9c-42a2-ab51-19acf92dbfb3.jpeg?rect=264%2C326%2C3473%2C1954&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/23/ad712822-fb9c-42a2-ab51-19acf92dbfb3.jpeg?rect=264%2C326%2C3473%2C1954&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/23/ad712822-fb9c-42a2-ab51-19acf92dbfb3.jpeg?rect=264%2C326%2C3473%2C1954&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/23/ad712822-fb9c-42a2-ab51-19acf92dbfb3.jpeg?rect=264%2C326%2C3473%2C1954&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/23/ad712822-fb9c-42a2-ab51-19acf92dbfb3.jpeg?rect=264%2C326%2C3473%2C1954&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die &quot;Völkerfreundschaft&quot; war für viele Bürger in der DDR ein seltenes Fenster zur Welt und ein Symbol für Fernweh." data-source="(Foto: Imago/serienlicht)">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Schnee, Eis und Kälte</h4>
-                <h3 class="fp-article__title text-xl--bold ">Jahrhundertwinter in Deutschland? Experten klären, wie realistisch Prognosen sind</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> "Das Land legal verlassen"</h4>
+                <h3 class="fp-article__title text-xl--bold ">DDR-Kreuzfahrtlegende "Völkerfreundschaft": Wie ein schwedisches Schiff zu Ikone wurde</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/vermischtes/supermond-dezember-2025-vollmond-mondkalender-2026-mythen-bedeutung-ueberblick-3701104">
+            <a href="/panorama/vermischtes/polarlichter-maerz-2026-aurora-australis-nordlichter-wo-4208968">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/10/08/be48ef69-2387-4035-a05e-b81975cdd74c.jpeg?rect=0%2C184%2C3536%2C1989&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/10/08/be48ef69-2387-4035-a05e-b81975cdd74c.jpeg?rect=0%2C184%2C3536%2C1989&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/10/08/be48ef69-2387-4035-a05e-b81975cdd74c.jpeg?rect=0%2C184%2C3536%2C1989&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/10/08/be48ef69-2387-4035-a05e-b81975cdd74c.jpeg?rect=0%2C184%2C3536%2C1989&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/10/08/be48ef69-2387-4035-a05e-b81975cdd74c.jpeg?rect=0%2C184%2C3536%2C1989&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/10/08/be48ef69-2387-4035-a05e-b81975cdd74c.jpeg?rect=0%2C184%2C3536%2C1989&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/10/08/be48ef69-2387-4035-a05e-b81975cdd74c.jpeg?rect=0%2C184%2C3536%2C1989&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Im November erwartet uns ein sogenannter Nebelmond." data-source="Symbolbild: Imago/Wolfgang Maria Weber">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/18/91bd7b56-e181-4c4f-abd5-2d3950e7cea0.jpeg?rect=40%2C231%2C3920%2C2205&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/18/91bd7b56-e181-4c4f-abd5-2d3950e7cea0.jpeg?rect=40%2C231%2C3920%2C2205&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/18/91bd7b56-e181-4c4f-abd5-2d3950e7cea0.jpeg?rect=40%2C231%2C3920%2C2205&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/18/91bd7b56-e181-4c4f-abd5-2d3950e7cea0.jpeg?rect=40%2C231%2C3920%2C2205&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/18/91bd7b56-e181-4c4f-abd5-2d3950e7cea0.jpeg?rect=40%2C231%2C3920%2C2205&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/18/91bd7b56-e181-4c4f-abd5-2d3950e7cea0.jpeg?rect=40%2C231%2C3920%2C2205&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/18/91bd7b56-e181-4c4f-abd5-2d3950e7cea0.jpeg?rect=40%2C231%2C3920%2C2205&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nordlichter könnten 2026 häufiger und intensiver auftreten als in den Jahren zuvor." data-source="(Foto: dpa | Matthias Bein)">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Mondkalender 2025</h4>
-                <h3 class="fp-article__title text-xl--bold ">Supermond über Sachsen-Anhalt im Dezember: Wann er zu sehen ist</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Sonnenzyklus am Maximum</h4>
+                <h3 class="fp-article__title text-xl--bold ">Polarlichter im März 2026: Warum jetzt die besten Chancen seit Jahren bestehen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/vermischtes/wenn-nachrichtenstars-neue-karrieren-starten-4144982">
+            <a href="/panorama/vermischtes/gesetz-deutschland-stvo-bgbg-kurios-autobahn-4155604">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/11/07/48524e6c-d776-4ce4-843d-6f4517e91843.jpeg?rect=0%2C74%2C1244%2C700&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/11/07/48524e6c-d776-4ce4-843d-6f4517e91843.jpeg?rect=0%2C74%2C1244%2C700&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/11/07/48524e6c-d776-4ce4-843d-6f4517e91843.jpeg?rect=0%2C74%2C1244%2C700&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/11/07/48524e6c-d776-4ce4-843d-6f4517e91843.jpeg?rect=0%2C74%2C1244%2C700&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/11/07/48524e6c-d776-4ce4-843d-6f4517e91843.jpeg?rect=0%2C74%2C1244%2C700&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/11/07/48524e6c-d776-4ce4-843d-6f4517e91843.jpeg?rect=0%2C74%2C1244%2C700&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/11/07/48524e6c-d776-4ce4-843d-6f4517e91843.jpeg?rect=0%2C74%2C1244%2C700&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Constantin Schreiber wollte nicht mehr nur Vorleser sein." data-source="(Foto: DPA)">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/18/8996772a-4e9a-4c33-afb6-2ec85c58a478.jpeg?rect=0%2C322%2C3072%2C1728&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/18/8996772a-4e9a-4c33-afb6-2ec85c58a478.jpeg?rect=0%2C322%2C3072%2C1728&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/18/8996772a-4e9a-4c33-afb6-2ec85c58a478.jpeg?rect=0%2C322%2C3072%2C1728&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/18/8996772a-4e9a-4c33-afb6-2ec85c58a478.jpeg?rect=0%2C322%2C3072%2C1728&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/18/8996772a-4e9a-4c33-afb6-2ec85c58a478.jpeg?rect=0%2C322%2C3072%2C1728&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/18/8996772a-4e9a-4c33-afb6-2ec85c58a478.jpeg?rect=0%2C322%2C3072%2C1728&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/18/8996772a-4e9a-4c33-afb6-2ec85c58a478.jpeg?rect=0%2C322%2C3072%2C1728&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Es gibt Gesetze in Deutschland, die nicht jeder kennt: Wussten Sie zum Beispiel, dass man mit leerem Tank nicht auf der Autobahn liegen bleiben darf?" data-source="(Symbolfoto: Imago/Bihlmayerfotografie)">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Berufswege</h4>
-                <h3 class="fp-article__title text-xl--bold fp-paid-article__article">Wenn Nachrichtenstars neue Karrieren starten</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Kuriose Gesetze</h4>
+                <h3 class="fp-article__title text-xl--bold ">Mit leerem Tank auf der Autobahn liegen bleiben ist in Deutschland nicht erlaubt</h3>
             </a>
         </article>
 </div>
@@ -2043,7 +2094,9 @@
 
 
 
-</div></section><section class="fp-related-articles embed fp-section hide-heading"><div data-service="category-teasers-list"><!-- Display grid solution  -->
+</div></section><div class="fp-free-html"><script id="mobile_7_script">    
+    document.querySelector("#mobile_7_script").insertAdjacentHTML("afterend", '<div class="center" id="' + ( window.innerWidth <= 550 ? 'mobile_7' : 'desktop_7') + '"></div>');
+</script></div><section class="fp-related-articles embed fp-section hide-heading"><div data-service="category-teasers-list"><!-- Display grid solution  -->
 <div class="fp-article-list">
     <header class="fp-category-name-header">
         <aside class="fp-category-name-header__content">
@@ -2056,48 +2109,48 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/thuringer-hc-feiert-klaren-auswartssieg-4207689">
+            <a href="/panorama/brutales-foul-uberschattet-ingolstadts-sieg-in-del-playoffs-4225919">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/9d33bca3-9eed-44c7-acaa-e7213e82ae76.jpeg?rect=0%2C148%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/9d33bca3-9eed-44c7-acaa-e7213e82ae76.jpeg?rect=0%2C148%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/9d33bca3-9eed-44c7-acaa-e7213e82ae76.jpeg?rect=0%2C148%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/9d33bca3-9eed-44c7-acaa-e7213e82ae76.jpeg?rect=0%2C148%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/9d33bca3-9eed-44c7-acaa-e7213e82ae76.jpeg?rect=0%2C148%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/9d33bca3-9eed-44c7-acaa-e7213e82ae76.jpeg?rect=0%2C148%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/9d33bca3-9eed-44c7-acaa-e7213e82ae76.jpeg?rect=0%2C148%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Jana Scheib (M) und die Handballerinnen des Thüringer HC setzten sich souverän durch. (Archivbild)" data-source="Sven Hoppe/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/56dab55a-e6b2-4054-a860-0f074ddea43d.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/56dab55a-e6b2-4054-a860-0f074ddea43d.jpeg?rect=0%2C137%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/56dab55a-e6b2-4054-a860-0f074ddea43d.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/56dab55a-e6b2-4054-a860-0f074ddea43d.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/56dab55a-e6b2-4054-a860-0f074ddea43d.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/56dab55a-e6b2-4054-a860-0f074ddea43d.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/56dab55a-e6b2-4054-a860-0f074ddea43d.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ingolstadt-Coach Mark French erlebt ein 7:2 gegen München - der Sport wurde aber zur Nebensache. (Archivbild)" data-source="Sven Hoppe/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Handball-Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Thüringer HC feiert klaren Auswärtssieg</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Eishockey</h4>
+                <h3 class="fp-article__title text-xl--bold ">Brutales Foul überschattet Ingolstadts Sieg in DEL-Playoffs</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/meisterschaft-scheint-entschieden-bayern-enteilt-dem-bvb-4207687">
+            <a href="/panorama/bayern-star-kane-fehlt-england-verliert-gegen-japan-4225885">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/7cdb9b93-028c-4bf6-903b-a9cf172a7c8f.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/7cdb9b93-028c-4bf6-903b-a9cf172a7c8f.jpeg?rect=0%2C0%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/7cdb9b93-028c-4bf6-903b-a9cf172a7c8f.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/7cdb9b93-028c-4bf6-903b-a9cf172a7c8f.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/7cdb9b93-028c-4bf6-903b-a9cf172a7c8f.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/7cdb9b93-028c-4bf6-903b-a9cf172a7c8f.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/7cdb9b93-028c-4bf6-903b-a9cf172a7c8f.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Jubelte über zwei Tore: Bayerns Torjäger Harry Kane" data-source="Federico Gambarini/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/c4b1193b-d3dc-415f-832c-89b42c7a9580.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/c4b1193b-d3dc-415f-832c-89b42c7a9580.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/c4b1193b-d3dc-415f-832c-89b42c7a9580.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/c4b1193b-d3dc-415f-832c-89b42c7a9580.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/c4b1193b-d3dc-415f-832c-89b42c7a9580.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/c4b1193b-d3dc-415f-832c-89b42c7a9580.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/c4b1193b-d3dc-415f-832c-89b42c7a9580.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Harry Kane konnte das Testspiel gegen Japan nicht bestreiten. (Archivfoto)" data-source="Bradley Collyer/PA Wire/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Bundesliga-Gipfel</h4>
-                <h3 class="fp-article__title text-xl--bold ">Meisterschaft scheint entschieden: Bayern enteilt dem BVB</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Fußball</h4>
+                <h3 class="fp-article__title text-xl--bold ">Bayern-Star Kane fehlt: England verliert gegen Japan</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/diks-verschafft-monchengladbach-spaten-1-0-sieg-4207606">
+            <a href="/panorama/eisbaren-gewinnen-viertes-viertelfinale-gegen-straubing-4225913">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/2b67ff17-3f91-47a2-95e9-f4b7275a2e98.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/2b67ff17-3f91-47a2-95e9-f4b7275a2e98.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/2b67ff17-3f91-47a2-95e9-f4b7275a2e98.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/2b67ff17-3f91-47a2-95e9-f4b7275a2e98.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/2b67ff17-3f91-47a2-95e9-f4b7275a2e98.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/2b67ff17-3f91-47a2-95e9-f4b7275a2e98.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/2b67ff17-3f91-47a2-95e9-f4b7275a2e98.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Auch Gladbachs Castrop traf das Tor nicht." data-source="Fabian Strauch/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/9a302dc5-8b4c-4e49-accd-15b58855f734.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/9a302dc5-8b4c-4e49-accd-15b58855f734.jpeg?rect=0%2C78%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/9a302dc5-8b4c-4e49-accd-15b58855f734.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/9a302dc5-8b4c-4e49-accd-15b58855f734.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/9a302dc5-8b4c-4e49-accd-15b58855f734.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/9a302dc5-8b4c-4e49-accd-15b58855f734.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/9a302dc5-8b4c-4e49-accd-15b58855f734.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Angreifer Marcel Noebels traf beim Heimsieg der Eisbären Berlin gegen die Straubing Tigers. (Archivbild)" data-source="Andreas Gora/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Fußball-Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Diks verschafft Mönchengladbach späten 1:0-Sieg</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Deutsche Eishockey Liga</h4>
+                <h3 class="fp-article__title text-xl--bold ">Eisbären gewinnen viertes Viertelfinale gegen Straubing</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/mainz-mehrere-spiele-ohne-torjager-amiri-4207674">
+            <a href="/panorama/bremerhaven-verkurzt-in-del-playoff-gegen-mannheim-4225910">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/89fd217e-b126-4d63-94ac-c0a127651d8e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/89fd217e-b126-4d63-94ac-c0a127651d8e.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/89fd217e-b126-4d63-94ac-c0a127651d8e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/89fd217e-b126-4d63-94ac-c0a127651d8e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/89fd217e-b126-4d63-94ac-c0a127651d8e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/89fd217e-b126-4d63-94ac-c0a127651d8e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/89fd217e-b126-4d63-94ac-c0a127651d8e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nadiem Amiri fehlt Mainz wohl mehrere Spiele. (Archivbild)" data-source="Torsten Silz/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/d5e8626f-7bfc-45a0-9f81-7dc7963ce95d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/d5e8626f-7bfc-45a0-9f81-7dc7963ce95d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/d5e8626f-7bfc-45a0-9f81-7dc7963ce95d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/d5e8626f-7bfc-45a0-9f81-7dc7963ce95d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/d5e8626f-7bfc-45a0-9f81-7dc7963ce95d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/d5e8626f-7bfc-45a0-9f81-7dc7963ce95d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/d5e8626f-7bfc-45a0-9f81-7dc7963ce95d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Fischtown Pinguins haben das vorzeitige Aus gegen Mannheim abwenden können. (Archivbild)" data-source="Uwe Anspach/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Fußball-Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Mainz mehrere Spiele ohne Torjäger Amiri</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Eishockey</h4>
+                <h3 class="fp-article__title text-xl--bold ">Bremerhaven verkürzt in DEL-Playoff gegen Mannheim</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/u-haftling-weiterhin-fluchtig-wie-konnte-er-entkommen-4207444">
+            <a href="/panorama/eurojackpot-uber-70-millionen-euro-gehen-nach-nrw-4225903">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/91b0edca-95bf-4f69-b21c-a682014d0ae5.jpeg?rect=185%2C0%2C1678%2C944&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/91b0edca-95bf-4f69-b21c-a682014d0ae5.jpeg?rect=185%2C0%2C1678%2C944&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/91b0edca-95bf-4f69-b21c-a682014d0ae5.jpeg?rect=185%2C0%2C1678%2C944&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/91b0edca-95bf-4f69-b21c-a682014d0ae5.jpeg?rect=185%2C0%2C1678%2C944&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/91b0edca-95bf-4f69-b21c-a682014d0ae5.jpeg?rect=185%2C0%2C1678%2C944&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/91b0edca-95bf-4f69-b21c-a682014d0ae5.jpeg?rect=185%2C0%2C1678%2C944&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/91b0edca-95bf-4f69-b21c-a682014d0ae5.jpeg?rect=185%2C0%2C1678%2C944&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Einen konkreten Hinweis darauf, wo sich der Mann aufhalten könnte, hat die Polizei derzeit nicht. (Archivbild)" data-source="Markus Zechbauer/zema-medien.de/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/8a907dc2-aab2-4e0e-966a-b286ddf7f2da.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/8a907dc2-aab2-4e0e-966a-b286ddf7f2da.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/8a907dc2-aab2-4e0e-966a-b286ddf7f2da.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/8a907dc2-aab2-4e0e-966a-b286ddf7f2da.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/8a907dc2-aab2-4e0e-966a-b286ddf7f2da.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/8a907dc2-aab2-4e0e-966a-b286ddf7f2da.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/8a907dc2-aab2-4e0e-966a-b286ddf7f2da.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ein Spieler oder eine Spielerin tippte auf die richtigen Zahlen und kann sich nun über mehr als 70 Millionen Euro freuen." data-source="Thomas Banneyer/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Polizei</h4>
-                <h3 class="fp-article__title text-xl--bold ">U-Häftling weiterhin flüchtig - wie konnte er entkommen?</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Glücksspiel</h4>
+                <h3 class="fp-article__title text-xl--bold ">Eurojackpot: Über 70 Millionen Euro gehen nach NRW</h3>
             </a>
         </article>
 </div>
@@ -2105,7 +2158,9 @@
 
 
 
-</div></section><section class="fp-related-articles embed fp-section hide-heading"><div data-service="category-teasers-list"><!-- Display grid solution  -->
+</div></section><div class="fp-free-html"><script id="mobile_8_script">    
+    document.querySelector("#mobile_8_script").insertAdjacentHTML("afterend", '<div class="center" id="' + ( window.innerWidth <= 550 ? 'mobile_8' : 'desktop_8') + '"></div>');
+</script></div><section class="fp-related-articles embed fp-section hide-heading"><div data-service="category-teasers-list"><!-- Display grid solution  -->
 <div class="fp-article-list">
     <header class="fp-category-name-header">
         <aside class="fp-category-name-header__content">
@@ -2118,48 +2173,48 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/osnabruck-setzt-siegesserie-fort-und-steht-auf-platz-eins-4207579">
+            <a href="/panorama/frankreichs-senat-fur-verbot-vieler-sozialer-medien-unter-15-4225901">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/d1c3d6c9-fea5-4a53-a335-8faf74146c36.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/d1c3d6c9-fea5-4a53-a335-8faf74146c36.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/d1c3d6c9-fea5-4a53-a335-8faf74146c36.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/d1c3d6c9-fea5-4a53-a335-8faf74146c36.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/d1c3d6c9-fea5-4a53-a335-8faf74146c36.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/d1c3d6c9-fea5-4a53-a335-8faf74146c36.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/d1c3d6c9-fea5-4a53-a335-8faf74146c36.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der VfL Osnabrück gewann auch sein Spiel in Aue. (Symbolbild)" data-source="Friso Gentsch/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/5da1a317-fc84-48ea-a35a-60ac72b07ffc.jpeg?rect=0%2C142%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/5da1a317-fc84-48ea-a35a-60ac72b07ffc.jpeg?rect=0%2C142%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/5da1a317-fc84-48ea-a35a-60ac72b07ffc.jpeg?rect=0%2C142%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/5da1a317-fc84-48ea-a35a-60ac72b07ffc.jpeg?rect=0%2C142%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/5da1a317-fc84-48ea-a35a-60ac72b07ffc.jpeg?rect=0%2C142%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/5da1a317-fc84-48ea-a35a-60ac72b07ffc.jpeg?rect=0%2C142%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/5da1a317-fc84-48ea-a35a-60ac72b07ffc.jpeg?rect=0%2C142%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Frankreichs Präsident will ein Verbot sozialer Medien für Kinder und Jugendliche bis 15 Jahre zum nächsten Schuljahr. (Archivbild)" data-source="Annette Riedl/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> 3. Liga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Osnabrück setzt Siegesserie fort und steht auf Platz eins</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Kinderschutz</h4>
+                <h3 class="fp-article__title text-xl--bold ">Frankreichs Senat für Verbot vieler sozialer Medien unter 15</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/nullnummer-gegen-verl-cottbus-verliert-tabellenfuhrung-4207673">
+            <a href="/panorama/drogentunnel-zwischen-marokko-und-spanien-exklave-entdeckt-4225899">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/36a3d684-163f-4b79-860d-d08c20fc42ac.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/36a3d684-163f-4b79-860d-d08c20fc42ac.jpeg?rect=0%2C108%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/36a3d684-163f-4b79-860d-d08c20fc42ac.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/36a3d684-163f-4b79-860d-d08c20fc42ac.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/36a3d684-163f-4b79-860d-d08c20fc42ac.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/36a3d684-163f-4b79-860d-d08c20fc42ac.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/36a3d684-163f-4b79-860d-d08c20fc42ac.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Marius Funk (r) im Tor von Energie Cottbus rettet gegen den Verler Alessio Besio." data-source="Julius Frick/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/a49abe04-25e2-485b-a812-562d8db34aaa.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/a49abe04-25e2-485b-a812-562d8db34aaa.jpeg?rect=0%2C0%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/a49abe04-25e2-485b-a812-562d8db34aaa.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/a49abe04-25e2-485b-a812-562d8db34aaa.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/a49abe04-25e2-485b-a812-562d8db34aaa.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/a49abe04-25e2-485b-a812-562d8db34aaa.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/a49abe04-25e2-485b-a812-562d8db34aaa.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Behörden sprechen von einem bedeutenden Schlag gegen die Drogenmafia. (Foto Handout)" data-source="---/Policia Nacional de Espana/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> 3. Fußball-Liga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Nullnummer gegen Verl: Cottbus verliert Tabellenführung</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Kriminalität</h4>
+                <h3 class="fp-article__title text-xl--bold ">Drogentunnel zwischen Marokko und Spanien-Exklave entdeckt</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/favoritenschreck-suhl-holt-sich-pokalsieg-gegen-stuttgart-4207671">
+            <a href="/panorama/rettungsaktion-fur-ostsee-buckelwal-unterbrochen-4225259">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/666a58ac-081e-4fa7-a5c0-a2ebdea16cac.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/666a58ac-081e-4fa7-a5c0-a2ebdea16cac.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/666a58ac-081e-4fa7-a5c0-a2ebdea16cac.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/666a58ac-081e-4fa7-a5c0-a2ebdea16cac.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/666a58ac-081e-4fa7-a5c0-a2ebdea16cac.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/666a58ac-081e-4fa7-a5c0-a2ebdea16cac.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/666a58ac-081e-4fa7-a5c0-a2ebdea16cac.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Das Team aus Suhl schockte den Favoriten." data-source="Uwe Anspach/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/bd6794b9-d5a6-42ad-b28e-c626ae2447f3.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/bd6794b9-d5a6-42ad-b28e-c626ae2447f3.jpeg?rect=0%2C69%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/bd6794b9-d5a6-42ad-b28e-c626ae2447f3.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/bd6794b9-d5a6-42ad-b28e-c626ae2447f3.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/bd6794b9-d5a6-42ad-b28e-c626ae2447f3.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/bd6794b9-d5a6-42ad-b28e-c626ae2447f3.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/bd6794b9-d5a6-42ad-b28e-c626ae2447f3.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Heute sind laut Umweltministerium vorerst keine weiteren Aktionen geplant. (Archivbild)" data-source="Stefan Sauer/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Volleyball</h4>
-                <h3 class="fp-article__title text-xl--bold ">Favoritenschreck Suhl holt sich Pokalsieg gegen Stuttgart</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Meeressäuger</h4>
+                <h3 class="fp-article__title text-xl--bold ">Rettungsaktion für Ostsee-Buckelwal unterbrochen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/michael-muller-zur-wahl-es-wird-wirklich-spannend-4207366">
+            <a href="/panorama/wasserbehalter-fallt-von-kran-bauarbeiter-todlich-verletzt-4225895">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/e90ddf05-79e9-4d5f-bef4-7988a71090c1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/e90ddf05-79e9-4d5f-bef4-7988a71090c1.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/e90ddf05-79e9-4d5f-bef4-7988a71090c1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/e90ddf05-79e9-4d5f-bef4-7988a71090c1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/e90ddf05-79e9-4d5f-bef4-7988a71090c1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/e90ddf05-79e9-4d5f-bef4-7988a71090c1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/e90ddf05-79e9-4d5f-bef4-7988a71090c1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Berlins früherer Regierender Bürgermeister Michael Müller (SPD) hält Dreier-Koalitionen für schwierig. (Archivfoto)" data-source="Fabian Sommer/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/b054624a-c693-40e5-8efe-38441e7b484f.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/b054624a-c693-40e5-8efe-38441e7b484f.jpeg?rect=0%2C64%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/b054624a-c693-40e5-8efe-38441e7b484f.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/b054624a-c693-40e5-8efe-38441e7b484f.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/b054624a-c693-40e5-8efe-38441e7b484f.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/b054624a-c693-40e5-8efe-38441e7b484f.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/b054624a-c693-40e5-8efe-38441e7b484f.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bei dem Unfall in Ochtrup starb ein 45-Jähriger." data-source="Justin Brosch/Brosch/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Abgeordnetenhauswahl in Berlin</h4>
-                <h3 class="fp-article__title text-xl--bold ">Michael Müller zur Wahl: „Es wird wirklich spannend“</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Tödlicher Unfall</h4>
+                <h3 class="fp-article__title text-xl--bold ">Wasserbehälter fällt von Kran – Bauarbeiter tödlich verletzt</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/ersatzverkehr-streit-zwischen-ecovista-und-deutscher-bahn-4207588">
+            <a href="/panorama/nach-angriff-wolf-ist-in-wildtierstation-in-niedersachsen-4225451">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/7ad99f95-df6a-4fdf-83e3-5b1fa40bdb2d.jpeg?rect=0%2C110%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/7ad99f95-df6a-4fdf-83e3-5b1fa40bdb2d.jpeg?rect=0%2C110%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/7ad99f95-df6a-4fdf-83e3-5b1fa40bdb2d.jpeg?rect=0%2C110%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/7ad99f95-df6a-4fdf-83e3-5b1fa40bdb2d.jpeg?rect=0%2C110%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/7ad99f95-df6a-4fdf-83e3-5b1fa40bdb2d.jpeg?rect=0%2C110%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/7ad99f95-df6a-4fdf-83e3-5b1fa40bdb2d.jpeg?rect=0%2C110%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/7ad99f95-df6a-4fdf-83e3-5b1fa40bdb2d.jpeg?rect=0%2C110%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Busflotte im Schienenersatzverkehr Hamburg-Berlin wird wegen Änderungen beim Fahrzeugleasing ausgetauscht." data-source="Jens Kalaene/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/7682631b-0586-4338-bb57-78eff7039ee1.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/7682631b-0586-4338-bb57-78eff7039ee1.jpeg?rect=0%2C117%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/7682631b-0586-4338-bb57-78eff7039ee1.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/7682631b-0586-4338-bb57-78eff7039ee1.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/7682631b-0586-4338-bb57-78eff7039ee1.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/7682631b-0586-4338-bb57-78eff7039ee1.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/7682631b-0586-4338-bb57-78eff7039ee1.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ein Wolf verletzt eine Frau in der Einkaufsmeile Große Bergstraße. (Symbolbild)" data-source="Bernd Weißbrod/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Fahrzeugwechsel</h4>
-                <h3 class="fp-article__title text-xl--bold ">Ersatzverkehr: Streit zwischen Ecovista und Deutscher Bahn</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Tiere</h4>
+                <h3 class="fp-article__title text-xl--bold ">Nach Angriff: Wolf ist in Wildtierstation in Niedersachsen</h3>
             </a>
         </article>
 </div>
@@ -2167,7 +2222,9 @@
 
 
 
-</div></section><section class="fp-related-articles embed fp-section hide-heading"><div data-service="category-teasers-list"><!-- Display grid solution  -->
+</div></section><div class="fp-free-html"><script id="mobile_9_script">    
+    document.querySelector("#mobile_9_script").insertAdjacentHTML("afterend", '<div class="center" id="' + ( window.innerWidth <= 550 ? 'mobile_9' : 'desktop_9') + '"></div>');
+</script></div><section class="fp-related-articles embed fp-section hide-heading"><div data-service="category-teasers-list"><!-- Display grid solution  -->
 <div class="fp-article-list">
     <header class="fp-category-name-header">
         <aside class="fp-category-name-header__content">
@@ -2180,48 +2237,48 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/spater-ausgleich-rettet-leverkusen-punkt-gegen-mainz-4207607">
+            <a href="/panorama/newcastle-krankheit-weitere-200-000-vogel-werden-getotet-4225890">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/87d7f1a1-b584-4f1e-943c-964e385457ea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/87d7f1a1-b584-4f1e-943c-964e385457ea.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/87d7f1a1-b584-4f1e-943c-964e385457ea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/87d7f1a1-b584-4f1e-943c-964e385457ea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/87d7f1a1-b584-4f1e-943c-964e385457ea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/87d7f1a1-b584-4f1e-943c-964e385457ea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/87d7f1a1-b584-4f1e-943c-964e385457ea.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Leverkusens Jarell Quansah jubelt über den Ausgleich." data-source="Marius Becker/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/8d63a8e1-f855-47f7-9bb5-9c69635bc68b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/8d63a8e1-f855-47f7-9bb5-9c69635bc68b.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/8d63a8e1-f855-47f7-9bb5-9c69635bc68b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/8d63a8e1-f855-47f7-9bb5-9c69635bc68b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/8d63a8e1-f855-47f7-9bb5-9c69635bc68b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/8d63a8e1-f855-47f7-9bb5-9c69635bc68b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/8d63a8e1-f855-47f7-9bb5-9c69635bc68b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="In Brandenburger Geflügelbetrieben greift die Newcastle-Erkrankung um sich. (Symbolbild)" data-source="Matthias Bein/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Fußball-Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Später Ausgleich rettet Leverkusen Punkt gegen Mainz</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Tierhaltung</h4>
+                <h3 class="fp-article__title text-xl--bold ">Newcastle-Krankheit: Weitere 200.000 Vögel werden getötet</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufatmen-bei-werder-erster-sieg-nach-13-spielen-4207605">
+            <a href="/panorama/ein-wolf-in-hamburg-warum-das-tier-uns-naher-kommt-4225634">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/898ebc86-6809-42c2-9592-4a2152dc90e7.jpeg?rect=0%2C72%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/898ebc86-6809-42c2-9592-4a2152dc90e7.jpeg?rect=0%2C72%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/898ebc86-6809-42c2-9592-4a2152dc90e7.jpeg?rect=0%2C72%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/898ebc86-6809-42c2-9592-4a2152dc90e7.jpeg?rect=0%2C72%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/898ebc86-6809-42c2-9592-4a2152dc90e7.jpeg?rect=0%2C72%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/898ebc86-6809-42c2-9592-4a2152dc90e7.jpeg?rect=0%2C72%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/898ebc86-6809-42c2-9592-4a2152dc90e7.jpeg?rect=0%2C72%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Brachte Werder in Führung: Jovan Milosevic (r)" data-source="Carmen Jaspersen/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/074f8f45-dd56-4c98-b035-4b1bed0f9053.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/074f8f45-dd56-4c98-b035-4b1bed0f9053.jpeg?rect=0%2C73%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/074f8f45-dd56-4c98-b035-4b1bed0f9053.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/074f8f45-dd56-4c98-b035-4b1bed0f9053.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/074f8f45-dd56-4c98-b035-4b1bed0f9053.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/074f8f45-dd56-4c98-b035-4b1bed0f9053.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/074f8f45-dd56-4c98-b035-4b1bed0f9053.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Eigentlich eher scheu: Wölfe meiden üblicherweise den Menschen." data-source="Carsten Rehder/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Fußball-Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Aufatmen bei Werder: Erster Sieg nach 13 Spielen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Wildtiere</h4>
+                <h3 class="fp-article__title text-xl--bold ">Ein Wolf in Hamburg: Warum das Tier uns näher kommt</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/hertha-mit-positivem-ergebnis-im-zweiten-halbjahr-2025-4207602">
+            <a href="/panorama/wolf-verletzt-frau-in-einkaufspassage-tier-untergebracht-4225686">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/9bbeb289-20b7-4d90-bdad-81dc6d4b655c.jpeg?rect=0%2C173%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/9bbeb289-20b7-4d90-bdad-81dc6d4b655c.jpeg?rect=0%2C173%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/9bbeb289-20b7-4d90-bdad-81dc6d4b655c.jpeg?rect=0%2C173%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/9bbeb289-20b7-4d90-bdad-81dc6d4b655c.jpeg?rect=0%2C173%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/9bbeb289-20b7-4d90-bdad-81dc6d4b655c.jpeg?rect=0%2C173%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/9bbeb289-20b7-4d90-bdad-81dc6d4b655c.jpeg?rect=0%2C173%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/9bbeb289-20b7-4d90-bdad-81dc6d4b655c.jpeg?rect=0%2C173%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Herthas Geschäftsführer Ralf Huschen (l) und Peter Görlich sehen den Verein auf einem guten Weg. (Archivbild)" data-source="Matthias Koch/Sportfoto Matthias Koch./dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/e6007022-7fe7-45d1-acfd-62a376f2550c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/e6007022-7fe7-45d1-acfd-62a376f2550c.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/e6007022-7fe7-45d1-acfd-62a376f2550c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/e6007022-7fe7-45d1-acfd-62a376f2550c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/e6007022-7fe7-45d1-acfd-62a376f2550c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/e6007022-7fe7-45d1-acfd-62a376f2550c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/e6007022-7fe7-45d1-acfd-62a376f2550c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Vor dem Angriff auf eine Frau in Hamburg-Altona streifte der Wolf durch den Westen Hamburgs. (Symbolbild)" data-source="Christian Charisius/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Zweite Fußball-Liga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Hertha mit positivem Ergebnis im zweiten Halbjahr 2025</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Hamburg</h4>
+                <h3 class="fp-article__title text-xl--bold ">Wolf verletzt Frau in Einkaufspassage - Tier untergebracht</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/coup-im-kraichgau-st-pauli-argert-hoffenheim-4207603">
+            <a href="/panorama/kriminalitatsrate-in-sachsen-leicht-gesunken-4225615">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/fc38d4e5-fcc4-4481-920a-f4b06eff91d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/fc38d4e5-fcc4-4481-920a-f4b06eff91d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/fc38d4e5-fcc4-4481-920a-f4b06eff91d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/fc38d4e5-fcc4-4481-920a-f4b06eff91d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/fc38d4e5-fcc4-4481-920a-f4b06eff91d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/fc38d4e5-fcc4-4481-920a-f4b06eff91d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/fc38d4e5-fcc4-4481-920a-f4b06eff91d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Mathias Pereira Lage köpft zum 1:0 für St. Pauli ein." data-source="Heiko Becker/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/e203fb33-14e1-46c3-a7ff-012463305590.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/e203fb33-14e1-46c3-a7ff-012463305590.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/e203fb33-14e1-46c3-a7ff-012463305590.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/e203fb33-14e1-46c3-a7ff-012463305590.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/e203fb33-14e1-46c3-a7ff-012463305590.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/e203fb33-14e1-46c3-a7ff-012463305590.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/e203fb33-14e1-46c3-a7ff-012463305590.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Sachsens Innenminister Armin Schuster hält Sachsen für ein sicheres Land." data-source="Sebastian Kahnert/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Fußball-Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Coup im Kraichgau: St. Pauli ärgert Hoffenheim</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Kriminalitätsstatistik</h4>
+                <h3 class="fp-article__title text-xl--bold ">Kriminalitätsrate in Sachsen leicht gesunken</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/alba-berlins-frauen-erreichen-erstmalig-das-pokalfinale-4207598">
+            <a href="/panorama/buchenwald-uberlebender-sol-lurie-verstorben-4225852">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/e11e0ffc-d61f-4061-9f9c-3cddb63f1161.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/e11e0ffc-d61f-4061-9f9c-3cddb63f1161.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/e11e0ffc-d61f-4061-9f9c-3cddb63f1161.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/e11e0ffc-d61f-4061-9f9c-3cddb63f1161.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/e11e0ffc-d61f-4061-9f9c-3cddb63f1161.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/e11e0ffc-d61f-4061-9f9c-3cddb63f1161.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/e11e0ffc-d61f-4061-9f9c-3cddb63f1161.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Alba-Kapitän Lena Gohlisch (r) darf sich auf ihr erstes Pokalfinale freuen. (Archivbild)" data-source="Andreas Gora/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/4998793b-c87a-4b00-8402-50364b68cd60.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/4998793b-c87a-4b00-8402-50364b68cd60.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/4998793b-c87a-4b00-8402-50364b68cd60.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/4998793b-c87a-4b00-8402-50364b68cd60.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/4998793b-c87a-4b00-8402-50364b68cd60.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/4998793b-c87a-4b00-8402-50364b68cd60.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/4998793b-c87a-4b00-8402-50364b68cd60.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Sol Lurie überlebte das KZ Buchenwald. Nun ist er im Alter von 95 Jahren gestorben. (Archivbild)" data-source="picture alliance / dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Pokal Top Four</h4>
-                <h3 class="fp-article__title text-xl--bold ">Alba Berlins Frauen erreichen erstmalig das Pokalfinale</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Zeitzeuge</h4>
+                <h3 class="fp-article__title text-xl--bold ">Buchenwald-Überlebender Sol Lurie verstorben</h3>
             </a>
         </article>
 </div>
@@ -2229,7 +2286,9 @@
 
 
 
-</div></section><section class="fp-related-articles embed fp-section hide-heading"><div data-service="category-teasers-list"><!-- Display grid solution  -->
+</div></section><div class="fp-free-html"><script id="mobile_10_script">    
+    document.querySelector("#mobile_10_script").insertAdjacentHTML("afterend", '<div class="center" id="' + ( window.innerWidth <= 550 ? 'mobile_10' : 'desktop_10') + '"></div>');
+</script></div><section class="fp-related-articles embed fp-section hide-heading"><div data-service="category-teasers-list"><!-- Display grid solution  -->
 <div class="fp-article-list">
     <header class="fp-category-name-header">
         <aside class="fp-category-name-header__content">
@@ -2242,48 +2301,48 @@
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/paderborn-gewinnt-in-kaiserslautern-4207555">
+            <a href="/panorama/erneut-schusse-auf-lokal-in-berlin-4225848">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/54575246-18af-474d-b6dd-5e687cd53a11.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/54575246-18af-474d-b6dd-5e687cd53a11.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/54575246-18af-474d-b6dd-5e687cd53a11.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/54575246-18af-474d-b6dd-5e687cd53a11.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/54575246-18af-474d-b6dd-5e687cd53a11.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/54575246-18af-474d-b6dd-5e687cd53a11.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/54575246-18af-474d-b6dd-5e687cd53a11.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Paderborn gewinnt in Kaiserslautern." data-source="Thomas Frey/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/13ffd6e4-c4a1-42fa-8040-502216af2ed7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/13ffd6e4-c4a1-42fa-8040-502216af2ed7.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/13ffd6e4-c4a1-42fa-8040-502216af2ed7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/13ffd6e4-c4a1-42fa-8040-502216af2ed7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/13ffd6e4-c4a1-42fa-8040-502216af2ed7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/13ffd6e4-c4a1-42fa-8040-502216af2ed7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/13ffd6e4-c4a1-42fa-8040-502216af2ed7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Berliner Polizei ermittelt immer wieder wegen Schüssen. (Symbolbild)" data-source="Malin Wunderlich/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> 2. Fußball-Bundesliga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Paderborn gewinnt in Kaiserslautern</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Kriminalität</h4>
+                <h3 class="fp-article__title text-xl--bold ">Erneut Schüsse auf Lokal in Berlin</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/rund-1-600-menschen-bei-iran-demo-weniger-als-erwartet-4207595">
+            <a href="/panorama/rund-500-zerkratzte-autos-polizei-ermittelt-verdachtigen-4225831">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/ae204bc9-1ddf-42f5-81b5-1bf6aa0a4a64.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/ae204bc9-1ddf-42f5-81b5-1bf6aa0a4a64.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/ae204bc9-1ddf-42f5-81b5-1bf6aa0a4a64.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/ae204bc9-1ddf-42f5-81b5-1bf6aa0a4a64.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/ae204bc9-1ddf-42f5-81b5-1bf6aa0a4a64.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/ae204bc9-1ddf-42f5-81b5-1bf6aa0a4a64.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/ae204bc9-1ddf-42f5-81b5-1bf6aa0a4a64.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Hunderte Menschen demonstrieren in Berlin-Mitte." data-source="Fabian Sommer/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/71c3f990-bf72-4c94-81a4-0b4799e7a9d0.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/71c3f990-bf72-4c94-81a4-0b4799e7a9d0.jpeg?rect=0%2C87%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/71c3f990-bf72-4c94-81a4-0b4799e7a9d0.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/71c3f990-bf72-4c94-81a4-0b4799e7a9d0.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/71c3f990-bf72-4c94-81a4-0b4799e7a9d0.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/71c3f990-bf72-4c94-81a4-0b4799e7a9d0.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/71c3f990-bf72-4c94-81a4-0b4799e7a9d0.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nachdem in Hannover rund 500 Autos zerkratzt wurden, hat die Polizei einen Verdächtigen ermittelt, der für einen Teil der Beschädigungen verantwortlich sein soll. (Symbolbild)" data-source="Angelika Warmuth/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Krieg in Nahost</h4>
-                <h3 class="fp-article__title text-xl--bold ">Rund 1.600 Menschen bei Iran-Demo - weniger als erwartet</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Serie in Hannover</h4>
+                <h3 class="fp-article__title text-xl--bold ">Rund 500 zerkratzte Autos – Polizei ermittelt Verdächtigen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/sternekoch-tim-raue-angst-vor-armut-sitzt-tief-4207590">
+            <a href="/panorama/autorader-geklaut-suspendierter-polizist-festgenommen-4225834">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/920d1a92-7965-44e4-8d32-3428f775bcdc.jpeg?rect=0%2C40%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/920d1a92-7965-44e4-8d32-3428f775bcdc.jpeg?rect=0%2C40%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/920d1a92-7965-44e4-8d32-3428f775bcdc.jpeg?rect=0%2C40%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/920d1a92-7965-44e4-8d32-3428f775bcdc.jpeg?rect=0%2C40%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/920d1a92-7965-44e4-8d32-3428f775bcdc.jpeg?rect=0%2C40%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/920d1a92-7965-44e4-8d32-3428f775bcdc.jpeg?rect=0%2C40%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/920d1a92-7965-44e4-8d32-3428f775bcdc.jpeg?rect=0%2C40%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="„Tim privat ist ein kleiner Teil meiner Persönlichkeit.“ (Archivbild)" data-source="Jens Kalaene/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/9546fbb7-2021-4655-9b48-df91383f6401.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/9546fbb7-2021-4655-9b48-df91383f6401.jpeg?rect=0%2C104%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/9546fbb7-2021-4655-9b48-df91383f6401.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/9546fbb7-2021-4655-9b48-df91383f6401.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/9546fbb7-2021-4655-9b48-df91383f6401.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/9546fbb7-2021-4655-9b48-df91383f6401.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/9546fbb7-2021-4655-9b48-df91383f6401.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Berliner Polizei hat zwei Männer wegen Diebstahlverdachts festgenommen. (Symbolbild)" data-source="Soeren Stache/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Gastronom</h4>
-                <h3 class="fp-article__title text-xl--bold ">Sternekoch Tim Raue: Angst vor Armut sitzt tief</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Berlin</h4>
+                <h3 class="fp-article__title text-xl--bold ">Autoräder geklaut: Suspendierter Polizist festgenommen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/86-jahriger-tot-aus-mittellandkanal-geborgen-4207585">
+            <a href="/panorama/harvester-brennt-im-zittauer-gebirge-300-000-euro-schaden-4225820">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/d2956f46-558a-445f-98f7-5a0b77922e03.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/d2956f46-558a-445f-98f7-5a0b77922e03.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/d2956f46-558a-445f-98f7-5a0b77922e03.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/d2956f46-558a-445f-98f7-5a0b77922e03.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/d2956f46-558a-445f-98f7-5a0b77922e03.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/d2956f46-558a-445f-98f7-5a0b77922e03.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/d2956f46-558a-445f-98f7-5a0b77922e03.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Feuerwehr hat aus dem Mittellandkanal eine Leiche geborgen. (Symbolbild)" data-source="Hauke-Christian Dittrich/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/3bc77a02-dd67-4e54-a5aa-42f2aa9b2762.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/3bc77a02-dd67-4e54-a5aa-42f2aa9b2762.jpeg?rect=0%2C121%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/3bc77a02-dd67-4e54-a5aa-42f2aa9b2762.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/3bc77a02-dd67-4e54-a5aa-42f2aa9b2762.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/3bc77a02-dd67-4e54-a5aa-42f2aa9b2762.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/3bc77a02-dd67-4e54-a5aa-42f2aa9b2762.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/3bc77a02-dd67-4e54-a5aa-42f2aa9b2762.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Harvester bearbeiten Stämme, nachdem sie gefällt wurden. (Archivbild)" data-source="Hendrik Schmidt/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Notfälle</h4>
-                <h3 class="fp-article__title text-xl--bold ">86-Jähriger tot aus Mittellandkanal geborgen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Feuer bei Olbersdorf</h4>
+                <h3 class="fp-article__title text-xl--bold ">Harvester brennt im Zittauer Gebirge - 300.000 Euro Schaden</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/landespolizei-verstarkt-schutz-judischer-einrichtungen-4207586">
+            <a href="/panorama/startschuss-in-gorlitz-fur-internationales-fernwarmeprojekt-4225816">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/28/fa8c3b97-3566-4ea5-ade1-a4cd197e415c.jpeg?rect=0%2C148%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/28/fa8c3b97-3566-4ea5-ade1-a4cd197e415c.jpeg?rect=0%2C148%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/28/fa8c3b97-3566-4ea5-ade1-a4cd197e415c.jpeg?rect=0%2C148%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/28/fa8c3b97-3566-4ea5-ade1-a4cd197e415c.jpeg?rect=0%2C148%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/28/fa8c3b97-3566-4ea5-ade1-a4cd197e415c.jpeg?rect=0%2C148%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/28/fa8c3b97-3566-4ea5-ade1-a4cd197e415c.jpeg?rect=0%2C148%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/28/fa8c3b97-3566-4ea5-ade1-a4cd197e415c.jpeg?rect=0%2C148%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nach den Militärschlägen im Nahen Osten stehen jüdische Einrichtungen in Sachsen-Anhalt unter besonderem Schutz. (Archivbild)" data-source="Robert Michael/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/f72ce967-1b88-40aa-ab30-9006f424d4d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/f72ce967-1b88-40aa-ab30-9006f424d4d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/f72ce967-1b88-40aa-ab30-9006f424d4d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/f72ce967-1b88-40aa-ab30-9006f424d4d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/f72ce967-1b88-40aa-ab30-9006f424d4d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/f72ce967-1b88-40aa-ab30-9006f424d4d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/f72ce967-1b88-40aa-ab30-9006f424d4d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Insgesamt 12 Kilometer Fernwärmeleitungen werden im Rahmen des Projekts „United Heat“ verlegt. (Symbolbild)" data-source="Sebastian Kahnert/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Lage im Nahen Osten</h4>
-                <h3 class="fp-article__title text-xl--bold ">Landespolizei verstärkt Schutz jüdischer Einrichtungen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Energie</h4>
+                <h3 class="fp-article__title text-xl--bold ">Startschuss in Görlitz für internationales Fernwärmeprojekt</h3>
             </a>
         </article>
 </div>
@@ -2294,7 +2353,10 @@
 </div></section></div></div></div></div>
   </main>
 
-<div id="ad-footer" class="center" data-screen="desktop"></div><div id="ad-footer-mobile" class="center" data-screen="mobile"></div>
+            <!-- disabled in BMG001FPBM-1287 -->
+            <!-- <div id="ad-footer" class="center" data-screen="desktop"></div> -->
+            <!-- <div id="ad-footer-mobile" class="center" data-screen="mobile"></div> -->
+
 <footer class="fp-footer" data-t-name="Footer">
     <div class="fp-container__extra-large">
       <div class="fp-footer__header">
@@ -2815,12 +2877,12 @@
 
 
 
-          <script src="/static/scripts/scripts.e3cb9d79.js" defer=""></script>
+          <script src="/static/scripts/scripts.832b9264.js" defer=""></script>
 
       </div>
     </div>
 
-    <script src="/static/scripts/adScripts.e3cb9d79.js"></script>
+    <script src="/static/scripts/adScripts.832b9264.js"></script>
 
 
   
@@ -2854,13 +2916,6 @@
             tweets.forEach(x => x.parentNode.remove())
         }
     }
-</script>
-<script>
-if (!document.location.host.includes("publishing")) {
-	var elemscript = document.createElement("script");
-	elemscript.src = "https://static.dumontnext.de/revenue/lightworks-vs.js";
-	document.head.appendChild(elemscript);
-}
 </script>
 <script type="text/javascript">
     var isDesktop = window.innerWidth > 550
@@ -2928,7 +2983,7 @@ document.querySelectorAll(".cookie-einstellungen").forEach(x => {
 });
 </script>
 <script id="stickyad">
-  if (document.location.host.includes("publishing") && window.innerWidth <= 550) {
+  if (window.innerWidth <= 550) {
 
     (function () {
       const style = document.createElement('style');
@@ -2960,7 +3015,7 @@ document.querySelectorAll(".cookie-einstellungen").forEach(x => {
 `;
       document.head.appendChild(style);
     })();
-
+}
 
     window.closeStickyAd = () => {
       document.querySelector('#sticky-container').style.display = 'none';
@@ -2994,6 +3049,13 @@ document.querySelectorAll(".cookie-einstellungen").forEach(x => {
 	}
   }, 250);
   
+</script>
+<script>
+for(i = 2; i<=10;i++) {
+	elem = document.querySelector(`#mobile_${i}_script`);
+	if (elem == undefined)
+		continue;
+	elem.insertAdjacentHTML('afterend', '<div class="fp-ad-label" style="text-center">Anzeige</div>');
 }
-</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v67327c56f0bb4ef8b305cae61679db8f1769101564043" integrity="sha512-rdcWY47ByXd76cbCFzznIcEaCN71jqkWBBqlwhF1SY7KubdLKZiEGeP7AyieKZlGP9hbY/MhGrwXzJC/HulNyg==" data-cf-beacon='{"version":"2024.11.0","token":"d76a01bdc713445181921d02dbeab4e3","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"d76a01bdc713445181921d02dbeab4e3","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body></html>
