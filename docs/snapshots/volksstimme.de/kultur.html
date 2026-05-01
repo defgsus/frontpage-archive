@@ -175,11 +175,12 @@
         console.log("Benutzer-Abonnementstatus:", userType); // Hier wird der Abonnementstatus ausgegeben
         // Setzt den globalen Wert für den Pur-Status
         window.cmp_pur_loggedin = (userType === "pur-pur");
+		loggedIn = typeof subscriptions != "undefined" && typeof subscriptions.pur != "undefined" && typeof subscriptions.paywall != "undefined";
         try {
             adchannels = window.ad_channel?.split("/") ?? [];	
 //            cmd = createCmd(subscriptions?.userType != "pur-anon", subscriptions != undefined && subscriptions.paywall != undefined && subscriptions.paywall.length > 0, adchannels);
 //            console.log(cmd);
-            kstahandler(subscriptions?.userType != "pur-anon",
+            kstahandler(loggedIn ,
 				subscriptions != undefined && subscriptions.paywall != undefined && subscriptions.paywall.length > 0,
 				adchannels, []);
 	        
@@ -711,15 +712,15 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
                             </a>
                         </div>
     <div class="fp-main-header__weather-widget">
-        <div class="fp-main-header__weather-widget--top wolkig">
+        <div class="fp-main-header__weather-widget--top sonnig">
             <span class="weather-icon-img">
-                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/wolkig.svg" alt="weather">
+                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/sonnig.svg" alt="weather">
             </span>
-            <span class="fp-main-header__weather-widget--tooltip">wolkig</span>
+            <span class="fp-main-header__weather-widget--tooltip">sonnig</span>
             <aside>
-                <span class="fp-main-header__weather-widget--day-temp">12°</span>
+                <span class="fp-main-header__weather-widget--day-temp">23°</span>
                 <span>/</span>
-                <span class="fp-main-header__weather-widget--night-temp">-1°</span>
+                <span class="fp-main-header__weather-widget--night-temp">8°</span>
             </aside>
         </div>
         <div class="fp-main-header__weather-widget--bottom">
@@ -786,6 +787,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 ">
                     <a class="text-14--bold" href="/blaulicht" target="_self">
                       Blaulicht
+                    </a>
+                  </li>
+                  <li class="fp-main-nav__list-item
+">
+                    <a class="text-14--bold" href="https://www.volksstimme.de/podcast">
+                      Podcast
                     </a>
                   </li>
                   <li class="fp-main-nav__list-item
@@ -925,6 +932,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 ">
                     <a class="text-14--bold" href="/blaulicht" target="_self">
                       Blaulicht
+                    </a>
+                  </li>
+                  <li class="fp-main-nav__list-item
+">
+                    <a class="text-14--bold" href="https://www.volksstimme.de/podcast">
+                      Podcast
                     </a>
                   </li>
                   <li class="fp-main-nav__list-item
@@ -1130,13 +1143,13 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="/sachsen-anhalt/leseranwaeltin" target="_self">
-                        Leseranwältin
+                      <a class="text-16--regular" href="https://www.volksstimme.de/wahl/landtagswahl-sachsen-anhalt">
+                        Landtagswahl Sachsen-Anhalt
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="https://www.volksstimme.de/podcast">
-                        Podcast
+                      <a class="text-16--regular" href="/sachsen-anhalt/leseranwaeltin" target="_self">
+                        Leseranwältin
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
@@ -1163,13 +1176,13 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
             </div>
             <ul class="fp-sidebar-menu__nav--list">
                     <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="/live/fussball-regionalliga-nordost">
-                        Fußball-Regionalliga Nordost
+                      <a class="text-16--regular" href="/live/fussball">
+                        Fußball
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="/live/fussball-verbandsliga-sachsen-anhalt">
-                        Fußball-Verbandsliga Sachsen-Anhalt
+                      <a class="text-16--regular" href="https://www.volksstimme.de/thema/livezeit-chris">
+                        Livezeit mit Chris
                       </a>
                     </li>
             </ul>
@@ -1488,16 +1501,19 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
             </ul>
             <div class="fp-sidebar-menu__nav--header">
               <span>
+                  <a href="https://www.volksstimme.de/podcast">Podcast
+                  </a>
+              </span>
+            </div>
+            <ul class="fp-sidebar-menu__nav--list">
+            </ul>
+            <div class="fp-sidebar-menu__nav--header">
+              <span>
                   <a href="/video" target="_self">Video
                   </a>
               </span>
             </div>
             <ul class="fp-sidebar-menu__nav--list">
-                    <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="https://www.volksstimme.de/video/studiotalk">
-                        Studiotalk
-                      </a>
-                    </li>
                     <li class="fp-sidebar-menu__nav--item">
                       <a class="text-16--regular" href="https://www.volksstimme.de/video/youtube-hiya">
                         Youtube-Kanal Hiya!
@@ -1777,93 +1793,93 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/grey-s-anatomy-bekommt-neue-staffel-kein-ende-in-sicht-4225739">
+            <a href="/kultur/tv-und-streaming/walk-of-fame-sterne-fur-emily-blunt-und-stanley-tucci-4242818">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/823f22c9-1165-40e0-953c-774261044efe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/823f22c9-1165-40e0-953c-774261044efe.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/823f22c9-1165-40e0-953c-774261044efe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/823f22c9-1165-40e0-953c-774261044efe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/823f22c9-1165-40e0-953c-774261044efe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/823f22c9-1165-40e0-953c-774261044efe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/823f22c9-1165-40e0-953c-774261044efe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Arztserie „Grey's Anatomy“ geht in die 23. Staffel. (Archivfoto)" data-source="Liliane Lathan/ABC/Disney+/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/05/01/ae111327-2e90-4c93-a74d-11ca9eb38521.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/05/01/ae111327-2e90-4c93-a74d-11ca9eb38521.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/05/01/ae111327-2e90-4c93-a74d-11ca9eb38521.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/05/01/ae111327-2e90-4c93-a74d-11ca9eb38521.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/05/01/ae111327-2e90-4c93-a74d-11ca9eb38521.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/05/01/ae111327-2e90-4c93-a74d-11ca9eb38521.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/05/01/ae111327-2e90-4c93-a74d-11ca9eb38521.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Doppelte Ehrungen auf dem „Walk of Fame“ sind selten." data-source="Jordan Strauss/Invision/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Serie</h4>
-                <h3 class="fp-article__title text-xl--bold ">„Grey's Anatomy“ bekommt neue Staffel – kein Ende in Sicht</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Auszeichnung</h4>
+                <h3 class="fp-article__title text-xl--bold ">„Walk of Fame“-Sterne für Emily Blunt und Stanley Tucci</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/sexarbeiterinnen-kuratieren-ausstellung-in-bundeskunsthalle-4225613">
+            <a href="/kultur/er-galt-als-wutkunstler-georg-baselitz-gestorben-4242705">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/901e5d16-f7cb-498b-a3aa-4588cbe9b251.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/901e5d16-f7cb-498b-a3aa-4588cbe9b251.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/901e5d16-f7cb-498b-a3aa-4588cbe9b251.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/901e5d16-f7cb-498b-a3aa-4588cbe9b251.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/901e5d16-f7cb-498b-a3aa-4588cbe9b251.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/901e5d16-f7cb-498b-a3aa-4588cbe9b251.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/901e5d16-f7cb-498b-a3aa-4588cbe9b251.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Rori ist nach eigener Aussage glücklich darüber, dass die Ausstellung „Sex Work“ in der Bundeskunsthalle ein so differenziertes Bild von Sexarbeit zeichnet." data-source="Oliver Berg/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/463be4e6-d76a-42f1-bcd0-206ee4b6be19.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/463be4e6-d76a-42f1-bcd0-206ee4b6be19.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/463be4e6-d76a-42f1-bcd0-206ee4b6be19.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/463be4e6-d76a-42f1-bcd0-206ee4b6be19.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/463be4e6-d76a-42f1-bcd0-206ee4b6be19.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/463be4e6-d76a-42f1-bcd0-206ee4b6be19.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/463be4e6-d76a-42f1-bcd0-206ee4b6be19.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Georg Baselitz starb im Alter von 88 Jahren." data-source="Sebastian Kahnert/dpa-Zentralbild/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Ungewöhnliches Projekt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Sexarbeiterinnen kuratieren Ausstellung in Bundeskunsthalle</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Maler und Bildhauer</h4>
+                <h3 class="fp-article__title text-xl--bold ">Er galt als „Wutkünstler“: Georg Baselitz gestorben</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/ard-zdf-sender-gestrichen-serien-programm-aenderung-4225429">
+            <a href="/kultur/kunstbiennale-von-venedig-jury-tritt-geschlossen-zuruck-4242733">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2024/04/04/a8e0769b-62f5-43f5-8566-f26b3a7f7a57.jpeg?rect=0%2C303%2C4000%2C2250&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2024/04/04/a8e0769b-62f5-43f5-8566-f26b3a7f7a57.jpeg?rect=0%2C303%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2024/04/04/a8e0769b-62f5-43f5-8566-f26b3a7f7a57.jpeg?rect=0%2C303%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2024/04/04/a8e0769b-62f5-43f5-8566-f26b3a7f7a57.jpeg?rect=0%2C303%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2024/04/04/a8e0769b-62f5-43f5-8566-f26b3a7f7a57.jpeg?rect=0%2C303%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2024/04/04/a8e0769b-62f5-43f5-8566-f26b3a7f7a57.jpeg?rect=0%2C303%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2024/04/04/a8e0769b-62f5-43f5-8566-f26b3a7f7a57.jpeg?rect=0%2C303%2C4000%2C2250&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wegen des neuen Reformstaatsvertrags streichen die ARD und das ZDF drei Sender. 19 Serien müssen deswegen um ihre Sendeplätze bangen." data-source="Foto: dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/3ebcd391-0f08-4e50-87f5-4c156dc90625.jpeg?rect=0%2C153%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/3ebcd391-0f08-4e50-87f5-4c156dc90625.jpeg?rect=0%2C153%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/3ebcd391-0f08-4e50-87f5-4c156dc90625.jpeg?rect=0%2C153%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/3ebcd391-0f08-4e50-87f5-4c156dc90625.jpeg?rect=0%2C153%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/3ebcd391-0f08-4e50-87f5-4c156dc90625.jpeg?rect=0%2C153%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/3ebcd391-0f08-4e50-87f5-4c156dc90625.jpeg?rect=0%2C153%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/3ebcd391-0f08-4e50-87f5-4c156dc90625.jpeg?rect=0%2C153%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wenige Tage vor Beginn hat die Kunstbiennale in Venedig keine Jury mehr. (Archivbild)" data-source="Robert Messer/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Wegen Sparmaßnahmen</h4>
-                <h3 class="fp-article__title text-xl--bold ">19 Serien verlieren Sendeplätze! ARD und ZDF streichen diese drei Sender</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Zeitgenössische Kunst</h4>
+                <h3 class="fp-article__title text-xl--bold ">Kunstbiennale von Venedig: Jury tritt geschlossen zurück</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/prominente-fordern-schliessung-von-ice-haftanstalt-in-texas-4225546">
+            <a href="/kultur/ein-neuer-banksy-kunstwerk-in-london-aufgetaucht-4242322">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/ea59c537-0d9f-4c99-bf0d-51999b93f39d.jpeg?rect=0%2C145%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/ea59c537-0d9f-4c99-bf0d-51999b93f39d.jpeg?rect=0%2C145%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/ea59c537-0d9f-4c99-bf0d-51999b93f39d.jpeg?rect=0%2C145%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/ea59c537-0d9f-4c99-bf0d-51999b93f39d.jpeg?rect=0%2C145%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/ea59c537-0d9f-4c99-bf0d-51999b93f39d.jpeg?rect=0%2C145%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/ea59c537-0d9f-4c99-bf0d-51999b93f39d.jpeg?rect=0%2C145%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/ea59c537-0d9f-4c99-bf0d-51999b93f39d.jpeg?rect=0%2C145%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="US-Popdiva Madonna, andere Künstler sowie Ärzte, Journalisten und Hochschulprofessoren protestieren gegen die Inhaftierung von Kindern in einem Abschiebezentrum der Behörde ICE in Texas. (Archivbild)" data-source="Evan Agostini/Invision/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/ac81a6d8-f9a4-48e9-8b5e-23096da91df7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/ac81a6d8-f9a4-48e9-8b5e-23096da91df7.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/ac81a6d8-f9a4-48e9-8b5e-23096da91df7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/ac81a6d8-f9a4-48e9-8b5e-23096da91df7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/ac81a6d8-f9a4-48e9-8b5e-23096da91df7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/ac81a6d8-f9a4-48e9-8b5e-23096da91df7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/ac81a6d8-f9a4-48e9-8b5e-23096da91df7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bisher gibt es keine offizielle Bestätigung dafür, dass der britische Künstler Banksy hinter diesem Kunstwerk steckt." data-source="Vuk Valcic/ZUMA Press Wire/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Umstrittene Einrichtung</h4>
-                <h3 class="fp-article__title text-xl--bold ">Prominente fordern Schließung von ICE-Haftanstalt in Texas</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Britischer Künstler</h4>
+                <h3 class="fp-article__title text-xl--bold ">Ein neuer Banksy: Kunstwerk in London aufgetaucht</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/auf-mondmission-im-film-houston-wir-haben-ein-problem-4225368">
+            <a href="/kultur/hintergrundig-humorvoll-und-rigoros-timm-ulrichs-ist-tot-4242505">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/1105d546-5831-4e8a-bfd2-7041b8c77606.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/1105d546-5831-4e8a-bfd2-7041b8c77606.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/1105d546-5831-4e8a-bfd2-7041b8c77606.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/1105d546-5831-4e8a-bfd2-7041b8c77606.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/1105d546-5831-4e8a-bfd2-7041b8c77606.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/1105d546-5831-4e8a-bfd2-7041b8c77606.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/1105d546-5831-4e8a-bfd2-7041b8c77606.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Im Dokumentarfilm Apollo 11 wurden bis dahin unbekannte Originalaufnahmen gezeigt. (Archivbild)" data-source="Neil Armstrong/NASA/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/9c310ce7-5be9-40fb-b2d2-65e7f494ae5f.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/9c310ce7-5be9-40fb-b2d2-65e7f494ae5f.jpeg?rect=0%2C99%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/9c310ce7-5be9-40fb-b2d2-65e7f494ae5f.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/9c310ce7-5be9-40fb-b2d2-65e7f494ae5f.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/9c310ce7-5be9-40fb-b2d2-65e7f494ae5f.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/9c310ce7-5be9-40fb-b2d2-65e7f494ae5f.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/9c310ce7-5be9-40fb-b2d2-65e7f494ae5f.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="„Die meisten Künstler sind Facharbeiter, die von Bild zu Bild nur kleine Schritte gehen. Für mich ist Kunst Forschung, nicht Warenproduktion. Ich habe nie versucht, ein Markenzeichen zu entwickeln“, sagte der Künstler Timm Ulrichs einmal. (Archivbild)" data-source="picture alliance / dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Zur Mondmission „Artemis 2“</h4>
-                <h3 class="fp-article__title text-xl--bold ">Auf Mondmission im Film: „Houston, wir haben ein Problem“</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Nachrufe</h4>
+                <h3 class="fp-article__title text-xl--bold ">„Hintergründig humorvoll und rigoros“ – Timm Ulrichs ist tot</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/medien-laura-dern-spielt-in-serie-uber-jeffrey-epstein-mit-4225358">
+            <a href="/kultur/politische-extremisten-schlappe-fur-weimer-vor-gericht-4242317">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/d98703ea-6fac-46b2-9ad2-ab874c36c4d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/d98703ea-6fac-46b2-9ad2-ab874c36c4d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/d98703ea-6fac-46b2-9ad2-ab874c36c4d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/d98703ea-6fac-46b2-9ad2-ab874c36c4d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/d98703ea-6fac-46b2-9ad2-ab874c36c4d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/d98703ea-6fac-46b2-9ad2-ab874c36c4d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/d98703ea-6fac-46b2-9ad2-ab874c36c4d5.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Laura Dern wurde 2020 für ihre Rolle in „Marriage Story“ mit einem Oscar ausgezeichnet. (Archivbild)" data-source="Scott A Garfitt/Invision/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/aad2702b-63b4-40f1-8f44-caf8c6a4e7a2.jpeg?rect=0%2C122%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/aad2702b-63b4-40f1-8f44-caf8c6a4e7a2.jpeg?rect=0%2C122%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/aad2702b-63b4-40f1-8f44-caf8c6a4e7a2.jpeg?rect=0%2C122%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/aad2702b-63b4-40f1-8f44-caf8c6a4e7a2.jpeg?rect=0%2C122%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/aad2702b-63b4-40f1-8f44-caf8c6a4e7a2.jpeg?rect=0%2C122%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/aad2702b-63b4-40f1-8f44-caf8c6a4e7a2.jpeg?rect=0%2C122%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/aad2702b-63b4-40f1-8f44-caf8c6a4e7a2.jpeg?rect=0%2C122%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Kulturstaatsminister Wolfram Weimer eckte in seinem ersten Jahr im Amt bisweilen an. (Archivbild)" data-source="Jan Woitas/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Leute</h4>
-                <h3 class="fp-article__title text-xl--bold ">Medien: Laura Dern spielt in Serie über Jeffrey Epstein mit</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Rechtsstreit</h4>
+                <h3 class="fp-article__title text-xl--bold ">„Politische Extremisten“? Schlappe für Weimer vor Gericht</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/stellan-skarsgard-mit-dakota-fanning-in-thriller-serie-4225321">
+            <a href="/kultur/tv-und-streaming/wer-wird-millionaer-jauch-primetime-montag-rtl-4236700">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/5171ed1a-7c8a-409d-8693-4ba7629619d6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/5171ed1a-7c8a-409d-8693-4ba7629619d6.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/5171ed1a-7c8a-409d-8693-4ba7629619d6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/5171ed1a-7c8a-409d-8693-4ba7629619d6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/5171ed1a-7c8a-409d-8693-4ba7629619d6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/5171ed1a-7c8a-409d-8693-4ba7629619d6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/5171ed1a-7c8a-409d-8693-4ba7629619d6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Stellan Skarsgard war bei den Oscars als bester Nebendarsteller nominiert. (Archivbild)" data-source="Jordan Strauss/Invision/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/28/2317d95f-6133-4717-9bff-830e05557df7.jpeg?rect=0%2C0%2C3273%2C1841&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/28/2317d95f-6133-4717-9bff-830e05557df7.jpeg?rect=0%2C0%2C3273%2C1841&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/28/2317d95f-6133-4717-9bff-830e05557df7.jpeg?rect=0%2C0%2C3273%2C1841&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/28/2317d95f-6133-4717-9bff-830e05557df7.jpeg?rect=0%2C0%2C3273%2C1841&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/28/2317d95f-6133-4717-9bff-830e05557df7.jpeg?rect=0%2C0%2C3273%2C1841&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/28/2317d95f-6133-4717-9bff-830e05557df7.jpeg?rect=0%2C0%2C3273%2C1841&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/28/2317d95f-6133-4717-9bff-830e05557df7.jpeg?rect=0%2C0%2C3273%2C1841&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Günther Jauch muss seinen Sessel bei &quot;Wer wird Millionär?&quot; für eine andere Show räumen." data-source="(Foto: picture alliance/dpa/dpa-Zentralbild | Soeren Stache)">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Schauspieler</h4>
-                <h3 class="fp-article__title text-xl--bold ">Stellan Skarsgård mit Dakota Fanning in Thriller-Serie</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Lange Pause für Günther Jauch</h4>
+                <h3 class="fp-article__title text-xl--bold ">"Wer wird Millionär?" aus der Primetime verbannt: Neue RTL-Show startet ernüchternd</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/rtl-doku-uber-kultsanger-heino-ganz-entspannt-4225309">
+            <a href="/kultur/tv-und-streaming/joerg-graeser-zoo-leipzig-elefant-tiger-co-youtube-gaense-4236669">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/3d9d8bfc-44c9-454c-a341-470cf612ecc1.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/3d9d8bfc-44c9-454c-a341-470cf612ecc1.jpeg?rect=0%2C0%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/3d9d8bfc-44c9-454c-a341-470cf612ecc1.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/3d9d8bfc-44c9-454c-a341-470cf612ecc1.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/3d9d8bfc-44c9-454c-a341-470cf612ecc1.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/3d9d8bfc-44c9-454c-a341-470cf612ecc1.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/3d9d8bfc-44c9-454c-a341-470cf612ecc1.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Eine vierteilige Doku „Heino – Karamba, Karacho, Kult!“ zeigt den Sänger zu Hause, auf der Bühne und im oft gemütlichen Alltag." data-source="RTL/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/21/3232edab-0b51-40d9-a987-ae948e1fec63.jpeg?rect=220%2C80%2C1359%2C764&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/21/3232edab-0b51-40d9-a987-ae948e1fec63.jpeg?rect=220%2C80%2C1359%2C764&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/21/3232edab-0b51-40d9-a987-ae948e1fec63.jpeg?rect=220%2C80%2C1359%2C764&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/21/3232edab-0b51-40d9-a987-ae948e1fec63.jpeg?rect=220%2C80%2C1359%2C764&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/21/3232edab-0b51-40d9-a987-ae948e1fec63.jpeg?rect=220%2C80%2C1359%2C764&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/21/3232edab-0b51-40d9-a987-ae948e1fec63.jpeg?rect=220%2C80%2C1359%2C764&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/21/3232edab-0b51-40d9-a987-ae948e1fec63.jpeg?rect=220%2C80%2C1359%2C764&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Jörg Gräsers Hündin Luna und die beiden jungen Gänse: Im Hintergrund ist das Gehege mit Gräsers Erdmännchen zu sehen." data-source="Screenshot: <a target=&quot;_blank&quot; href=&quot;https://www.youtube.com/watch?v=Fz99Axz0PEo&quot;>YouTube/Jörg Gräser bastelt wieder</a>">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Im Fernsehen und Streaming</h4>
-                <h3 class="fp-article__title text-xl--bold ">RTL-Doku über Kultsänger: Heino ganz entspannt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Bekannt aus "Elefant, Tiger und Co."</h4>
+                <h3 class="fp-article__title text-xl--bold ">"Ihr Säcke": Kult-Tierpfleger Jörg Gräser schockt mit Aussage zu Gänsen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/zoo-leipzig-pfleger-hirmer-abschied-elefant-tiger-co-mdr-4220748">
+            <a href="/kultur/freedom-of-speech-award-fur-hongkonger-verleger-jimmy-lai-4242454">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/30/76fbe497-851b-4938-8fbb-8dca0803962b.png?rect=6%2C0%2C1488%2C837&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/30/76fbe497-851b-4938-8fbb-8dca0803962b.png?rect=6%2C0%2C1488%2C837&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/30/76fbe497-851b-4938-8fbb-8dca0803962b.png?rect=6%2C0%2C1488%2C837&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/30/76fbe497-851b-4938-8fbb-8dca0803962b.png?rect=6%2C0%2C1488%2C837&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/30/76fbe497-851b-4938-8fbb-8dca0803962b.png?rect=6%2C0%2C1488%2C837&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/30/76fbe497-851b-4938-8fbb-8dca0803962b.png?rect=6%2C0%2C1488%2C837&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/30/76fbe497-851b-4938-8fbb-8dca0803962b.png?rect=6%2C0%2C1488%2C837&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nach zwei Jahrzehnten im Zoo Leipzig beendet Kultpfleger Jens Hirmer seine Zeit in der Afrika‑Abteilung." data-source="(Foto: <a target=&quot;_blank&quot; href=&quot;https://www.mdr.de/tv/programm/sendung-1098348.html&quot;>Screenshot/MDR Mediathek</a>)">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/207412b6-a240-43c6-b064-48fc15029d91.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/207412b6-a240-43c6-b064-48fc15029d91.jpeg?rect=0%2C115%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/207412b6-a240-43c6-b064-48fc15029d91.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/207412b6-a240-43c6-b064-48fc15029d91.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/207412b6-a240-43c6-b064-48fc15029d91.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/207412b6-a240-43c6-b064-48fc15029d91.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/207412b6-a240-43c6-b064-48fc15029d91.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Jimmy Lai erhält den Freedom of Speech Award der Deutschen Welle. (Archivbild)" data-source="Vincent Yu/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> "Elefant, Tiger &amp; Co."</h4>
-                <h3 class="fp-article__title text-xl--bold ">Wenn ein Kult-Tierpfleger geht: Warum Jens Hirmer dem Zoo Leipzig den Rücken kehrt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Pressefreiheit</h4>
+                <h3 class="fp-article__title text-xl--bold ">Freedom of Speech Award für Hongkonger Verleger Jimmy Lai</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/zoo-leipzig-pfleger-direktor-joerg-junhold-mdr-riverboat-4224995">
+            <a href="/kultur/musik/ballermann-hit-wird-zum-schalke-soundtrack-fur-den-aufstieg-4242233">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/30/d0a141ab-6bae-43ff-b9d4-77301cd786ef.jpeg?rect=366%2C62%2C3066%2C1725&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/30/d0a141ab-6bae-43ff-b9d4-77301cd786ef.jpeg?rect=366%2C62%2C3066%2C1725&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/30/d0a141ab-6bae-43ff-b9d4-77301cd786ef.jpeg?rect=366%2C62%2C3066%2C1725&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/30/d0a141ab-6bae-43ff-b9d4-77301cd786ef.jpeg?rect=366%2C62%2C3066%2C1725&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/30/d0a141ab-6bae-43ff-b9d4-77301cd786ef.jpeg?rect=366%2C62%2C3066%2C1725&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/30/d0a141ab-6bae-43ff-b9d4-77301cd786ef.jpeg?rect=366%2C62%2C3066%2C1725&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/30/d0a141ab-6bae-43ff-b9d4-77301cd786ef.jpeg?rect=366%2C62%2C3066%2C1725&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Jörg Junhold, Direktor des Zoos in Leipzig, verteilt im MDR ein großes Lob an die Tierpfleger." data-source="(Foto:&amp;nbsp;Imago/Star-Media)">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/4037a64d-03de-42c7-999d-e20bd1f9fea2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/4037a64d-03de-42c7-999d-e20bd1f9fea2.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/4037a64d-03de-42c7-999d-e20bd1f9fea2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/4037a64d-03de-42c7-999d-e20bd1f9fea2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/4037a64d-03de-42c7-999d-e20bd1f9fea2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/4037a64d-03de-42c7-999d-e20bd1f9fea2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/4037a64d-03de-42c7-999d-e20bd1f9fea2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Partysänger Breitner lässt sich im &quot;Bierkönig&quot; nicht nur von Schalke-Fans feiern." data-source="Jannik Wefer/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Talkshow im MDR</h4>
-                <h3 class="fp-article__title text-xl--bold ">"Nicht nur Streicheln": Warum Leipziger Zoo-Chef im Riverboat von Tierpflegern schwärmt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Fußball trifft Malle</h4>
+                <h3 class="fp-article__title text-xl--bold ">Ballermann-Hit wird zum Schalke-Soundtrack für den Aufstieg</h3>
             </a>
         </article>
 </div>
@@ -1875,12 +1891,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 <h2 class="fp-most-popular-section-title">Meistgelesen</h2>
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/kultur/tv-und-streaming/zoo-leipzig-pfleger-hirmer-abschied-elefant-tiger-co-mdr-4220748">
+      <a href="/kultur/tv-und-streaming/wer-weiss-denn-sowas-feiertag-programm-ard-aenderung-4240939">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">1.</span>
             <header>
-              <h4 class="fp-article__catchline"> "Elefant, Tiger &amp; Co."</h4>
-              <h3 class="fp-article__title text-xxl--bold">Wenn ein Kult-Tierpfleger geht: Warum Jens Hirmer dem Zoo Leipzig den Rücken kehrt</h3>
+              <h4 class="fp-article__catchline"> ARD ändert Programm</h4>
+              <h3 class="fp-article__title text-xxl--bold">"Wer weiß denn sowas?"-Fans müssen schon wieder auf geliebte Quizshow verzichten</h3>
             </header>
         </div>
       </a>
@@ -1888,12 +1904,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/kultur/tv-und-streaming/riverboat-kim-fisher-mdr-trauer-tod-traenen-4208405">
+      <a href="/kultur/tv-und-streaming/rtl-programm-barbara-salesch-richterin-4236785">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">2.</span>
             <header>
-              <h4 class="fp-article__catchline"> Tod von Kollegen</h4>
-              <h3 class="fp-article__title text-xxl--bold">"Den ganzen Tag vor gegraust": Kim Fisher kämpft im "Riverboat" mit den Tränen</h3>
+              <h4 class="fp-article__catchline"> RTL zieht Richter-Show den Stecker</h4>
+              <h3 class="fp-article__title text-xxl--bold">Trotz guter Quoten: Keine weiteren Staffeln für "Barbara Salesch – Das Strafgericht"?</h3>
             </header>
         </div>
       </a>
@@ -1901,12 +1917,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/kultur/tv-und-streaming/zoo-leipzig-pfleger-direktor-joerg-junhold-mdr-riverboat-4224995">
+      <a href="/kultur/tv-und-streaming/wer-weiss-denn-sowas-wotan-wilke-moehring-kritik-quote-4230015">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">3.</span>
             <header>
-              <h4 class="fp-article__catchline"> Talkshow im MDR</h4>
-              <h3 class="fp-article__title text-xxl--bold">"Nicht nur Streicheln": Warum Leipziger Zoo-Chef im Riverboat von Tierpflegern schwärmt</h3>
+              <h4 class="fp-article__catchline"> ARD-Quizshow</h4>
+              <h3 class="fp-article__title text-xxl--bold">Trotz harter Kritik an Wotan Wilke Möhring: "Wer weiß denn sowas?" punktet bei Zuschauern</h3>
             </header>
         </div>
       </a>
@@ -1914,12 +1930,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/kultur/tv-und-streaming/ard-in-aller-freundschaft-renneberg-zirzow-4202856">
+      <a href="/kultur/ein-neuer-banksy-kunstwerk-in-london-aufgetaucht-4242322">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">4.</span>
             <header>
-              <h4 class="fp-article__catchline"> Beliebte Serie in der ARD</h4>
-              <h3 class="fp-article__title text-xxl--bold">Schicksal der Charaktere besiegelt: Diese zwei Schauspielerinnen verlassen "In aller Freundschaft"</h3>
+              <h4 class="fp-article__catchline"> Britischer Künstler</h4>
+              <h3 class="fp-article__title text-xxl--bold">Ein neuer Banksy: Kunstwerk in London aufgetaucht</h3>
             </header>
         </div>
       </a>
@@ -1937,6 +1953,69 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
             </a>
         </aside>
     </header>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/buch/die-gemeine-lust-an-der-gehassigkeit-nur-das-allerbeste-4240295">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/27/81979152-1d3e-4d4f-adca-cb6d751d8e1d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/27/81979152-1d3e-4d4f-adca-cb6d751d8e1d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/27/81979152-1d3e-4d4f-adca-cb6d751d8e1d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/27/81979152-1d3e-4d4f-adca-cb6d751d8e1d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/27/81979152-1d3e-4d4f-adca-cb6d751d8e1d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/27/81979152-1d3e-4d4f-adca-cb6d751d8e1d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/27/81979152-1d3e-4d4f-adca-cb6d751d8e1d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Dunkle Vorahnung: In einem New Yorker Künstlerloft spielt der Debütroman der US-Autorin Zoe Dubno." data-source="Seth Wenig/AP">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Belletristik</h4>
+                <h3 class="fp-article__title text-xl--bold ">Die gemeine Lust an der Gehässigkeit: „Nur das Allerbeste“</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/buch/elena-ferrante-bleibt-ein-geheimnis-essays-veroffentlicht-4239334">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/25/7793db2f-cdaf-4121-aa57-11340d358ea9.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/25/7793db2f-cdaf-4121-aa57-11340d358ea9.jpeg?rect=0%2C135%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/25/7793db2f-cdaf-4121-aa57-11340d358ea9.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/25/7793db2f-cdaf-4121-aa57-11340d358ea9.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/25/7793db2f-cdaf-4121-aa57-11340d358ea9.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/25/7793db2f-cdaf-4121-aa57-11340d358ea9.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/25/7793db2f-cdaf-4121-aa57-11340d358ea9.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Niemand weiß, wer wirklich hinter dem Namen Elena Ferrante steckt - sie gilt als das Phantom der italienischen Literatur. (Symbolbild)" data-source="Frank Rumpenhorst/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Literatur</h4>
+                <h3 class="fp-article__title text-xl--bold ">Elena Ferrante bleibt ein Geheimnis - Essays veröffentlicht</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/buch/eine-kurze-geschichte-des-aufwachens-in-den-tag-4238714">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/24/0111b0ba-e855-4d2a-a90b-9832dffb5a25.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/24/0111b0ba-e855-4d2a-a90b-9832dffb5a25.jpeg?rect=0%2C99%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/24/0111b0ba-e855-4d2a-a90b-9832dffb5a25.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/24/0111b0ba-e855-4d2a-a90b-9832dffb5a25.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/24/0111b0ba-e855-4d2a-a90b-9832dffb5a25.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/24/0111b0ba-e855-4d2a-a90b-9832dffb5a25.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/24/0111b0ba-e855-4d2a-a90b-9832dffb5a25.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ribbat enthüllt auch skurrile Randnotizen wie diese: Vor dem Siegeszug mechanischer Wecker waren in England und Frankreich menschliche Wecker üblich. (Archivbild)" data-source="Elisa Schu/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Schlafen</h4>
+                <h3 class="fp-article__title text-xl--bold ">Eine kurze Geschichte des Aufwachens: „In den Tag“</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/buch/zwischen-buch-und-bildschirm-wie-viel-lesen-wir-heute-noch-4235488">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/19/1508870c-ba59-41ea-b4ea-21a17310fbfc.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/19/1508870c-ba59-41ea-b4ea-21a17310fbfc.jpeg?rect=0%2C135%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/19/1508870c-ba59-41ea-b4ea-21a17310fbfc.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/19/1508870c-ba59-41ea-b4ea-21a17310fbfc.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/19/1508870c-ba59-41ea-b4ea-21a17310fbfc.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/19/1508870c-ba59-41ea-b4ea-21a17310fbfc.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/19/1508870c-ba59-41ea-b4ea-21a17310fbfc.jpeg?rect=0%2C135%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bücher werden nicht weniger nachgefragt – sie werden vorsichtiger gekauft. (Symbolbild)" data-source="Frank Rumpenhorst/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Welttag des Buches</h4>
+                <h3 class="fp-article__title text-xl--bold ">Zwischen Buch und Bildschirm: Wie viel lesen wir heute noch?</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/buch/entfuhrung-als-show-el-hotzo-schreibt-uber-die-fernsehwelt-4233595">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/16/cdf28432-ead5-44a5-b2aa-351b7ce97def.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/16/cdf28432-ead5-44a5-b2aa-351b7ce97def.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/16/cdf28432-ead5-44a5-b2aa-351b7ce97def.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/16/cdf28432-ead5-44a5-b2aa-351b7ce97def.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/16/cdf28432-ead5-44a5-b2aa-351b7ce97def.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/16/cdf28432-ead5-44a5-b2aa-351b7ce97def.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/16/cdf28432-ead5-44a5-b2aa-351b7ce97def.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der 30-Jährige wurde durch Social Media bekannt. (Archivbild)" data-source="Thomas Banneyer/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Neuer Roman</h4>
+                <h3 class="fp-article__title text-xl--bold ">Entführung als Show? El Hotzo schreibt über die Fernsehwelt</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/buch/macht-lavendel-bienen-krimis-zwischen-idylle-und-abgrund-4230365">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/10/810e983f-a15f-4692-9f99-09f3771dd867.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/10/810e983f-a15f-4692-9f99-09f3771dd867.jpeg?rect=0%2C87%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/10/810e983f-a15f-4692-9f99-09f3771dd867.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/10/810e983f-a15f-4692-9f99-09f3771dd867.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/10/810e983f-a15f-4692-9f99-09f3771dd867.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/10/810e983f-a15f-4692-9f99-09f3771dd867.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/10/810e983f-a15f-4692-9f99-09f3771dd867.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Entspannung mit Nervenkitzel: Krimis vom Lavendelgarten bis zur Ostseeküste. (Symbolbild)" data-source="Elisa Schu/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Literatur</h4>
+                <h3 class="fp-article__title text-xl--bold ">Macht, Lavendel, Bienen: Krimis zwischen Idylle und Abgrund</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/buch/wie-das-sommermarchen-deutschland-veranderte-4226656">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/02/37df87e1-e24a-4e9a-b2e2-60702b2aa228.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/02/37df87e1-e24a-4e9a-b2e2-60702b2aa228.jpeg?rect=0%2C121%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/02/37df87e1-e24a-4e9a-b2e2-60702b2aa228.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/02/37df87e1-e24a-4e9a-b2e2-60702b2aa228.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/02/37df87e1-e24a-4e9a-b2e2-60702b2aa228.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/02/37df87e1-e24a-4e9a-b2e2-60702b2aa228.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/02/37df87e1-e24a-4e9a-b2e2-60702b2aa228.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Tausende Zuschauer verfolgen 2006 auf der Fanmeile am Brandenburger Tor in Berlin das WM-Fußballspiel zwischen Deutschland und Argentinien. (Archivfoto)" data-source="Marcel Mettelsiefen/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Neues Buch</h4>
+                <h3 class="fp-article__title text-xl--bold ">Wie das Sommermärchen Deutschland veränderte</h3>
+            </a>
+        </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
             <a href="/kultur/buch/biografische-spurensuche-in-einer-versehrten-stadt-4223452">
                 <picture class="fp-article__image">
@@ -1964,69 +2043,6 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
                 <h3 class="fp-article__title text-xl--bold ">Kirsten Dunst übernimmt Rolle in „The Housemaid“-Fortsetzung</h3>
             </a>
         </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/marc-uwe-klings-kanguru-rebelliert-mal-wieder-4214559">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/12/6abc3ca7-6797-486d-b14a-da64cdc0b894.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/12/6abc3ca7-6797-486d-b14a-da64cdc0b894.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/12/6abc3ca7-6797-486d-b14a-da64cdc0b894.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/12/6abc3ca7-6797-486d-b14a-da64cdc0b894.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/12/6abc3ca7-6797-486d-b14a-da64cdc0b894.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/12/6abc3ca7-6797-486d-b14a-da64cdc0b894.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/12/6abc3ca7-6797-486d-b14a-da64cdc0b894.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Autor Marc-Uwe Kling wurde durch seine Känguru-Geschichten bekannt. (Archivbild)" data-source="Sebastian Christoph Gollnow/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Neues Buch</h4>
-                <h3 class="fp-article__title text-xl--bold ">Marc-Uwe Klings Känguru rebelliert - mal wieder</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/neues-buch-von-amelie-fried-leben-wie-in-der-truman-show-4213753">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/11/5736d954-39f8-4157-af22-604382695113.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/11/5736d954-39f8-4157-af22-604382695113.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/11/5736d954-39f8-4157-af22-604382695113.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/11/5736d954-39f8-4157-af22-604382695113.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/11/5736d954-39f8-4157-af22-604382695113.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/11/5736d954-39f8-4157-af22-604382695113.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/11/5736d954-39f8-4157-af22-604382695113.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Amelie Fried" data-source="Henning Kaiser/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Literatur</h4>
-                <h3 class="fp-article__title text-xl--bold ">Neues Buch von Amelie Fried: Leben wie in der Truman-Show</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/eine-aktuelle-politsatire-von-wolfgang-schorlau-4213183">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/10/8cfc05ad-50b2-4b2f-8669-93a0e916d18a.jpeg?rect=0%2C196%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/10/8cfc05ad-50b2-4b2f-8669-93a0e916d18a.jpeg?rect=0%2C196%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/10/8cfc05ad-50b2-4b2f-8669-93a0e916d18a.jpeg?rect=0%2C196%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/10/8cfc05ad-50b2-4b2f-8669-93a0e916d18a.jpeg?rect=0%2C196%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/10/8cfc05ad-50b2-4b2f-8669-93a0e916d18a.jpeg?rect=0%2C196%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/10/8cfc05ad-50b2-4b2f-8669-93a0e916d18a.jpeg?rect=0%2C196%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/10/8cfc05ad-50b2-4b2f-8669-93a0e916d18a.jpeg?rect=0%2C196%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Autor Schorlau 2016 bei einer Lesung." data-source="picture alliance / dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Neues Buch</h4>
-                <h3 class="fp-article__title text-xl--bold ">Eine aktuelle Politsatire von Wolfgang Schorlau</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/ddr-osten-kinderbuecher-kindheit-kult-4184494">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/06/2f5de6e1-90c6-4f82-833d-02fce6101106.jpeg?rect=0%2C187%2C4000%2C2250&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/06/2f5de6e1-90c6-4f82-833d-02fce6101106.jpeg?rect=0%2C187%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/06/2f5de6e1-90c6-4f82-833d-02fce6101106.jpeg?rect=0%2C187%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/06/2f5de6e1-90c6-4f82-833d-02fce6101106.jpeg?rect=0%2C187%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/06/2f5de6e1-90c6-4f82-833d-02fce6101106.jpeg?rect=0%2C187%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/06/2f5de6e1-90c6-4f82-833d-02fce6101106.jpeg?rect=0%2C187%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/06/2f5de6e1-90c6-4f82-833d-02fce6101106.jpeg?rect=0%2C187%2C4000%2C2250&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="In der DDR wurde viel gelesen. Mehr als 120.000 Kinder- und Jugendbücher erschienen zwischen 1945 und 1990." data-source="(Foto: Imago / Werner Schulze)">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Kindheit vor der Wende</h4>
-                <h3 class="fp-article__title text-xl--bold ">Ost-Kindheit zwischen den Seiten: Das sind die beliebtesten Kinderbücher der DDR</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/verse-fur-dustere-zeiten-michel-houellebecqs-neues-buch-4209718">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/04/e4afcafd-7d97-445f-97e6-ad89c28f8d09.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/04/e4afcafd-7d97-445f-97e6-ad89c28f8d09.jpeg?rect=0%2C99%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/04/e4afcafd-7d97-445f-97e6-ad89c28f8d09.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/04/e4afcafd-7d97-445f-97e6-ad89c28f8d09.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/04/e4afcafd-7d97-445f-97e6-ad89c28f8d09.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/04/e4afcafd-7d97-445f-97e6-ad89c28f8d09.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/04/e4afcafd-7d97-445f-97e6-ad89c28f8d09.jpeg?rect=0%2C99%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Houellebecqs neues Gedichtband wird höchstwahrscheinlich auch in Deutschland erscheinen." data-source="Boris Roessler/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Literatur</h4>
-                <h3 class="fp-article__title text-xl--bold ">Verse für düstere Zeiten: Michel Houellebecqs neues Buch</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/khiders-bittersusses-buch-uber-das-leben-im-kalifat-4208864">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/03/6354c864-4e61-4a6e-9c9d-db5335c25c14.jpeg?rect=0%2C151%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/03/6354c864-4e61-4a6e-9c9d-db5335c25c14.jpeg?rect=0%2C151%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/03/6354c864-4e61-4a6e-9c9d-db5335c25c14.jpeg?rect=0%2C151%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/03/6354c864-4e61-4a6e-9c9d-db5335c25c14.jpeg?rect=0%2C151%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/03/6354c864-4e61-4a6e-9c9d-db5335c25c14.jpeg?rect=0%2C151%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/03/6354c864-4e61-4a6e-9c9d-db5335c25c14.jpeg?rect=0%2C151%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/03/6354c864-4e61-4a6e-9c9d-db5335c25c14.jpeg?rect=0%2C151%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Verblüffend ruhig und klar schreibt Abbas Khider über den Verlust von Freiheit und den Aufstieg des Fundamentalismus." data-source="Jens Kalaene/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Neues Buch</h4>
-                <h3 class="fp-article__title text-xl--bold ">Khiders bittersüßes Buch über das Leben im Kalifat</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/buch/tranen-trost-lachen-romane-fur-gebrochene-herzen-4208300">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/02/ecb72bb9-fd50-4241-93ec-5042db3d2b7a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/02/ecb72bb9-fd50-4241-93ec-5042db3d2b7a.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/02/ecb72bb9-fd50-4241-93ec-5042db3d2b7a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/02/ecb72bb9-fd50-4241-93ec-5042db3d2b7a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/02/ecb72bb9-fd50-4241-93ec-5042db3d2b7a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/02/ecb72bb9-fd50-4241-93ec-5042db3d2b7a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/02/ecb72bb9-fd50-4241-93ec-5042db3d2b7a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Gegen Kopfschmerzen helfen Tabletten, gegen Magenbeschwerden ein bisschen Natron. Doch was hilft bei Herz- und Weltschmerz?" data-source="picture alliance / dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Literatur</h4>
-                <h3 class="fp-article__title text-xl--bold ">Tränen, Trost, Lachen: Romane für gebrochene Herzen</h3>
-            </a>
-        </article>
 </div>
 
 
@@ -2045,93 +2061,93 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/musik/neues-album-von-johannes-oerding-stumpf-ist-trumpf-4223445">
+            <a href="/kultur/musik/neues-album-dj-otzis-helden-sind-elvis-winnetou-und-jesus-4238597">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/27/231ba8d9-ad8c-4ed3-8bc0-a0533f703d28.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/27/231ba8d9-ad8c-4ed3-8bc0-a0533f703d28.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/27/231ba8d9-ad8c-4ed3-8bc0-a0533f703d28.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/27/231ba8d9-ad8c-4ed3-8bc0-a0533f703d28.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/27/231ba8d9-ad8c-4ed3-8bc0-a0533f703d28.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/27/231ba8d9-ad8c-4ed3-8bc0-a0533f703d28.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/27/231ba8d9-ad8c-4ed3-8bc0-a0533f703d28.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nach einer kurzen Auszeit steht Johannes Oerding bald wieder auf der Bühne. (Archivbild)" data-source="Hendrik Schmidt/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/24/5d472cc5-d27f-439a-be33-08b55d057790.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/24/5d472cc5-d27f-439a-be33-08b55d057790.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/24/5d472cc5-d27f-439a-be33-08b55d057790.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/24/5d472cc5-d27f-439a-be33-08b55d057790.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/24/5d472cc5-d27f-439a-be33-08b55d057790.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/24/5d472cc5-d27f-439a-be33-08b55d057790.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/24/5d472cc5-d27f-439a-be33-08b55d057790.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="„Elvis, Winnetou und Jesus, das sind meine Helden“, sagte der 55-jährige Sänger. (Archivbild)" data-source="Max Slovencik/APA/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Popmusik</h4>
-                <h3 class="fp-article__title text-xl--bold ">Neues Album von Johannes Oerding: Stumpf ist Trumpf</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> „Öha“</h4>
+                <h3 class="fp-article__title text-xl--bold ">Neues Album: DJ Ötzis Helden sind Elvis, Winnetou und Jesus</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/musik/styles-steigt-auf-platz-eins-ein-4215644">
+            <a href="/kultur/musik/roland-kaiser-arena-tournee-2027-leipzig-tickets-karten-pre-sale-4232525">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/13/8b0e63c1-7c3b-42a2-ae5f-882c05fb5048.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/13/8b0e63c1-7c3b-42a2-ae5f-882c05fb5048.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/13/8b0e63c1-7c3b-42a2-ae5f-882c05fb5048.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/13/8b0e63c1-7c3b-42a2-ae5f-882c05fb5048.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/13/8b0e63c1-7c3b-42a2-ae5f-882c05fb5048.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/13/8b0e63c1-7c3b-42a2-ae5f-882c05fb5048.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/13/8b0e63c1-7c3b-42a2-ae5f-882c05fb5048.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Harry Styles dominiert die deutschen Charts: Acht Songs in den Single-Charts Top 100, Nummer eins in den Album-Charts. (Archivbild)" data-source="Scott A Garfitt/Invision/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/14/ff700b29-73a6-4d57-8e79-a56b6330dd41.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/14/ff700b29-73a6-4d57-8e79-a56b6330dd41.jpeg?rect=0%2C137%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/14/ff700b29-73a6-4d57-8e79-a56b6330dd41.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/14/ff700b29-73a6-4d57-8e79-a56b6330dd41.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/14/ff700b29-73a6-4d57-8e79-a56b6330dd41.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/14/ff700b29-73a6-4d57-8e79-a56b6330dd41.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/14/ff700b29-73a6-4d57-8e79-a56b6330dd41.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Mit seiner neuen Tour &quot;Unser Moment&quot; will Roland Kaiser 2027 Emotionen in Arenen in Deutschland, Österreich und der Schweiz bringen." data-source="Foto: Frank Embacher">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Charts</h4>
-                <h3 class="fp-article__title text-xl--bold ">Styles steigt auf Platz eins ein</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Große Arena-Tournee</h4>
+                <h3 class="fp-article__title text-xl--bold ">Ticket-Vorverkauf startet schon heute! Roland Kaiser kommt 2027 nach Leipzig</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/musik/wgt-wave-gotik-treffen-2026-pfingsten-bands-preise-3981032">
+            <a href="/kultur/musik/bislang-unveroffentlichte-version-von-prince-song-erscheint-4237048">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=640 640w, https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=320 320w, https://bmg-images.forward-publishing.io/2025/01/14/7a1ddf7e-749e-4720-ba8f-107cb134268c.jpeg?rect=104%2C39%2C518%2C518&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Konzerte und Co.: Die ersten Bands für das Wave-Gotik-Treffen 2026 in Leipzig sind bestätigt." data-source="Foto: Imago/Snapshot">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/21/f9ebc4b0-fd0b-4d8b-b862-b63f67c59555.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/21/f9ebc4b0-fd0b-4d8b-b862-b63f67c59555.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/21/f9ebc4b0-fd0b-4d8b-b862-b63f67c59555.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/21/f9ebc4b0-fd0b-4d8b-b862-b63f67c59555.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/21/f9ebc4b0-fd0b-4d8b-b862-b63f67c59555.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/21/f9ebc4b0-fd0b-4d8b-b862-b63f67c59555.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/21/f9ebc4b0-fd0b-4d8b-b862-b63f67c59555.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Prince ist seit zehn Jahren tot. (Archivfoto)" data-source="Balazs Mohai/MTI/epa/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> zu Pfingsten</h4>
-                <h3 class="fp-article__title text-xl--bold ">Treffen der schwarzen Szene in Leipzig: Das ist schon über das WGT 2026 bekannt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> 10. Todestag</h4>
+                <h3 class="fp-article__title text-xl--bold ">Bislang unveröffentlichte Version von Prince-Song erscheint</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/musik/techno-dj-vorwuerfe-machtmissbrauch-sexuelle-noetigung-carv-fantasm-shlomo-hive-ferropolis-4206016">
+            <a href="/kultur/musik/rihanna-erstmals-mit-drittem-kind-auf-magazin-cover-4237030">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/26/b9f2eb01-2d78-41a2-a869-38bd1846ebb3.jpeg?rect=92%2C0%2C3204%2C1802&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Das Hive-Festival bei Gräfenhainichen hat sich innerhalb weniger Jahre zu einem Besuchermagnet der Techno-Szene entwickelt. Die kommende Ausgabe im Juni 2026 ist bereits jetzt ausverkauft." data-source="Foto: Lea Fischer">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/21/3b2bb9b5-9259-4d73-b315-af7b146090b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/21/3b2bb9b5-9259-4d73-b315-af7b146090b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/21/3b2bb9b5-9259-4d73-b315-af7b146090b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/21/3b2bb9b5-9259-4d73-b315-af7b146090b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/21/3b2bb9b5-9259-4d73-b315-af7b146090b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/21/3b2bb9b5-9259-4d73-b315-af7b146090b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/21/3b2bb9b5-9259-4d73-b315-af7b146090b6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Rihanna hat zum ersten Mal mit ihrer kleinen Tochter posiert. (Archivbild)" data-source="Jordan Strauss/Invision/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Beim Hive-Festival rausgeschmissen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Techno-Skandal um Machtmissbrauch und sexuelle Nötigung: Star-DJ beendet Karriere</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Leute</h4>
+                <h3 class="fp-article__title text-xl--bold ">Rihanna erstmals mit drittem Kind auf Magazin-Cover</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/musik/gorillaz-mit-the-mountain-zwischen-leben-und-verlust-4206641">
+            <a href="/kultur/musik/us-sanger-alan-osmond-gestorben-4237023">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/27/62fa05c0-777e-48c4-957a-7ea30c3955e9.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/27/62fa05c0-777e-48c4-957a-7ea30c3955e9.jpeg?rect=0%2C160%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/27/62fa05c0-777e-48c4-957a-7ea30c3955e9.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/27/62fa05c0-777e-48c4-957a-7ea30c3955e9.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/27/62fa05c0-777e-48c4-957a-7ea30c3955e9.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/27/62fa05c0-777e-48c4-957a-7ea30c3955e9.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/27/62fa05c0-777e-48c4-957a-7ea30c3955e9.jpeg?rect=0%2C160%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Musiker Damon Albarn (r) und Jamie Hewlett (l) von den Gorillaz mit ihren fiktiven Charakteren Noodle, Murdoc Niccals, Russel Hobbs, und 2D (v.l.)." data-source="Reuben Bastienne-Lewis/Gorillaz/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/21/a4a5d3a2-258f-4ac4-818f-3c5c0ab126cd.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/21/a4a5d3a2-258f-4ac4-818f-3c5c0ab126cd.jpeg?rect=0%2C104%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/21/a4a5d3a2-258f-4ac4-818f-3c5c0ab126cd.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/21/a4a5d3a2-258f-4ac4-818f-3c5c0ab126cd.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/21/a4a5d3a2-258f-4ac4-818f-3c5c0ab126cd.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/21/a4a5d3a2-258f-4ac4-818f-3c5c0ab126cd.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/21/a4a5d3a2-258f-4ac4-818f-3c5c0ab126cd.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Musiker starb mit 76 Jahren. (Archivfbild)" data-source="Isaac Brekken/A-BREKKEN via AP/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Todesfall</h4>
+                <h3 class="fp-article__title text-xl--bold ">US-Sänger Alan Osmond gestorben</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/musik/fast-jeder-zweite-song-bei-deezer-ist-ki-erzeugt-4236028">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/20/9183e183-4562-4b37-b92d-4da81db753c0.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/20/9183e183-4562-4b37-b92d-4da81db753c0.jpeg?rect=0%2C144%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/20/9183e183-4562-4b37-b92d-4da81db753c0.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/20/9183e183-4562-4b37-b92d-4da81db753c0.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/20/9183e183-4562-4b37-b92d-4da81db753c0.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/20/9183e183-4562-4b37-b92d-4da81db753c0.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/20/9183e183-4562-4b37-b92d-4da81db753c0.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Musik-Streamingdienste werden zunehmend von KI-Songs geflutet. (Symbolbild)" data-source="Franziska Gabbert/dpa-tmn/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Streamingdienst</h4>
+                <h3 class="fp-article__title text-xl--bold ">Fast jeder zweite Song bei Deezer ist KI-erzeugt</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/musik/bosse-singt-uber-hass-im-netz-uberrascht-von-resonanz-4234298">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/17/38302598-920e-496a-85a9-f5c6268aa3a1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/17/38302598-920e-496a-85a9-f5c6268aa3a1.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/17/38302598-920e-496a-85a9-f5c6268aa3a1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/17/38302598-920e-496a-85a9-f5c6268aa3a1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/17/38302598-920e-496a-85a9-f5c6268aa3a1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/17/38302598-920e-496a-85a9-f5c6268aa3a1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/17/38302598-920e-496a-85a9-f5c6268aa3a1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Hamburger Sänger Bosse hat ein neues Album. Es ist sein zehntes. (Archivbild)" data-source="Christian Charisius/dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Musik</h4>
-                <h3 class="fp-article__title text-xl--bold ">Gorillaz mit „The Mountain“ zwischen Leben und Verlust</h3>
+                <h3 class="fp-article__title text-xl--bold ">Bosse singt über Hass im Netz - überrascht von Resonanz</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/musik/u2-widmet-iranischem-opfer-der-frauenbewegung-einen-song-4203983">
+            <a href="/kultur/musik/36-jahre-alter-hit-wieder-in-musik-charts-4230915">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/23/cf8cf96a-f0e9-4c5e-b424-505e8bd226ae.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/23/cf8cf96a-f0e9-4c5e-b424-505e8bd226ae.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/23/cf8cf96a-f0e9-4c5e-b424-505e8bd226ae.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/23/cf8cf96a-f0e9-4c5e-b424-505e8bd226ae.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/23/cf8cf96a-f0e9-4c5e-b424-505e8bd226ae.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/23/cf8cf96a-f0e9-4c5e-b424-505e8bd226ae.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/23/cf8cf96a-f0e9-4c5e-b424-505e8bd226ae.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die irische Rockband U2 widmete einem jungen Opfer der iranischen Frauenbewegung von 2022 einen Song. (Archivbild)" data-source="Joel Ryan/Invision/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/13/5a6d8724-421d-4364-a7c7-8edc87b6abc1.jpeg?rect=0%2C132%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/13/5a6d8724-421d-4364-a7c7-8edc87b6abc1.jpeg?rect=0%2C132%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/13/5a6d8724-421d-4364-a7c7-8edc87b6abc1.jpeg?rect=0%2C132%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/13/5a6d8724-421d-4364-a7c7-8edc87b6abc1.jpeg?rect=0%2C132%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/13/5a6d8724-421d-4364-a7c7-8edc87b6abc1.jpeg?rect=0%2C132%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/13/5a6d8724-421d-4364-a7c7-8edc87b6abc1.jpeg?rect=0%2C132%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/13/5a6d8724-421d-4364-a7c7-8edc87b6abc1.jpeg?rect=0%2C132%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Dave Gahan (links) und Martin Gore sind zurück in den Charts - überraschenderweise mit einem alten Song. (Archivbild)" data-source="Evan Agostini/Invision via AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Frauenbewegung</h4>
-                <h3 class="fp-article__title text-xl--bold ">U2 widmet iranischem Opfer der Frauenbewegung einen Song</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Depeche Mode</h4>
+                <h3 class="fp-article__title text-xl--bold ">36 Jahre alter Hit wieder in Musik-Charts</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/musik/turkische-behorden-verbieten-metal-konzerte-in-istanbul-4196966">
+            <a href="/kultur/musik/studie-musiker-verdienen-kaum-was-mit-streaming-4231286">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/10/a649c3e7-a54c-4b75-bad2-8ec2528e663b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/10/a649c3e7-a54c-4b75-bad2-8ec2528e663b.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/10/a649c3e7-a54c-4b75-bad2-8ec2528e663b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/10/a649c3e7-a54c-4b75-bad2-8ec2528e663b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/10/a649c3e7-a54c-4b75-bad2-8ec2528e663b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/10/a649c3e7-a54c-4b75-bad2-8ec2528e663b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/10/a649c3e7-a54c-4b75-bad2-8ec2528e663b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Absage der Veranstaltungen wurde damit begründet, dass diese wegen ihrer Unvereinbarkeit mit den gesellschaftlichen Werten eine breite Ablehnung in verschiedenen Teilen der Bevölkerung auslösten. (Symbolbild)" data-source="Rolf Vennenbernd/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/12/77f55510-02bb-4c81-b041-a763789b717e.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/12/77f55510-02bb-4c81-b041-a763789b717e.jpeg?rect=0%2C144%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/12/77f55510-02bb-4c81-b041-a763789b717e.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/12/77f55510-02bb-4c81-b041-a763789b717e.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/12/77f55510-02bb-4c81-b041-a763789b717e.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/12/77f55510-02bb-4c81-b041-a763789b717e.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/12/77f55510-02bb-4c81-b041-a763789b717e.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="In Streamingdiensten kann man für wenig Geld viel hören - aber die Künstler verdienen daran kaum. (Symbolbild)" data-source="Franziska Gabbert/dpa-tmn/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> „Streaming-Paradox“</h4>
+                <h3 class="fp-article__title text-xl--bold ">Studie: Musiker verdienen kaum was mit Streaming</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/musik/neues-album-von-joe-jackson-hoffnung-wut-england-liebe-4231095">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/11/e2075c73-02cf-4a0a-9b08-adb1ce33c858.jpeg?rect=0%2C234%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/11/e2075c73-02cf-4a0a-9b08-adb1ce33c858.jpeg?rect=0%2C234%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/11/e2075c73-02cf-4a0a-9b08-adb1ce33c858.jpeg?rect=0%2C234%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/11/e2075c73-02cf-4a0a-9b08-adb1ce33c858.jpeg?rect=0%2C234%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/11/e2075c73-02cf-4a0a-9b08-adb1ce33c858.jpeg?rect=0%2C234%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/11/e2075c73-02cf-4a0a-9b08-adb1ce33c858.jpeg?rect=0%2C234%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/11/e2075c73-02cf-4a0a-9b08-adb1ce33c858.jpeg?rect=0%2C234%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Auf &quot;Hope And Fury&quot; singt Joe Jackson, der in Portsmouth aufwuchs, über englische Küstenstädte." data-source="Frank Veronsky/earMusic/dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Musik</h4>
-                <h3 class="fp-article__title text-xl--bold ">Türkische Behörden verbieten Metal-Konzerte in Istanbul</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/musik/olympia-macht-italo-schlager-wieder-popular-4195482">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/08/461fc165-381e-4cb2-ad88-83a7c88af12e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/08/461fc165-381e-4cb2-ad88-83a7c88af12e.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/08/461fc165-381e-4cb2-ad88-83a7c88af12e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/08/461fc165-381e-4cb2-ad88-83a7c88af12e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/08/461fc165-381e-4cb2-ad88-83a7c88af12e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/08/461fc165-381e-4cb2-ad88-83a7c88af12e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/08/461fc165-381e-4cb2-ad88-83a7c88af12e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bei der Eröffnungsfeier der Winterspiele trat Maria Carey auf." data-source="Peter Kneffel/dpa-POOL/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Winterspiele</h4>
-                <h3 class="fp-article__title text-xl--bold ">Olympia macht Italo-Schlager wieder populär</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/musik/the-isley-brothers-mit-hollywood-stern-gefeiert-4189658">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/01/29/755d58c4-581a-4fb5-a6fa-2da173f7448e.jpeg?rect=0%2C109%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/01/29/755d58c4-581a-4fb5-a6fa-2da173f7448e.jpeg?rect=0%2C109%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/01/29/755d58c4-581a-4fb5-a6fa-2da173f7448e.jpeg?rect=0%2C109%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/01/29/755d58c4-581a-4fb5-a6fa-2da173f7448e.jpeg?rect=0%2C109%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/01/29/755d58c4-581a-4fb5-a6fa-2da173f7448e.jpeg?rect=0%2C109%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/01/29/755d58c4-581a-4fb5-a6fa-2da173f7448e.jpeg?rect=0%2C109%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/01/29/755d58c4-581a-4fb5-a6fa-2da173f7448e.jpeg?rect=0%2C109%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Brüder Ronald und Ernie Isley, die heute 84 und 73 alt sind, landeten vor 67 Jahren mit „Shout“ ihren ersten großen Hit." data-source="Richard Shotwell/Invision/AP/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Auszeichnung</h4>
-                <h3 class="fp-article__title text-xl--bold ">„The Isley Brothers“ mit Hollywood-Stern gefeiert</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/musik/ddr-farbfilm-radio-song-hit-osten-hitparade-4182378">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/01/26/094786b0-dd45-41b1-a5fc-9b7e7bbd7a2d.jpeg?rect=0%2C182%2C2059%2C1158&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/01/26/094786b0-dd45-41b1-a5fc-9b7e7bbd7a2d.jpeg?rect=0%2C182%2C2059%2C1158&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/01/26/094786b0-dd45-41b1-a5fc-9b7e7bbd7a2d.jpeg?rect=0%2C182%2C2059%2C1158&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/01/26/094786b0-dd45-41b1-a5fc-9b7e7bbd7a2d.jpeg?rect=0%2C182%2C2059%2C1158&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/01/26/094786b0-dd45-41b1-a5fc-9b7e7bbd7a2d.jpeg?rect=0%2C182%2C2059%2C1158&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/01/26/094786b0-dd45-41b1-a5fc-9b7e7bbd7a2d.jpeg?rect=0%2C182%2C2059%2C1158&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/01/26/094786b0-dd45-41b1-a5fc-9b7e7bbd7a2d.jpeg?rect=0%2C182%2C2059%2C1158&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nina Hagen im Jahr 1980 in Köln, vier Jahre nach ihrer Flucht aus der DDR in den Westen." data-source="(Foto: Imago/United Archives)">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Musik aus dem Osten</h4>
-                <h3 class="fp-article__title text-xl--bold ">Nur echte Ossis kennen sie alle: Diese DDR-Lieder lösen sofort Erinnerungen aus</h3>
+                <h3 class="fp-article__title text-xl--bold ">Neues Album von Joe Jackson - Hoffnung, Wut, England-Liebe</h3>
             </a>
         </article>
 </div>
@@ -2152,93 +2168,93 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/krimi-ohne-kanten-potsdam-comeback-im-polizeiruf-110-4224323">
+            <a href="/kultur/tv-und-streaming/im-neuen-saarland-krimi-erste-wirklich-erwachsene-rolle-4242135">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/28/b22f1a4a-7890-4435-b37d-3e5112d9705f.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/28/b22f1a4a-7890-4435-b37d-3e5112d9705f.jpeg?rect=0%2C97%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/28/b22f1a4a-7890-4435-b37d-3e5112d9705f.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/28/b22f1a4a-7890-4435-b37d-3e5112d9705f.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/28/b22f1a4a-7890-4435-b37d-3e5112d9705f.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/28/b22f1a4a-7890-4435-b37d-3e5112d9705f.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/28/b22f1a4a-7890-4435-b37d-3e5112d9705f.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Vincent Ross (l, André Kaczmarczyk) und Karl Rogov (Frank Leo Schröder) von der deutsch-polnischen Mordkommission im Grenzort Świecko verschlägt es nach Potsdam." data-source="Christoph Assmann/rbb Presse &amp;amp; Information/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/1ab4ff6b-abad-41e4-8977-1d32e93a544f.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/1ab4ff6b-abad-41e4-8977-1d32e93a544f.jpeg?rect=0%2C134%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/1ab4ff6b-abad-41e4-8977-1d32e93a544f.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/1ab4ff6b-abad-41e4-8977-1d32e93a544f.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/1ab4ff6b-abad-41e4-8977-1d32e93a544f.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/1ab4ff6b-abad-41e4-8977-1d32e93a544f.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/1ab4ff6b-abad-41e4-8977-1d32e93a544f.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Schauspieler Aram Arami bei einem Fototermin für die Deutsche Presse-Agentur im April 2026 in Berlin." data-source="Jens Kalaene/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Fernsehen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Krimi ohne Kanten - Potsdam-Comeback im „Polizeiruf 110“</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Neue Krimireihe mit Aram Arami</h4>
+                <h3 class="fp-article__title text-xl--bold ">Im neuen Saarland-Krimi erste „wirklich erwachsene Rolle“</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/ostfriesenkrimi-im-zdf-wer-hat-das-leben-verdient-4224072">
+            <a href="/kultur/tv-und-streaming/wer-weiss-denn-sowas-feiertag-programm-ard-aenderung-4240939">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/28/36f296bb-7b2b-43cf-8750-aa2ff2a9dd60.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/28/36f296bb-7b2b-43cf-8750-aa2ff2a9dd60.jpeg?rect=0%2C0%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/28/36f296bb-7b2b-43cf-8750-aa2ff2a9dd60.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/28/36f296bb-7b2b-43cf-8750-aa2ff2a9dd60.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/28/36f296bb-7b2b-43cf-8750-aa2ff2a9dd60.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/28/36f296bb-7b2b-43cf-8750-aa2ff2a9dd60.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/28/36f296bb-7b2b-43cf-8750-aa2ff2a9dd60.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Kommissarin Ann Kathrin Klaasen (Picco von Groote, M.) und ihr Lebens- und Arbeitspartner Frank Weller (Tom Radisch, r.) ermitteln gegen Dr. Bernhardt Sommerfeldt (Sven Schelker, l.)" data-source="Michael Ihle/ZDF/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/29/d82e47e8-d01c-418d-9078-45fa3498da94.jpeg?rect=85%2C220%2C2125%2C1195&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/29/d82e47e8-d01c-418d-9078-45fa3498da94.jpeg?rect=85%2C220%2C2125%2C1195&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/29/d82e47e8-d01c-418d-9078-45fa3498da94.jpeg?rect=85%2C220%2C2125%2C1195&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/29/d82e47e8-d01c-418d-9078-45fa3498da94.jpeg?rect=85%2C220%2C2125%2C1195&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/29/d82e47e8-d01c-418d-9078-45fa3498da94.jpeg?rect=85%2C220%2C2125%2C1195&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/29/d82e47e8-d01c-418d-9078-45fa3498da94.jpeg?rect=85%2C220%2C2125%2C1195&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/29/d82e47e8-d01c-418d-9078-45fa3498da94.jpeg?rect=85%2C220%2C2125%2C1195&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Quiz-Show &quot;Wer weiß denn sowas?&quot; fällt in dieser Woche an einem Tag aus.&amp;nbsp;" data-source="(Foto: ARD)">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Fernsehen und Streaming</h4>
-                <h3 class="fp-article__title text-xl--bold ">„Ostfriesenkrimi“ im ZDF: Wer hat das Leben verdient?</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> ARD ändert Programm</h4>
+                <h3 class="fp-article__title text-xl--bold ">"Wer weiß denn sowas?"-Fans müssen schon wieder auf geliebte Quizshow verzichten</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/love-story-komplett-jfk-jr-serie-befeuert-90er-nostalgie-4223721">
+            <a href="/kultur/tv-und-streaming/magie-und-realitat-isabel-allendes-geisterhaus-als-serie-4241443">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/27/db7a6442-c11b-4bac-91ae-90526a2c34ba.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/27/db7a6442-c11b-4bac-91ae-90526a2c34ba.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/27/db7a6442-c11b-4bac-91ae-90526a2c34ba.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/27/db7a6442-c11b-4bac-91ae-90526a2c34ba.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/27/db7a6442-c11b-4bac-91ae-90526a2c34ba.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/27/db7a6442-c11b-4bac-91ae-90526a2c34ba.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/27/db7a6442-c11b-4bac-91ae-90526a2c34ba.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Stürmische Liebe: Sarah Pidgeon als Carolyn Bessette und Paul Kelly als John F. Kennedy Jr.. (Handout)" data-source="Kurt Iswarienko/FX/Disney+/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/29/17f1111f-a2ec-4d64-bc58-c4ca3cc886fb.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/29/17f1111f-a2ec-4d64-bc58-c4ca3cc886fb.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/29/17f1111f-a2ec-4d64-bc58-c4ca3cc886fb.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/29/17f1111f-a2ec-4d64-bc58-c4ca3cc886fb.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/29/17f1111f-a2ec-4d64-bc58-c4ca3cc886fb.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/29/17f1111f-a2ec-4d64-bc58-c4ca3cc886fb.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/29/17f1111f-a2ec-4d64-bc58-c4ca3cc886fb.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die „Geisterhaus“-Schriftstellerin Isabel Allende mag die neue Serie, wie sie sagt. (Archivbild)" data-source="Fernando Sánchez/EUROPA PRESS/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Streaming-Hit bei Disney+</h4>
-                <h3 class="fp-article__title text-xl--bold ">„Love Story“ komplett: JFK-Jr.-Serie befeuert 90er-Nostalgie</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Streaming</h4>
+                <h3 class="fp-article__title text-xl--bold ">Magie und Realität: Isabel Allendes „Geisterhaus“ als Serie</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/die-zukunft-des-serienmarkts-hype-um-vertical-dramas-4223373">
+            <a href="/kultur/tv-und-streaming/laura-dern-folgt-auf-bonham-carter-in-the-white-lotus-4241344">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/27/75624be2-fcc6-4424-84dd-7019ae4ad5aa.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/27/75624be2-fcc6-4424-84dd-7019ae4ad5aa.jpeg?rect=0%2C97%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/27/75624be2-fcc6-4424-84dd-7019ae4ad5aa.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/27/75624be2-fcc6-4424-84dd-7019ae4ad5aa.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/27/75624be2-fcc6-4424-84dd-7019ae4ad5aa.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/27/75624be2-fcc6-4424-84dd-7019ae4ad5aa.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/27/75624be2-fcc6-4424-84dd-7019ae4ad5aa.jpeg?rect=0%2C97%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Serie „Between The Beats“ ist inspiriert von K-Dramen und der Popkultur Südkoreas." data-source="Markus Nass/Radio Bremen und SR/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/28/ffd9be67-722e-4a4b-9518-723373cbbcf1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/28/ffd9be67-722e-4a4b-9518-723373cbbcf1.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/28/ffd9be67-722e-4a4b-9518-723373cbbcf1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/28/ffd9be67-722e-4a4b-9518-723373cbbcf1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/28/ffd9be67-722e-4a4b-9518-723373cbbcf1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/28/ffd9be67-722e-4a4b-9518-723373cbbcf1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/28/ffd9be67-722e-4a4b-9518-723373cbbcf1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Oscar-Preisträgerin Laura Dern spielt bei „The White Lotus“ mit. (Archivbild)" data-source="Scott A Garfitt/Invision/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Serien fürs Smartphone</h4>
-                <h3 class="fp-article__title text-xl--bold ">Die Zukunft des Serienmarkts? Hype um „Vertical Dramas“</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Neue Besetzung</h4>
+                <h3 class="fp-article__title text-xl--bold ">Laura Dern folgt auf Bonham Carter in „The White Lotus“</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/medien-oscargekrontes-regie-duo-plant-film-mit-gosling-4223395">
+            <a href="/kultur/tv-und-streaming/gefragt-gejagt-neue-staffel-wann-jubilaeum-jaeger-4232591">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/27/3a6cce8c-3814-497b-9b13-851e059762be.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/27/3a6cce8c-3814-497b-9b13-851e059762be.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/27/3a6cce8c-3814-497b-9b13-851e059762be.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/27/3a6cce8c-3814-497b-9b13-851e059762be.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/27/3a6cce8c-3814-497b-9b13-851e059762be.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/27/3a6cce8c-3814-497b-9b13-851e059762be.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/27/3a6cce8c-3814-497b-9b13-851e059762be.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ryan Gosling ist in „Der Astronaut – Project Hail Mary“ in den Kinos zu sehen. (Archivbild)" data-source="Christoph Soeder/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/28/ea4c0c96-42e7-4c4c-a4b6-a7555324f2bb.jpeg?rect=0%2C190%2C4000%2C2250&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/28/ea4c0c96-42e7-4c4c-a4b6-a7555324f2bb.jpeg?rect=0%2C190%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/28/ea4c0c96-42e7-4c4c-a4b6-a7555324f2bb.jpeg?rect=0%2C190%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/28/ea4c0c96-42e7-4c4c-a4b6-a7555324f2bb.jpeg?rect=0%2C190%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/28/ea4c0c96-42e7-4c4c-a4b6-a7555324f2bb.jpeg?rect=0%2C190%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/28/ea4c0c96-42e7-4c4c-a4b6-a7555324f2bb.jpeg?rect=0%2C190%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/28/ea4c0c96-42e7-4c4c-a4b6-a7555324f2bb.jpeg?rect=0%2C190%2C4000%2C2250&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Seit 2012 ist Alexander Bommes als Moderator bei der ARD-Quizshow &quot;Gefragt – Gejagt&quot; zu sehen.&amp;nbsp;&amp;nbsp;" data-source="(Foto: ARD/Uwe Ernst)">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Film</h4>
-                <h3 class="fp-article__title text-xl--bold ">Medien: Oscargekröntes Regie-Duo plant Film mit Gosling</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Rateshow feiert Jubiläum</h4>
+                <h3 class="fp-article__title text-xl--bold ">ARD feiert 1.000 Folgen "Gefragt – Gejagt"! Das sind die Highlights der neuen Staffel</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/disney-serie-uber-wiener-kongress-im-herbst-4223290">
+            <a href="/kultur/tv-und-streaming/zoe-kravitz-und-harry-styles-sollen-verlobt-sein-4241061">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/26/e033cff0-bfe3-4848-b139-c607a592c5e6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/26/e033cff0-bfe3-4848-b139-c607a592c5e6.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/26/e033cff0-bfe3-4848-b139-c607a592c5e6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/26/e033cff0-bfe3-4848-b139-c607a592c5e6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/26/e033cff0-bfe3-4848-b139-c607a592c5e6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/26/e033cff0-bfe3-4848-b139-c607a592c5e6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/26/e033cff0-bfe3-4848-b139-c607a592c5e6.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Daniel Donskoy spielt einen Bonapartisten in der Wiener-Kongress-Serie „Vienna Game“ von Disney+, die im November starten soll. (Archivbild)" data-source="Christophe Gateau/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/28/1b0e2ff1-41b8-4bd6-9553-14856672bf86.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/28/1b0e2ff1-41b8-4bd6-9553-14856672bf86.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/28/1b0e2ff1-41b8-4bd6-9553-14856672bf86.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/28/1b0e2ff1-41b8-4bd6-9553-14856672bf86.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/28/1b0e2ff1-41b8-4bd6-9553-14856672bf86.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/28/1b0e2ff1-41b8-4bd6-9553-14856672bf86.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/28/1b0e2ff1-41b8-4bd6-9553-14856672bf86.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Seit Sommer vergangenen Jahres soll Zoë Kravitz mit dem Sänger Harry Styles liiert sein. (Archivbild)" data-source="Jordan Strauss/Invision/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Europäische Geschichte</h4>
-                <h3 class="fp-article__title text-xl--bold ">Disney-Serie über Wiener Kongress im Herbst</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Liebe unter Stars</h4>
+                <h3 class="fp-article__title text-xl--bold ">Zoë Kravitz und Harry Styles sollen verlobt sein</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/konkurrenz-fur-tatort-quiz-mit-joko-und-klaas-sonntags-4223157">
+            <a href="/kultur/tv-und-streaming/lady-gaga-und-doechii-feiern-die-mode-in-runway-musikvideo-4240957">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/26/04faab16-bf0f-446a-92b3-b130b1bec705.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/26/04faab16-bf0f-446a-92b3-b130b1bec705.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/26/04faab16-bf0f-446a-92b3-b130b1bec705.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/26/04faab16-bf0f-446a-92b3-b130b1bec705.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/26/04faab16-bf0f-446a-92b3-b130b1bec705.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/26/04faab16-bf0f-446a-92b3-b130b1bec705.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/26/04faab16-bf0f-446a-92b3-b130b1bec705.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Joko und Klaas starten bald wieder mit neuen Folgen von „Ein sehr gutes Quiz (mit hoher Gewinnsumme)“. (Archivbild)" data-source="Christoph Reichwein/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Fernsehen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Konkurrenz für „Tatort“: Quiz mit Joko und Klaas sonntags</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/in-aller-freundschaft-iaf-maren-gilzer-yvonne-habermann-dschungelkoenigin-ibes-4222909">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/26/6476b6f5-4839-421d-be4a-9553be84a232.jpeg?rect=397%2C68%2C708%2C398&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/26/6476b6f5-4839-421d-be4a-9553be84a232.jpeg?rect=397%2C68%2C708%2C398&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/26/6476b6f5-4839-421d-be4a-9553be84a232.jpeg?rect=397%2C68%2C708%2C398&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/26/6476b6f5-4839-421d-be4a-9553be84a232.jpeg?rect=397%2C68%2C708%2C398&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/26/6476b6f5-4839-421d-be4a-9553be84a232.jpeg?rect=397%2C68%2C708%2C398&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/26/6476b6f5-4839-421d-be4a-9553be84a232.jpeg?rect=397%2C68%2C708%2C398&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/26/6476b6f5-4839-421d-be4a-9553be84a232.jpeg?rect=397%2C68%2C708%2C398&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="So kennt man sie: Im weißen Kittel kümmerte sich Krankenschwester Yvonne Habermann bis 2014 rührend um die Patienten bei &quot;In aller Freundschaft&quot;." data-source="(Foto: MDR Fernsehen)">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> in aller freundschaft</h4>
-                <h3 class="fp-article__title text-xl--bold ">Sachsenklinik brennt! Dschungelkönigin Maren Gilzer nach mehr als zehn Jahren zurück</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/iaf-in-aller-freundschaft-sachsenklinik-maria-weber-annett-renneberg-serie-tod-4200815">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/02/17/11c33975-6d12-44c6-b676-05bcb5651e3d.jpeg?rect=1%2C0%2C2025%2C1139&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/02/17/11c33975-6d12-44c6-b676-05bcb5651e3d.jpeg?rect=1%2C0%2C2025%2C1139&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/02/17/11c33975-6d12-44c6-b676-05bcb5651e3d.jpeg?rect=1%2C0%2C2025%2C1139&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/02/17/11c33975-6d12-44c6-b676-05bcb5651e3d.jpeg?rect=1%2C0%2C2025%2C1139&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/02/17/11c33975-6d12-44c6-b676-05bcb5651e3d.jpeg?rect=1%2C0%2C2025%2C1139&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/02/17/11c33975-6d12-44c6-b676-05bcb5651e3d.jpeg?rect=1%2C0%2C2025%2C1139&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/02/17/11c33975-6d12-44c6-b676-05bcb5651e3d.jpeg?rect=1%2C0%2C2025%2C1139&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Prof. Dr. Maria Weber (Annett Renneberg, l.) und ihr Lebensgefährte Dr. Kai Hoffmann (Julian Weigend) sind sich in Folge 1129, die am 10. März ausgestrahlt wurde, so nahe wie nie zuvor." data-source="Foto: MDR/Saxonia Media/Sebastian Kiss">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> ARD Schockt mit "IaF"-Serientod</h4>
-                <h3 class="fp-article__title text-xl--bold ">Fans sauer: "Reicht mit den Rauswürfen" – Auch Annett Renneberg rechnete nicht mit Aus</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/kultur/tv-und-streaming/schoneberger-verrat-ostereier-trick-ihres-opas-aus-kindheit-4222736">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/26/8ca3fa57-78b5-41f9-ad25-1a9601d35838.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/26/8ca3fa57-78b5-41f9-ad25-1a9601d35838.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/26/8ca3fa57-78b5-41f9-ad25-1a9601d35838.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/26/8ca3fa57-78b5-41f9-ad25-1a9601d35838.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/26/8ca3fa57-78b5-41f9-ad25-1a9601d35838.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/26/8ca3fa57-78b5-41f9-ad25-1a9601d35838.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/26/8ca3fa57-78b5-41f9-ad25-1a9601d35838.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Moderatorin Barbara Schöneberger (Archivbild)." data-source="Georg Wendt/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/28/ce83f04f-bca3-4716-acd8-4065719bd9c3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/28/ce83f04f-bca3-4716-acd8-4065719bd9c3.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/28/ce83f04f-bca3-4716-acd8-4065719bd9c3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/28/ce83f04f-bca3-4716-acd8-4065719bd9c3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/28/ce83f04f-bca3-4716-acd8-4065719bd9c3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/28/ce83f04f-bca3-4716-acd8-4065719bd9c3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/28/ce83f04f-bca3-4716-acd8-4065719bd9c3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Lady Gaga (40) zeigt in einem Musikvideo ihre Begeisterung für die Modewelt. (Archivbild)" data-source="Evan Agostini/Invision/AP/dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Leute</h4>
-                <h3 class="fp-article__title text-xl--bold ">Schöneberger verrät Ostereier-Trick ihres Opas aus Kindheit</h3>
+                <h3 class="fp-article__title text-xl--bold ">Lady Gaga und Doechii feiern die Mode in „Runway“-Musikvideo</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/tv-und-streaming/luke-hemsworth-trage-wegen-brudern-chris-und-liam-ballast-4240863">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/28/270813ea-428c-4e34-9486-d9f627b85f82.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/28/270813ea-428c-4e34-9486-d9f627b85f82.jpeg?rect=0%2C96%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/28/270813ea-428c-4e34-9486-d9f627b85f82.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/28/270813ea-428c-4e34-9486-d9f627b85f82.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/28/270813ea-428c-4e34-9486-d9f627b85f82.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/28/270813ea-428c-4e34-9486-d9f627b85f82.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/28/270813ea-428c-4e34-9486-d9f627b85f82.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Schauspieler Luke Hemsworth (45) hat eigenen Angaben zufolge wegen seiner berühmten jüngeren Brüder Liam (36) und Chris Hemsworth (42) eher Probleme in Hollywood. (Archivbild)" data-source="Nina Prommer/EPA/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Leute</h4>
+                <h3 class="fp-article__title text-xl--bold ">Luke Hemsworth: Trage wegen Brüdern Chris und Liam „Ballast“</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/tv-und-streaming/der-mit-dem-wolf-tanzt-ex-schauspieler-zu-haft-verurteilt-4240755">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/28/51faccc4-4c7c-4521-a14f-de2d27381604.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/28/51faccc4-4c7c-4521-a14f-de2d27381604.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/28/51faccc4-4c7c-4521-a14f-de2d27381604.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/28/51faccc4-4c7c-4521-a14f-de2d27381604.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/28/51faccc4-4c7c-4521-a14f-de2d27381604.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/28/51faccc4-4c7c-4521-a14f-de2d27381604.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/28/51faccc4-4c7c-4521-a14f-de2d27381604.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Das Gericht hat eine lange Haftstrafe gegen Nathan Chasing Horse verhängt. (Archivfoto)" data-source="Ty ONeil/AP/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Strafmaß</h4>
+                <h3 class="fp-article__title text-xl--bold ">„Der mit dem Wolf tanzt“: Ex-Schauspieler zu Haft verurteilt</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/kultur/tv-und-streaming/rtl-programm-barbara-salesch-richterin-4236785">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/27/fd76eb8d-5869-4431-9a79-f6b199764668.jpeg?rect=0%2C203%2C2301%2C1294&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/27/fd76eb8d-5869-4431-9a79-f6b199764668.jpeg?rect=0%2C203%2C2301%2C1294&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/27/fd76eb8d-5869-4431-9a79-f6b199764668.jpeg?rect=0%2C203%2C2301%2C1294&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/27/fd76eb8d-5869-4431-9a79-f6b199764668.jpeg?rect=0%2C203%2C2301%2C1294&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/27/fd76eb8d-5869-4431-9a79-f6b199764668.jpeg?rect=0%2C203%2C2301%2C1294&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/27/fd76eb8d-5869-4431-9a79-f6b199764668.jpeg?rect=0%2C203%2C2301%2C1294&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/27/fd76eb8d-5869-4431-9a79-f6b199764668.jpeg?rect=0%2C203%2C2301%2C1294&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Richterin Barbara Salesch war jahrelang als TV-Richterin im Fernsehen zu sehen." data-source="(Foto: Imago/teutopress)">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> RTL zieht Richter-Show den Stecker</h4>
+                <h3 class="fp-article__title text-xl--bold ">Trotz guter Quoten: Keine weiteren Staffeln für "Barbara Salesch – Das Strafgericht"?</h3>
             </a>
         </article>
 </div>
@@ -2376,11 +2392,11 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
                       </a>
                     </li>
                     <li>
-                      <a href="/sachsen-anhalt/leseranwaeltin" target="_self">Leseranwältin
+                      <a href="https://www.volksstimme.de/wahl/landtagswahl-sachsen-anhalt">Landtagswahl Sachsen-Anhalt
                       </a>
                     </li>
                     <li>
-                      <a href="https://www.volksstimme.de/podcast">Podcast
+                      <a href="/sachsen-anhalt/leseranwaeltin" target="_self">Leseranwältin
                       </a>
                     </li>
                     <li>
@@ -2406,11 +2422,11 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
                 </div>
                 <ul>
                     <li>
-                      <a href="/live/fussball-regionalliga-nordost">Fußball-Regionalliga Nordost
+                      <a href="/live/fussball">Fußball
                       </a>
                     </li>
                     <li>
-                      <a href="/live/fussball-verbandsliga-sachsen-anhalt">Fußball-Verbandsliga Sachsen-Anhalt
+                      <a href="https://www.volksstimme.de/thema/livezeit-chris">Livezeit mit Chris
                       </a>
                     </li>
                 </ul>
@@ -2690,15 +2706,21 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
               <div class="fp-footer__inner">
                 <div class="fp-footer__category">
                   <h4>
+                    <a href="https://www.volksstimme.de/podcast">Podcast
+                    </a>
+                  </h4>
+                </div>
+                <ul>
+                </ul>
+              </div>
+              <div class="fp-footer__inner">
+                <div class="fp-footer__category">
+                  <h4>
                     <a href="/video" target="_self">Video
                     </a>
                   </h4>
                 </div>
                 <ul>
-                    <li>
-                      <a href="https://www.volksstimme.de/video/studiotalk">Studiotalk
-                      </a>
-                    </li>
                     <li>
                       <a href="https://www.volksstimme.de/video/youtube-hiya">Youtube-Kanal Hiya!
                       </a>

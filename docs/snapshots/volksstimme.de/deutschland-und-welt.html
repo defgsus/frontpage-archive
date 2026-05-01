@@ -175,11 +175,12 @@
         console.log("Benutzer-Abonnementstatus:", userType); // Hier wird der Abonnementstatus ausgegeben
         // Setzt den globalen Wert für den Pur-Status
         window.cmp_pur_loggedin = (userType === "pur-pur");
+		loggedIn = typeof subscriptions != "undefined" && typeof subscriptions.pur != "undefined" && typeof subscriptions.paywall != "undefined";
         try {
             adchannels = window.ad_channel?.split("/") ?? [];	
 //            cmd = createCmd(subscriptions?.userType != "pur-anon", subscriptions != undefined && subscriptions.paywall != undefined && subscriptions.paywall.length > 0, adchannels);
 //            console.log(cmd);
-            kstahandler(subscriptions?.userType != "pur-anon",
+            kstahandler(loggedIn ,
 				subscriptions != undefined && subscriptions.paywall != undefined && subscriptions.paywall.length > 0,
 				adchannels, []);
 	        
@@ -711,15 +712,15 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
                             </a>
                         </div>
     <div class="fp-main-header__weather-widget">
-        <div class="fp-main-header__weather-widget--top wolkig">
+        <div class="fp-main-header__weather-widget--top sonnig">
             <span class="weather-icon-img">
-                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/wolkig.svg" alt="weather">
+                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/sonnig.svg" alt="weather">
             </span>
-            <span class="fp-main-header__weather-widget--tooltip">wolkig</span>
+            <span class="fp-main-header__weather-widget--tooltip">sonnig</span>
             <aside>
-                <span class="fp-main-header__weather-widget--day-temp">12°</span>
+                <span class="fp-main-header__weather-widget--day-temp">23°</span>
                 <span>/</span>
-                <span class="fp-main-header__weather-widget--night-temp">-1°</span>
+                <span class="fp-main-header__weather-widget--night-temp">8°</span>
             </aside>
         </div>
         <div class="fp-main-header__weather-widget--bottom">
@@ -787,6 +788,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 ">
                     <a class="text-14--bold" href="/blaulicht" target="_self">
                       Blaulicht
+                    </a>
+                  </li>
+                  <li class="fp-main-nav__list-item
+">
+                    <a class="text-14--bold" href="https://www.volksstimme.de/podcast">
+                      Podcast
                     </a>
                   </li>
                   <li class="fp-main-nav__list-item
@@ -927,6 +934,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 ">
                     <a class="text-14--bold" href="/blaulicht" target="_self">
                       Blaulicht
+                    </a>
+                  </li>
+                  <li class="fp-main-nav__list-item
+">
+                    <a class="text-14--bold" href="https://www.volksstimme.de/podcast">
+                      Podcast
                     </a>
                   </li>
                   <li class="fp-main-nav__list-item
@@ -1132,13 +1145,13 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="/sachsen-anhalt/leseranwaeltin" target="_self">
-                        Leseranwältin
+                      <a class="text-16--regular" href="https://www.volksstimme.de/wahl/landtagswahl-sachsen-anhalt">
+                        Landtagswahl Sachsen-Anhalt
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="https://www.volksstimme.de/podcast">
-                        Podcast
+                      <a class="text-16--regular" href="/sachsen-anhalt/leseranwaeltin" target="_self">
+                        Leseranwältin
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
@@ -1165,13 +1178,13 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
             </div>
             <ul class="fp-sidebar-menu__nav--list">
                     <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="/live/fussball-regionalliga-nordost">
-                        Fußball-Regionalliga Nordost
+                      <a class="text-16--regular" href="/live/fussball">
+                        Fußball
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="/live/fussball-verbandsliga-sachsen-anhalt">
-                        Fußball-Verbandsliga Sachsen-Anhalt
+                      <a class="text-16--regular" href="https://www.volksstimme.de/thema/livezeit-chris">
+                        Livezeit mit Chris
                       </a>
                     </li>
             </ul>
@@ -1490,16 +1503,19 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
             </ul>
             <div class="fp-sidebar-menu__nav--header">
               <span>
+                  <a href="https://www.volksstimme.de/podcast">Podcast
+                  </a>
+              </span>
+            </div>
+            <ul class="fp-sidebar-menu__nav--list">
+            </ul>
+            <div class="fp-sidebar-menu__nav--header">
+              <span>
                   <a href="/video" target="_self">Video
                   </a>
               </span>
             </div>
             <ul class="fp-sidebar-menu__nav--list">
-                    <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="https://www.volksstimme.de/video/studiotalk">
-                        Studiotalk
-                      </a>
-                    </li>
                     <li class="fp-sidebar-menu__nav--item">
                       <a class="text-16--regular" href="https://www.volksstimme.de/video/youtube-hiya">
                         Youtube-Kanal Hiya!
@@ -1791,21 +1807,21 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/wohnungspreise-in-innenstadten-steigen-uberdurchschnittlich-4225947">
+            <a href="/deutschland-und-welt/wirtschaft/trigema-patriarch-wer-alter-wird-muss-langer-arbeiten-4242829">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/04/01/0ecae0ac-0de5-42a5-93ba-46f236d911c1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/01/0ecae0ac-0de5-42a5-93ba-46f236d911c1.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/01/0ecae0ac-0de5-42a5-93ba-46f236d911c1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/01/0ecae0ac-0de5-42a5-93ba-46f236d911c1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/01/0ecae0ac-0de5-42a5-93ba-46f236d911c1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/01/0ecae0ac-0de5-42a5-93ba-46f236d911c1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/01/0ecae0ac-0de5-42a5-93ba-46f236d911c1.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="In Düsseldorf haben sich die Preise je nach Lage besonders stark auseinanderentwickelt. (Archivbild)" data-source="Marcel Kusch/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/05/01/7a7abecd-8052-4ede-8e02-642c7720bd5d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/05/01/7a7abecd-8052-4ede-8e02-642c7720bd5d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/05/01/7a7abecd-8052-4ede-8e02-642c7720bd5d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/05/01/7a7abecd-8052-4ede-8e02-642c7720bd5d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/05/01/7a7abecd-8052-4ede-8e02-642c7720bd5d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/05/01/7a7abecd-8052-4ede-8e02-642c7720bd5d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/05/01/7a7abecd-8052-4ede-8e02-642c7720bd5d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Grupp senior gilt als erfahrener Kaufmann." data-source="Marijan Murat/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Immobilien</h4>
-                <h3 class="fp-article__title text-xl--bold ">Wohnungspreise in Innenstädten steigen überdurchschnittlich</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Zum Tag der Arbeit</h4>
+                <h3 class="fp-article__title text-xl--bold ">Trigema-Patriarch: „Wer älter wird, muss länger arbeiten“</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/richter-stoppt-bauarbeiten-fur-trumps-ballsaal-vorerst-4225907">
+            <a href="/deutschland-und-welt/wirtschaft/neue-bahn-verbindung-zwischen-prag-und-kopenhagen-4242810">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/04/01/1b546625-2d0d-421b-b3d1-6ac3473fa1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/01/1b546625-2d0d-421b-b3d1-6ac3473fa1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/01/1b546625-2d0d-421b-b3d1-6ac3473fa1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/01/1b546625-2d0d-421b-b3d1-6ac3473fa1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/01/1b546625-2d0d-421b-b3d1-6ac3473fa1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/01/1b546625-2d0d-421b-b3d1-6ac3473fa1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/01/1b546625-2d0d-421b-b3d1-6ac3473fa1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Ostflügel des Weißen Hauses musste dem Projekt bereits weichen. (Archivbild)" data-source="Pablo Martinez Monsivais/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/05/01/0d94bcd3-fcd1-40de-92c3-5f02d3f8c1ca.jpeg?rect=0%2C128%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/05/01/0d94bcd3-fcd1-40de-92c3-5f02d3f8c1ca.jpeg?rect=0%2C128%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/05/01/0d94bcd3-fcd1-40de-92c3-5f02d3f8c1ca.jpeg?rect=0%2C128%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/05/01/0d94bcd3-fcd1-40de-92c3-5f02d3f8c1ca.jpeg?rect=0%2C128%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/05/01/0d94bcd3-fcd1-40de-92c3-5f02d3f8c1ca.jpeg?rect=0%2C128%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/05/01/0d94bcd3-fcd1-40de-92c3-5f02d3f8c1ca.jpeg?rect=0%2C128%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/05/01/0d94bcd3-fcd1-40de-92c3-5f02d3f8c1ca.jpeg?rect=0%2C128%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Den Zug für die neue Direktverbindung stellt die Tschechische Bahn ČD. (Archivbild)" data-source="Andreas Richter/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Paradeprojekt am Weißen Haus</h4>
-                <h3 class="fp-article__title text-xl--bold ">Richter stoppt Bauarbeiten für Trumps Ballsaal vorerst</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Mit Halt in Berlin</h4>
+                <h3 class="fp-article__title text-xl--bold ">Neue Bahn-Verbindung zwischen Prag und Kopenhagen</h3>
             </a>
         </article>
 </div>
@@ -1828,39 +1844,39 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/29-tote-bei-absturz-von-russischem-flugzeug-uber-der-krim-4225941">
+            <a href="/deutschland-und-welt/wirtschaft/jetzt-last-minute-tickets-bei-der-bahn-4242802">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/5f1f3649-e179-47a9-9ef7-ab8b03e8dfa3.jpeg?rect=0%2C28%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/5f1f3649-e179-47a9-9ef7-ab8b03e8dfa3.jpeg?rect=0%2C28%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/5f1f3649-e179-47a9-9ef7-ab8b03e8dfa3.jpeg?rect=0%2C28%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/5f1f3649-e179-47a9-9ef7-ab8b03e8dfa3.jpeg?rect=0%2C28%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/5f1f3649-e179-47a9-9ef7-ab8b03e8dfa3.jpeg?rect=0%2C28%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/5f1f3649-e179-47a9-9ef7-ab8b03e8dfa3.jpeg?rect=0%2C28%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/5f1f3649-e179-47a9-9ef7-ab8b03e8dfa3.jpeg?rect=0%2C28%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ein Flugzeug ist über der von Russland besetzten ukrainischen Schwarzmeer-Halbinsel Krim abgestürzt. (Symbolbild)" data-source="Na Son Nguyen/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/d03ab649-3792-4a68-9b61-52262c4f4c72.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/d03ab649-3792-4a68-9b61-52262c4f4c72.jpeg?rect=0%2C73%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/d03ab649-3792-4a68-9b61-52262c4f4c72.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/d03ab649-3792-4a68-9b61-52262c4f4c72.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/d03ab649-3792-4a68-9b61-52262c4f4c72.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/d03ab649-3792-4a68-9b61-52262c4f4c72.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/d03ab649-3792-4a68-9b61-52262c4f4c72.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Für den Fernverkehr der Bahn gibt es eine neue Fahrscheinvariante. (Symbolbild)" data-source="Jan Woitas/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Militärflugzeug</h4>
-                <h3 class="fp-article__title text-xl--bold ">29 Tote bei Absturz von russischem Flugzeug über der Krim</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Neues Angebot</h4>
+                <h3 class="fp-article__title text-xl--bold ">Jetzt Last-Minute-Tickets bei der Bahn</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/nike-ubertrifft-erwartungen-mit-quartalszahlen-4225914">
+            <a href="/deutschland-und-welt/wirtschaft/eu-startet-riesige-freihandelszone-mit-mercosur-staaten-4242799">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/0f55cb46-b549-4312-a2f9-2510919b9261.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/0f55cb46-b549-4312-a2f9-2510919b9261.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/0f55cb46-b549-4312-a2f9-2510919b9261.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/0f55cb46-b549-4312-a2f9-2510919b9261.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/0f55cb46-b549-4312-a2f9-2510919b9261.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/0f55cb46-b549-4312-a2f9-2510919b9261.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/0f55cb46-b549-4312-a2f9-2510919b9261.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nike arbeitet sich aus einer weitgehend hausgemachten Krise. (Archivbild)" data-source="Michael Kappeler/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/ae257a2c-36c9-4305-8796-9edb1114a3df.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/ae257a2c-36c9-4305-8796-9edb1114a3df.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/ae257a2c-36c9-4305-8796-9edb1114a3df.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/ae257a2c-36c9-4305-8796-9edb1114a3df.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/ae257a2c-36c9-4305-8796-9edb1114a3df.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/ae257a2c-36c9-4305-8796-9edb1114a3df.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/ae257a2c-36c9-4305-8796-9edb1114a3df.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Das Mercosur-Abkommen soll unter anderem Autoherstellern bessere Exportchancen ermöglichen. (Archivbild)" data-source="Lars Penning/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Sportartikel-Riese</h4>
-                <h3 class="fp-article__title text-xl--bold ">Nike übertrifft Erwartungen mit Quartalszahlen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Welthandel</h4>
+                <h3 class="fp-article__title text-xl--bold ">EU startet riesige Freihandelszone mit Mercosur-Staaten</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/iran-zogert-bei-gesprachen-mit-den-usa-uber-kriegsende-4225909">
+            <a href="/deutschland-und-welt/deutschland/koalitionsvertrag-von-grunen-und-cdu-im-sudwesten-steht-4242779">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/792e7cdc-70d5-48d9-a61b-9d6d2c21e26f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/792e7cdc-70d5-48d9-a61b-9d6d2c21e26f.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/792e7cdc-70d5-48d9-a61b-9d6d2c21e26f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/792e7cdc-70d5-48d9-a61b-9d6d2c21e26f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/792e7cdc-70d5-48d9-a61b-9d6d2c21e26f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/792e7cdc-70d5-48d9-a61b-9d6d2c21e26f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/792e7cdc-70d5-48d9-a61b-9d6d2c21e26f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Irans Außenminister Abbas Araghtschi bestätigt einen Kontakt zum US-Sondergesandten Steve Witkoff. Foto Archiv" data-source="Tatyana Makeyeva/Pool AFP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/2e5f157c-040c-499a-9d84-10774fb19a5f.jpeg?rect=0%2C173%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/2e5f157c-040c-499a-9d84-10774fb19a5f.jpeg?rect=0%2C173%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/2e5f157c-040c-499a-9d84-10774fb19a5f.jpeg?rect=0%2C173%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/2e5f157c-040c-499a-9d84-10774fb19a5f.jpeg?rect=0%2C173%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/2e5f157c-040c-499a-9d84-10774fb19a5f.jpeg?rect=0%2C173%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/2e5f157c-040c-499a-9d84-10774fb19a5f.jpeg?rect=0%2C173%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/2e5f157c-040c-499a-9d84-10774fb19a5f.jpeg?rect=0%2C173%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Stimmung zwischen Cem Özdemir und Manuel Hagel hat sich seit dem Wahlabend deutlich gebessert." data-source="Bernd Weißbrod/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Iran-Konflikte</h4>
-                <h3 class="fp-article__title text-xl--bold ">Iran zögert bei Gesprächen mit den USA über Kriegsende</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Regierungsbildung</h4>
+                <h3 class="fp-article__title text-xl--bold ">Koalitionsvertrag von Grünen und CDU im Südwesten steht</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/netanjahu-geht-von-sturz-der-iranischen-fuhrung-aus-4225896">
+            <a href="/deutschland-und-welt/politik/kompromiss-im-streit-uber-finanzierung-von-us-ministerium-4242731">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/49f7e8f9-aaca-4775-91cc-14e837b4d45e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/49f7e8f9-aaca-4775-91cc-14e837b4d45e.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/49f7e8f9-aaca-4775-91cc-14e837b4d45e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/49f7e8f9-aaca-4775-91cc-14e837b4d45e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/49f7e8f9-aaca-4775-91cc-14e837b4d45e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/49f7e8f9-aaca-4775-91cc-14e837b4d45e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/49f7e8f9-aaca-4775-91cc-14e837b4d45e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der israelische Regierungschef Benjamin Netanjahu hat das iranische Volk in der Vergangenheit bereits zum Sturz der Führung in Teheran aufgerufen. (Archivbild)" data-source="Ronen Zvulun/Pool Reuters/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/1fd7a061-ecbe-47da-b9b6-cd922de744ec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/1fd7a061-ecbe-47da-b9b6-cd922de744ec.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/1fd7a061-ecbe-47da-b9b6-cd922de744ec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/1fd7a061-ecbe-47da-b9b6-cd922de744ec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/1fd7a061-ecbe-47da-b9b6-cd922de744ec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/1fd7a061-ecbe-47da-b9b6-cd922de744ec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/1fd7a061-ecbe-47da-b9b6-cd922de744ec.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Im monatelangen Haushaltsstreit gibt es eine Einigung - aber nur teilweise. (Archivbild)" data-source="Matt Rourke/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Krieg in Nahost</h4>
-                <h3 class="fp-article__title text-xl--bold ">Netanjahu geht von Sturz der iranischen Führung aus</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Haushaltsstreit</h4>
+                <h3 class="fp-article__title text-xl--bold ">Kompromiss im Streit über Finanzierung von US-Ministerium</h3>
             </a>
         </article>
 </div>
@@ -1883,39 +1899,39 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/votum-fur-todesstrafe-eu-kritisiert-geschlossen-israel-4225889">
+            <a href="/deutschland-und-welt/politik/vollig-wirkungslos-im-ukraine-krieg-trump-atzt-gegen-merz-4242625">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/8e29cf6c-f803-497f-85b7-3ae91c80de36.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/8e29cf6c-f803-497f-85b7-3ae91c80de36.jpeg?rect=0%2C134%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/8e29cf6c-f803-497f-85b7-3ae91c80de36.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/8e29cf6c-f803-497f-85b7-3ae91c80de36.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/8e29cf6c-f803-497f-85b7-3ae91c80de36.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/8e29cf6c-f803-497f-85b7-3ae91c80de36.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/8e29cf6c-f803-497f-85b7-3ae91c80de36.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Verabschiedung des entsprechenden Gesetzes durch das israelische Parlament stelle einen schwerwiegenden Rückschritt gegenüber der bisherigen Praxis dar, teilte die EU-Außenbeauftragte Kaja Kallas mit." data-source="Britta Pedersen/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/53da87e6-1e30-4f57-8254-996170307e7f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/53da87e6-1e30-4f57-8254-996170307e7f.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/53da87e6-1e30-4f57-8254-996170307e7f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/53da87e6-1e30-4f57-8254-996170307e7f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/53da87e6-1e30-4f57-8254-996170307e7f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/53da87e6-1e30-4f57-8254-996170307e7f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/53da87e6-1e30-4f57-8254-996170307e7f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Trump (l.) greift Merz (r.) noch mal online an. (Archivbild)" data-source="Guido Bergmann/Presse- und Informationsamt der/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Abstimmung im Parlament</h4>
-                <h3 class="fp-article__title text-xl--bold ">Votum für Todesstrafe: EU kritisiert geschlossen Israel</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Kritik aus Washington</h4>
+                <h3 class="fp-article__title text-xl--bold ">„Völlig wirkungslos“ im Ukraine-Krieg: Trump ätzt gegen Merz</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/trump-strasse-von-hormus-offnet-sich-automatisch-4225884">
+            <a href="/deutschland-und-welt/politik/irans-fussball-prasident-an-einreise-nach-kanada-gehindert-4242349">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/67f82809-9323-4468-a191-04f4f4e3ff58.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/67f82809-9323-4468-a191-04f4f4e3ff58.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/67f82809-9323-4468-a191-04f4f4e3ff58.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/67f82809-9323-4468-a191-04f4f4e3ff58.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/67f82809-9323-4468-a191-04f4f4e3ff58.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/67f82809-9323-4468-a191-04f4f4e3ff58.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/67f82809-9323-4468-a191-04f4f4e3ff58.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="US-Präsident Donald Trump sagt, die Straße von Hormus werde sich nach Abschluss des Militäreinsatzes von allein öffnen. (Archivbild)" data-source="Mark Schiefelbein/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/1bde9d61-3734-4131-9209-db789ed77293.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/1bde9d61-3734-4131-9209-db789ed77293.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/1bde9d61-3734-4131-9209-db789ed77293.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/1bde9d61-3734-4131-9209-db789ed77293.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/1bde9d61-3734-4131-9209-db789ed77293.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/1bde9d61-3734-4131-9209-db789ed77293.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/1bde9d61-3734-4131-9209-db789ed77293.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Präsident des iranischen Fußballverbandes (Mitte) hat es nicht zum FIFA-Kongress in Vancouver geschafft." data-source="Saeid Zareian/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Iran-Krieg</h4>
-                <h3 class="fp-article__title text-xl--bold ">Trump: Straße von Hormus öffnet sich „automatisch“</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> FIFA-Kongress</h4>
+                <h3 class="fp-article__title text-xl--bold ">Irans Fußball-Präsident an Einreise nach Kanada gehindert</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/das-muss-man-aus-der-biografie-von-wolfgang-grupp-wissen-4225280">
+            <a href="/deutschland-und-welt/politik/iran-droht-bei-neuen-angriffen-mit-vergeltung-4242539">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/b151f323-eb4e-4d09-a978-4d24da1a18e3.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/b151f323-eb4e-4d09-a978-4d24da1a18e3.jpeg?rect=0%2C86%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/b151f323-eb4e-4d09-a978-4d24da1a18e3.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/b151f323-eb4e-4d09-a978-4d24da1a18e3.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/b151f323-eb4e-4d09-a978-4d24da1a18e3.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/b151f323-eb4e-4d09-a978-4d24da1a18e3.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/b151f323-eb4e-4d09-a978-4d24da1a18e3.jpeg?rect=0%2C86%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Eine neue Biografie widmet sich dem früheren Trigema-Chef. (Archivbild)" data-source="Bernd Weißbrod/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/bbb16c9b-13ec-45a8-894c-42048021cc56.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/bbb16c9b-13ec-45a8-894c-42048021cc56.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/bbb16c9b-13ec-45a8-894c-42048021cc56.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/bbb16c9b-13ec-45a8-894c-42048021cc56.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/bbb16c9b-13ec-45a8-894c-42048021cc56.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/bbb16c9b-13ec-45a8-894c-42048021cc56.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/bbb16c9b-13ec-45a8-894c-42048021cc56.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Iran droht bei Angriffen mit Vergeltung. (Archivbild)" data-source="Vahid Salemi/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Zum Mitreden</h4>
-                <h3 class="fp-article__title text-xl--bold ">Das muss man aus der Biografie von Wolfgang Grupp wissen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Stockende Friedensgespräche</h4>
+                <h3 class="fp-article__title text-xl--bold ">Iran droht bei neuen Angriffen mit Vergeltung</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/ostbeauftragte-pck-raffinerie-in-brandenburg-ist-gesichert-4225452">
+            <a href="/deutschland-und-welt/wirtschaft/gericht-stoppt-sprit-uberprufung-des-kartellamts-vorerst-4242675">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/d1b1bcbc-f638-49d5-93f1-4d2d55f20dc4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/d1b1bcbc-f638-49d5-93f1-4d2d55f20dc4.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/d1b1bcbc-f638-49d5-93f1-4d2d55f20dc4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/d1b1bcbc-f638-49d5-93f1-4d2d55f20dc4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/d1b1bcbc-f638-49d5-93f1-4d2d55f20dc4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/d1b1bcbc-f638-49d5-93f1-4d2d55f20dc4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/d1b1bcbc-f638-49d5-93f1-4d2d55f20dc4.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Ostbeauftragte der Bundesregierung, Elisabeth Kaiser, will sich beim Besuch der PCK-Raffinerie über den Übergang zu umweltfreundlicher Energie informieren (Archivbild)." data-source="Lilli Förter/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/05578847-16ab-4777-b6cb-10657663f578.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/05578847-16ab-4777-b6cb-10657663f578.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/05578847-16ab-4777-b6cb-10657663f578.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/05578847-16ab-4777-b6cb-10657663f578.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/05578847-16ab-4777-b6cb-10657663f578.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/05578847-16ab-4777-b6cb-10657663f578.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/05578847-16ab-4777-b6cb-10657663f578.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Was darf das Kartellamt, was darf es nicht?" data-source="Wolf von Dewitz/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Ölraffinerie</h4>
-                <h3 class="fp-article__title text-xl--bold ">Ostbeauftragte: PCK-Raffinerie in Brandenburg ist gesichert</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Benzin und Diesel</h4>
+                <h3 class="fp-article__title text-xl--bold ">Gericht stoppt Sprit-Überprüfung des Kartellamts vorerst</h3>
             </a>
         </article>
 </div>
@@ -1929,12 +1945,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 <h2 class="fp-most-popular-section-title">Meistgelesen</h2>
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/deutschland-und-welt/politik/usa-sehen-entscheidende-tage-im-iran-krieg-4225285">
+      <a href="/deutschland-und-welt/politik/frist-endet-wie-es-fur-trumps-iran-offensive-weitergeht-4242168">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">1.</span>
             <header>
-              <h4 class="fp-article__catchline"> Lage im Überblick</h4>
-              <h3 class="fp-article__title text-xxl--bold">USA sehen entscheidende Tage im Iran-Krieg</h3>
+              <h4 class="fp-article__catchline"> Iran-Krieg</h4>
+              <h3 class="fp-article__title text-xxl--bold">Frist endet: Wie es für Trumps Iran-Offensive weitergeht</h3>
             </header>
         </div>
       </a>
@@ -1942,12 +1958,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/deutschland-und-welt/politik/trump-strasse-von-hormus-offnet-sich-automatisch-4225884">
+      <a href="/deutschland-und-welt/wirtschaft/der-tankrabatt-kommt-was-man-wissen-muss-4242175">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">2.</span>
             <header>
-              <h4 class="fp-article__catchline"> Iran-Krieg</h4>
-              <h3 class="fp-article__title text-xxl--bold">Trump: Straße von Hormus öffnet sich „automatisch“</h3>
+              <h4 class="fp-article__catchline"> Folgen des Iran-Krieges</h4>
+              <h3 class="fp-article__title text-xxl--bold">Der Tankrabatt kommt – was man wissen muss</h3>
             </header>
         </div>
       </a>
@@ -1955,12 +1971,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/deutschland-und-welt/wirtschaft/das-muss-man-aus-der-biografie-von-wolfgang-grupp-wissen-4225280">
+      <a href="/deutschland-und-welt/politik/kompromiss-im-streit-uber-finanzierung-von-us-ministerium-4242731">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">3.</span>
             <header>
-              <h4 class="fp-article__catchline"> Zum Mitreden</h4>
-              <h3 class="fp-article__title text-xxl--bold">Das muss man aus der Biografie von Wolfgang Grupp wissen</h3>
+              <h4 class="fp-article__catchline"> Haushaltsstreit</h4>
+              <h3 class="fp-article__title text-xxl--bold">Kompromiss im Streit über Finanzierung von US-Ministerium</h3>
             </header>
         </div>
       </a>
@@ -1968,12 +1984,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/deutschland-und-welt/politik/netanjahu-geht-von-sturz-der-iranischen-fuhrung-aus-4225896">
+      <a href="/deutschland-und-welt/politik/iran-droht-bei-neuen-angriffen-mit-vergeltung-4242539">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">4.</span>
             <header>
-              <h4 class="fp-article__catchline"> Krieg in Nahost</h4>
-              <h3 class="fp-article__title text-xxl--bold">Netanjahu geht von Sturz der iranischen Führung aus</h3>
+              <h4 class="fp-article__catchline"> Stockende Friedensgespräche</h4>
+              <h3 class="fp-article__title text-xxl--bold">Iran droht bei neuen Angriffen mit Vergeltung</h3>
             </header>
         </div>
       </a>
@@ -1994,93 +2010,93 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/merz-stellt-klar-80-prozent-ruckkehrziel-kam-von-al-scharaa-4225267">
+            <a href="/deutschland-und-welt/deutschland/was-ein-teilabzug-der-us-truppen-bedeuten-wurde-4242445">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/47422420-f1e7-4406-87e5-f6a5416d9a78.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/47422420-f1e7-4406-87e5-f6a5416d9a78.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/47422420-f1e7-4406-87e5-f6a5416d9a78.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/47422420-f1e7-4406-87e5-f6a5416d9a78.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/47422420-f1e7-4406-87e5-f6a5416d9a78.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/47422420-f1e7-4406-87e5-f6a5416d9a78.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/47422420-f1e7-4406-87e5-f6a5416d9a78.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wer hat die Zielmarke ausgegeben, dass 80 Prozent der Syrer in ihre Heimat zurückkehren sollen? Der Kanzler verweist auf den syrischen Übergangspräsidenten." data-source="Kay Nietfeld/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/211157c3-4558-4fbd-8cda-9bd45d0ab8dc.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/211157c3-4558-4fbd-8cda-9bd45d0ab8dc.jpeg?rect=0%2C98%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/211157c3-4558-4fbd-8cda-9bd45d0ab8dc.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/211157c3-4558-4fbd-8cda-9bd45d0ab8dc.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/211157c3-4558-4fbd-8cda-9bd45d0ab8dc.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/211157c3-4558-4fbd-8cda-9bd45d0ab8dc.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/211157c3-4558-4fbd-8cda-9bd45d0ab8dc.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die US-Airbase in Ramstein ist die zentrale Luftdrehscheibe für Europa und den Nahen Osten. (Archivbild)" data-source="Boris Roessler/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Migration</h4>
-                <h3 class="fp-article__title text-xl--bold ">Merz stellt klar: 80-Prozent Rückkehrziel kam von al-Scharaa</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Nato</h4>
+                <h3 class="fp-article__title text-xl--bold ">Was ein Teilabzug der US-Truppen bedeuten würde</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/wie-leben-syrer-in-deutschland-die-wichtigsten-fragen-4225698">
+            <a href="/deutschland-und-welt/deutschland/weniger-abschiebungen-auch-eine-folge-des-iran-kriegs-4242452">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/cd0be016-c758-454b-a73c-bad4fdf40059.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/cd0be016-c758-454b-a73c-bad4fdf40059.jpeg?rect=0%2C100%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/cd0be016-c758-454b-a73c-bad4fdf40059.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/cd0be016-c758-454b-a73c-bad4fdf40059.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/cd0be016-c758-454b-a73c-bad4fdf40059.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/cd0be016-c758-454b-a73c-bad4fdf40059.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/cd0be016-c758-454b-a73c-bad4fdf40059.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Arbeitnehmer aus Syrien spielen eine wichtige Rolle auf dem deutschen Arbeitsmarkt. (Archivbild)" data-source="Martin Schutt/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/edc561c7-8649-402a-8066-8a0d54ab8763.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/edc561c7-8649-402a-8066-8a0d54ab8763.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/edc561c7-8649-402a-8066-8a0d54ab8763.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/edc561c7-8649-402a-8066-8a0d54ab8763.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/edc561c7-8649-402a-8066-8a0d54ab8763.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/edc561c7-8649-402a-8066-8a0d54ab8763.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/edc561c7-8649-402a-8066-8a0d54ab8763.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bei Abschiebungen unterstützt die Bundespolizei die Ausländer- und Polizeibehörden der Länder. (Symbolbild)" data-source="Michael Kappeler/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Debatte über Syrien-Rückkehr</h4>
-                <h3 class="fp-article__title text-xl--bold ">Wie leben Syrer in Deutschland? Die wichtigsten Fragen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Migrationspolitik</h4>
+                <h3 class="fp-article__title text-xl--bold ">Weniger Abschiebungen – auch eine Folge des Iran-Kriegs?</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/kritik-an-sparvorschlagen-warken-alle-ins-boot-4225273">
+            <a href="/deutschland-und-welt/deutschland/cdu-und-spd-in-rheinland-pfalz-einigen-sich-auf-koalition-4242221">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/49925950-8e1e-4e4a-9d0b-45717e716b60.jpeg?rect=0%2C114%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/49925950-8e1e-4e4a-9d0b-45717e716b60.jpeg?rect=0%2C114%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/49925950-8e1e-4e4a-9d0b-45717e716b60.jpeg?rect=0%2C114%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/49925950-8e1e-4e4a-9d0b-45717e716b60.jpeg?rect=0%2C114%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/49925950-8e1e-4e4a-9d0b-45717e716b60.jpeg?rect=0%2C114%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/49925950-8e1e-4e4a-9d0b-45717e716b60.jpeg?rect=0%2C114%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/49925950-8e1e-4e4a-9d0b-45717e716b60.jpeg?rect=0%2C114%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ministerin Warken will bei Einsparungen „alle Bereiche mit ins Boot“ holen." data-source="Britta Pedersen/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/1e00c63d-fedd-439d-b630-682d12586258.jpeg?rect=0%2C184%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/1e00c63d-fedd-439d-b630-682d12586258.jpeg?rect=0%2C184%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/1e00c63d-fedd-439d-b630-682d12586258.jpeg?rect=0%2C184%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/1e00c63d-fedd-439d-b630-682d12586258.jpeg?rect=0%2C184%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/1e00c63d-fedd-439d-b630-682d12586258.jpeg?rect=0%2C184%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/1e00c63d-fedd-439d-b630-682d12586258.jpeg?rect=0%2C184%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/1e00c63d-fedd-439d-b630-682d12586258.jpeg?rect=0%2C184%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Verhandlungsführer Alexander Schweitzer (SPD/links) und Gordon Schnieder (CDU) sind übereingekommen. (Archivbild)" data-source="Andreas Arnold/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Krankenversicherung</h4>
-                <h3 class="fp-article__title text-xl--bold ">Kritik an Sparvorschlägen – Warken: „Alle ins Boot“</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Neue Landesregierung</h4>
+                <h3 class="fp-article__title text-xl--bold ">CDU und SPD in Rheinland-Pfalz einigen sich auf Koalition</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/feindbild-der-rechten-report-beklagt-systematischen-druck-4225559">
+            <a href="/deutschland-und-welt/deutschland/erster-schritt-auf-einem-schwierigen-reformweg-4241643">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/ade2a903-c6b9-4ff0-9647-4a22915334d1.jpeg?rect=0%2C118%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/ade2a903-c6b9-4ff0-9647-4a22915334d1.jpeg?rect=0%2C118%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/ade2a903-c6b9-4ff0-9647-4a22915334d1.jpeg?rect=0%2C118%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/ade2a903-c6b9-4ff0-9647-4a22915334d1.jpeg?rect=0%2C118%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/ade2a903-c6b9-4ff0-9647-4a22915334d1.jpeg?rect=0%2C118%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/ade2a903-c6b9-4ff0-9647-4a22915334d1.jpeg?rect=0%2C118%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/ade2a903-c6b9-4ff0-9647-4a22915334d1.jpeg?rect=0%2C118%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Initiativen der Zivilgesellschaft sehen sich laut einer Analyse der Amadeu Antonio Stiftung systematisch unter Druck gesetzt. (Symbolbild)" data-source="Jan Woitas/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/29/bf723df4-0470-46a5-b191-61e7027e1621.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/29/bf723df4-0470-46a5-b191-61e7027e1621.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/29/bf723df4-0470-46a5-b191-61e7027e1621.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/29/bf723df4-0470-46a5-b191-61e7027e1621.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/29/bf723df4-0470-46a5-b191-61e7027e1621.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/29/bf723df4-0470-46a5-b191-61e7027e1621.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/29/bf723df4-0470-46a5-b191-61e7027e1621.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Kanzler zeigte sich heute erstmal erleichtert." data-source="Kay Nietfeld/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Zivilgesellschaft</h4>
-                <h3 class="fp-article__title text-xl--bold ">„Feindbild“ der Rechten: Report beklagt systematischen Druck</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Koalition</h4>
+                <h3 class="fp-article__title text-xl--bold ">Erster Schritt auf einem schwierigen Reformweg</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/was-kommt-in-warkens-werkzeugkasten-fur-stabile-beitrage-4225022">
+            <a href="/deutschland-und-welt/deutschland/mutmasslicher-russland-spion-in-berlin-festgenommen-4241552">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/30/704d196c-8bd0-4fbe-bb2c-cda86d844729.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/30/704d196c-8bd0-4fbe-bb2c-cda86d844729.jpeg?rect=0%2C96%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/30/704d196c-8bd0-4fbe-bb2c-cda86d844729.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/30/704d196c-8bd0-4fbe-bb2c-cda86d844729.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/30/704d196c-8bd0-4fbe-bb2c-cda86d844729.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/30/704d196c-8bd0-4fbe-bb2c-cda86d844729.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/30/704d196c-8bd0-4fbe-bb2c-cda86d844729.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Kommission macht Einsparvorschläge von bis zu 42 Milliarden Euro." data-source="Britta Pedersen/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Krankenversicherung</h4>
-                <h3 class="fp-article__title text-xl--bold ">Was kommt in Warkens „Werkzeugkasten“ für stabile Beiträge?</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/treffen-im-kanzleramt-80-prozent-der-syrer-sollen-zuruck-4224808">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/30/f03abacb-4149-42ef-86f6-8fc2443ce71e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/30/f03abacb-4149-42ef-86f6-8fc2443ce71e.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/30/f03abacb-4149-42ef-86f6-8fc2443ce71e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/30/f03abacb-4149-42ef-86f6-8fc2443ce71e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/30/f03abacb-4149-42ef-86f6-8fc2443ce71e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/30/f03abacb-4149-42ef-86f6-8fc2443ce71e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/30/f03abacb-4149-42ef-86f6-8fc2443ce71e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Merz nennt eine Zielmarke für die Rückkehr syrischer Flüchtlinge – und bezeichnet sie als Wunsch des syrischen Präsidenten." data-source="Kay Nietfeld/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Syriens Präsident bei Merz</h4>
-                <h3 class="fp-article__title text-xl--bold ">Treffen im Kanzleramt: 80 Prozent der Syrer sollen zurück</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/ukraine-unterstutzer-ausgespaht-mutmasslicher-spion-in-haft-4225087">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/30/2593f3d1-1f19-409e-839f-1034711b4c08.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/30/2593f3d1-1f19-409e-839f-1034711b4c08.jpeg?rect=0%2C98%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/30/2593f3d1-1f19-409e-839f-1034711b4c08.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/30/2593f3d1-1f19-409e-839f-1034711b4c08.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/30/2593f3d1-1f19-409e-839f-1034711b4c08.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/30/2593f3d1-1f19-409e-839f-1034711b4c08.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/30/2593f3d1-1f19-409e-839f-1034711b4c08.jpeg?rect=0%2C98%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Bundesanwaltschaft hat einen weiteren mutmaßlichen Russland-Spion festnehmen lassen. (Archivbild)" data-source="Christoph Schmidt/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/29/779f5801-b48d-482d-a347-12ee328da46b.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/29/779f5801-b48d-482d-a347-12ee328da46b.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/29/779f5801-b48d-482d-a347-12ee328da46b.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/29/779f5801-b48d-482d-a347-12ee328da46b.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/29/779f5801-b48d-482d-a347-12ee328da46b.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/29/779f5801-b48d-482d-a347-12ee328da46b.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/29/779f5801-b48d-482d-a347-12ee328da46b.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Mann soll mit einem russischen Geheimdienst in Kontakt gestanden haben." data-source="Markus Lenhardt/dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Bundesanwaltschaft</h4>
-                <h3 class="fp-article__title text-xl--bold ">Ukraine-Unterstützer ausgespäht? Mutmaßlicher Spion in Haft</h3>
+                <h3 class="fp-article__title text-xl--bold ">Mutmaßlicher Russland-Spion in Berlin festgenommen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/bundestags-experten-sehen-iran-krieg-als-volkerrechtsverstoss-4224470">
+            <a href="/deutschland-und-welt/deutschland/gesundheits-sparpaket-auf-dem-weg-reicht-der-puffer-4241405">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/30/768d5617-edef-4a30-9087-a705383b39fe.jpeg?rect=2%2C0%2C2044%2C1150&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/30/768d5617-edef-4a30-9087-a705383b39fe.jpeg?rect=2%2C0%2C2044%2C1150&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/30/768d5617-edef-4a30-9087-a705383b39fe.jpeg?rect=2%2C0%2C2044%2C1150&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/30/768d5617-edef-4a30-9087-a705383b39fe.jpeg?rect=2%2C0%2C2044%2C1150&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/30/768d5617-edef-4a30-9087-a705383b39fe.jpeg?rect=2%2C0%2C2044%2C1150&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/30/768d5617-edef-4a30-9087-a705383b39fe.jpeg?rect=2%2C0%2C2044%2C1150&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/30/768d5617-edef-4a30-9087-a705383b39fe.jpeg?rect=2%2C0%2C2044%2C1150&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ist der Angriff der USA und Israels auf den Iran völkerrechtswidrig? Für die Wissenschaftlichen Dienste des Bundestags ist die Antwort recht eindeutig. (Archivbild)" data-source="Uncredited/U.S. Central Command/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/29/a3cda48d-0f98-4adc-8697-2a6fea7e311d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/29/a3cda48d-0f98-4adc-8697-2a6fea7e311d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/29/a3cda48d-0f98-4adc-8697-2a6fea7e311d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/29/a3cda48d-0f98-4adc-8697-2a6fea7e311d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/29/a3cda48d-0f98-4adc-8697-2a6fea7e311d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/29/a3cda48d-0f98-4adc-8697-2a6fea7e311d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/29/a3cda48d-0f98-4adc-8697-2a6fea7e311d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Gesundheitsministerin Nina Warken plant Milliarden-Einsparungen bei Gesundheitskosten." data-source="Kay Nietfeld/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Angriffe der USA und Israels</h4>
-                <h3 class="fp-article__title text-xl--bold ">Bundestags-Experten sehen Iran-Krieg als Völkerrechtsverstoß</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Gesundheitskosten</h4>
+                <h3 class="fp-article__title text-xl--bold ">Gesundheits-Sparpaket auf dem Weg – Reicht der Puffer?</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/fussfesseln-und-massnahmen-gegen-sexualisierte-fake-bilder-4224385">
+            <a href="/deutschland-und-welt/deutschland/klingbeils-haushaltsplan-mit-lucken-als-aufwarmubung-4241442">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/29/55db3739-0ad5-4cc9-8b05-1b22180480dc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/29/55db3739-0ad5-4cc9-8b05-1b22180480dc.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/29/55db3739-0ad5-4cc9-8b05-1b22180480dc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/29/55db3739-0ad5-4cc9-8b05-1b22180480dc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/29/55db3739-0ad5-4cc9-8b05-1b22180480dc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/29/55db3739-0ad5-4cc9-8b05-1b22180480dc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/29/55db3739-0ad5-4cc9-8b05-1b22180480dc.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Tausende von Menschen gingen in den vergangenen Tagen auf die Straße, um für den Schutz von Frauen vor häuslicher und digitaler Gewalt zu demonstrieren. (Archivfoto)" data-source="Georg Wendt/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/29/d0cf3caf-f7dd-4e4b-8d4f-c431ecc3fa33.jpeg?rect=0%2C219%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/29/d0cf3caf-f7dd-4e4b-8d4f-c431ecc3fa33.jpeg?rect=0%2C219%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/29/d0cf3caf-f7dd-4e4b-8d4f-c431ecc3fa33.jpeg?rect=0%2C219%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/29/d0cf3caf-f7dd-4e4b-8d4f-c431ecc3fa33.jpeg?rect=0%2C219%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/29/d0cf3caf-f7dd-4e4b-8d4f-c431ecc3fa33.jpeg?rect=0%2C219%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/29/d0cf3caf-f7dd-4e4b-8d4f-c431ecc3fa33.jpeg?rect=0%2C219%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/29/d0cf3caf-f7dd-4e4b-8d4f-c431ecc3fa33.jpeg?rect=0%2C219%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Finanzminister legt einen unfertigen Entwurf vor." data-source="Michael Kappeler/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Gewalt gegen Frauen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Fußfesseln und Maßnahmen gegen sexualisierte Fake-Bilder</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Finanzplanungen bis 2030</h4>
+                <h3 class="fp-article__title text-xl--bold ">Klingbeils Haushaltsplan mit Lücken – als „Aufwärmübung“</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/deutschland/der-kampf-um-die-gesundheitsmilliarden-4224387">
+            <a href="/deutschland-und-welt/deutschland/trump-attackiert-merz-personlich-kanzler-beschwichtigt-4241394">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/29/d84559ff-8d72-45c5-b211-1fb7abbbe572.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/29/d84559ff-8d72-45c5-b211-1fb7abbbe572.jpeg?rect=0%2C144%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/29/d84559ff-8d72-45c5-b211-1fb7abbbe572.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/29/d84559ff-8d72-45c5-b211-1fb7abbbe572.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/29/d84559ff-8d72-45c5-b211-1fb7abbbe572.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/29/d84559ff-8d72-45c5-b211-1fb7abbbe572.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/29/d84559ff-8d72-45c5-b211-1fb7abbbe572.jpeg?rect=0%2C144%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Gesundheitsministerin Nina Warken will tiefgreifende Reformen. (Archivfoto)" data-source="Soeren Stache/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/29/13206c24-ca71-4f1d-b052-fd0f040e8f18.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/29/13206c24-ca71-4f1d-b052-fd0f040e8f18.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/29/13206c24-ca71-4f1d-b052-fd0f040e8f18.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/29/13206c24-ca71-4f1d-b052-fd0f040e8f18.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/29/13206c24-ca71-4f1d-b052-fd0f040e8f18.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/29/13206c24-ca71-4f1d-b052-fd0f040e8f18.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/29/13206c24-ca71-4f1d-b052-fd0f040e8f18.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Noch vor zwei Monaten haben sich Trump und Merz ziemlich gut verstanden. (Archivbild)" data-source="Kay Nietfeld/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Sozialkosten</h4>
-                <h3 class="fp-article__title text-xl--bold ">Der Kampf um die Gesundheitsmilliarden</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Iran-Krieg</h4>
+                <h3 class="fp-article__title text-xl--bold ">Trump attackiert Merz persönlich – Kanzler beschwichtigt</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/deutschland-und-welt/deutschland/klette-prozess-staatsanwaltschaft-fordert-15-jahre-haft-4241771">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/29/39ccc53f-fe16-42c6-8f17-1946c34626fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/29/39ccc53f-fe16-42c6-8f17-1946c34626fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/29/39ccc53f-fe16-42c6-8f17-1946c34626fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/29/39ccc53f-fe16-42c6-8f17-1946c34626fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/29/39ccc53f-fe16-42c6-8f17-1946c34626fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/29/39ccc53f-fe16-42c6-8f17-1946c34626fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/29/39ccc53f-fe16-42c6-8f17-1946c34626fe.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Staatsanwaltschaft fordert 15 Jahre Haft für Daniela Klette." data-source="Sina Schuldt/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Staatsanwältin und Nebenklage</h4>
+                <h3 class="fp-article__title text-xl--bold ">Klette-Prozess: Staatsanwaltschaft fordert 15 Jahre Haft</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/deutschland-und-welt/deutschland/umwelt-mafia-im-visier-polizei-soll-verdeckt-ermitteln-4241440">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/29/7c28da9b-a7c0-4729-91e4-0132b107af95.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/29/7c28da9b-a7c0-4729-91e4-0132b107af95.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/29/7c28da9b-a7c0-4729-91e4-0132b107af95.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/29/7c28da9b-a7c0-4729-91e4-0132b107af95.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/29/7c28da9b-a7c0-4729-91e4-0132b107af95.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/29/7c28da9b-a7c0-4729-91e4-0132b107af95.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/29/7c28da9b-a7c0-4729-91e4-0132b107af95.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Mit der Reform soll eine EU-Richtlinie umgesetzt werden. (Symbolbild)" data-source="Christian Charisius/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Kabinett</h4>
+                <h3 class="fp-article__title text-xl--bold ">Umwelt-Mafia im Visier – Polizei soll verdeckt ermitteln</h3>
             </a>
         </article>
 </div>
@@ -2103,93 +2119,93 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/jahrestag-von-butscha-eu-aussenminister-zeigen-solidaritat-4225361">
+            <a href="/deutschland-und-welt/politik/attentater-von-christchurch-scheitert-mit-berufungsantrag-4242225">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/c698acc4-4812-414c-b6db-98e2c26887de.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/c698acc4-4812-414c-b6db-98e2c26887de.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/c698acc4-4812-414c-b6db-98e2c26887de.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/c698acc4-4812-414c-b6db-98e2c26887de.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/c698acc4-4812-414c-b6db-98e2c26887de.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/c698acc4-4812-414c-b6db-98e2c26887de.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/c698acc4-4812-414c-b6db-98e2c26887de.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Kerzen und stille Andacht: Am vierten Jahrestag der Befreiung der ukrainischen Kleinstadt Butscha von russischen Besatzungstruppen gedenken Außenminister Johann Wadephul (r., CDU) und andere EU-Spitzenpolitiker gemeinsam mit dem ukrainischen Außenminister Andrij Sybiha (m.) der Opfer." data-source="Eduard Khryzhanivsky/Ukrainian Foreign Ministry Press Office/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/f37dfe01-26b5-45ad-9bbc-a24d7096708f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/f37dfe01-26b5-45ad-9bbc-a24d7096708f.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/f37dfe01-26b5-45ad-9bbc-a24d7096708f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/f37dfe01-26b5-45ad-9bbc-a24d7096708f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/f37dfe01-26b5-45ad-9bbc-a24d7096708f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/f37dfe01-26b5-45ad-9bbc-a24d7096708f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/f37dfe01-26b5-45ad-9bbc-a24d7096708f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bei dem rassistisch motivierten Anschlag in Christchurch starben 51 Menschen. (Archivbild)" data-source="David Alexander/SNPA/AAP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Krieg in der Ukraine</h4>
-                <h3 class="fp-article__title text-xl--bold ">Jahrestag von Butscha – EU-Außenminister zeigen Solidarität</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Neuseeland</h4>
+                <h3 class="fp-article__title text-xl--bold ">Attentäter von Christchurch scheitert mit Berufungsantrag</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/oppositioneller-burgermeister-in-der-turkei-festgenommen-4225484">
+            <a href="/deutschland-und-welt/politik/frist-endet-wie-es-fur-trumps-iran-offensive-weitergeht-4242168">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/f408f089-1cff-4d15-8104-a8969d7fe27e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/f408f089-1cff-4d15-8104-a8969d7fe27e.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/f408f089-1cff-4d15-8104-a8969d7fe27e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/f408f089-1cff-4d15-8104-a8969d7fe27e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/f408f089-1cff-4d15-8104-a8969d7fe27e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/f408f089-1cff-4d15-8104-a8969d7fe27e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/f408f089-1cff-4d15-8104-a8969d7fe27e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Immer wieder werden oppositionelle Bürgermeister in der Türkei festgenommen. (Archivbild)" data-source="Tunahan Turhan/SOPA Images via ZUMA Press Wire/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/e3c1c2e4-336f-40c2-8bdc-014a779d07d8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/e3c1c2e4-336f-40c2-8bdc-014a779d07d8.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/e3c1c2e4-336f-40c2-8bdc-014a779d07d8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/e3c1c2e4-336f-40c2-8bdc-014a779d07d8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/e3c1c2e4-336f-40c2-8bdc-014a779d07d8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/e3c1c2e4-336f-40c2-8bdc-014a779d07d8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/e3c1c2e4-336f-40c2-8bdc-014a779d07d8.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Trumps Befugnis für die Offensive des US-Militärs gegen den Iran läuft aus. (Archivbild)" data-source="J. Scott Applewhite/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Korruptionsvorwürfe</h4>
-                <h3 class="fp-article__title text-xl--bold ">Oppositioneller Bürgermeister in der Türkei festgenommen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Iran-Krieg</h4>
+                <h3 class="fp-article__title text-xl--bold ">Frist endet: Wie es für Trumps Iran-Offensive weitergeht</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/usa-sehen-entscheidende-tage-im-iran-krieg-4225285">
+            <a href="/deutschland-und-welt/politik/trump-usa-erwagen-truppenreduzierung-in-deutschland-4242083">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/6e7c2141-5439-4ad8-993b-6f8f813c4f48.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/6e7c2141-5439-4ad8-993b-6f8f813c4f48.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/6e7c2141-5439-4ad8-993b-6f8f813c4f48.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/6e7c2141-5439-4ad8-993b-6f8f813c4f48.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/6e7c2141-5439-4ad8-993b-6f8f813c4f48.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/6e7c2141-5439-4ad8-993b-6f8f813c4f48.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/6e7c2141-5439-4ad8-993b-6f8f813c4f48.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die USA setzten bei ihren Angriffen gegen den Iran bunkerbrechende Bomben ein" data-source="Nathan Gallahan/U.S. Air Force/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/2526ef3f-61de-460f-910b-4f22f70958e2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/2526ef3f-61de-460f-910b-4f22f70958e2.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/2526ef3f-61de-460f-910b-4f22f70958e2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/2526ef3f-61de-460f-910b-4f22f70958e2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/2526ef3f-61de-460f-910b-4f22f70958e2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/2526ef3f-61de-460f-910b-4f22f70958e2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/2526ef3f-61de-460f-910b-4f22f70958e2.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="US-Präsident Trump erwägt eine Reduzierung der Truppen in Deutschland." data-source="Matt Rourke/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Lage im Überblick</h4>
-                <h3 class="fp-article__title text-xl--bold ">USA sehen entscheidende Tage im Iran-Krieg</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Militär</h4>
+                <h3 class="fp-article__title text-xl--bold ">Trump: USA erwägen Truppenreduzierung in Deutschland</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/anschlag-auf-russisches-haus-in-prag-verdachtiger-gesteht-4225707">
+            <a href="/deutschland-und-welt/politik/israels-marine-beginnt-einsatz-gegen-gaza-hilfsflotte-4242079">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/e2ba1a16-e37c-408d-9770-cc26f7e3c11d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/e2ba1a16-e37c-408d-9770-cc26f7e3c11d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/e2ba1a16-e37c-408d-9770-cc26f7e3c11d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/e2ba1a16-e37c-408d-9770-cc26f7e3c11d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/e2ba1a16-e37c-408d-9770-cc26f7e3c11d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/e2ba1a16-e37c-408d-9770-cc26f7e3c11d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/e2ba1a16-e37c-408d-9770-cc26f7e3c11d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Beim Brandanschlag auf das „Russische Haus“ in Prag entstand Sachschaden. (Archivbild)" data-source="Petr David Josek/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/29/2b107df7-03f4-470a-922d-5efa1ed1677f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/29/2b107df7-03f4-470a-922d-5efa1ed1677f.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/29/2b107df7-03f4-470a-922d-5efa1ed1677f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/29/2b107df7-03f4-470a-922d-5efa1ed1677f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/29/2b107df7-03f4-470a-922d-5efa1ed1677f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/29/2b107df7-03f4-470a-922d-5efa1ed1677f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/29/2b107df7-03f4-470a-922d-5efa1ed1677f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Gaza-Hilfsflotte nach ihrem Aufbruch in Barcelona. (Archivbild)" data-source="Joan Mateu Parra/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Kriminalität</h4>
-                <h3 class="fp-article__title text-xl--bold ">Anschlag auf Russisches Haus in Prag – Verdächtiger gesteht</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Nahost</h4>
+                <h3 class="fp-article__title text-xl--bold ">Israels Marine beginnt Einsatz gegen Gaza-Hilfsflotte</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/todesstrafe-fur-terroristen-gesetz-in-israel-vor-prufung-4225586">
+            <a href="/deutschland-und-welt/politik/putin-nach-telefonat-mit-trump-offen-fur-kurze-waffenruhe-4242052">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/2005f609-b1fc-4b38-b810-85de66472c9c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/2005f609-b1fc-4b38-b810-85de66472c9c.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/2005f609-b1fc-4b38-b810-85de66472c9c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/2005f609-b1fc-4b38-b810-85de66472c9c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/2005f609-b1fc-4b38-b810-85de66472c9c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/2005f609-b1fc-4b38-b810-85de66472c9c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/2005f609-b1fc-4b38-b810-85de66472c9c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Das israelische Parlament hat die Todesstrafe für Terroristen gebilligt." data-source="Itay Cohen/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/29/a793ce1f-1a94-4fda-827b-397bdce34be4.jpeg?rect=170%2C0%2C1708%2C961&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/29/a793ce1f-1a94-4fda-827b-397bdce34be4.jpeg?rect=170%2C0%2C1708%2C961&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/29/a793ce1f-1a94-4fda-827b-397bdce34be4.jpeg?rect=170%2C0%2C1708%2C961&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/29/a793ce1f-1a94-4fda-827b-397bdce34be4.jpeg?rect=170%2C0%2C1708%2C961&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/29/a793ce1f-1a94-4fda-827b-397bdce34be4.jpeg?rect=170%2C0%2C1708%2C961&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/29/a793ce1f-1a94-4fda-827b-397bdce34be4.jpeg?rect=170%2C0%2C1708%2C961&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/29/a793ce1f-1a94-4fda-827b-397bdce34be4.jpeg?rect=170%2C0%2C1708%2C961&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Kremlchef Wladimir Putin und US-Präsident Trump haben erneut miteinander telefoniert. (Archivbild)" data-source="Mikhail Metzel/Pool Sputnik Kremlin/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Umstrittene Entscheidung</h4>
-                <h3 class="fp-article__title text-xl--bold ">Todesstrafe für Terroristen: Gesetz in Israel vor Prüfung</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Ukraine-Krieg</h4>
+                <h3 class="fp-article__title text-xl--bold ">Putin nach Telefonat mit Trump offen für kurze Waffenruhe</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/experte-hochstes-gericht-konnte-todesstrafe-gesetz-kippen-4225379">
+            <a href="/deutschland-und-welt/politik/kiew-usa-steuern-millionen-zu-tschernobyl-reparatur-bei-4242063">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/9193e5c6-41dc-42ca-9760-add15bde4228.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/9193e5c6-41dc-42ca-9760-add15bde4228.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/9193e5c6-41dc-42ca-9760-add15bde4228.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/9193e5c6-41dc-42ca-9760-add15bde4228.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/9193e5c6-41dc-42ca-9760-add15bde4228.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/9193e5c6-41dc-42ca-9760-add15bde4228.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/9193e5c6-41dc-42ca-9760-add15bde4228.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Das israelische Parlament hat die Todesstrafe für Terroristen gebilligt." data-source="Itay Cohen/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/29/d9d79d17-1892-44b2-ab1a-e130eb27c303.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/29/d9d79d17-1892-44b2-ab1a-e130eb27c303.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/29/d9d79d17-1892-44b2-ab1a-e130eb27c303.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/29/d9d79d17-1892-44b2-ab1a-e130eb27c303.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/29/d9d79d17-1892-44b2-ab1a-e130eb27c303.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/29/d9d79d17-1892-44b2-ab1a-e130eb27c303.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/29/d9d79d17-1892-44b2-ab1a-e130eb27c303.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Dem ukrainischen Präsidenten Wolodymyr Selenskyj zufolge sind mehr als 500 Millionen Euro für die Reparatur des über einem Betonsarkophag für die Atomruine errichtete Stahlbogens nötig. (Archivbild)" data-source="Efrem Lukatsky/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Vorwurf der Diskriminierung</h4>
-                <h3 class="fp-article__title text-xl--bold ">Experte: Höchstes Gericht könnte Todesstrafe-Gesetz kippen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Atomkatastrophe</h4>
+                <h3 class="fp-article__title text-xl--bold ">Kiew: USA steuern Millionen zu Tschernobyl-Reparatur bei</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/rubio-nato-darf-keine-einbahnstrasse-sein-4225268">
+            <a href="/deutschland-und-welt/politik/konig-charles-iii-gedenkt-der-opfer-des-11-september-4242030">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/c0a604be-44e7-475d-87dc-af3fe9ece1ca.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/c0a604be-44e7-475d-87dc-af3fe9ece1ca.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/c0a604be-44e7-475d-87dc-af3fe9ece1ca.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/c0a604be-44e7-475d-87dc-af3fe9ece1ca.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/c0a604be-44e7-475d-87dc-af3fe9ece1ca.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/c0a604be-44e7-475d-87dc-af3fe9ece1ca.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/c0a604be-44e7-475d-87dc-af3fe9ece1ca.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Kritisiert insbesondere Spanien für sein Verhalten im Iran-Krieg - US-Außenminister Marco Rubio. (Archivbild)" data-source="Michael Kappeler/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/29/8c79aced-998c-436e-b43a-cce1c9915f6e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/29/8c79aced-998c-436e-b43a-cce1c9915f6e.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/29/8c79aced-998c-436e-b43a-cce1c9915f6e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/29/8c79aced-998c-436e-b43a-cce1c9915f6e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/29/8c79aced-998c-436e-b43a-cce1c9915f6e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/29/8c79aced-998c-436e-b43a-cce1c9915f6e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/29/8c79aced-998c-436e-b43a-cce1c9915f6e.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="König Charles III. (M) und Königin Camilla gedenken der Opfer von 9/11." data-source="Seth Wenig/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Nahost-Konflikt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Rubio: Nato darf „keine Einbahnstraße sein“</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Staatsbesuch</h4>
+                <h3 class="fp-article__title text-xl--bold ">König Charles III. gedenkt der Opfer des 11. September</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/mitarbeiter-bezahlt-schlangen-an-us-airports-lassen-nach-4225262">
+            <a href="/deutschland-und-welt/politik/messerangriff-in-london-polizei-geht-von-terror-aus-4241835">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/30/ac63add1-c940-4c76-9fd6-bb7cd84e4f73.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/30/ac63add1-c940-4c76-9fd6-bb7cd84e4f73.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/30/ac63add1-c940-4c76-9fd6-bb7cd84e4f73.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/30/ac63add1-c940-4c76-9fd6-bb7cd84e4f73.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/30/ac63add1-c940-4c76-9fd6-bb7cd84e4f73.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/30/ac63add1-c940-4c76-9fd6-bb7cd84e4f73.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/30/ac63add1-c940-4c76-9fd6-bb7cd84e4f73.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Flugreisende standen an manchen US-Airports stundenlang vor den Sicherheitskontrollen. (Archivbild)" data-source="Yuki Iwamura/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/29/f304b3ab-48d8-4074-b5b1-22f9e0585186.jpeg?rect=0%2C146%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/29/f304b3ab-48d8-4074-b5b1-22f9e0585186.jpeg?rect=0%2C146%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/29/f304b3ab-48d8-4074-b5b1-22f9e0585186.jpeg?rect=0%2C146%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/29/f304b3ab-48d8-4074-b5b1-22f9e0585186.jpeg?rect=0%2C146%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/29/f304b3ab-48d8-4074-b5b1-22f9e0585186.jpeg?rect=0%2C146%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/29/f304b3ab-48d8-4074-b5b1-22f9e0585186.jpeg?rect=0%2C146%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/29/f304b3ab-48d8-4074-b5b1-22f9e0585186.jpeg?rect=0%2C146%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bei einem Messerangriff wurden zwei Menschen verletzt." data-source="Blaise Coran/PA Wire/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Streit um Abschiebungen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Mitarbeiter bezahlt: Schlangen an US-Airports lassen nach</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Großbritannien</h4>
+                <h3 class="fp-article__title text-xl--bold ">Messerangriff in London – Polizei geht von Terror aus</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/todesstrafe-fur-terroristen-israels-parlament-stimmt-zu-4225219">
+            <a href="/deutschland-und-welt/politik/mit-sonnenbrille-und-sturmgewehr-trump-droht-dem-iran-4241629">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/30/d0ebd9fe-10a7-4245-aec5-bf6ac6d6b95d.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/30/d0ebd9fe-10a7-4245-aec5-bf6ac6d6b95d.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/30/d0ebd9fe-10a7-4245-aec5-bf6ac6d6b95d.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/30/d0ebd9fe-10a7-4245-aec5-bf6ac6d6b95d.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/30/d0ebd9fe-10a7-4245-aec5-bf6ac6d6b95d.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/30/d0ebd9fe-10a7-4245-aec5-bf6ac6d6b95d.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/30/d0ebd9fe-10a7-4245-aec5-bf6ac6d6b95d.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Das israelische Parlament in Jerusalem. (Archivbild)" data-source="Christophe Gateau/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/29/3e3140c9-1207-48e6-a76c-9f43521ec72f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/29/3e3140c9-1207-48e6-a76c-9f43521ec72f.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/29/3e3140c9-1207-48e6-a76c-9f43521ec72f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/29/3e3140c9-1207-48e6-a76c-9f43521ec72f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/29/3e3140c9-1207-48e6-a76c-9f43521ec72f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/29/3e3140c9-1207-48e6-a76c-9f43521ec72f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/29/3e3140c9-1207-48e6-a76c-9f43521ec72f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="US-Präsident Donald Trump greift im Konflikt mit dem Iran erneut zu Drohungen. (Archivfoto)" data-source="Andrew Harnik/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Umstrittener Vorstoß</h4>
-                <h3 class="fp-article__title text-xl--bold ">Todesstrafe für Terroristen: Israels Parlament stimmt zu</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Iran-Krieg</h4>
+                <h3 class="fp-article__title text-xl--bold ">Mit Sonnenbrille und Sturmgewehr: Trump droht dem Iran</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/politik/eu-weitet-marineeinsatz-im-nahen-osten-aus-4225182">
+            <a href="/deutschland-und-welt/politik/siegesparade-in-moskau-ohne-militartechnik-4241516">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/30/2df383fe-3b29-4d7a-9cf9-246e3532c592.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/30/2df383fe-3b29-4d7a-9cf9-246e3532c592.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/30/2df383fe-3b29-4d7a-9cf9-246e3532c592.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/30/2df383fe-3b29-4d7a-9cf9-246e3532c592.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/30/2df383fe-3b29-4d7a-9cf9-246e3532c592.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/30/2df383fe-3b29-4d7a-9cf9-246e3532c592.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/30/2df383fe-3b29-4d7a-9cf9-246e3532c592.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Deutschland stellt derzeit kein Schiff für die Operation „Aspides“ - von Februar bis April 2024 war allerdings die Fregatte „Hessen“ im Einsatz. (Archivbild)" data-source="Sina Schuldt/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/29/6fa94137-37eb-44ed-b358-fe66445aaf77.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/29/6fa94137-37eb-44ed-b358-fe66445aaf77.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/29/6fa94137-37eb-44ed-b358-fe66445aaf77.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/29/6fa94137-37eb-44ed-b358-fe66445aaf77.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/29/6fa94137-37eb-44ed-b358-fe66445aaf77.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/29/6fa94137-37eb-44ed-b358-fe66445aaf77.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/29/6fa94137-37eb-44ed-b358-fe66445aaf77.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bei der Siegesparade in Moskau sollen Tausende Soldaten marschieren, doch Panzer und Raketen werden nicht gezeigt. (Archivbild)" data-source="Pelagia Tikhonova/M24/Moscow News Agency/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Sicherheit und Verteidigung</h4>
-                <h3 class="fp-article__title text-xl--bold ">EU weitet Marineeinsatz im Nahen Osten aus</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Drohnengefahr</h4>
+                <h3 class="fp-article__title text-xl--bold ">Siegesparade in Moskau ohne Militärtechnik</h3>
             </a>
         </article>
 </div>
@@ -2212,93 +2228,93 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/lkw-hersteller-daimler-truck-plant-neues-werk-in-tschechien-4225714">
+            <a href="/deutschland-und-welt/wirtschaft/standort-ludwigshafen-zentral-fur-zukunft-von-basf-4242266">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/1c7447ce-48d6-428a-91e1-a451d5d70c6a.jpeg?rect=0%2C47%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/1c7447ce-48d6-428a-91e1-a451d5d70c6a.jpeg?rect=0%2C47%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/1c7447ce-48d6-428a-91e1-a451d5d70c6a.jpeg?rect=0%2C47%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/1c7447ce-48d6-428a-91e1-a451d5d70c6a.jpeg?rect=0%2C47%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/1c7447ce-48d6-428a-91e1-a451d5d70c6a.jpeg?rect=0%2C47%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/1c7447ce-48d6-428a-91e1-a451d5d70c6a.jpeg?rect=0%2C47%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/1c7447ce-48d6-428a-91e1-a451d5d70c6a.jpeg?rect=0%2C47%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Daimler Truck: Konzern plant neues Werk in Tschechien. (Archivbild)" data-source="Bernd Weißbrod/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/76897842-12a5-4d85-b83a-c4d14673cf9a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/76897842-12a5-4d85-b83a-c4d14673cf9a.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/76897842-12a5-4d85-b83a-c4d14673cf9a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/76897842-12a5-4d85-b83a-c4d14673cf9a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/76897842-12a5-4d85-b83a-c4d14673cf9a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/76897842-12a5-4d85-b83a-c4d14673cf9a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/76897842-12a5-4d85-b83a-c4d14673cf9a.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="BASF will Tausende Werkswohnungen verkaufen. (Archivbild)" data-source="Uwe Anspach/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Um Kosten zu sparen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Lkw-Hersteller Daimler Truck plant neues Werk in Tschechien</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Chemiekonzern</h4>
+                <h3 class="fp-article__title text-xl--bold ">Standort Ludwigshafen zentral für Zukunft von BASF</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/rekordimport-an-flussigerdgas-uber-deutsche-terminals-4225680">
+            <a href="/deutschland-und-welt/wirtschaft/chinesische-luxshare-halt-fast-75-prozent-an-leoni-4242642">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/907ddd1f-ac77-44c6-b5a3-b014579b5394.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/907ddd1f-ac77-44c6-b5a3-b014579b5394.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/907ddd1f-ac77-44c6-b5a3-b014579b5394.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/907ddd1f-ac77-44c6-b5a3-b014579b5394.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/907ddd1f-ac77-44c6-b5a3-b014579b5394.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/907ddd1f-ac77-44c6-b5a3-b014579b5394.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/907ddd1f-ac77-44c6-b5a3-b014579b5394.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="An den deutschen LNG-Terminals wurde zuletzt so viel LNG angelandet wie noch nie zuvor. (Archivbild)" data-source="Lars Penning/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/d0343583-acbf-4968-9e80-18965b91b761.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/d0343583-acbf-4968-9e80-18965b91b761.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/d0343583-acbf-4968-9e80-18965b91b761.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/d0343583-acbf-4968-9e80-18965b91b761.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/d0343583-acbf-4968-9e80-18965b91b761.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/d0343583-acbf-4968-9e80-18965b91b761.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/d0343583-acbf-4968-9e80-18965b91b761.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der traditionsreiche fränkische Kabel- und Bordnetzspezialist Leoni ist zu fast 75 Prozent in chinesischer Hand. (Archivbild)." data-source="Daniel Karmann/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Quartalsbericht</h4>
-                <h3 class="fp-article__title text-xl--bold ">Rekordimport an Flüssigerdgas über deutsche Terminals</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Autozulieferer</h4>
+                <h3 class="fp-article__title text-xl--bold ">Chinesische Luxshare hält fast 75 Prozent an Leoni</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/sprit-vor-inkrafttreten-der-preisbremse-teurer-4225417">
+            <a href="/deutschland-und-welt/wirtschaft/viele-tankstellen-halten-12-uhr-regel-nicht-exakt-ein-4242565">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/b756adb0-23e1-4464-b638-e5648cd0f866.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/b756adb0-23e1-4464-b638-e5648cd0f866.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/b756adb0-23e1-4464-b638-e5648cd0f866.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/b756adb0-23e1-4464-b638-e5648cd0f866.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/b756adb0-23e1-4464-b638-e5648cd0f866.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/b756adb0-23e1-4464-b638-e5648cd0f866.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/b756adb0-23e1-4464-b638-e5648cd0f866.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Spritpreise ziehen vor dem Inkrafttreten der erhofften Preisbremse etwas an. (Illustration)" data-source="Philip Dulian/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/a2d74535-7dc5-41cd-b403-9a015db77371.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/a2d74535-7dc5-41cd-b403-9a015db77371.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/a2d74535-7dc5-41cd-b403-9a015db77371.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/a2d74535-7dc5-41cd-b403-9a015db77371.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/a2d74535-7dc5-41cd-b403-9a015db77371.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/a2d74535-7dc5-41cd-b403-9a015db77371.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/a2d74535-7dc5-41cd-b403-9a015db77371.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der soll doch in den Tank! Ein Tropfen Benzin an einer Zapfsäule auf dem Weg nach unten." data-source="Alain Jocard/AFP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Tankstellen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Sprit vor Inkrafttreten der Preisbremse teurer</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Transparenz am Spritmarkt</h4>
+                <h3 class="fp-article__title text-xl--bold ">Viele Tankstellen halten 12-Uhr-Regel nicht exakt ein</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/polen-preisdeckelung-fur-treibstoff-ist-in-kraft-4225355">
+            <a href="/deutschland-und-welt/wirtschaft/kurz-vor-tankrabatt-rekordsprung-zur-mittagszeit-4242316">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/f4087223-7292-46d0-be1b-afee21528040.jpeg?rect=0%2C37%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/f4087223-7292-46d0-be1b-afee21528040.jpeg?rect=0%2C37%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/f4087223-7292-46d0-be1b-afee21528040.jpeg?rect=0%2C37%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/f4087223-7292-46d0-be1b-afee21528040.jpeg?rect=0%2C37%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/f4087223-7292-46d0-be1b-afee21528040.jpeg?rect=0%2C37%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/f4087223-7292-46d0-be1b-afee21528040.jpeg?rect=0%2C37%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/f4087223-7292-46d0-be1b-afee21528040.jpeg?rect=0%2C37%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Polens Parlament hat eine Gesetzesänderung beschlossen, wonach Benzin und Diesel künftig geringer besteuert werden. (Archivbild)" data-source="Patrick Pleul/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/5fbe4197-b0e9-412c-96a9-1050ca8242b9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/5fbe4197-b0e9-412c-96a9-1050ca8242b9.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/5fbe4197-b0e9-412c-96a9-1050ca8242b9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/5fbe4197-b0e9-412c-96a9-1050ca8242b9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/5fbe4197-b0e9-412c-96a9-1050ca8242b9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/5fbe4197-b0e9-412c-96a9-1050ca8242b9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/5fbe4197-b0e9-412c-96a9-1050ca8242b9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Benzin und Diesel sind deutlich teurer geworden. (Archivbild)" data-source="Sebastian Kahnert/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Folgen des Iran-Kriegs</h4>
-                <h3 class="fp-article__title text-xl--bold ">Polen: Preisdeckelung für Treibstoff ist in Kraft</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Mobilitätskosten</h4>
+                <h3 class="fp-article__title text-xl--bold ">Kurz vor Tankrabatt: Rekordsprung zur Mittagszeit</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/borsenchef-leithner-fordert-rentenreform-mit-mehr-aktien-4225316">
+            <a href="/deutschland-und-welt/wirtschaft/arbeitslosigkeit-sinkt-kaum-und-wird-teuer-4242290">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/4c92a192-fc3a-4972-b0f0-d7a2a92e19f3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/4c92a192-fc3a-4972-b0f0-d7a2a92e19f3.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/4c92a192-fc3a-4972-b0f0-d7a2a92e19f3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/4c92a192-fc3a-4972-b0f0-d7a2a92e19f3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/4c92a192-fc3a-4972-b0f0-d7a2a92e19f3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/4c92a192-fc3a-4972-b0f0-d7a2a92e19f3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/4c92a192-fc3a-4972-b0f0-d7a2a92e19f3.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Deutsche-Börse-Chef Stephan Leithner plädiert für einen Ausbau der privaten und betrieblichen Altersvorsorge." data-source="Helmut Fricke/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/dc757e6c-260a-4b8e-9530-22d30cbe7390.jpeg?rect=0%2C40%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/dc757e6c-260a-4b8e-9530-22d30cbe7390.jpeg?rect=0%2C40%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/dc757e6c-260a-4b8e-9530-22d30cbe7390.jpeg?rect=0%2C40%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/dc757e6c-260a-4b8e-9530-22d30cbe7390.jpeg?rect=0%2C40%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/dc757e6c-260a-4b8e-9530-22d30cbe7390.jpeg?rect=0%2C40%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/dc757e6c-260a-4b8e-9530-22d30cbe7390.jpeg?rect=0%2C40%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/dc757e6c-260a-4b8e-9530-22d30cbe7390.jpeg?rect=0%2C40%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Zahl der Arbeitslosen in Deutschland ist im April nur geringfügig gesunken. (Archivbild)" data-source="Hauke-Christian Dittrich/Deutsche Presse-Agentur GmbH/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> „Rentenniveau reicht nicht“</h4>
-                <h3 class="fp-article__title text-xl--bold ">Börsenchef Leithner fordert Rentenreform mit mehr Aktien</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Arbeitsmarkt</h4>
+                <h3 class="fp-article__title text-xl--bold ">Arbeitslosigkeit sinkt kaum - und wird teuer</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/edelmetallverband-gold-zieht-wieder-an-silber-gefragt-4225577">
+            <a href="/deutschland-und-welt/wirtschaft/israelischer-rustungskonzern-konnte-vw-werk-ubernehmen-4242431">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/fea07288-ec0b-4f7b-8ff1-cb2493f45760.jpeg?rect=0%2C74%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/fea07288-ec0b-4f7b-8ff1-cb2493f45760.jpeg?rect=0%2C74%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/fea07288-ec0b-4f7b-8ff1-cb2493f45760.jpeg?rect=0%2C74%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/fea07288-ec0b-4f7b-8ff1-cb2493f45760.jpeg?rect=0%2C74%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/fea07288-ec0b-4f7b-8ff1-cb2493f45760.jpeg?rect=0%2C74%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/fea07288-ec0b-4f7b-8ff1-cb2493f45760.jpeg?rect=0%2C74%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/fea07288-ec0b-4f7b-8ff1-cb2493f45760.jpeg?rect=0%2C74%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Gold wird recycelt. (Archivbild)" data-source="Uli Deck/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/e44a1e79-2d00-4ddb-affd-92b4c0cb77cb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/e44a1e79-2d00-4ddb-affd-92b4c0cb77cb.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/e44a1e79-2d00-4ddb-affd-92b4c0cb77cb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/e44a1e79-2d00-4ddb-affd-92b4c0cb77cb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/e44a1e79-2d00-4ddb-affd-92b4c0cb77cb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/e44a1e79-2d00-4ddb-affd-92b4c0cb77cb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/e44a1e79-2d00-4ddb-affd-92b4c0cb77cb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Blick auf das VW-Werk Osnabrück." data-source="Hauke-Christian Dittrich/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Ausblick</h4>
-                <h3 class="fp-article__title text-xl--bold ">Edelmetallverband: Gold zieht wieder an, Silber gefragt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Flugabwehrsystem-Hersteller</h4>
+                <h3 class="fp-article__title text-xl--bold ">Israelischer Rüstungskonzern könnte VW-Werk übernehmen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/trinkgeldvorgaben-per-terminal-stossen-auf-wenig-begeisterung-4225538">
+            <a href="/deutschland-und-welt/wirtschaft/iran-krieg-treibt-inflationsrate-im-euroraum-auf-3-0-prozent-4242409">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/669ebfec-ec81-4723-9408-4f8941e09aeb.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/669ebfec-ec81-4723-9408-4f8941e09aeb.jpeg?rect=0%2C115%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/669ebfec-ec81-4723-9408-4f8941e09aeb.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/669ebfec-ec81-4723-9408-4f8941e09aeb.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/669ebfec-ec81-4723-9408-4f8941e09aeb.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/669ebfec-ec81-4723-9408-4f8941e09aeb.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/669ebfec-ec81-4723-9408-4f8941e09aeb.jpeg?rect=0%2C115%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Zwei Drittel der Teilnehmer einer Bitkom-Umfrage gaben an, dass Trinkgeldvorschläge dazu führen, mehr Trinkgeld zu geben als ursprünglich geplant. (Symbolbild)" data-source="Gregor Tholl/dpa/dpa-tmn">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/a80a87d1-e423-4d35-a9f7-fdf7261d084d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/a80a87d1-e423-4d35-a9f7-fdf7261d084d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/a80a87d1-e423-4d35-a9f7-fdf7261d084d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/a80a87d1-e423-4d35-a9f7-fdf7261d084d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/a80a87d1-e423-4d35-a9f7-fdf7261d084d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/a80a87d1-e423-4d35-a9f7-fdf7261d084d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/a80a87d1-e423-4d35-a9f7-fdf7261d084d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Ölpreisschock treibt die Inflation im Euroraum. (Symbolbild)" data-source="Nic Coury/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Umfrage zu digitalem Bezahlen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Trinkgeldvorgaben per Terminal stoßen auf wenig Begeisterung</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Konjunktur</h4>
+                <h3 class="fp-article__title text-xl--bold ">Iran-Krieg treibt Inflationsrate im Euroraum auf 3,0 Prozent</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/iw-burger-arbeiten-weniger-fur-sprit-als-in-fruheren-krisen-4225520">
+            <a href="/deutschland-und-welt/wirtschaft/benzin-inflationsbereinigt-nicht-teurer-als-vor-15-jahren-4242402">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/6b0fc5aa-5ac7-4eb7-a820-f4a59cdcf45f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/6b0fc5aa-5ac7-4eb7-a820-f4a59cdcf45f.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/6b0fc5aa-5ac7-4eb7-a820-f4a59cdcf45f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/6b0fc5aa-5ac7-4eb7-a820-f4a59cdcf45f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/6b0fc5aa-5ac7-4eb7-a820-f4a59cdcf45f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/6b0fc5aa-5ac7-4eb7-a820-f4a59cdcf45f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/6b0fc5aa-5ac7-4eb7-a820-f4a59cdcf45f.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Tanken ist in den vergangenen Wochen deutlich teurer geworden wegen des Iran-Kriegs." data-source="Hauke-Christian Dittrich/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/f276c39c-01ec-4157-b463-c1bac3949778.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/f276c39c-01ec-4157-b463-c1bac3949778.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/f276c39c-01ec-4157-b463-c1bac3949778.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/f276c39c-01ec-4157-b463-c1bac3949778.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/f276c39c-01ec-4157-b463-c1bac3949778.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/f276c39c-01ec-4157-b463-c1bac3949778.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/f276c39c-01ec-4157-b463-c1bac3949778.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Berücksichtigt man die Inflation, sehen die Spritpreise sehr viel weniger extrem aus. (Archivbild)" data-source="Philip Dulian/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Berechnung</h4>
-                <h3 class="fp-article__title text-xl--bold ">IW: Bürger arbeiten weniger für Sprit als in früheren Krisen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Langzeitperspektive</h4>
+                <h3 class="fp-article__title text-xl--bold ">Benzin inflationsbereinigt nicht teurer als vor 15 Jahren</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/bundesbank-staatsschulden-um-144-milliarden-euro-gestiegen-4225499">
+            <a href="/deutschland-und-welt/wirtschaft/briefgeschaft-wird-zum-ballast-fur-die-post-4242182">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/0f073ae1-b4f1-42d4-be70-24c91d7e0078.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/0f073ae1-b4f1-42d4-be70-24c91d7e0078.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/0f073ae1-b4f1-42d4-be70-24c91d7e0078.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/0f073ae1-b4f1-42d4-be70-24c91d7e0078.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/0f073ae1-b4f1-42d4-be70-24c91d7e0078.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/0f073ae1-b4f1-42d4-be70-24c91d7e0078.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/0f073ae1-b4f1-42d4-be70-24c91d7e0078.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Bundesbank hat den Schuldenstand neu berechnet." data-source="Hannes P. Albert/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/ba88de0c-c97b-4e50-af59-caf46db804fa.jpeg?rect=0%2C75%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/ba88de0c-c97b-4e50-af59-caf46db804fa.jpeg?rect=0%2C75%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/ba88de0c-c97b-4e50-af59-caf46db804fa.jpeg?rect=0%2C75%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/ba88de0c-c97b-4e50-af59-caf46db804fa.jpeg?rect=0%2C75%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/ba88de0c-c97b-4e50-af59-caf46db804fa.jpeg?rect=0%2C75%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/ba88de0c-c97b-4e50-af59-caf46db804fa.jpeg?rect=0%2C75%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/ba88de0c-c97b-4e50-af59-caf46db804fa.jpeg?rect=0%2C75%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Eine gute alte Postfiliale, in der es Briefmarken zu kaufen gibt und Pakete aufgegeben werden können." data-source="Bernd Weißbrod/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Finanzen</h4>
-                <h3 class="fp-article__title text-xl--bold ">Bundesbank: Staatsschulden um 144 Milliarden Euro gestiegen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Briefmenge</h4>
+                <h3 class="fp-article__title text-xl--bold ">Briefgeschäft wird zum Ballast für die Post</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/deutschland-und-welt/wirtschaft/konsumguterkonzern-unilever-verhangt-einstellungsstopp-4225480">
+            <a href="/deutschland-und-welt/wirtschaft/opel-mutter-stellantis-fahrt-in-gewinnzone-zuruck-4242254">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/538f1443-f0c3-416c-a963-0074fbf94e7c.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/538f1443-f0c3-416c-a963-0074fbf94e7c.jpeg?rect=0%2C108%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/538f1443-f0c3-416c-a963-0074fbf94e7c.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/538f1443-f0c3-416c-a963-0074fbf94e7c.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/538f1443-f0c3-416c-a963-0074fbf94e7c.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/538f1443-f0c3-416c-a963-0074fbf94e7c.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/538f1443-f0c3-416c-a963-0074fbf94e7c.jpeg?rect=0%2C108%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Unilever hat einen vorübergehenden Einstellungsstopp verhängt." data-source="Daniel Reinhardt/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/a83444a4-a494-403c-9528-ffbc8ccf44da.jpeg?rect=0%2C44%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/a83444a4-a494-403c-9528-ffbc8ccf44da.jpeg?rect=0%2C44%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/a83444a4-a494-403c-9528-ffbc8ccf44da.jpeg?rect=0%2C44%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/a83444a4-a494-403c-9528-ffbc8ccf44da.jpeg?rect=0%2C44%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/a83444a4-a494-403c-9528-ffbc8ccf44da.jpeg?rect=0%2C44%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/a83444a4-a494-403c-9528-ffbc8ccf44da.jpeg?rect=0%2C44%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/a83444a4-a494-403c-9528-ffbc8ccf44da.jpeg?rect=0%2C44%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Am Stammsitz Rüsselsheim werden Opel-Autos montiert. (Archivbild)" data-source="Andreas Arnold/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Iran-Krieg</h4>
-                <h3 class="fp-article__title text-xl--bold ">Konsumgüterkonzern Unilever verhängt Einstellungsstopp</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Nach Milliardenverlust</h4>
+                <h3 class="fp-article__title text-xl--bold ">Opel-Mutter Stellantis fährt in Gewinnzone zurück</h3>
             </a>
         </article>
 </div>
@@ -2438,11 +2454,11 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
                       </a>
                     </li>
                     <li>
-                      <a href="/sachsen-anhalt/leseranwaeltin" target="_self">Leseranwältin
+                      <a href="https://www.volksstimme.de/wahl/landtagswahl-sachsen-anhalt">Landtagswahl Sachsen-Anhalt
                       </a>
                     </li>
                     <li>
-                      <a href="https://www.volksstimme.de/podcast">Podcast
+                      <a href="/sachsen-anhalt/leseranwaeltin" target="_self">Leseranwältin
                       </a>
                     </li>
                     <li>
@@ -2468,11 +2484,11 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
                 </div>
                 <ul>
                     <li>
-                      <a href="/live/fussball-regionalliga-nordost">Fußball-Regionalliga Nordost
+                      <a href="/live/fussball">Fußball
                       </a>
                     </li>
                     <li>
-                      <a href="/live/fussball-verbandsliga-sachsen-anhalt">Fußball-Verbandsliga Sachsen-Anhalt
+                      <a href="https://www.volksstimme.de/thema/livezeit-chris">Livezeit mit Chris
                       </a>
                     </li>
                 </ul>
@@ -2752,15 +2768,21 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
               <div class="fp-footer__inner">
                 <div class="fp-footer__category">
                   <h4>
+                    <a href="https://www.volksstimme.de/podcast">Podcast
+                    </a>
+                  </h4>
+                </div>
+                <ul>
+                </ul>
+              </div>
+              <div class="fp-footer__inner">
+                <div class="fp-footer__category">
+                  <h4>
                     <a href="/video" target="_self">Video
                     </a>
                   </h4>
                 </div>
                 <ul>
-                    <li>
-                      <a href="https://www.volksstimme.de/video/studiotalk">Studiotalk
-                      </a>
-                    </li>
                     <li>
                       <a href="https://www.volksstimme.de/video/youtube-hiya">Youtube-Kanal Hiya!
                       </a>

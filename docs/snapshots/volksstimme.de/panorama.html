@@ -175,11 +175,12 @@
         console.log("Benutzer-Abonnementstatus:", userType); // Hier wird der Abonnementstatus ausgegeben
         // Setzt den globalen Wert für den Pur-Status
         window.cmp_pur_loggedin = (userType === "pur-pur");
+		loggedIn = typeof subscriptions != "undefined" && typeof subscriptions.pur != "undefined" && typeof subscriptions.paywall != "undefined";
         try {
             adchannels = window.ad_channel?.split("/") ?? [];	
 //            cmd = createCmd(subscriptions?.userType != "pur-anon", subscriptions != undefined && subscriptions.paywall != undefined && subscriptions.paywall.length > 0, adchannels);
 //            console.log(cmd);
-            kstahandler(subscriptions?.userType != "pur-anon",
+            kstahandler(loggedIn ,
 				subscriptions != undefined && subscriptions.paywall != undefined && subscriptions.paywall.length > 0,
 				adchannels, []);
 	        
@@ -711,15 +712,15 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
                             </a>
                         </div>
     <div class="fp-main-header__weather-widget">
-        <div class="fp-main-header__weather-widget--top wolkig">
+        <div class="fp-main-header__weather-widget--top sonnig">
             <span class="weather-icon-img">
-                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/wolkig.svg" alt="weather">
+                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/sonnig.svg" alt="weather">
             </span>
-            <span class="fp-main-header__weather-widget--tooltip">wolkig</span>
+            <span class="fp-main-header__weather-widget--tooltip">sonnig</span>
             <aside>
-                <span class="fp-main-header__weather-widget--day-temp">12°</span>
+                <span class="fp-main-header__weather-widget--day-temp">23°</span>
                 <span>/</span>
-                <span class="fp-main-header__weather-widget--night-temp">-1°</span>
+                <span class="fp-main-header__weather-widget--night-temp">8°</span>
             </aside>
         </div>
         <div class="fp-main-header__weather-widget--bottom">
@@ -787,6 +788,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 ">
                     <a class="text-14--bold" href="/blaulicht" target="_self">
                       Blaulicht
+                    </a>
+                  </li>
+                  <li class="fp-main-nav__list-item
+">
+                    <a class="text-14--bold" href="https://www.volksstimme.de/podcast">
+                      Podcast
                     </a>
                   </li>
                   <li class="fp-main-nav__list-item
@@ -927,6 +934,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 ">
                     <a class="text-14--bold" href="/blaulicht" target="_self">
                       Blaulicht
+                    </a>
+                  </li>
+                  <li class="fp-main-nav__list-item
+">
+                    <a class="text-14--bold" href="https://www.volksstimme.de/podcast">
+                      Podcast
                     </a>
                   </li>
                   <li class="fp-main-nav__list-item
@@ -1132,13 +1145,13 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="/sachsen-anhalt/leseranwaeltin" target="_self">
-                        Leseranwältin
+                      <a class="text-16--regular" href="https://www.volksstimme.de/wahl/landtagswahl-sachsen-anhalt">
+                        Landtagswahl Sachsen-Anhalt
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="https://www.volksstimme.de/podcast">
-                        Podcast
+                      <a class="text-16--regular" href="/sachsen-anhalt/leseranwaeltin" target="_self">
+                        Leseranwältin
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
@@ -1165,13 +1178,13 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
             </div>
             <ul class="fp-sidebar-menu__nav--list">
                     <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="/live/fussball-regionalliga-nordost">
-                        Fußball-Regionalliga Nordost
+                      <a class="text-16--regular" href="/live/fussball">
+                        Fußball
                       </a>
                     </li>
                     <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="/live/fussball-verbandsliga-sachsen-anhalt">
-                        Fußball-Verbandsliga Sachsen-Anhalt
+                      <a class="text-16--regular" href="https://www.volksstimme.de/thema/livezeit-chris">
+                        Livezeit mit Chris
                       </a>
                     </li>
             </ul>
@@ -1490,16 +1503,19 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
             </ul>
             <div class="fp-sidebar-menu__nav--header">
               <span>
+                  <a href="https://www.volksstimme.de/podcast">Podcast
+                  </a>
+              </span>
+            </div>
+            <ul class="fp-sidebar-menu__nav--list">
+            </ul>
+            <div class="fp-sidebar-menu__nav--header">
+              <span>
                   <a href="/video" target="_self">Video
                   </a>
               </span>
             </div>
             <ul class="fp-sidebar-menu__nav--list">
-                    <li class="fp-sidebar-menu__nav--item">
-                      <a class="text-16--regular" href="https://www.volksstimme.de/video/studiotalk">
-                        Studiotalk
-                      </a>
-                    </li>
                     <li class="fp-sidebar-menu__nav--item">
                       <a class="text-16--regular" href="https://www.volksstimme.de/video/youtube-hiya">
                         Youtube-Kanal Hiya!
@@ -1778,21 +1794,21 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/warum-vorlesen-wichtig-ist-und-worauf-es-dabei-ankommt-4225952">
+            <a href="/panorama/grune-sehe-biodiversitat-auf-ackern-in-der-krise-4242826">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/04/01/a6c8f4a6-2618-4f7e-a5a6-629d86d95695.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/01/a6c8f4a6-2618-4f7e-a5a6-629d86d95695.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/01/a6c8f4a6-2618-4f7e-a5a6-629d86d95695.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/01/a6c8f4a6-2618-4f7e-a5a6-629d86d95695.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/01/a6c8f4a6-2618-4f7e-a5a6-629d86d95695.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/01/a6c8f4a6-2618-4f7e-a5a6-629d86d95695.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/01/a6c8f4a6-2618-4f7e-a5a6-629d86d95695.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Vorlesen ist für Kinder wichtig. (Symbolbild)" data-source="Bernd Thissen/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/05/01/d95809cd-c597-43b8-9fe4-8dcb133158af.jpeg?rect=0%2C52%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/05/01/d95809cd-c597-43b8-9fe4-8dcb133158af.jpeg?rect=0%2C52%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/05/01/d95809cd-c597-43b8-9fe4-8dcb133158af.jpeg?rect=0%2C52%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/05/01/d95809cd-c597-43b8-9fe4-8dcb133158af.jpeg?rect=0%2C52%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/05/01/d95809cd-c597-43b8-9fe4-8dcb133158af.jpeg?rect=0%2C52%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/05/01/d95809cd-c597-43b8-9fe4-8dcb133158af.jpeg?rect=0%2C52%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/05/01/d95809cd-c597-43b8-9fe4-8dcb133158af.jpeg?rect=0%2C52%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Grünen setzten sich für mehr Artenvielfalt auf den Äckern in Sachsen ein. (Symbolbild)" data-source="Sebastian Willnow/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Kinderbuchtag</h4>
-                <h3 class="fp-article__title text-xl--bold ">Warum Vorlesen wichtig ist - und worauf es dabei ankommt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Naturschutz</h4>
+                <h3 class="fp-article__title text-xl--bold ">Grüne sehe Biodiversität auf Äckern in der Krise</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/urteil-im-prozess-um-rechte-kampfsportgruppe-erwartet-4225951">
+            <a href="/panorama/politikwissenschaftler-afd-mobilisiert-starker-als-andere-4242819">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/04/01/7a8378ba-20fb-43ac-96d0-a7c02e1b0628.jpeg?rect=0%2C18%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/01/7a8378ba-20fb-43ac-96d0-a7c02e1b0628.jpeg?rect=0%2C18%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/01/7a8378ba-20fb-43ac-96d0-a7c02e1b0628.jpeg?rect=0%2C18%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/01/7a8378ba-20fb-43ac-96d0-a7c02e1b0628.jpeg?rect=0%2C18%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/01/7a8378ba-20fb-43ac-96d0-a7c02e1b0628.jpeg?rect=0%2C18%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/01/7a8378ba-20fb-43ac-96d0-a7c02e1b0628.jpeg?rect=0%2C18%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/01/7a8378ba-20fb-43ac-96d0-a7c02e1b0628.jpeg?rect=0%2C18%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Im Prozess um die rechtsextremistische Kampfsportgruppierung „Knockout 51“ soll ein Urteil fallen. (Archivbild)" data-source="Martin Schutt/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/05/01/ba7c3ff5-0114-491b-95ee-8dc9fc9ed00d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/05/01/ba7c3ff5-0114-491b-95ee-8dc9fc9ed00d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/05/01/ba7c3ff5-0114-491b-95ee-8dc9fc9ed00d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/05/01/ba7c3ff5-0114-491b-95ee-8dc9fc9ed00d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/05/01/ba7c3ff5-0114-491b-95ee-8dc9fc9ed00d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/05/01/ba7c3ff5-0114-491b-95ee-8dc9fc9ed00d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/05/01/ba7c3ff5-0114-491b-95ee-8dc9fc9ed00d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="In Umfragen lag die AfD in Sachsen-Anhalt zuletzt deutlich vor der CDU." data-source="Matthias Bein/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Gerichtsverhandlung</h4>
-                <h3 class="fp-article__title text-xl--bold ">Urteil im Prozess um rechte Kampfsportgruppe erwartet</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Straßenwahlkampf</h4>
+                <h3 class="fp-article__title text-xl--bold ">Politikwissenschaftler: AfD mobilisiert stärker als andere</h3>
             </a>
         </article>
 </div>
@@ -1815,30 +1831,30 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/buckelwal-vor-ostseekuste-die-lage-bleibt-kritisch-4225946">
+            <a href="/panorama/streit-um-markenschutz-minderheitensprachen-im-fokus-4242822">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/04/01/272978d9-77ce-4c7b-8d7f-644c15ecef52.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/01/272978d9-77ce-4c7b-8d7f-644c15ecef52.jpeg?rect=0%2C69%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/01/272978d9-77ce-4c7b-8d7f-644c15ecef52.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/01/272978d9-77ce-4c7b-8d7f-644c15ecef52.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/01/272978d9-77ce-4c7b-8d7f-644c15ecef52.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/01/272978d9-77ce-4c7b-8d7f-644c15ecef52.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/01/272978d9-77ce-4c7b-8d7f-644c15ecef52.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Am Dienstag wurde die Rettungsaktion am frühen Abend vorerst beendet, um dem Wal Ruhe zu gönnen. (Archivbild)" data-source="Stefan Sauer/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/05/01/f873f573-12aa-4a3b-88df-8266af3fc9b6.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/05/01/f873f573-12aa-4a3b-88df-8266af3fc9b6.jpeg?rect=0%2C192%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/05/01/f873f573-12aa-4a3b-88df-8266af3fc9b6.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/05/01/f873f573-12aa-4a3b-88df-8266af3fc9b6.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/05/01/f873f573-12aa-4a3b-88df-8266af3fc9b6.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/05/01/f873f573-12aa-4a3b-88df-8266af3fc9b6.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/05/01/f873f573-12aa-4a3b-88df-8266af3fc9b6.jpeg?rect=0%2C192%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="„Öömrang“ ist eine regionale Herkunftsbezeichnung und mehr als ein interessanter Begriff oder ein Fantasiewort." data-source="Birgitta von Gyldenfeldt/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Wal „Timmy“</h4>
-                <h3 class="fp-article__title text-xl--bold ">Buckelwal vor Ostseeküste: Die Lage bleibt kritisch</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Minderheiten</h4>
+                <h3 class="fp-article__title text-xl--bold ">Streit um Markenschutz: Minderheitensprachen im Fokus</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/trump-ende-der-us-angriffe-im-iran-in-wenigen-wochen-4225937">
+            <a href="/panorama/frisch-sanierte-radwege-sollen-bis-sommer-wieder-offnen-4242821">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/873cc212-b538-4186-9c66-2c7f3ce2b3de.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/873cc212-b538-4186-9c66-2c7f3ce2b3de.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/873cc212-b538-4186-9c66-2c7f3ce2b3de.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/873cc212-b538-4186-9c66-2c7f3ce2b3de.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/873cc212-b538-4186-9c66-2c7f3ce2b3de.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/873cc212-b538-4186-9c66-2c7f3ce2b3de.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/873cc212-b538-4186-9c66-2c7f3ce2b3de.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Stellt ein Ende der US-Angriffe im Iran in wenigen Wochen in Aussicht - US-Präsident Trump." data-source="Alex Brandon/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/05/01/3a7e7b0b-0701-44a6-a78b-ecb6be650eb2.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/05/01/3a7e7b0b-0701-44a6-a78b-ecb6be650eb2.jpeg?rect=0%2C96%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/05/01/3a7e7b0b-0701-44a6-a78b-ecb6be650eb2.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/05/01/3a7e7b0b-0701-44a6-a78b-ecb6be650eb2.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/05/01/3a7e7b0b-0701-44a6-a78b-ecb6be650eb2.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/05/01/3a7e7b0b-0701-44a6-a78b-ecb6be650eb2.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/05/01/3a7e7b0b-0701-44a6-a78b-ecb6be650eb2.jpeg?rect=0%2C96%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Mehrere Kilometer Radweg werden in Brandenburg saniert. (Symbolbild)" data-source="Patrick Pleul/dpa-Zentralbild/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Iran-Krieg</h4>
-                <h3 class="fp-article__title text-xl--bold ">Trump: Ende der US-Angriffe im Iran in wenigen Wochen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Radverkehr in Brandenburg</h4>
+                <h3 class="fp-article__title text-xl--bold ">Frisch sanierte Radwege sollen bis Sommer wieder öffnen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/jubel-auf-berlins-strassen-nach-turkei-sieg-im-playoff-finale-4225936">
+            <a href="/panorama/gewerkschaften-rufen-zu-kundgebungen-am-1-mai-auf-4242814">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/4d7aa0d0-1449-4dc1-9cce-39c79d09407b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/4d7aa0d0-1449-4dc1-9cce-39c79d09407b.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/4d7aa0d0-1449-4dc1-9cce-39c79d09407b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/4d7aa0d0-1449-4dc1-9cce-39c79d09407b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/4d7aa0d0-1449-4dc1-9cce-39c79d09407b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/4d7aa0d0-1449-4dc1-9cce-39c79d09407b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/4d7aa0d0-1449-4dc1-9cce-39c79d09407b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Türkische Fans jubeln in Berlin über WM-Qualifikation." data-source="Manuel Genolet/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/05/01/44040442-6061-46b6-bf99-3841f45de50d.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/05/01/44040442-6061-46b6-bf99-3841f45de50d.jpeg?rect=0%2C100%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/05/01/44040442-6061-46b6-bf99-3841f45de50d.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/05/01/44040442-6061-46b6-bf99-3841f45de50d.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/05/01/44040442-6061-46b6-bf99-3841f45de50d.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/05/01/44040442-6061-46b6-bf99-3841f45de50d.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/05/01/44040442-6061-46b6-bf99-3841f45de50d.jpeg?rect=0%2C100%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Gewerkschaften rufen wieder zur Teilnahme an Demos zum 1. Mai auf. (Archivbild)" data-source="Sebastian Willnow/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> WM-Quali</h4>
-                <h3 class="fp-article__title text-xl--bold ">Jubel auf Berlins Straßen nach Türkei-Sieg im Playoff-Finale</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Tag der Arbeit</h4>
+                <h3 class="fp-article__title text-xl--bold ">Gewerkschaften rufen zu Kundgebungen am 1. Mai auf</h3>
             </a>
         </article>
 </div>
@@ -1852,12 +1868,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 <h2 class="fp-most-popular-section-title">Meistgelesen</h2>
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/panorama/stars/laura-mueller-wendler-brust-op-4205626">
+      <a href="/panorama/nach-unfalltod-rechtliche-schritte-gegen-schaulustige-4241090">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">1.</span>
             <header>
-              <h4 class="fp-article__catchline"> Freizügiges Foto auf Instagram</h4>
-              <h3 class="fp-article__title text-xxl--bold">Laura Müller mit neuer Oberweite: Fans von Schieflage der Brüste irritiert</h3>
+              <h4 class="fp-article__catchline"> Frau von Straßenbahn erfasst</h4>
+              <h3 class="fp-article__title text-xxl--bold">Nach Unfalltod - rechtliche Schritte gegen Schaulustige?</h3>
             </header>
         </div>
       </a>
@@ -1865,12 +1881,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/panorama/so-viele-leute-lockt-horst-schlammer-ins-kino-4224885">
+      <a href="/panorama/sah-so-asozial-aus-kaulitz-uber-party-in-hotelzimmer-4233023">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">2.</span>
             <header>
-              <h4 class="fp-article__catchline"> Kinofilm</h4>
-              <h3 class="fp-article__title text-xxl--bold">So viele Leute lockt Horst Schlämmer ins Kino</h3>
+              <h4 class="fp-article__catchline"> Nach Preisverleihung</h4>
+              <h3 class="fp-article__title text-xxl--bold">„Sah so asozial aus“: Kaulitz über Party in Hotelzimmer</h3>
             </header>
         </div>
       </a>
@@ -1878,12 +1894,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/panorama/rettungsaktion-fur-gestrandeten-buckelwal-erneut-abgebrochen-4222605">
+      <a href="/panorama/51-jahriger-tot-auf-motocross-strecke-gefunden-4239896">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">3.</span>
             <header>
-              <h4 class="fp-article__catchline"> Gestrandeter Wal</h4>
-              <h3 class="fp-article__title text-xxl--bold">Rettungsaktion für gestrandeten Buckelwal erneut abgebrochen</h3>
+              <h4 class="fp-article__catchline"> Unfälle</h4>
+              <h3 class="fp-article__title text-xxl--bold">51-Jähriger tot auf Motocross-Strecke gefunden</h3>
             </header>
         </div>
       </a>
@@ -1891,12 +1907,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 
 
     <article class="fp-article fp-article-most-popular">
-      <a href="/panorama/moderatorin-katja-burkard-trauert-um-ihre-mutter-4216515">
+      <a href="/panorama/stars/fabian-kahl-haendler-bares-fuer-rares-beruehmt-4238068">
         <div class="fp-article__content">
           <span class="fp-article-index text-xxxl--bold">4.</span>
             <header>
-              <h4 class="fp-article__catchline"> „Werden dich nie vergessen“</h4>
-              <h3 class="fp-article__title text-xxl--bold">Moderatorin Katja Burkard trauert um ihre Mutter</h3>
+              <h4 class="fp-article__catchline"> Fabian Kahl mit Sonnenbrille und hut</h4>
+              <h3 class="fp-article__title text-xxl--bold">Trotz Verkleidung! So erkennen Fans den "Bares für Rares"-Händler trotzdem auf der Straße</h3>
             </header>
         </div>
       </a>
@@ -1917,48 +1933,48 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/dialekt-schmeckt-4225492">
+            <a href="/panorama/aufgespiesst/einbrecher-ubertragt-seine-tat-live-in-die-notrufzentrale-4241997">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/cbbd9c06-3971-4e4c-8a11-c221fb26514d.jpeg?rect=64%2C94%2C601%2C473&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/cbbd9c06-3971-4e4c-8a11-c221fb26514d.jpeg?rect=64%2C94%2C601%2C473&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/cbbd9c06-3971-4e4c-8a11-c221fb26514d.jpeg?rect=64%2C94%2C601%2C473&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/cbbd9c06-3971-4e4c-8a11-c221fb26514d.jpeg?rect=64%2C94%2C601%2C473&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/cbbd9c06-3971-4e4c-8a11-c221fb26514d.jpeg?rect=64%2C94%2C601%2C473&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/cbbd9c06-3971-4e4c-8a11-c221fb26514d.jpeg?rect=64%2C94%2C601%2C473&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/cbbd9c06-3971-4e4c-8a11-c221fb26514d.jpeg?rect=64%2C94%2C601%2C473&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Pfannkuchen? Berliner?" data-source="Foto: dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/29/a6b3d7d8-e26b-48a8-9600-e859a567b1ed.jpeg?rect=0%2C317%2C4000%2C2251&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/29/a6b3d7d8-e26b-48a8-9600-e859a567b1ed.jpeg?rect=0%2C317%2C4000%2C2251&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/29/a6b3d7d8-e26b-48a8-9600-e859a567b1ed.jpeg?rect=0%2C317%2C4000%2C2251&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/29/a6b3d7d8-e26b-48a8-9600-e859a567b1ed.jpeg?rect=0%2C317%2C4000%2C2251&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/29/a6b3d7d8-e26b-48a8-9600-e859a567b1ed.jpeg?rect=0%2C317%2C4000%2C2251&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/29/a6b3d7d8-e26b-48a8-9600-e859a567b1ed.jpeg?rect=0%2C317%2C4000%2C2251&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/29/a6b3d7d8-e26b-48a8-9600-e859a567b1ed.jpeg?rect=0%2C317%2C4000%2C2251&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Beim Öffnen des Fenstern riss der Einbrecher ein Rollo herunter - und das löste den Alarm aus." data-source="Symobolbild: dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Dialekt schmeckt</h3>
+                <h3 class="fp-article__title text-xl--bold ">Einbrecher überträgt seine Tat live in die Notrufzentrale</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/reden-ist-silber-4225152">
+            <a href="/panorama/aufgespiesst/schall-und-rauch-4241036">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/30/bfda84b2-09ee-4a0a-960f-46afd1b75ef6.jpeg?rect=120%2C0%2C600%2C473&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/30/bfda84b2-09ee-4a0a-960f-46afd1b75ef6.jpeg?rect=120%2C0%2C600%2C473&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/30/bfda84b2-09ee-4a0a-960f-46afd1b75ef6.jpeg?rect=120%2C0%2C600%2C473&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/30/bfda84b2-09ee-4a0a-960f-46afd1b75ef6.jpeg?rect=120%2C0%2C600%2C473&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/30/bfda84b2-09ee-4a0a-960f-46afd1b75ef6.jpeg?rect=120%2C0%2C600%2C473&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/30/bfda84b2-09ee-4a0a-960f-46afd1b75ef6.jpeg?rect=120%2C0%2C600%2C473&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/30/bfda84b2-09ee-4a0a-960f-46afd1b75ef6.jpeg?rect=120%2C0%2C600%2C473&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Wichtig: Im Gespräch bleiben." data-source="imago images/Werner Otto">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/28/476896b0-6367-4870-9dd5-ef3823a6c93d.jpeg?rect=73%2C0%2C600%2C472&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/28/476896b0-6367-4870-9dd5-ef3823a6c93d.jpeg?rect=73%2C0%2C600%2C472&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/28/476896b0-6367-4870-9dd5-ef3823a6c93d.jpeg?rect=73%2C0%2C600%2C472&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/28/476896b0-6367-4870-9dd5-ef3823a6c93d.jpeg?rect=73%2C0%2C600%2C472&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/28/476896b0-6367-4870-9dd5-ef3823a6c93d.jpeg?rect=73%2C0%2C600%2C472&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/28/476896b0-6367-4870-9dd5-ef3823a6c93d.jpeg?rect=73%2C0%2C600%2C472&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/28/476896b0-6367-4870-9dd5-ef3823a6c93d.jpeg?rect=73%2C0%2C600%2C472&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Riecht trotzdem meist gut da." data-source="Foto: dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Reden ist Silber ...</h3>
+                <h3 class="fp-article__title text-xl--bold ">Schall und Rauch</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/die-teuersten-sieben-zentimeter-4224623">
+            <a href="/panorama/aufgespiesst/bares-ist-rares-4240437">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/29/97133633-8390-41d5-89ab-ea3130e3567e.jpeg?rect=0%2C62%2C708%2C398&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/29/97133633-8390-41d5-89ab-ea3130e3567e.jpeg?rect=0%2C62%2C708%2C398&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/29/97133633-8390-41d5-89ab-ea3130e3567e.jpeg?rect=0%2C62%2C708%2C398&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/29/97133633-8390-41d5-89ab-ea3130e3567e.jpeg?rect=0%2C62%2C708%2C398&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/29/97133633-8390-41d5-89ab-ea3130e3567e.jpeg?rect=0%2C62%2C708%2C398&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/29/97133633-8390-41d5-89ab-ea3130e3567e.jpeg?rect=0%2C62%2C708%2C398&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/29/97133633-8390-41d5-89ab-ea3130e3567e.jpeg?rect=0%2C62%2C708%2C398&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Einfach zu niedrig." data-source="Foto: Pülicher">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/27/48aa2659-5ddb-48f4-9793-ab65f502f546.jpeg?rect=120%2C94%2C600%2C471&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/27/48aa2659-5ddb-48f4-9793-ab65f502f546.jpeg?rect=120%2C94%2C600%2C471&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/27/48aa2659-5ddb-48f4-9793-ab65f502f546.jpeg?rect=120%2C94%2C600%2C471&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/27/48aa2659-5ddb-48f4-9793-ab65f502f546.jpeg?rect=120%2C94%2C600%2C471&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/27/48aa2659-5ddb-48f4-9793-ab65f502f546.jpeg?rect=120%2C94%2C600%2C471&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/27/48aa2659-5ddb-48f4-9793-ab65f502f546.jpeg?rect=120%2C94%2C600%2C471&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/27/48aa2659-5ddb-48f4-9793-ab65f502f546.jpeg?rect=120%2C94%2C600%2C471&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Auslaufmodell Bargeld im Trevi-Brunnen. " data-source="imago">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Die teuersten sieben Zentimeter</h3>
+                <h3 class="fp-article__title text-xl--bold ">Bares ist Rares</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/einmal-gruezi-fur-23-euro-4223659">
+            <a href="/panorama/aufgespiesst/schwarzfahrerin-will-unbedingt-vor-gericht-4239202">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/27/c98af801-c723-4614-b9ef-5a8dd4dcd710.jpeg?rect=82%2C14%2C600%2C472&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/27/c98af801-c723-4614-b9ef-5a8dd4dcd710.jpeg?rect=82%2C14%2C600%2C472&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/27/c98af801-c723-4614-b9ef-5a8dd4dcd710.jpeg?rect=82%2C14%2C600%2C472&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/27/c98af801-c723-4614-b9ef-5a8dd4dcd710.jpeg?rect=82%2C14%2C600%2C472&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/27/c98af801-c723-4614-b9ef-5a8dd4dcd710.jpeg?rect=82%2C14%2C600%2C472&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/27/c98af801-c723-4614-b9ef-5a8dd4dcd710.jpeg?rect=82%2C14%2C600%2C472&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/27/c98af801-c723-4614-b9ef-5a8dd4dcd710.jpeg?rect=82%2C14%2C600%2C472&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Teures Pflaster Schweiz." data-source="Foto: dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/24/240579b4-79ee-4818-afad-655f46a513c3.jpeg?rect=0%2C27%2C777%2C437&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/24/240579b4-79ee-4818-afad-655f46a513c3.jpeg?rect=0%2C27%2C777%2C437&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/24/240579b4-79ee-4818-afad-655f46a513c3.jpeg?rect=0%2C27%2C777%2C437&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/24/240579b4-79ee-4818-afad-655f46a513c3.jpeg?rect=0%2C27%2C777%2C437&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/24/240579b4-79ee-4818-afad-655f46a513c3.jpeg?rect=0%2C27%2C777%2C437&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/24/240579b4-79ee-4818-afad-655f46a513c3.jpeg?rect=0%2C27%2C777%2C437&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/24/240579b4-79ee-4818-afad-655f46a513c3.jpeg?rect=0%2C27%2C777%2C437&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ihre ICE-Fahrten waren mehrfach ein Fall für die Polizei." data-source="Foto: dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Einmal „Grüezi“ für 23 Euro</h3>
+                <h3 class="fp-article__title text-xl--bold ">Schwarzfahrerin will unbedingt vor Gericht</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/aufgespiesst/lechts-oder-rinks-4222811">
+            <a href="/panorama/aufgespiesst/wie-klaut-man-70-rinder-4238378">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/26/4a5a7f53-a3b0-4d82-9c09-a4240a8e8348.jpeg?rect=0%2C0%2C599%2C472&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/26/4a5a7f53-a3b0-4d82-9c09-a4240a8e8348.jpeg?rect=0%2C0%2C599%2C472&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/26/4a5a7f53-a3b0-4d82-9c09-a4240a8e8348.jpeg?rect=0%2C0%2C599%2C472&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/26/4a5a7f53-a3b0-4d82-9c09-a4240a8e8348.jpeg?rect=0%2C0%2C599%2C472&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/26/4a5a7f53-a3b0-4d82-9c09-a4240a8e8348.jpeg?rect=0%2C0%2C599%2C472&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/26/4a5a7f53-a3b0-4d82-9c09-a4240a8e8348.jpeg?rect=0%2C0%2C599%2C472&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/26/4a5a7f53-a3b0-4d82-9c09-a4240a8e8348.jpeg?rect=0%2C0%2C599%2C472&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Mbappé lacht trotz Knie." data-source="Foto: AFP">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/23/73b5a5d2-0247-44c7-b18b-61a232b6050b.jpeg?rect=0%2C0%2C600%2C472&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/23/73b5a5d2-0247-44c7-b18b-61a232b6050b.jpeg?rect=0%2C0%2C600%2C472&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/23/73b5a5d2-0247-44c7-b18b-61a232b6050b.jpeg?rect=0%2C0%2C600%2C472&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/23/73b5a5d2-0247-44c7-b18b-61a232b6050b.jpeg?rect=0%2C0%2C600%2C472&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/23/73b5a5d2-0247-44c7-b18b-61a232b6050b.jpeg?rect=0%2C0%2C600%2C472&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/23/73b5a5d2-0247-44c7-b18b-61a232b6050b.jpeg?rect=0%2C0%2C600%2C472&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/23/73b5a5d2-0247-44c7-b18b-61a232b6050b.jpeg?rect=0%2C0%2C600%2C472&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Eben noch da, jetzt Roulade. " data-source="Foto: dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Aufgespießt</h4>
-                <h3 class="fp-article__title text-xl--bold ">Lechts oder rinks?</h3>
+                <h3 class="fp-article__title text-xl--bold ">Wie klaut man 70 Rinder?</h3>
             </a>
         </article>
 </div>
@@ -1981,48 +1997,48 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/eurovision-song-contest-bald-mit-asien-edition-4225870">
+            <a href="/panorama/stars/kurzzeit-sanger-von-spandau-ballet-muss-lange-in-haft-4242641">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/de565bc4-fd53-4b48-bb1d-daf778aad4bd.jpeg?rect=0%2C62%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/de565bc4-fd53-4b48-bb1d-daf778aad4bd.jpeg?rect=0%2C62%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/de565bc4-fd53-4b48-bb1d-daf778aad4bd.jpeg?rect=0%2C62%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/de565bc4-fd53-4b48-bb1d-daf778aad4bd.jpeg?rect=0%2C62%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/de565bc4-fd53-4b48-bb1d-daf778aad4bd.jpeg?rect=0%2C62%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/de565bc4-fd53-4b48-bb1d-daf778aad4bd.jpeg?rect=0%2C62%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/de565bc4-fd53-4b48-bb1d-daf778aad4bd.jpeg?rect=0%2C62%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Ursprungsvariante des ESC findet in diesem Jahr in Wien statt. (Archivbild)" data-source="Georg Hochmuth/APA/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/6554081d-421c-4afd-ba0b-8c3f3da08023.jpeg?rect=0%2C95%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/6554081d-421c-4afd-ba0b-8c3f3da08023.jpeg?rect=0%2C95%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/6554081d-421c-4afd-ba0b-8c3f3da08023.jpeg?rect=0%2C95%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/6554081d-421c-4afd-ba0b-8c3f3da08023.jpeg?rect=0%2C95%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/6554081d-421c-4afd-ba0b-8c3f3da08023.jpeg?rect=0%2C95%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/6554081d-421c-4afd-ba0b-8c3f3da08023.jpeg?rect=0%2C95%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/6554081d-421c-4afd-ba0b-8c3f3da08023.jpeg?rect=0%2C95%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Eine Statue der römischen Göttin Justitia. (Symbolbild)" data-source="Arne Dedert/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Musik-Contest</h4>
-                <h3 class="fp-article__title text-xl--bold ">Eurovision Song Contest bald mit Asien-Edition</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Großbritannien</h4>
+                <h3 class="fp-article__title text-xl--bold ">Kurzzeit-Sänger von Spandau Ballet muss lange in Haft</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/taylor-swift-ehrt-elizabeth-taylor-mit-neuem-video-4225804">
+            <a href="/panorama/stars/die-grosse-elchwanderung-warum-die-schweden-slow-tv-lieben-4242368">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/511a2d5f-fbcc-4d6c-9a6d-b36b1be1eafa.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/511a2d5f-fbcc-4d6c-9a6d-b36b1be1eafa.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/511a2d5f-fbcc-4d6c-9a6d-b36b1be1eafa.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/511a2d5f-fbcc-4d6c-9a6d-b36b1be1eafa.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/511a2d5f-fbcc-4d6c-9a6d-b36b1be1eafa.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/511a2d5f-fbcc-4d6c-9a6d-b36b1be1eafa.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/511a2d5f-fbcc-4d6c-9a6d-b36b1be1eafa.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Taylor Swift überrascht Fans mit neuen Video" data-source="Jordan Strauss/Invision/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/9d88c51a-9a9b-483f-8aa7-5201abeb1f7f.jpeg?rect=0%2C139%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/9d88c51a-9a9b-483f-8aa7-5201abeb1f7f.jpeg?rect=0%2C139%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/9d88c51a-9a9b-483f-8aa7-5201abeb1f7f.jpeg?rect=0%2C139%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/9d88c51a-9a9b-483f-8aa7-5201abeb1f7f.jpeg?rect=0%2C139%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/9d88c51a-9a9b-483f-8aa7-5201abeb1f7f.jpeg?rect=0%2C139%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/9d88c51a-9a9b-483f-8aa7-5201abeb1f7f.jpeg?rect=0%2C139%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/9d88c51a-9a9b-483f-8aa7-5201abeb1f7f.jpeg?rect=0%2C139%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="„Die große Elchwanderung“ wird millionenfach gestreamt." data-source="Anders Strömquist/Den stora älgvandringen/Sveriges Television/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Ode an Schauspielerin</h4>
-                <h3 class="fp-article__title text-xl--bold ">Taylor Swift ehrt Elizabeth Taylor mit neuem Video</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Entschleunigung</h4>
+                <h3 class="fp-article__title text-xl--bold ">Die große Elchwanderung: Warum die Schweden „Slow TV“ lieben</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/deutscher-filmpreis-das-sind-die-favoriten-4225687">
+            <a href="/panorama/stars/schwedens-konig-denkt-mit-80-nicht-ans-abdanken-4242478">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/7f5cacd6-c181-46ad-ad0e-30f4d2f1bcf9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/7f5cacd6-c181-46ad-ad0e-30f4d2f1bcf9.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/7f5cacd6-c181-46ad-ad0e-30f4d2f1bcf9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/7f5cacd6-c181-46ad-ad0e-30f4d2f1bcf9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/7f5cacd6-c181-46ad-ad0e-30f4d2f1bcf9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/7f5cacd6-c181-46ad-ad0e-30f4d2f1bcf9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/7f5cacd6-c181-46ad-ad0e-30f4d2f1bcf9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Senta Berger ist als beste Hauptdarstellerin nominiert. (Archivbild)" data-source="Felix Hörhager/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/6437fbca-025d-4ab3-b239-adc822bde1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/6437fbca-025d-4ab3-b239-adc822bde1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/6437fbca-025d-4ab3-b239-adc822bde1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/6437fbca-025d-4ab3-b239-adc822bde1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/6437fbca-025d-4ab3-b239-adc822bde1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/6437fbca-025d-4ab3-b239-adc822bde1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/6437fbca-025d-4ab3-b239-adc822bde1a7.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Zu Ehren von Carl Gustaf gab es einen Gottesdienst in der Schlosskirche." data-source="Anders Wiklund/TT News Agency/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Kultur</h4>
-                <h3 class="fp-article__title text-xl--bold ">Deutscher Filmpreis: Das sind die Favoriten</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Königshaus</h4>
+                <h3 class="fp-article__title text-xl--bold ">Schwedens König denkt mit 80 nicht ans Abdanken</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/ich-bin-bereit-celine-dion-will-auf-die-buhne-zuruck-4225276">
+            <a href="/panorama/stars/heute-show-howard-carpendale-oliver-welke-witz-4240296">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/761e4063-6203-4ada-a332-11676bf873ae.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/761e4063-6203-4ada-a332-11676bf873ae.jpeg?rect=0%2C126%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/761e4063-6203-4ada-a332-11676bf873ae.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/761e4063-6203-4ada-a332-11676bf873ae.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/761e4063-6203-4ada-a332-11676bf873ae.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/761e4063-6203-4ada-a332-11676bf873ae.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/761e4063-6203-4ada-a332-11676bf873ae.jpeg?rect=0%2C126%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Dion hatte ihre Diagnose 2022 öffentlich gemacht. (Archivbild)" data-source="Evan Agostini/Invision/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/0d751498-39bf-4f44-bbb6-9484fbc91b22.jpeg?rect=269%2C0%2C3115%2C1752&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/0d751498-39bf-4f44-bbb6-9484fbc91b22.jpeg?rect=269%2C0%2C3115%2C1752&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/0d751498-39bf-4f44-bbb6-9484fbc91b22.jpeg?rect=269%2C0%2C3115%2C1752&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/0d751498-39bf-4f44-bbb6-9484fbc91b22.jpeg?rect=269%2C0%2C3115%2C1752&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/0d751498-39bf-4f44-bbb6-9484fbc91b22.jpeg?rect=269%2C0%2C3115%2C1752&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/0d751498-39bf-4f44-bbb6-9484fbc91b22.jpeg?rect=269%2C0%2C3115%2C1752&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/0d751498-39bf-4f44-bbb6-9484fbc91b22.jpeg?rect=269%2C0%2C3115%2C1752&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Schlagersänger Howard Carpendale ist sauer auf &quot;heute-show&quot;-Moderator Oliver Welke." data-source="(Foto: Imago/Star-Media)">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Nach Krankheitspause</h4>
-                <h3 class="fp-article__title text-xl--bold ">„Ich bin bereit“: Céline Dion will auf die Bühne zurück</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Nach Witz von Oliver Welke</h4>
+                <h3 class="fp-article__title text-xl--bold ">"Sag mal, spinnst du?" – So sauer ist Howard Carpendale auf "heute-show"-Moderator</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/stars/blackpink-star-lisa-kundigt-eigene-showreihe-in-las-vegas-an-4225393">
+            <a href="/panorama/stars/so-half-ian-somerhalders-frau-ihm-aus-millionenschulden-4242255">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/a3790337-426b-4184-9398-2e23033da40c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/a3790337-426b-4184-9398-2e23033da40c.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/a3790337-426b-4184-9398-2e23033da40c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/a3790337-426b-4184-9398-2e23033da40c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/a3790337-426b-4184-9398-2e23033da40c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/a3790337-426b-4184-9398-2e23033da40c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/a3790337-426b-4184-9398-2e23033da40c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Lalisa Manoban (links im Bild) und ihre K-Pop-Gruppe Blackpink werden von Millionen Fans angehimmelt. (Archivbild)" data-source="Ahn Young-joon/AP/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/6e392a1e-7084-4e1b-93b3-a582925f72f1.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/6e392a1e-7084-4e1b-93b3-a582925f72f1.jpeg?rect=0%2C137%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/6e392a1e-7084-4e1b-93b3-a582925f72f1.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/6e392a1e-7084-4e1b-93b3-a582925f72f1.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/6e392a1e-7084-4e1b-93b3-a582925f72f1.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/6e392a1e-7084-4e1b-93b3-a582925f72f1.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/6e392a1e-7084-4e1b-93b3-a582925f72f1.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="„Vampire Diaries“-Star Ian Somerhalder (47) schildert, wie seine Frau Nikki Reed (37) ihm vor Jahren aus hohen Schulden herausgeholfen hat. (Archivbild)" data-source="Sebastien Nogier/dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Leute</h4>
-                <h3 class="fp-article__title text-xl--bold ">Blackpink-Star Lisa kündigt eigene Showreihe in Las Vegas an</h3>
+                <h3 class="fp-article__title text-xl--bold ">So half Ian Somerhalders Frau ihm aus Millionenschulden</h3>
             </a>
         </article>
 </div>
@@ -2045,21 +2061,39 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/vermischtes/eisheilige-2026-bauernregel-frost-mitte-mai-joerg-kachelmann-dwd-3832400">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/dfd57070-008a-45a3-9d3d-de0988a2b46a.jpeg?rect=669%2C0%2C2662%2C2662&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/dfd57070-008a-45a3-9d3d-de0988a2b46a.jpeg?rect=669%2C0%2C2662%2C2662&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/dfd57070-008a-45a3-9d3d-de0988a2b46a.jpeg?rect=669%2C0%2C2662%2C2662&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/dfd57070-008a-45a3-9d3d-de0988a2b46a.jpeg?rect=669%2C0%2C2662%2C2662&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/dfd57070-008a-45a3-9d3d-de0988a2b46a.jpeg?rect=669%2C0%2C2662%2C2662&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/dfd57070-008a-45a3-9d3d-de0988a2b46a.jpeg?rect=669%2C0%2C2662%2C2662&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/dfd57070-008a-45a3-9d3d-de0988a2b46a.jpeg?rect=669%2C0%2C2662%2C2662&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Eisheiligen sind eine alte Bauernregel. Doch was ist wirklich dran an der Wettervorgersage?" data-source="Symbolbild: Imago/Gianna Schade">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Frost Mitte Mai</h4>
+                <h3 class="fp-article__title text-xl--bold ">Mythos Eisheilige: Ist die alte Bauernregel doch bloß ein Märchen?</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/vermischtes/gesetz-deutschland-imker-bgb-stvo-4155604">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/15/e6633c30-4b36-4069-bf1e-b693a9921acb.jpeg?rect=200%2C0%2C3215%2C1808&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/15/e6633c30-4b36-4069-bf1e-b693a9921acb.jpeg?rect=200%2C0%2C3215%2C1808&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/15/e6633c30-4b36-4069-bf1e-b693a9921acb.jpeg?rect=200%2C0%2C3215%2C1808&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/15/e6633c30-4b36-4069-bf1e-b693a9921acb.jpeg?rect=200%2C0%2C3215%2C1808&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/15/e6633c30-4b36-4069-bf1e-b693a9921acb.jpeg?rect=200%2C0%2C3215%2C1808&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/15/e6633c30-4b36-4069-bf1e-b693a9921acb.jpeg?rect=200%2C0%2C3215%2C1808&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/15/e6633c30-4b36-4069-bf1e-b693a9921acb.jpeg?rect=200%2C0%2C3215%2C1808&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Es gibt Gesetze in Deutschland, die nicht jeder kennt: Wussten Sie zum Beispiel, dass Imker fremde Grundstücke betreten dürfen." data-source="(Symbolfoto: Imago/Funke Foto Services)">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Regeln zum Schmunzeln</h4>
+                <h3 class="fp-article__title text-xl--bold ">Kuriose Gesetze in Deutschland: Warum Imker fremde Grundstücke betreten dürfen</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/vermischtes/ddr-soljanka-fernsehturm-tim-raue-4223506">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/07/907146c5-b6c7-4223-bc96-dccf32e4ccd7.jpeg?rect=0%2C0%2C4000%2C2250&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/07/907146c5-b6c7-4223-bc96-dccf32e4ccd7.jpeg?rect=0%2C0%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/07/907146c5-b6c7-4223-bc96-dccf32e4ccd7.jpeg?rect=0%2C0%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/07/907146c5-b6c7-4223-bc96-dccf32e4ccd7.jpeg?rect=0%2C0%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/07/907146c5-b6c7-4223-bc96-dccf32e4ccd7.jpeg?rect=0%2C0%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/07/907146c5-b6c7-4223-bc96-dccf32e4ccd7.jpeg?rect=0%2C0%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/07/907146c5-b6c7-4223-bc96-dccf32e4ccd7.jpeg?rect=0%2C0%2C4000%2C2250&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Spitzenkoch Tim Raue bietet in seinem Restaurant &quot;Sphere&quot; in Berlin die ganze Bandbreite an DDR-Essen an." data-source="(Foto: Imago/Funke Foto Services)">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Ost-Klassiker vom Star-Koch</h4>
+                <h3 class="fp-article__title text-xl--bold ">Soljanka auf dem Berliner Fernsehturm: Tim Raue bietet DDR-Kult-Gericht an</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
             <a href="/panorama/vermischtes/flughafen-leipzig-halle-ddr-concorde-landung-geschichte-4225584">
                 <picture class="fp-article__image">
                     <img src="https://bmg-images.forward-publishing.io/2026/03/31/0e761195-6286-46ac-968a-9035e3790233.jpeg?rect=0%2C158%2C4000%2C2250&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/0e761195-6286-46ac-968a-9035e3790233.jpeg?rect=0%2C158%2C4000%2C2250&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/0e761195-6286-46ac-968a-9035e3790233.jpeg?rect=0%2C158%2C4000%2C2250&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/0e761195-6286-46ac-968a-9035e3790233.jpeg?rect=0%2C158%2C4000%2C2250&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/0e761195-6286-46ac-968a-9035e3790233.jpeg?rect=0%2C158%2C4000%2C2250&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/0e761195-6286-46ac-968a-9035e3790233.jpeg?rect=0%2C158%2C4000%2C2250&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/0e761195-6286-46ac-968a-9035e3790233.jpeg?rect=0%2C158%2C4000%2C2250&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Concorde der Air France landete erstmalig 1986 am Flughafen Leipzig. Damals brachte die Maschine Gäste zur Leipziger Frühjahrsmesse." data-source="Foto: Imago/Frank Sorge">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Zur Frühjahrsmesse</h4>
-                <h3 class="fp-article__title text-xl--bold ">Spektakulär! Wie vor 40 Jahren die erste Concorde am Flughafen Leipzig landete</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/vermischtes/tim-raue-sphere-soljanka-ddr-kult-gericht-fernsehturm-restaurant-4223506">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/27/a55d3756-0f5d-4293-9d8f-418abdfa8508.jpeg?rect=0%2C0%2C1200%2C675&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/27/a55d3756-0f5d-4293-9d8f-418abdfa8508.jpeg?rect=0%2C0%2C1200%2C675&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/27/a55d3756-0f5d-4293-9d8f-418abdfa8508.jpeg?rect=0%2C0%2C1200%2C675&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/27/a55d3756-0f5d-4293-9d8f-418abdfa8508.jpeg?rect=0%2C0%2C1200%2C675&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/27/a55d3756-0f5d-4293-9d8f-418abdfa8508.jpeg?rect=0%2C0%2C1200%2C675&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/27/a55d3756-0f5d-4293-9d8f-418abdfa8508.jpeg?rect=0%2C0%2C1200%2C675&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/27/a55d3756-0f5d-4293-9d8f-418abdfa8508.jpeg?rect=0%2C0%2C1200%2C675&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Gut drauf: Spitzenkoch Tim Raue bietet in seinem Restaurant &quot;Sphere&quot; in Berlin die ganze Bandbreite an DDR-Essen an." data-source="(Foto: Nils Hasenau)">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Mit besonderem Kniff</h4>
-                <h3 class="fp-article__title text-xl--bold ">Soljanka wie bei Mutti – und in luftiger Höhe! Tim Raue kocht DDR-Kultgericht im Fernsehturm</h3>
+                <h3 class="fp-article__title text-xl--bold ">DDR-Sensation 1986: Wie die Concorde plötzlich am Flughafen Leipzig landete</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
@@ -2069,24 +2103,6 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> "Das Land legal verlassen"</h4>
                 <h3 class="fp-article__title text-xl--bold ">DDR-Kreuzfahrtlegende "Völkerfreundschaft": Wie ein schwedisches Schiff zu Ikone wurde</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/vermischtes/polarlichter-maerz-2026-aurora-australis-nordlichter-wo-4208968">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/18/91bd7b56-e181-4c4f-abd5-2d3950e7cea0.jpeg?rect=40%2C231%2C3920%2C2205&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/18/91bd7b56-e181-4c4f-abd5-2d3950e7cea0.jpeg?rect=40%2C231%2C3920%2C2205&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/18/91bd7b56-e181-4c4f-abd5-2d3950e7cea0.jpeg?rect=40%2C231%2C3920%2C2205&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/18/91bd7b56-e181-4c4f-abd5-2d3950e7cea0.jpeg?rect=40%2C231%2C3920%2C2205&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/18/91bd7b56-e181-4c4f-abd5-2d3950e7cea0.jpeg?rect=40%2C231%2C3920%2C2205&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/18/91bd7b56-e181-4c4f-abd5-2d3950e7cea0.jpeg?rect=40%2C231%2C3920%2C2205&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/18/91bd7b56-e181-4c4f-abd5-2d3950e7cea0.jpeg?rect=40%2C231%2C3920%2C2205&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nordlichter könnten 2026 häufiger und intensiver auftreten als in den Jahren zuvor." data-source="(Foto: dpa | Matthias Bein)">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Sonnenzyklus am Maximum</h4>
-                <h3 class="fp-article__title text-xl--bold ">Polarlichter im März 2026: Warum jetzt die besten Chancen seit Jahren bestehen</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/vermischtes/gesetz-deutschland-stvo-bgbg-kurios-autobahn-4155604">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/18/8996772a-4e9a-4c33-afb6-2ec85c58a478.jpeg?rect=0%2C322%2C3072%2C1728&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/18/8996772a-4e9a-4c33-afb6-2ec85c58a478.jpeg?rect=0%2C322%2C3072%2C1728&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/18/8996772a-4e9a-4c33-afb6-2ec85c58a478.jpeg?rect=0%2C322%2C3072%2C1728&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/18/8996772a-4e9a-4c33-afb6-2ec85c58a478.jpeg?rect=0%2C322%2C3072%2C1728&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/18/8996772a-4e9a-4c33-afb6-2ec85c58a478.jpeg?rect=0%2C322%2C3072%2C1728&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/18/8996772a-4e9a-4c33-afb6-2ec85c58a478.jpeg?rect=0%2C322%2C3072%2C1728&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/18/8996772a-4e9a-4c33-afb6-2ec85c58a478.jpeg?rect=0%2C322%2C3072%2C1728&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Es gibt Gesetze in Deutschland, die nicht jeder kennt: Wussten Sie zum Beispiel, dass man mit leerem Tank nicht auf der Autobahn liegen bleiben darf?" data-source="(Symbolfoto: Imago/Bihlmayerfotografie)">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Kuriose Gesetze</h4>
-                <h3 class="fp-article__title text-xl--bold ">Mit leerem Tank auf der Autobahn liegen bleiben ist in Deutschland nicht erlaubt</h3>
             </a>
         </article>
 </div>
@@ -2109,48 +2125,48 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/brutales-foul-uberschattet-ingolstadts-sieg-in-del-playoffs-4225919">
+            <a href="/panorama/theatertreffen-wird-mit-il-gattopardo-eroffnet-4242816">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/56dab55a-e6b2-4054-a860-0f074ddea43d.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/56dab55a-e6b2-4054-a860-0f074ddea43d.jpeg?rect=0%2C137%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/56dab55a-e6b2-4054-a860-0f074ddea43d.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/56dab55a-e6b2-4054-a860-0f074ddea43d.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/56dab55a-e6b2-4054-a860-0f074ddea43d.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/56dab55a-e6b2-4054-a860-0f074ddea43d.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/56dab55a-e6b2-4054-a860-0f074ddea43d.jpeg?rect=0%2C137%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ingolstadt-Coach Mark French erlebt ein 7:2 gegen München - der Sport wurde aber zur Nebensache. (Archivbild)" data-source="Sven Hoppe/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/05/01/31435d7c-6bc0-4b67-a422-11f9c22e3562.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/05/01/31435d7c-6bc0-4b67-a422-11f9c22e3562.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/05/01/31435d7c-6bc0-4b67-a422-11f9c22e3562.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/05/01/31435d7c-6bc0-4b67-a422-11f9c22e3562.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/05/01/31435d7c-6bc0-4b67-a422-11f9c22e3562.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/05/01/31435d7c-6bc0-4b67-a422-11f9c22e3562.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/05/01/31435d7c-6bc0-4b67-a422-11f9c22e3562.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Zum Beginn des Festivals wird „Il Gattopardo“ vom Schauspielhaus Zürich gezeigt." data-source="Markus Lenhardt/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Eishockey</h4>
-                <h3 class="fp-article__title text-xl--bold ">Brutales Foul überschattet Ingolstadts Sieg in DEL-Playoffs</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Kultur</h4>
+                <h3 class="fp-article__title text-xl--bold ">Theatertreffen wird mit „Il Gattopardo“ eröffnet</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/bayern-star-kane-fehlt-england-verliert-gegen-japan-4225885">
+            <a href="/panorama/einen-wal-aufpappeln-in-einer-station-ist-das-realistisch-4242813">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/c4b1193b-d3dc-415f-832c-89b42c7a9580.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/c4b1193b-d3dc-415f-832c-89b42c7a9580.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/c4b1193b-d3dc-415f-832c-89b42c7a9580.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/c4b1193b-d3dc-415f-832c-89b42c7a9580.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/c4b1193b-d3dc-415f-832c-89b42c7a9580.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/c4b1193b-d3dc-415f-832c-89b42c7a9580.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/c4b1193b-d3dc-415f-832c-89b42c7a9580.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Harry Kane konnte das Testspiel gegen Japan nicht bestreiten. (Archivfoto)" data-source="Bradley Collyer/PA Wire/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/05/01/95ebe8ed-db16-4f19-9724-5eb8e8f55802.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/05/01/95ebe8ed-db16-4f19-9724-5eb8e8f55802.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/05/01/95ebe8ed-db16-4f19-9724-5eb8e8f55802.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/05/01/95ebe8ed-db16-4f19-9724-5eb8e8f55802.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/05/01/95ebe8ed-db16-4f19-9724-5eb8e8f55802.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/05/01/95ebe8ed-db16-4f19-9724-5eb8e8f55802.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/05/01/95ebe8ed-db16-4f19-9724-5eb8e8f55802.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Der Wal liegt in einer Ecke des Lastkahns." data-source="Christoph Reichwein/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Fußball</h4>
-                <h3 class="fp-article__title text-xl--bold ">Bayern-Star Kane fehlt: England verliert gegen Japan</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Abtransportierter Buckelwal</h4>
+                <h3 class="fp-article__title text-xl--bold ">Einen Wal Aufpäppeln in einer Station - ist das realistisch?</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/eisbaren-gewinnen-viertes-viertelfinale-gegen-straubing-4225913">
+            <a href="/panorama/britney-spears-nach-fahrt-unter-alkohol-und-drogen-angeklagt-4242807">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/9a302dc5-8b4c-4e49-accd-15b58855f734.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/9a302dc5-8b4c-4e49-accd-15b58855f734.jpeg?rect=0%2C78%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/9a302dc5-8b4c-4e49-accd-15b58855f734.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/9a302dc5-8b4c-4e49-accd-15b58855f734.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/9a302dc5-8b4c-4e49-accd-15b58855f734.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/9a302dc5-8b4c-4e49-accd-15b58855f734.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/9a302dc5-8b4c-4e49-accd-15b58855f734.jpeg?rect=0%2C78%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Angreifer Marcel Noebels traf beim Heimsieg der Eisbären Berlin gegen die Straubing Tigers. (Archivbild)" data-source="Andreas Gora/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/05/01/818b5482-d37f-42c1-810e-6ede831586fd.jpeg?rect=0%2C209%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/05/01/818b5482-d37f-42c1-810e-6ede831586fd.jpeg?rect=0%2C209%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/05/01/818b5482-d37f-42c1-810e-6ede831586fd.jpeg?rect=0%2C209%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/05/01/818b5482-d37f-42c1-810e-6ede831586fd.jpeg?rect=0%2C209%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/05/01/818b5482-d37f-42c1-810e-6ede831586fd.jpeg?rect=0%2C209%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/05/01/818b5482-d37f-42c1-810e-6ede831586fd.jpeg?rect=0%2C209%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/05/01/818b5482-d37f-42c1-810e-6ede831586fd.jpeg?rect=0%2C209%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Spears zählt mit Hits wie „…Baby One More Time“ und „Oops!... I Did It Again“ zu den erfolgreichsten Künstlerinnen der Musikgeschichte. (Archivbild)" data-source="Kay Blake/ZUMA Wire/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Deutsche Eishockey Liga</h4>
-                <h3 class="fp-article__title text-xl--bold ">Eisbären gewinnen viertes Viertelfinale gegen Straubing</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Gerichtstermin</h4>
+                <h3 class="fp-article__title text-xl--bold ">Britney Spears nach Fahrt unter Alkohol und Drogen angeklagt</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/bremerhaven-verkurzt-in-del-playoff-gegen-mannheim-4225910">
+            <a href="/panorama/rund-2-600-menschen-bei-frauen-demo-zur-walpurgisnacht-4242800">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/d5e8626f-7bfc-45a0-9f81-7dc7963ce95d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/d5e8626f-7bfc-45a0-9f81-7dc7963ce95d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/d5e8626f-7bfc-45a0-9f81-7dc7963ce95d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/d5e8626f-7bfc-45a0-9f81-7dc7963ce95d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/d5e8626f-7bfc-45a0-9f81-7dc7963ce95d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/d5e8626f-7bfc-45a0-9f81-7dc7963ce95d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/d5e8626f-7bfc-45a0-9f81-7dc7963ce95d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Fischtown Pinguins haben das vorzeitige Aus gegen Mannheim abwenden können. (Archivbild)" data-source="Uwe Anspach/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/85823abc-16cc-49c3-b9c6-6c5fe36dae62.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/85823abc-16cc-49c3-b9c6-6c5fe36dae62.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/85823abc-16cc-49c3-b9c6-6c5fe36dae62.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/85823abc-16cc-49c3-b9c6-6c5fe36dae62.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/85823abc-16cc-49c3-b9c6-6c5fe36dae62.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/85823abc-16cc-49c3-b9c6-6c5fe36dae62.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/85823abc-16cc-49c3-b9c6-6c5fe36dae62.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Über 2000 Menschen zogen durch Kreuzberg." data-source="Carsten Koall/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Eishockey</h4>
-                <h3 class="fp-article__title text-xl--bold ">Bremerhaven verkürzt in DEL-Playoff gegen Mannheim</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Vor dem 1. Mai</h4>
+                <h3 class="fp-article__title text-xl--bold ">Rund 2.600 Menschen bei Frauen-Demo zur Walpurgisnacht</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/eurojackpot-uber-70-millionen-euro-gehen-nach-nrw-4225903">
+            <a href="/panorama/akademie-der-kunste-erwirbt-grass-manuskript-4242594">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/8a907dc2-aab2-4e0e-966a-b286ddf7f2da.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/8a907dc2-aab2-4e0e-966a-b286ddf7f2da.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/8a907dc2-aab2-4e0e-966a-b286ddf7f2da.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/8a907dc2-aab2-4e0e-966a-b286ddf7f2da.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/8a907dc2-aab2-4e0e-966a-b286ddf7f2da.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/8a907dc2-aab2-4e0e-966a-b286ddf7f2da.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/8a907dc2-aab2-4e0e-966a-b286ddf7f2da.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ein Spieler oder eine Spielerin tippte auf die richtigen Zahlen und kann sich nun über mehr als 70 Millionen Euro freuen." data-source="Thomas Banneyer/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/98e598fd-8b39-4d30-b68a-805855bd6c02.jpeg?rect=0%2C43%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/98e598fd-8b39-4d30-b68a-805855bd6c02.jpeg?rect=0%2C43%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/98e598fd-8b39-4d30-b68a-805855bd6c02.jpeg?rect=0%2C43%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/98e598fd-8b39-4d30-b68a-805855bd6c02.jpeg?rect=0%2C43%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/98e598fd-8b39-4d30-b68a-805855bd6c02.jpeg?rect=0%2C43%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/98e598fd-8b39-4d30-b68a-805855bd6c02.jpeg?rect=0%2C43%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/98e598fd-8b39-4d30-b68a-805855bd6c02.jpeg?rect=0%2C43%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Akademie der Künste hat Teile eines Grass-Manuskripts erworben. (Archivbild)" data-source="Britta Pedersen/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Glücksspiel</h4>
-                <h3 class="fp-article__title text-xl--bold ">Eurojackpot: Über 70 Millionen Euro gehen nach NRW</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Blechtrommel</h4>
+                <h3 class="fp-article__title text-xl--bold ">Akademie der Künste erwirbt Grass-Manuskript</h3>
             </a>
         </article>
 </div>
@@ -2173,48 +2189,48 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/frankreichs-senat-fur-verbot-vieler-sozialer-medien-unter-15-4225901">
+            <a href="/panorama/eisbaren-meisterparty-vertagt-mannheim-fur-moral-belohnt-4242782">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/5da1a317-fc84-48ea-a35a-60ac72b07ffc.jpeg?rect=0%2C142%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/5da1a317-fc84-48ea-a35a-60ac72b07ffc.jpeg?rect=0%2C142%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/5da1a317-fc84-48ea-a35a-60ac72b07ffc.jpeg?rect=0%2C142%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/5da1a317-fc84-48ea-a35a-60ac72b07ffc.jpeg?rect=0%2C142%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/5da1a317-fc84-48ea-a35a-60ac72b07ffc.jpeg?rect=0%2C142%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/5da1a317-fc84-48ea-a35a-60ac72b07ffc.jpeg?rect=0%2C142%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/5da1a317-fc84-48ea-a35a-60ac72b07ffc.jpeg?rect=0%2C142%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Frankreichs Präsident will ein Verbot sozialer Medien für Kinder und Jugendliche bis 15 Jahre zum nächsten Schuljahr. (Archivbild)" data-source="Annette Riedl/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/6805101f-489b-4065-b028-4484705209e9.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/6805101f-489b-4065-b028-4484705209e9.jpeg?rect=0%2C0%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/6805101f-489b-4065-b028-4484705209e9.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/6805101f-489b-4065-b028-4484705209e9.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/6805101f-489b-4065-b028-4484705209e9.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/6805101f-489b-4065-b028-4484705209e9.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/6805101f-489b-4065-b028-4484705209e9.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Diesmal jubeln die Adler: Mannheim erzwingt ein fünftes DEL-Finale" data-source="Andreas Gora/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Kinderschutz</h4>
-                <h3 class="fp-article__title text-xl--bold ">Frankreichs Senat für Verbot vieler sozialer Medien unter 15</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Deutsche Eishockey Liga</h4>
+                <h3 class="fp-article__title text-xl--bold ">Eisbären-Meisterparty vertagt: Mannheim für Moral belohnt</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/drogentunnel-zwischen-marokko-und-spanien-exklave-entdeckt-4225899">
+            <a href="/panorama/last-minute-gegentor-freiburger-finaltraum-droht-zu-platzen-4242771">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/a49abe04-25e2-485b-a812-562d8db34aaa.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/a49abe04-25e2-485b-a812-562d8db34aaa.jpeg?rect=0%2C0%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/a49abe04-25e2-485b-a812-562d8db34aaa.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/a49abe04-25e2-485b-a812-562d8db34aaa.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/a49abe04-25e2-485b-a812-562d8db34aaa.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/a49abe04-25e2-485b-a812-562d8db34aaa.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/a49abe04-25e2-485b-a812-562d8db34aaa.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Behörden sprechen von einem bedeutenden Schlag gegen die Drogenmafia. (Foto Handout)" data-source="---/Policia Nacional de Espana/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/a62ef04f-577c-4159-a420-c76fecd7e4af.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/a62ef04f-577c-4159-a420-c76fecd7e4af.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/a62ef04f-577c-4159-a420-c76fecd7e4af.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/a62ef04f-577c-4159-a420-c76fecd7e4af.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/a62ef04f-577c-4159-a420-c76fecd7e4af.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/a62ef04f-577c-4159-a420-c76fecd7e4af.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/a62ef04f-577c-4159-a420-c76fecd7e4af.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Zur Stelle: Noah Atubolu" data-source="Miguel Angelo Pereira/AP/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Kriminalität</h4>
-                <h3 class="fp-article__title text-xl--bold ">Drogentunnel zwischen Marokko und Spanien-Exklave entdeckt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Europa League</h4>
+                <h3 class="fp-article__title text-xl--bold ">Last-Minute-Gegentor: Freiburger Finaltraum droht zu platzen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/rettungsaktion-fur-ostsee-buckelwal-unterbrochen-4225259">
+            <a href="/panorama/neue-ermittlungsgruppe-und-demo-gegen-rechte-straftaten-4242334">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/bd6794b9-d5a6-42ad-b28e-c626ae2447f3.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/bd6794b9-d5a6-42ad-b28e-c626ae2447f3.jpeg?rect=0%2C69%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/bd6794b9-d5a6-42ad-b28e-c626ae2447f3.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/bd6794b9-d5a6-42ad-b28e-c626ae2447f3.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/bd6794b9-d5a6-42ad-b28e-c626ae2447f3.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/bd6794b9-d5a6-42ad-b28e-c626ae2447f3.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/bd6794b9-d5a6-42ad-b28e-c626ae2447f3.jpeg?rect=0%2C69%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Heute sind laut Umweltministerium vorerst keine weiteren Aktionen geplant. (Archivbild)" data-source="Stefan Sauer/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/c8ac2e67-69db-4e3f-b32e-cf60666b5392.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/c8ac2e67-69db-4e3f-b32e-cf60666b5392.jpeg?rect=0%2C125%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/c8ac2e67-69db-4e3f-b32e-cf60666b5392.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/c8ac2e67-69db-4e3f-b32e-cf60666b5392.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/c8ac2e67-69db-4e3f-b32e-cf60666b5392.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/c8ac2e67-69db-4e3f-b32e-cf60666b5392.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/c8ac2e67-69db-4e3f-b32e-cf60666b5392.jpeg?rect=0%2C125%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ein Zeichen der Solidarität nach einer Reihe rechter Straftaten: Innenminister Jan Redmann traf sich in der Synagoge in Cottbus mit dem Vorstand der jüdischen Gemeinde." data-source="Patrick Pleul/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Meeressäuger</h4>
-                <h3 class="fp-article__title text-xl--bold ">Rettungsaktion für Ostsee-Buckelwal unterbrochen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Rechtsextremismus in Cottbus</h4>
+                <h3 class="fp-article__title text-xl--bold ">Neue Ermittlungsgruppe und Demo gegen rechte Straftaten</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/wasserbehalter-fallt-von-kran-bauarbeiter-todlich-verletzt-4225895">
+            <a href="/panorama/brand-in-obdachlosenheim-in-lichterfelde-15-verletzte-4242743">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/b054624a-c693-40e5-8efe-38441e7b484f.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/b054624a-c693-40e5-8efe-38441e7b484f.jpeg?rect=0%2C64%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/b054624a-c693-40e5-8efe-38441e7b484f.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/b054624a-c693-40e5-8efe-38441e7b484f.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/b054624a-c693-40e5-8efe-38441e7b484f.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/b054624a-c693-40e5-8efe-38441e7b484f.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/b054624a-c693-40e5-8efe-38441e7b484f.jpeg?rect=0%2C64%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Bei dem Unfall in Ochtrup starb ein 45-Jähriger." data-source="Justin Brosch/Brosch/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/b8146fdf-8950-4387-ad39-0ac40c00a4d1.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/b8146fdf-8950-4387-ad39-0ac40c00a4d1.jpeg?rect=0%2C134%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/b8146fdf-8950-4387-ad39-0ac40c00a4d1.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/b8146fdf-8950-4387-ad39-0ac40c00a4d1.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/b8146fdf-8950-4387-ad39-0ac40c00a4d1.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/b8146fdf-8950-4387-ad39-0ac40c00a4d1.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/b8146fdf-8950-4387-ad39-0ac40c00a4d1.jpeg?rect=0%2C134%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Feuerwehr brachte nach eigenen Angaben sieben weitere Menschen in Sicherheit. (Symbolbild)" data-source="Bernd Weißbrod/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Tödlicher Unfall</h4>
-                <h3 class="fp-article__title text-xl--bold ">Wasserbehälter fällt von Kran – Bauarbeiter tödlich verletzt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Brände</h4>
+                <h3 class="fp-article__title text-xl--bold ">Brand in Obdachlosenheim in Lichterfelde - 15 Verletzte</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/nach-angriff-wolf-ist-in-wildtierstation-in-niedersachsen-4225451">
+            <a href="/panorama/sc-dhfk-leipzig-feiert-wichtigen-heimsieg-4242741">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/7682631b-0586-4338-bb57-78eff7039ee1.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/7682631b-0586-4338-bb57-78eff7039ee1.jpeg?rect=0%2C117%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/7682631b-0586-4338-bb57-78eff7039ee1.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/7682631b-0586-4338-bb57-78eff7039ee1.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/7682631b-0586-4338-bb57-78eff7039ee1.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/7682631b-0586-4338-bb57-78eff7039ee1.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/7682631b-0586-4338-bb57-78eff7039ee1.jpeg?rect=0%2C117%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ein Wolf verletzt eine Frau in der Einkaufsmeile Große Bergstraße. (Symbolbild)" data-source="Bernd Weißbrod/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/6ae41ff1-903d-4dcd-b7dc-ba6bc4ee59f1.jpeg?rect=0%2C77%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/6ae41ff1-903d-4dcd-b7dc-ba6bc4ee59f1.jpeg?rect=0%2C77%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/6ae41ff1-903d-4dcd-b7dc-ba6bc4ee59f1.jpeg?rect=0%2C77%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/6ae41ff1-903d-4dcd-b7dc-ba6bc4ee59f1.jpeg?rect=0%2C77%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/6ae41ff1-903d-4dcd-b7dc-ba6bc4ee59f1.jpeg?rect=0%2C77%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/6ae41ff1-903d-4dcd-b7dc-ba6bc4ee59f1.jpeg?rect=0%2C77%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/6ae41ff1-903d-4dcd-b7dc-ba6bc4ee59f1.jpeg?rect=0%2C77%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Franz Semper und die Bundesliga-Handballer des SC DHfK Leipzig feierten einen wichtigen Heimsieg gegen Erlangen. (Archivbild)" data-source="Hendrik Schmidt/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Tiere</h4>
-                <h3 class="fp-article__title text-xl--bold ">Nach Angriff: Wolf ist in Wildtierstation in Niedersachsen</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Handball-Bundesliga</h4>
+                <h3 class="fp-article__title text-xl--bold ">SC DHfK Leipzig feiert wichtigen Heimsieg</h3>
             </a>
         </article>
 </div>
@@ -2237,48 +2253,48 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/newcastle-krankheit-weitere-200-000-vogel-werden-getotet-4225890">
+            <a href="/panorama/hunderte-bei-demo-gegen-rechts-in-cottbus-4242739">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/8d63a8e1-f855-47f7-9bb5-9c69635bc68b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/8d63a8e1-f855-47f7-9bb5-9c69635bc68b.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/8d63a8e1-f855-47f7-9bb5-9c69635bc68b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/8d63a8e1-f855-47f7-9bb5-9c69635bc68b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/8d63a8e1-f855-47f7-9bb5-9c69635bc68b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/8d63a8e1-f855-47f7-9bb5-9c69635bc68b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/8d63a8e1-f855-47f7-9bb5-9c69635bc68b.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="In Brandenburger Geflügelbetrieben greift die Newcastle-Erkrankung um sich. (Symbolbild)" data-source="Matthias Bein/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/629ad2b9-d5e7-4e57-ae64-b9f7973c5c30.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/629ad2b9-d5e7-4e57-ae64-b9f7973c5c30.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/629ad2b9-d5e7-4e57-ae64-b9f7973c5c30.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/629ad2b9-d5e7-4e57-ae64-b9f7973c5c30.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/629ad2b9-d5e7-4e57-ae64-b9f7973c5c30.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/629ad2b9-d5e7-4e57-ae64-b9f7973c5c30.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/629ad2b9-d5e7-4e57-ae64-b9f7973c5c30.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Hunderte Menschen demonstrieren in Cottbus gegen rechte Gewalt." data-source="Frank Hammerschmidt/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Tierhaltung</h4>
-                <h3 class="fp-article__title text-xl--bold ">Newcastle-Krankheit: Weitere 200.000 Vögel werden getötet</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Schmierereien an Synagoge</h4>
+                <h3 class="fp-article__title text-xl--bold ">Hunderte bei Demo gegen Rechts in Cottbus</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/ein-wolf-in-hamburg-warum-das-tier-uns-naher-kommt-4225634">
+            <a href="/panorama/fuchse-verlieren-viertelfinal-hinspiel-knapp-in-veszprem-4242735">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/074f8f45-dd56-4c98-b035-4b1bed0f9053.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/074f8f45-dd56-4c98-b035-4b1bed0f9053.jpeg?rect=0%2C73%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/074f8f45-dd56-4c98-b035-4b1bed0f9053.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/074f8f45-dd56-4c98-b035-4b1bed0f9053.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/074f8f45-dd56-4c98-b035-4b1bed0f9053.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/074f8f45-dd56-4c98-b035-4b1bed0f9053.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/074f8f45-dd56-4c98-b035-4b1bed0f9053.jpeg?rect=0%2C73%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Eigentlich eher scheu: Wölfe meiden üblicherweise den Menschen." data-source="Carsten Rehder/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/3ea7ad1d-72c7-408e-911d-ab36330d1c9d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/3ea7ad1d-72c7-408e-911d-ab36330d1c9d.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/3ea7ad1d-72c7-408e-911d-ab36330d1c9d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/3ea7ad1d-72c7-408e-911d-ab36330d1c9d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/3ea7ad1d-72c7-408e-911d-ab36330d1c9d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/3ea7ad1d-72c7-408e-911d-ab36330d1c9d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/3ea7ad1d-72c7-408e-911d-ab36330d1c9d.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Welthandballer Mathias Gidsel war einmal mehr bester Füchse-Schütze (Archivbild)" data-source="Federico Gambarini/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Wildtiere</h4>
-                <h3 class="fp-article__title text-xl--bold ">Ein Wolf in Hamburg: Warum das Tier uns näher kommt</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Handball-Champions-League</h4>
+                <h3 class="fp-article__title text-xl--bold ">Füchse verlieren Viertelfinal-Hinspiel knapp in Veszprém</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/wolf-verletzt-frau-in-einkaufspassage-tier-untergebracht-4225686">
+            <a href="/panorama/berichte-bayern-torwart-neuer-will-bis-2027-weitermachen-4242721">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/e6007022-7fe7-45d1-acfd-62a376f2550c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/e6007022-7fe7-45d1-acfd-62a376f2550c.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/e6007022-7fe7-45d1-acfd-62a376f2550c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/e6007022-7fe7-45d1-acfd-62a376f2550c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/e6007022-7fe7-45d1-acfd-62a376f2550c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/e6007022-7fe7-45d1-acfd-62a376f2550c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/e6007022-7fe7-45d1-acfd-62a376f2550c.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Vor dem Angriff auf eine Frau in Hamburg-Altona streifte der Wolf durch den Westen Hamburgs. (Symbolbild)" data-source="Christian Charisius/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/eaaf914b-3bf6-40ee-a16d-20ec44f4ccb4.jpeg?rect=0%2C143%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/eaaf914b-3bf6-40ee-a16d-20ec44f4ccb4.jpeg?rect=0%2C143%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/eaaf914b-3bf6-40ee-a16d-20ec44f4ccb4.jpeg?rect=0%2C143%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/eaaf914b-3bf6-40ee-a16d-20ec44f4ccb4.jpeg?rect=0%2C143%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/eaaf914b-3bf6-40ee-a16d-20ec44f4ccb4.jpeg?rect=0%2C143%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/eaaf914b-3bf6-40ee-a16d-20ec44f4ccb4.jpeg?rect=0%2C143%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/eaaf914b-3bf6-40ee-a16d-20ec44f4ccb4.jpeg?rect=0%2C143%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Manuel Neuer will einem Medienbericht zufolge noch ein Jahr dranhängen beim FC Bayern. (Archivbild)" data-source="Sven Hoppe/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Hamburg</h4>
-                <h3 class="fp-article__title text-xl--bold ">Wolf verletzt Frau in Einkaufspassage - Tier untergebracht</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Fußball-Bundesliga</h4>
+                <h3 class="fp-article__title text-xl--bold ">Berichte: Bayern-Torwart Neuer will bis 2027 weitermachen</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/kriminalitatsrate-in-sachsen-leicht-gesunken-4225615">
+            <a href="/panorama/kurzzeitiger-stromausfall-in-berlin-mitte-4242723">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/e203fb33-14e1-46c3-a7ff-012463305590.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/e203fb33-14e1-46c3-a7ff-012463305590.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/e203fb33-14e1-46c3-a7ff-012463305590.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/e203fb33-14e1-46c3-a7ff-012463305590.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/e203fb33-14e1-46c3-a7ff-012463305590.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/e203fb33-14e1-46c3-a7ff-012463305590.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/e203fb33-14e1-46c3-a7ff-012463305590.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Sachsens Innenminister Armin Schuster hält Sachsen für ein sicheres Land." data-source="Sebastian Kahnert/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/90d521fb-ebb5-446f-b883-be01419e159d.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/90d521fb-ebb5-446f-b883-be01419e159d.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/90d521fb-ebb5-446f-b883-be01419e159d.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/90d521fb-ebb5-446f-b883-be01419e159d.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/90d521fb-ebb5-446f-b883-be01419e159d.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/90d521fb-ebb5-446f-b883-be01419e159d.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/90d521fb-ebb5-446f-b883-be01419e159d.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Ein Stromausfall hat in Berlin-Mitte die Stromversorgung gestört. (Archivbild)" data-source="Soeren Stache/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Kriminalitätsstatistik</h4>
-                <h3 class="fp-article__title text-xl--bold ">Kriminalitätsrate in Sachsen leicht gesunken</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Energieversorgung</h4>
+                <h3 class="fp-article__title text-xl--bold ">Kurzzeitiger Stromausfall in Berlin-Mitte</h3>
             </a>
         </article>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/buchenwald-uberlebender-sol-lurie-verstorben-4225852">
+            <a href="/panorama/tausende-menschen-feiern-walpurgis-im-harz-4242677">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/4998793b-c87a-4b00-8402-50364b68cd60.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/4998793b-c87a-4b00-8402-50364b68cd60.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/4998793b-c87a-4b00-8402-50364b68cd60.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/4998793b-c87a-4b00-8402-50364b68cd60.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/4998793b-c87a-4b00-8402-50364b68cd60.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/4998793b-c87a-4b00-8402-50364b68cd60.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/4998793b-c87a-4b00-8402-50364b68cd60.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Sol Lurie überlebte das KZ Buchenwald. Nun ist er im Alter von 95 Jahren gestorben. (Archivbild)" data-source="picture alliance / dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/26bda8fa-8923-4613-8585-51a8e14f7778.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/26bda8fa-8923-4613-8585-51a8e14f7778.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/26bda8fa-8923-4613-8585-51a8e14f7778.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/26bda8fa-8923-4613-8585-51a8e14f7778.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/26bda8fa-8923-4613-8585-51a8e14f7778.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/26bda8fa-8923-4613-8585-51a8e14f7778.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/26bda8fa-8923-4613-8585-51a8e14f7778.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Zu Walpurgis kostümieren sich viele Menschen." data-source="Matthias Bein/dpa">
                 </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Zeitzeuge</h4>
-                <h3 class="fp-article__title text-xl--bold ">Buchenwald-Überlebender Sol Lurie verstorben</h3>
+                <h4 class="fp-article__catchline vertical-teasers"> Brauchtum</h4>
+                <h3 class="fp-article__title text-xl--bold ">Tausende Menschen feiern Walpurgis im Harz</h3>
             </a>
         </article>
 </div>
@@ -2301,48 +2317,48 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
         </aside>
     </header>
         <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/erneut-schusse-auf-lokal-in-berlin-4225848">
+            <a href="/panorama/frau-bringt-in-10-000-metern-hohe-kind-zur-welt-4242717">
                 <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/13ffd6e4-c4a1-42fa-8040-502216af2ed7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/13ffd6e4-c4a1-42fa-8040-502216af2ed7.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/13ffd6e4-c4a1-42fa-8040-502216af2ed7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/13ffd6e4-c4a1-42fa-8040-502216af2ed7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/13ffd6e4-c4a1-42fa-8040-502216af2ed7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/13ffd6e4-c4a1-42fa-8040-502216af2ed7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/13ffd6e4-c4a1-42fa-8040-502216af2ed7.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Berliner Polizei ermittelt immer wieder wegen Schüssen. (Symbolbild)" data-source="Malin Wunderlich/dpa">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/39fdd868-efb4-4491-a696-a5f0a8fc8402.jpeg?rect=0%2C448%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/39fdd868-efb4-4491-a696-a5f0a8fc8402.jpeg?rect=0%2C448%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/39fdd868-efb4-4491-a696-a5f0a8fc8402.jpeg?rect=0%2C448%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/39fdd868-efb4-4491-a696-a5f0a8fc8402.jpeg?rect=0%2C448%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/39fdd868-efb4-4491-a696-a5f0a8fc8402.jpeg?rect=0%2C448%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/39fdd868-efb4-4491-a696-a5f0a8fc8402.jpeg?rect=0%2C448%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/39fdd868-efb4-4491-a696-a5f0a8fc8402.jpeg?rect=0%2C448%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Auf dem Flug aus dem Senegal nach Italien hat eine Passagierin ein Kind zur Welt gebracht. (Foto: Handout)" data-source="-/Ita Airways/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Geburt über den Wolken</h4>
+                <h3 class="fp-article__title text-xl--bold ">Frau bringt in 10.000 Metern Höhe Kind zur Welt</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/demos-am-1-mai-beeintrachtigen-den-verkehr-in-berlin-4242710">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/aec3ff5b-3395-4ed2-8c96-c3d70aad50fb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/aec3ff5b-3395-4ed2-8c96-c3d70aad50fb.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/aec3ff5b-3395-4ed2-8c96-c3d70aad50fb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/aec3ff5b-3395-4ed2-8c96-c3d70aad50fb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/aec3ff5b-3395-4ed2-8c96-c3d70aad50fb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/aec3ff5b-3395-4ed2-8c96-c3d70aad50fb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/aec3ff5b-3395-4ed2-8c96-c3d70aad50fb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Polizei warnt vor Verkehrsbehinderungen wegen mehrerer Demonstrationen am 1. Mai in Berlin. (Archivbild)" data-source="Christoph Soeder/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Tag der Arbeit</h4>
+                <h3 class="fp-article__title text-xl--bold ">Demos am 1. Mai beeinträchtigen den Verkehr in Berlin</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/deutsche-fregatten-sind-auf-dem-weg-nach-norwegen-4242707">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/8925a813-c2c4-4391-a1d9-7bacf8428fa6.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/8925a813-c2c4-4391-a1d9-7bacf8428fa6.jpeg?rect=0%2C106%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/8925a813-c2c4-4391-a1d9-7bacf8428fa6.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/8925a813-c2c4-4391-a1d9-7bacf8428fa6.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/8925a813-c2c4-4391-a1d9-7bacf8428fa6.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/8925a813-c2c4-4391-a1d9-7bacf8428fa6.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/8925a813-c2c4-4391-a1d9-7bacf8428fa6.jpeg?rect=0%2C106%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Fregatte „Sachsen-Anhalt“ ist auf dem Weg zu einer Übung in Norwegen. (Archivbild)" data-source="Hauke-Christian Dittrich/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Übung mehrerer Länder</h4>
+                <h3 class="fp-article__title text-xl--bold ">Deutsche Fregatten sind auf dem Weg nach Norwegen</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/liefers-erkennt-in-jeder-sekunde-mit-allem-verbunden-4242700">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/4cd7c633-9d29-4121-aaba-c5c8a263d419.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/4cd7c633-9d29-4121-aaba-c5c8a263d419.jpeg?rect=0%2C0%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/4cd7c633-9d29-4121-aaba-c5c8a263d419.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/4cd7c633-9d29-4121-aaba-c5c8a263d419.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/4cd7c633-9d29-4121-aaba-c5c8a263d419.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/4cd7c633-9d29-4121-aaba-c5c8a263d419.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/4cd7c633-9d29-4121-aaba-c5c8a263d419.jpeg?rect=0%2C0%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Macht sich Gedanken über seine Wirkung auf andere: der Schauspieler Jan Josef Liefers. (Archivbild)" data-source="Rolf Vennenbernd/dpa">
+                </picture>
+                <h4 class="fp-article__catchline vertical-teasers"> Antwort auf Lebensthema</h4>
+                <h3 class="fp-article__title text-xl--bold ">Liefers erkennt: In jeder Sekunde mit allem verbunden</h3>
+            </a>
+        </article>
+        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
+            <a href="/panorama/millionenschaden-nach-feuer-ermittler-vermuten-vorsatz-4242691">
+                <picture class="fp-article__image">
+                    <img src="https://bmg-images.forward-publishing.io/2026/04/30/3aa62812-abed-468b-b800-4cace79dffeb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/04/30/3aa62812-abed-468b-b800-4cace79dffeb.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/04/30/3aa62812-abed-468b-b800-4cace79dffeb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/04/30/3aa62812-abed-468b-b800-4cace79dffeb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/04/30/3aa62812-abed-468b-b800-4cace79dffeb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/04/30/3aa62812-abed-468b-b800-4cace79dffeb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/04/30/3aa62812-abed-468b-b800-4cace79dffeb.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Spezialkräfte der Kriminalpolizei waren am Brandort im Einsatz. (Symbolbild)" data-source="Matthias Bein/dpa">
                 </picture>
                 <h4 class="fp-article__catchline vertical-teasers"> Kriminalität</h4>
-                <h3 class="fp-article__title text-xl--bold ">Erneut Schüsse auf Lokal in Berlin</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/rund-500-zerkratzte-autos-polizei-ermittelt-verdachtigen-4225831">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/71c3f990-bf72-4c94-81a4-0b4799e7a9d0.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/71c3f990-bf72-4c94-81a4-0b4799e7a9d0.jpeg?rect=0%2C87%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/71c3f990-bf72-4c94-81a4-0b4799e7a9d0.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/71c3f990-bf72-4c94-81a4-0b4799e7a9d0.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/71c3f990-bf72-4c94-81a4-0b4799e7a9d0.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/71c3f990-bf72-4c94-81a4-0b4799e7a9d0.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/71c3f990-bf72-4c94-81a4-0b4799e7a9d0.jpeg?rect=0%2C87%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Nachdem in Hannover rund 500 Autos zerkratzt wurden, hat die Polizei einen Verdächtigen ermittelt, der für einen Teil der Beschädigungen verantwortlich sein soll. (Symbolbild)" data-source="Angelika Warmuth/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Serie in Hannover</h4>
-                <h3 class="fp-article__title text-xl--bold ">Rund 500 zerkratzte Autos – Polizei ermittelt Verdächtigen</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/autorader-geklaut-suspendierter-polizist-festgenommen-4225834">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/9546fbb7-2021-4655-9b48-df91383f6401.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/9546fbb7-2021-4655-9b48-df91383f6401.jpeg?rect=0%2C104%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/9546fbb7-2021-4655-9b48-df91383f6401.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/9546fbb7-2021-4655-9b48-df91383f6401.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/9546fbb7-2021-4655-9b48-df91383f6401.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/9546fbb7-2021-4655-9b48-df91383f6401.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/9546fbb7-2021-4655-9b48-df91383f6401.jpeg?rect=0%2C104%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Die Berliner Polizei hat zwei Männer wegen Diebstahlverdachts festgenommen. (Symbolbild)" data-source="Soeren Stache/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Berlin</h4>
-                <h3 class="fp-article__title text-xl--bold ">Autoräder geklaut: Suspendierter Polizist festgenommen</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/harvester-brennt-im-zittauer-gebirge-300-000-euro-schaden-4225820">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/3bc77a02-dd67-4e54-a5aa-42f2aa9b2762.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/3bc77a02-dd67-4e54-a5aa-42f2aa9b2762.jpeg?rect=0%2C121%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/3bc77a02-dd67-4e54-a5aa-42f2aa9b2762.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/3bc77a02-dd67-4e54-a5aa-42f2aa9b2762.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/3bc77a02-dd67-4e54-a5aa-42f2aa9b2762.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/3bc77a02-dd67-4e54-a5aa-42f2aa9b2762.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/3bc77a02-dd67-4e54-a5aa-42f2aa9b2762.jpeg?rect=0%2C121%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Harvester bearbeiten Stämme, nachdem sie gefällt wurden. (Archivbild)" data-source="Hendrik Schmidt/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Feuer bei Olbersdorf</h4>
-                <h3 class="fp-article__title text-xl--bold ">Harvester brennt im Zittauer Gebirge - 300.000 Euro Schaden</h3>
-            </a>
-        </article>
-        <article class="fp-article  ratio secondary-teaser " data-ratio="16:9">
-            <a href="/panorama/startschuss-in-gorlitz-fur-internationales-fernwarmeprojekt-4225816">
-                <picture class="fp-article__image">
-                    <img src="https://bmg-images.forward-publishing.io/2026/03/31/f72ce967-1b88-40aa-ab30-9006f424d4d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=100" data-src="https://bmg-images.forward-publishing.io/2026/03/31/f72ce967-1b88-40aa-ab30-9006f424d4d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;w=1024&amp;auto=format" data-srcset="https://bmg-images.forward-publishing.io/2026/03/31/f72ce967-1b88-40aa-ab30-9006f424d4d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=2048 2048w, https://bmg-images.forward-publishing.io/2026/03/31/f72ce967-1b88-40aa-ab30-9006f424d4d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=1024 1024w, https://bmg-images.forward-publishing.io/2026/03/31/f72ce967-1b88-40aa-ab30-9006f424d4d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=640 640w, https://bmg-images.forward-publishing.io/2026/03/31/f72ce967-1b88-40aa-ab30-9006f424d4d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=320 320w, https://bmg-images.forward-publishing.io/2026/03/31/f72ce967-1b88-40aa-ab30-9006f424d4d9.jpeg?rect=0%2C107%2C2048%2C1152&amp;width=160 160w" data-sizes="auto" loading="lazy" class="lazyload" alt="Insgesamt 12 Kilometer Fernwärmeleitungen werden im Rahmen des Projekts „United Heat“ verlegt. (Symbolbild)" data-source="Sebastian Kahnert/dpa">
-                </picture>
-                <h4 class="fp-article__catchline vertical-teasers"> Energie</h4>
-                <h3 class="fp-article__title text-xl--bold ">Startschuss in Görlitz für internationales Fernwärmeprojekt</h3>
+                <h3 class="fp-article__title text-xl--bold ">Millionenschaden nach Feuer – Ermittler vermuten Vorsatz</h3>
             </a>
         </article>
 </div>
@@ -2480,11 +2496,11 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
                       </a>
                     </li>
                     <li>
-                      <a href="/sachsen-anhalt/leseranwaeltin" target="_self">Leseranwältin
+                      <a href="https://www.volksstimme.de/wahl/landtagswahl-sachsen-anhalt">Landtagswahl Sachsen-Anhalt
                       </a>
                     </li>
                     <li>
-                      <a href="https://www.volksstimme.de/podcast">Podcast
+                      <a href="/sachsen-anhalt/leseranwaeltin" target="_self">Leseranwältin
                       </a>
                     </li>
                     <li>
@@ -2510,11 +2526,11 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
                 </div>
                 <ul>
                     <li>
-                      <a href="/live/fussball-regionalliga-nordost">Fußball-Regionalliga Nordost
+                      <a href="/live/fussball">Fußball
                       </a>
                     </li>
                     <li>
-                      <a href="/live/fussball-verbandsliga-sachsen-anhalt">Fußball-Verbandsliga Sachsen-Anhalt
+                      <a href="https://www.volksstimme.de/thema/livezeit-chris">Livezeit mit Chris
                       </a>
                     </li>
                 </ul>
@@ -2794,15 +2810,21 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
               <div class="fp-footer__inner">
                 <div class="fp-footer__category">
                   <h4>
+                    <a href="https://www.volksstimme.de/podcast">Podcast
+                    </a>
+                  </h4>
+                </div>
+                <ul>
+                </ul>
+              </div>
+              <div class="fp-footer__inner">
+                <div class="fp-footer__category">
+                  <h4>
                     <a href="/video" target="_self">Video
                     </a>
                   </h4>
                 </div>
                 <ul>
-                    <li>
-                      <a href="https://www.volksstimme.de/video/studiotalk">Studiotalk
-                      </a>
-                    </li>
                     <li>
                       <a href="https://www.volksstimme.de/video/youtube-hiya">Youtube-Kanal Hiya!
                       </a>
