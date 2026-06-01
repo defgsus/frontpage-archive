@@ -2,7 +2,7 @@
 
       <link rel="preload prefetch stylesheet" href="/designs/bmg_base_design/1.0.184/styles-vs.css" as="style">
 
-      <link rel="preload prefetch stylesheet" href="/static/css/styles-delivery-vs-base.832b9264.css" as="style">
+      <link rel="preload prefetch stylesheet" href="/static/css/styles-delivery-vs-base.ca1aa651.css" as="style">
 
     <title>Volksstimme Impressum</title>
     <meta charset="UTF-8">
@@ -172,13 +172,17 @@
         // Setzt den globalen Wert für den Pur-Status
         window.cmp_pur_loggedin = (userType === "pur-pur");
 		loggedIn = typeof subscriptions != "undefined" && typeof subscriptions.pur != "undefined" && typeof subscriptions.paywall != "undefined";
+		var as_dumont_kv = window.location.pathname,
+		url_index = as_dumont_kv.indexOf("?");
+		if (url_index > -1) as_dumont_kv = as_dumont_kv.slice(1, url_index);
+		as_dumont_kv = as_dumont_kv.replace("/", "").replace(/\//g, ",").replace(/-/g, ",").replace(/#/g, "").replace(/!/g, "");
         try {
             adchannels = window.ad_channel?.split("/") ?? [];	
 //            cmd = createCmd(subscriptions?.userType != "pur-anon", subscriptions != undefined && subscriptions.paywall != undefined && subscriptions.paywall.length > 0, adchannels);
 //            console.log(cmd);
             kstahandler(loggedIn ,
 				subscriptions != undefined && subscriptions.paywall != undefined && subscriptions.paywall.length > 0,
-				adchannels, []);
+				adchannels, as_dumont_kv);
 	        
         } catch (e) {
             console.log(e);
@@ -432,7 +436,7 @@
 </script>
 <script>
      var adHandler = adHandler || { cmd: [] };
-function kstahandler(isLoggedIn, isPlus, adchannels) {
+function kstahandler(isLoggedIn, isPlus, adchannels, keywords) {
    
        
         adHandler.cmd.push(function () {
@@ -456,7 +460,7 @@ function kstahandler(isLoggedIn, isPlus, adchannels) {
         });
 		 adHandler.cmd.push(function() {
 		  if (typeof applyOrtb2Values == "function")
-           applyOrtb2Values(isLoggedIn, isPlus, adchannels, []);
+           applyOrtb2Values(isLoggedIn, isPlus, adchannels, keywords.split(","));
         });
         elem = document.createElement("script");
         elem.src = "https://cpg-cdn.com/adHandler360/prod/volksstimme-de/volksstimme.de_ROS.js";
@@ -708,15 +712,15 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
                             </a>
                         </div>
     <div class="fp-main-header__weather-widget">
-        <div class="fp-main-header__weather-widget--top sonnig">
+        <div class="fp-main-header__weather-widget--top wolkig">
             <span class="weather-icon-img">
-                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/sonnig.svg" alt="weather">
+                <img class="weather-icon-img" src="/static/images/weather-icons/animation-ready/wolkig.svg" alt="weather">
             </span>
-            <span class="fp-main-header__weather-widget--tooltip">sonnig</span>
+            <span class="fp-main-header__weather-widget--tooltip">wolkig</span>
             <aside>
                 <span class="fp-main-header__weather-widget--day-temp">23°</span>
                 <span>/</span>
-                <span class="fp-main-header__weather-widget--night-temp">8°</span>
+                <span class="fp-main-header__weather-widget--night-temp">13°</span>
             </aside>
         </div>
         <div class="fp-main-header__weather-widget--bottom">
@@ -2274,12 +2278,12 @@ if (["rblive.de", "magdeburg-fussball.de", "sao.de"].includes(document.location.
 
 
 
-          <script src="/static/scripts/scripts.832b9264.js" defer=""></script>
+          <script src="/static/scripts/scripts.ca1aa651.js" defer=""></script>
 
       </div>
     </div>
 
-    <script src="/static/scripts/adScripts.832b9264.js"></script>
+    <script src="/static/scripts/adScripts.ca1aa651.js"></script>
 
 
   
@@ -2454,5 +2458,5 @@ for(i = 2; i<=10;i++) {
 		continue;
 	elem.insertAdjacentHTML('afterend', '<div class="fp-ad-label" style="text-center">Anzeige</div>');
 }
-</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"d76a01bdc713445181921d02dbeab4e3","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"d76a01bdc713445181921d02dbeab4e3","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body></html>
