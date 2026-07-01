@@ -11,9 +11,11 @@
 	<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<meta name="format-detection" content="telephone=no">
 
-	<link rel="stylesheet" href="https://www.bild.de/kaufberater/wp-content/themes/unitb-child/static/css/kaufberater-modules.css?v=1776849293600">
+	<link rel="stylesheet" href="https://www.bild.de/kaufberater/wp-content/themes/unitb-child/static/css/kaufberater-modules.css?v=1782207017009">
 	
   <link rel="dns-prefetch" href="https://a.bildstatic.de/" >
+  <link rel="preconnect" href="https://i.computer-bild.de" crossorigin>
+  <link rel="preconnect" href="https://steam.nmthamburg.de" crossorigin>
   <link rel="preload" href="https://www.bild.de/kaufberater/wp-content/themes/unitb-child/static/fonts/3FF86ACA2E0D4CD65.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="https://www.bild.de/kaufberater/wp-content/themes/unitb-child/static/fonts/8B8182E2BA0464F45.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="https://www.bild.de/kaufberater/wp-content/themes/unitb-child/static/fonts/21A46BAE2B5D0CF5D.woff2" as="font" type="font/woff2" crossorigin>
@@ -511,12 +513,79 @@ ease-in-out .25s;
     </script>
 
     <script>
-        document.addEventListener("userAcceptedCmp", () => {
-            const target = document.querySelector(location.hash)
-            if(target) {
-                target.scrollIntoView( {behavior: "smooth"})
+        // Jump to the #h-... headline once the layout above it is final.
+        // Three things can move the target after first paint and would
+        // otherwise land the user in the wrong spot:
+        //   1) the CMP overlay      -> (re)scroll when the user accepts it,
+        //   2) web-font swap         -> wait for document.fonts.ready (the big
+        //      ComputerBild tables reflow when "Gotham XNarrow", preloaded in
+        //      <head>, replaces the fallback font), and
+        //   3) ComputerBild teasers  -> the embeds are React widgets that
+        //      hydrate via their own deferred script and resize themselves
+        //      after load; we re-scroll once each ".steam-react" embed reports
+        //      data-hydrated="true". (A server-side fix in the widget would
+        //      make this unnecessary -- see request to the widget team.)
+        (function () {
+            if (location.hash.length < 2) return;
+
+            var cancelled = false;
+            var settleTimer = null;
+
+            // If the user takes over scrolling, stop auto-correcting so a late
+            // re-scroll never yanks them away from where they are.
+            ['wheel', 'touchmove', 'keydown'].forEach(function (ev) {
+                window.addEventListener(ev, function () {
+                    cancelled = true;
+                    clearTimeout(settleTimer);
+                }, { passive: true });
+            });
+
+            // Instant jump to the headline (no smooth animation).
+            function jump() {
+                if (cancelled) return;
+                var target;
+                try { target = document.querySelector(location.hash); } catch (e) { return; }
+                if (target) {
+                    target.scrollIntoView();
+                }
             }
-        })
+
+            // Scroll only once the layout has been quiet for a moment -- i.e.
+            // after the LAST embed/image has finished rendering -- instead of on
+            // every single height change. Each height change pushes the jump
+            // back; when nothing has changed for 300ms we scroll a single time.
+            function scheduleSettledJump() {
+                if (cancelled) return;
+                clearTimeout(settleTimer);
+                settleTimer = setTimeout(jump, 300);
+            }
+
+            document.addEventListener("userAcceptedCmp", scheduleSettledJump);
+
+            // A page can stack several ComputerBild embeds above the target,
+            // which hydrate (and pull in images/fonts) at staggered times. The
+            // ResizeObserver lets us wait for the page height to settle and then
+            // scroll just once, rather than re-scrolling on every embed.
+            function startSettleWatch() {
+                scheduleSettledJump();
+                if (!('ResizeObserver' in window) || !document.body) return;
+                var ro = new ResizeObserver(scheduleSettledJump);
+                ro.observe(document.body);
+                // Hard stop after the page has had time to fully settle; do one
+                // final alignment in case it was still changing at the cutoff.
+                setTimeout(function () {
+                    ro.disconnect();
+                    clearTimeout(settleTimer);
+                    jump();
+                }, 10000);
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', startSettleWatch);
+            } else {
+                startSettleWatch();
+            }
+        })();
     </script>
 
 	<link rel="shortcut icon" sizes="16x16" href="https://a.bildstatic.de/img/favicon-16x16.6f7457d7.png">
@@ -529,7 +598,7 @@ ease-in-out .25s;
 	<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
 	<style>img:is([sizes="auto" i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }</style>
 	
-	<!-- This site is optimized with the Yoast SEO Premium plugin v25.8 (Yoast SEO v25.8) - https://yoast.com/wordpress/plugins/seo/ -->
+	<!-- This site is optimized with the Yoast SEO Premium plugin v27.6 (Yoast SEO v27.6) - https://yoast.com/product/yoast-seo-premium-wordpress/ -->
 	<title>Auto: Testberichte und Kaufberatung | BILD Kaufberater</title>
 	<meta name="description" content="Alles rund ums Auto im Test | Kaufberatungen zu Autozubehör, Reifen und mehr | Top-Produkte und Preistipps beim BILD Kaufberater entdecken!" />
 	<link rel="canonical" href="https://www.bild.de/kaufberater/auto/" />
@@ -542,7 +611,7 @@ ease-in-out .25s;
 	<meta property="og:site_name" content="BILD Kaufberater" />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:site" content="@bild" />
-	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","@id":"https://www.bild.de/kaufberater/auto/","url":"https://www.bild.de/kaufberater/auto/","name":"Auto: Testberichte und Kaufberatung | BILD Kaufberater","isPartOf":{"@id":"https://www.bild.de/kaufberater/#website"},"primaryImageOfPage":{"@id":"https://www.bild.de/kaufberater/auto/#primaryimage"},"image":{"@id":"https://www.bild.de/kaufberater/auto/#primaryimage"},"thumbnailUrl":"https://www.bild.de/kaufberater/data/uploads/2026/05/27202553/VW-T-Roc-1-5-eTSI-110-kW-2867-2400x1600-1.jpg","description":"Alles rund ums Auto im Test | Kaufberatungen zu Autozubehör, Reifen und mehr | Top-Produkte und Preistipps beim BILD Kaufberater entdecken!","breadcrumb":{"@id":"https://www.bild.de/kaufberater/auto/#breadcrumb"},"inLanguage":"de"},{"@type":"ImageObject","inLanguage":"de","@id":"https://www.bild.de/kaufberater/auto/#primaryimage","url":"https://www.bild.de/kaufberater/data/uploads/2026/05/27202553/VW-T-Roc-1-5-eTSI-110-kW-2867-2400x1600-1.jpg","contentUrl":"https://www.bild.de/kaufberater/data/uploads/2026/05/27202553/VW-T-Roc-1-5-eTSI-110-kW-2867-2400x1600-1.jpg","width":2400,"height":1600,"caption":"Elektro? Nein, danke. Viele Kompakt-SUV wie der VW T-Roc setzen noch auf klassische Verbrenner."},{"@type":"BreadcrumbList","@id":"https://www.bild.de/kaufberater/auto/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Kaufberater","item":"https://www.bild.de/kaufberater/"},{"@type":"ListItem","position":2,"name":"Auto"}]},{"@type":"WebSite","@id":"https://www.bild.de/kaufberater/#website","url":"https://www.bild.de/kaufberater/","name":"BILD Kaufberater","description":"","publisher":{"@id":"https://www.bild.de/kaufberater/#organization"},"potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://www.bild.de/kaufberater/?s={search_term_string}"},"query-input":{"@type":"PropertyValueSpecification","valueRequired":true,"valueName":"search_term_string"}}],"inLanguage":"de"},{"@type":"Organization","@id":"https://www.bild.de/kaufberater/#organization","name":"BILD Kaufberater","url":"https://www.bild.de/kaufberater/","logo":{"@type":"ImageObject","inLanguage":"de","@id":"https://www.bild.de/kaufberater/#/schema/logo/image/","url":"https://www.bild.de/kaufberater/data/uploads/2026/03/04144727/bild_logo.png","contentUrl":"https://www.bild.de/kaufberater/data/uploads/2026/03/04144727/bild_logo.png","width":696,"height":696,"caption":"BILD Kaufberater"},"image":{"@id":"https://www.bild.de/kaufberater/#/schema/logo/image/"},"sameAs":["https://www.facebook.com/bild","https://x.com/bild","https://www.instagram.com/bild/","https://www.youtube.com/@bild","https://www.axelspringer.com/de/marken/bild","https://de.wikipedia.org/wiki/Bild_(Zeitung)","https://de.wikipedia.org/wiki/Bild.de","https://de.wikipedia.org/wiki/Bild_(Fernsehsender)"]}]}</script>
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https:\/\/schema.org","@graph":[{"@type":"CollectionPage","@id":"https:\/\/www.bild.de\/kaufberater\/auto\/","url":"https:\/\/www.bild.de\/kaufberater\/auto\/","name":"Auto: Testberichte und Kaufberatung | BILD Kaufberater","isPartOf":{"@id":"https:\/\/www.bild.de\/kaufberater\/#website"},"primaryImageOfPage":{"@id":"https:\/\/www.bild.de\/kaufberater\/auto\/#primaryimage"},"image":{"@id":"https:\/\/www.bild.de\/kaufberater\/auto\/#primaryimage"},"thumbnailUrl":"https:\/\/www.bild.de\/kaufberater\/data\/uploads\/2026\/06\/13081409\/Nissan_Micra_Duesseldorf_Bruessel_047.jpg","description":"Alles rund ums Auto im Test | Kaufberatungen zu Autozubehör, Reifen und mehr | Top-Produkte und Preistipps beim BILD Kaufberater entdecken!","breadcrumb":{"@id":"https:\/\/www.bild.de\/kaufberater\/auto\/#breadcrumb"},"inLanguage":"de"},{"@type":"ImageObject","inLanguage":"de","@id":"https:\/\/www.bild.de\/kaufberater\/auto\/#primaryimage","url":"https:\/\/www.bild.de\/kaufberater\/data\/uploads\/2026\/06\/13081409\/Nissan_Micra_Duesseldorf_Bruessel_047.jpg","contentUrl":"https:\/\/www.bild.de\/kaufberater\/data\/uploads\/2026\/06\/13081409\/Nissan_Micra_Duesseldorf_Bruessel_047.jpg","width":1800,"height":1200,"caption":"Nissan Micra Electric"},{"@type":"BreadcrumbList","@id":"https:\/\/www.bild.de\/kaufberater\/auto\/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Kaufberater","item":"https:\/\/www.bild.de\/kaufberater\/"},{"@type":"ListItem","position":2,"name":"Auto"}]},{"@type":"WebSite","@id":"https:\/\/www.bild.de\/kaufberater\/#website","url":"https:\/\/www.bild.de\/kaufberater\/","name":"BILD Kaufberater","description":"","publisher":{"@id":"https:\/\/www.bild.de\/kaufberater\/#organization"},"potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https:\/\/www.bild.de\/kaufberater\/?s={search_term_string}"},"query-input":{"@type":"PropertyValueSpecification","valueRequired":true,"valueName":"search_term_string"}}],"inLanguage":"de"},{"@type":"Organization","@id":"https:\/\/www.bild.de\/kaufberater\/#organization","name":"BILD Kaufberater","url":"https:\/\/www.bild.de\/kaufberater\/","logo":{"@type":"ImageObject","inLanguage":"de","@id":"https:\/\/www.bild.de\/kaufberater\/#\/schema\/logo\/image\/","url":"https:\/\/www.bild.de\/kaufberater\/data\/uploads\/2026\/03\/04144727\/bild_logo.png","contentUrl":"https:\/\/www.bild.de\/kaufberater\/data\/uploads\/2026\/03\/04144727\/bild_logo.png","width":696,"height":696,"caption":"BILD Kaufberater"},"image":{"@id":"https:\/\/www.bild.de\/kaufberater\/#\/schema\/logo\/image\/"},"sameAs":["https:\/\/www.facebook.com\/bild","https:\/\/x.com\/bild","https:\/\/www.instagram.com\/bild\/","https:\/\/www.youtube.com\/@bild","https:\/\/www.axelspringer.com\/de\/marken\/bild","https:\/\/de.wikipedia.org\/wiki\/Bild_(Zeitung)","https:\/\/de.wikipedia.org\/wiki\/Bild.de","https:\/\/de.wikipedia.org\/wiki\/Bild_(Fernsehsender)"]}]}</script>
 	<!-- / Yoast SEO Premium plugin. -->
 
 
@@ -1098,7 +1167,7 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
 .u-top-deals{display:flex;flex-direction:column;margin-inline:-.75rem;padding:1.5rem .75rem}.u-top-deals .steam-react .md\:w-\[23\.6rem\],.u-top-deals .steam-react .w-\[23\.6rem\]{max-width:236px!important;width:236px!important}.u-top-deals .steam-react .pb-\[12rem\]{padding-bottom:120px!important}.u-top-deals .steam-react .md\:pb-\[15rem\]{padding-bottom:150px!important}.u-top-deals .steam-react .max-h-\[12rem\]{max-height:120px!important}.u-top-deals .steam-react .md\:max-h-\[15rem\]{max-height:150px!important}.u-top-deals .splide__arrow{background:transparent}.u-top-deals .splide__arrow i{color:var(--wp--preset--color--gray-medium);display:flex;font-size:1.625em}.u-top-deals .u-slider{border-block:1px solid #4e5155;margin-top:2rem;padding-block:.5rem}.u-top-deals .u-computerbild-embed__preview .u-top-deals__slider{display:none}@media screen and (min-width:75rem){.u-top-deals__slide-inner:hover .u-top-deals__image{transform:scale(1.25);transition:transform .15s}}.u-top-deals__image{box-sizing:border-box;display:flex;max-height:2.125rem;max-width:8.5rem;padding-left:1.25rem;padding-right:1.25rem;transition:transform .6s}@media screen and (min-width:75rem){.u-top-deals__image{max-height:3.125rem;max-width:10rem;padding:.5rem 1.25rem}}picture.u-top-deals__image.wrapper img{max-height:100%;max-width:100%;-o-object-fit:contain;object-fit:contain}.u-top-deals__all-partner-link{align-self:flex-end;color:var(--wp--preset--color--gray-medium);font-family:var(--wp--preset--font-family--barlowsemicondensed);font-size:.875rem;font-weight:400;padding-left:1.25rem;padding-right:1.25rem;padding-top:.25rem}@media screen and (min-width:75rem){.u-top-deals__all-partner-link{padding-left:.5rem;padding-right:.5rem}}.u-top-deals .splide{padding-left:5rem;padding-left:.625rem;padding-right:5rem;padding-right:.625rem}@media screen and (min-width:75rem){.u-top-deals .splide{padding-left:5rem;padding-right:5rem}}a.u-top-deals__slide-inner{cursor:pointer}.u-top-deals__title{color:#40484f;display:inline-flex;font-family:Gotham;font-size:1.375rem;font-weight:700;gap:.25rem;line-height:1;margin:0;text-transform:uppercase;width:100%}@media screen and (min-width:75rem){.u-top-deals__title{font-size:1.75rem}}.u-top-deals__title:after{border-bottom:.125rem solid var(--theme-primary);content:"";flex-grow:1;margin-bottom:.175rem}@media screen and (min-width:75rem){.u-top-deals__title:after{border-bottom-width:.25rem;margin-bottom:.1875rem}}@media screen and (min-width:48rem){.u-top-deals__title{margin-bottom:1.5rem}}@media screen and (max-width:47.9375rem){.u-top-deals__title{margin-bottom:1rem}}.u-top-deals__title>a{all:inherit;margin-bottom:0;width:auto}.u-top-deals__title>a:hover{color:var(--theme-special-link);cursor:pointer}h2.u-top-deals__title>a{box-shadow:none}
 
 </style>
-<link rel='stylesheet' id='unitb-advanced-heading-css' href='https://www.bild.de/kaufberater/wp-content/plugins/unitb-advanced-heading/build/index.css?ver=7058d9a88d66a85d32a5' type='text/css' media='all' />
+<link rel='stylesheet' id='unitb-advanced-heading-css' href='https://www.bild.de/kaufberater/wp-content/plugins/unitb-advanced-heading/build/index.css?ver=ec678f012cfdab2c6b0c' type='text/css' media='all' />
 <style id='global-styles-inline-css' type='text/css'>
 :root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgba(6,147,227,1) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgba(252,185,0,1) 0%,rgba(255,105,0,1) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgba(255,105,0,1) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgba(255, 255, 255, 1), 6px 6px rgba(0, 0, 0, 1);--wp--preset--shadow--crisp: 6px 6px 0px rgba(0, 0, 0, 1);}:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}:where(.wp-block-columns.is-layout-flex){gap: 2em;}:where(.wp-block-columns.is-layout-grid){gap: 2em;}:where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
 :where(.wp-block-post-template.is-layout-flex){gap: 1.25em;}:where(.wp-block-post-template.is-layout-grid){gap: 1.25em;}
@@ -2209,7 +2278,7 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                                                                                                                                     class="u-category-teaser u-theme-default  "
         
  
-                    href="https://www.bild.de/kaufberater/elektronische-parkscheiben-test/"
+                    href="https://www.bild.de/kaufberater/12v-mini-kompressor-test/"
                     data-post-id=""
         
 >
@@ -2231,18 +2300,18 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                     style="--height: 178; --width: 318"
         
 >
-                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/08/04113014/Elektronische-Parkscheiben-im-Test-3051-5712x3808-1-318x178.webp?cacheBreak=1754299817 1x, https://www.bild.de/kaufberater/data/uploads/2025/08/04113014/Elektronische-Parkscheiben-im-Test-3051-5712x3808-1-654x366.webp?cacheBreak=1754299817 2x" type="image/webp">
-                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2025/08/04113014/Elektronische-Parkscheiben-im-Test-3051-5712x3808-1-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2025/08/04113014/Elektronische-Parkscheiben-im-Test-3051-5712x3808-1-654x366.jpg 2x" type="image/jpeg">
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/06/24134552/10-Kompressoren-mit-Testredakteur-aufgestellt-vor-einem-Fahrzeug-2867-4242x2828-1-318x178.webp?cacheBreak=1782301555 1x, https://www.bild.de/kaufberater/data/uploads/2026/06/24134552/10-Kompressoren-mit-Testredakteur-aufgestellt-vor-einem-Fahrzeug-2867-4242x2828-1-654x366.webp?cacheBreak=1782301555 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/06/24134552/10-Kompressoren-mit-Testredakteur-aufgestellt-vor-einem-Fahrzeug-2867-4242x2828-1-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2026/06/24134552/10-Kompressoren-mit-Testredakteur-aufgestellt-vor-einem-Fahrzeug-2867-4242x2828-1-654x366.jpg 2x" type="image/jpeg">
                         <img decoding="async" 
                                                                                                                                     class=" "
         
- src="https://www.bild.de/kaufberater/data/uploads/2025/08/04113014/Elektronische-Parkscheiben-im-Test-3051-5712x3808-1-318x178.jpg" alt="" width="318" height="178" loading="lazy" />
+ src="https://www.bild.de/kaufberater/data/uploads/2026/06/24134552/10-Kompressoren-mit-Testredakteur-aufgestellt-vor-einem-Fahrzeug-2867-4242x2828-1-318x178.jpg" alt="10 Kompressoren, mit Testredakteur, aufgestellt vor einem Fahrzeug" width="318" height="178" loading="lazy" />
 
                     </picture>
 
 
     <div class="u-category-teaser__content-wrapper">
-                    <h2 class="u-category-teaser__headline">Dieses Gadget kann Autofahrern viel Geld sparen!</h2>
+                    <h2 class="u-category-teaser__headline">Diesen mobilen Kompressoren geht nie die Puste aus</h2>
             </div>
 </a>
 
@@ -2257,7 +2326,7 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                                                                                                                                     class="u-category-teaser u-theme-default  "
         
  
-                    href="https://www.bild.de/kaufberater/auto-parfum-test/"
+                    href="https://www.bild.de/kaufberater/fahrradtraeger-test/"
                     data-post-id=""
         
 >
@@ -2279,18 +2348,18 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                     style="--height: 178; --width: 318"
         
 >
-                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/05/19151242/IMG_7008-318x178.webp?cacheBreak=1779196365 1x, https://www.bild.de/kaufberater/data/uploads/2026/05/19151242/IMG_7008-654x366.webp?cacheBreak=1779196365 2x" type="image/webp">
-                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/05/19151242/IMG_7008-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2026/05/19151242/IMG_7008-654x366.jpg 2x" type="image/jpeg">
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/02/05122334/PT_Fahrradtraeger_SKR117_NEU-318x178.webp?cacheBreak=1777976617 1x, https://www.bild.de/kaufberater/data/uploads/2026/02/05122334/PT_Fahrradtraeger_SKR117_NEU-654x366.webp?cacheBreak=1777976618 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/02/05122334/PT_Fahrradtraeger_SKR117_NEU-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2026/02/05122334/PT_Fahrradtraeger_SKR117_NEU-654x366.jpg 2x" type="image/jpeg">
                         <img decoding="async" 
                                                                                                                                     class=" "
         
- src="https://www.bild.de/kaufberater/data/uploads/2026/05/19151242/IMG_7008-318x178.jpg" alt="" width="318" height="178" loading="lazy" />
+ src="https://www.bild.de/kaufberater/data/uploads/2026/02/05122334/PT_Fahrradtraeger_SKR117_NEU-318x178.jpg" alt="Produkttest Fahrradträger" width="318" height="178" loading="lazy" />
 
                     </picture>
 
 
     <div class="u-category-teaser__content-wrapper">
-                    <h2 class="u-category-teaser__headline">Das ist das beste Auto-Parfum im Test</h2>
+                    <h2 class="u-category-teaser__headline">Zweimal Note 1,0! Fahrradträger im Test</h2>
             </div>
 </a>
 
@@ -2335,7 +2404,7 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                                                                                                                                     class="u-category-teaser u-theme-default  "
         
  
-                    href="https://www.bild.de/kaufberater/elektrische-reinigungsbuersten-test/"
+                    href="https://www.bild.de/kaufberater/exzenter-poliermaschinen-test/"
                     data-post-id=""
         
 >
@@ -2357,66 +2426,18 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                     style="--height: 394; --width: 700"
         
 >
-                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/03/10135054/PT_Elektrischereinigungsbuerste_SKR053-700x394.webp?cacheBreak=1773147056 1x, https://www.bild.de/kaufberater/data/uploads/2026/03/10135054/PT_Elektrischereinigungsbuerste_SKR053-1400x788.webp?cacheBreak=1773147056 2x" type="image/webp">
-                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/03/10135054/PT_Elektrischereinigungsbuerste_SKR053-700x394.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2026/03/10135054/PT_Elektrischereinigungsbuerste_SKR053-1400x788.jpg 2x" type="image/jpeg">
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/06/09110636/Poliermaschinen-038-700x394.webp?cacheBreak=1780995998 1x, https://www.bild.de/kaufberater/data/uploads/2026/06/09110636/Poliermaschinen-038-1400x788.webp?cacheBreak=1780995998 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/06/09110636/Poliermaschinen-038-700x394.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2026/06/09110636/Poliermaschinen-038-1400x788.jpg 2x" type="image/jpeg">
                         <img decoding="async" 
                                                                                                                                     class=" "
         
- src="https://www.bild.de/kaufberater/data/uploads/2026/03/10135054/PT_Elektrischereinigungsbuerste_SKR053-700x394.jpg" alt="Produkttest elektrische Reinigungsbürsten" width="700" height="394" loading="lazy" />
+ src="https://www.bild.de/kaufberater/data/uploads/2026/06/09110636/Poliermaschinen-038-700x394.jpg" alt="" width="700" height="394" loading="lazy" />
 
                     </picture>
 
 
     <div class="u-category-teaser__content-wrapper">
-                    <h2 class="u-category-teaser__headline">Diese elektrischen Reinigungsbürsten lösen selbst hartnäckige Krusten</h2>
-            </div>
-</a>
-
-                            
-
-
-
-
-
-
-<a 
-                                                                                                                                    class="u-category-teaser u-theme-default  "
-        
- 
-                    href="https://www.bild.de/kaufberater/sommer-scheibenreiniger-test/"
-                    data-post-id=""
-        
->
-    
-
-
-
-
-                        
-    
-                        
-                
-                
-        <picture 
-                                                                                                                                    class="u-category-teaser__picture u-picture u-picture--has-aspect-ratio "
-        
- 
-                    data-component="Picture"
-                    style="--height: 178; --width: 318"
-        
->
-                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/05/07113817/TestSommerscheibenreiniger-051-318x178.webp?cacheBreak=1778146699 1x, https://www.bild.de/kaufberater/data/uploads/2026/05/07113817/TestSommerscheibenreiniger-051-654x366.webp?cacheBreak=1778146699 2x" type="image/webp">
-                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/05/07113817/TestSommerscheibenreiniger-051-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2026/05/07113817/TestSommerscheibenreiniger-051-654x366.jpg 2x" type="image/jpeg">
-                        <img decoding="async" 
-                                                                                                                                    class=" "
-        
- src="https://www.bild.de/kaufberater/data/uploads/2026/05/07113817/TestSommerscheibenreiniger-051-318x178.jpg" alt="" width="318" height="178" loading="lazy" />
-
-                    </picture>
-
-
-    <div class="u-category-teaser__content-wrapper">
-                    <h2 class="u-category-teaser__headline">Dieser Sommer-Scheibenreiniger sorgt wirklich für klare Sicht!</h2>
+                    <h2 class="u-category-teaser__headline">Ran ans Blech: Das ist die beste Poliermaschine!</h2>
             </div>
 </a>
 
@@ -2465,6 +2486,54 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
 
     <div class="u-category-teaser__content-wrapper">
                     <h2 class="u-category-teaser__headline">Das ist der beste Kratzerentferner fürs Auto!</h2>
+            </div>
+</a>
+
+                            
+
+
+
+
+
+
+<a 
+                                                                                                                                    class="u-category-teaser u-theme-default  "
+        
+ 
+                    href="https://www.bild.de/kaufberater/elektrische-reinigungsbuersten-test/"
+                    data-post-id=""
+        
+>
+    
+
+
+
+
+                        
+    
+                        
+                
+                
+        <picture 
+                                                                                                                                    class="u-category-teaser__picture u-picture u-picture--has-aspect-ratio "
+        
+ 
+                    data-component="Picture"
+                    style="--height: 178; --width: 318"
+        
+>
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/03/10135054/PT_Elektrischereinigungsbuerste_SKR053-318x178.webp?cacheBreak=1773147056 1x, https://www.bild.de/kaufberater/data/uploads/2026/03/10135054/PT_Elektrischereinigungsbuerste_SKR053-654x366.webp?cacheBreak=1773147056 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/03/10135054/PT_Elektrischereinigungsbuerste_SKR053-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2026/03/10135054/PT_Elektrischereinigungsbuerste_SKR053-654x366.jpg 2x" type="image/jpeg">
+                        <img decoding="async" 
+                                                                                                                                    class=" "
+        
+ src="https://www.bild.de/kaufberater/data/uploads/2026/03/10135054/PT_Elektrischereinigungsbuerste_SKR053-318x178.jpg" alt="Produkttest elektrische Reinigungsbürsten" width="318" height="178" loading="lazy" />
+
+                    </picture>
+
+
+    <div class="u-category-teaser__content-wrapper">
+                    <h2 class="u-category-teaser__headline">Diese elektrischen Reinigungsbürsten lösen selbst hartnäckige Krusten</h2>
             </div>
 </a>
 
@@ -2683,7 +2752,7 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                                                                                                                                     class="u-category-teaser u-theme-default  "
         
  
-                    href="https://www.bild.de/kaufberater/kompakt-suv-verbrenner-bis-50-000-euro-test/"
+                    href="https://www.bild.de/kaufberater/die-besten-elektroautos-bis-35000-euro/"
                     data-post-id=""
         
 >
@@ -2705,18 +2774,18 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                     style="--height: 394; --width: 700"
         
 >
-                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/05/27202553/VW-T-Roc-1-5-eTSI-110-kW-2867-2400x1600-1-700x394.webp?cacheBreak=1779906355 1x, https://www.bild.de/kaufberater/data/uploads/2026/05/27202553/VW-T-Roc-1-5-eTSI-110-kW-2867-2400x1600-1-1400x788.webp?cacheBreak=1779906355 2x" type="image/webp">
-                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/05/27202553/VW-T-Roc-1-5-eTSI-110-kW-2867-2400x1600-1-700x394.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2026/05/27202553/VW-T-Roc-1-5-eTSI-110-kW-2867-2400x1600-1-1400x788.jpg 2x" type="image/jpeg">
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/06/13081409/Nissan_Micra_Duesseldorf_Bruessel_047-700x394.webp?cacheBreak=1781331250 1x, https://www.bild.de/kaufberater/data/uploads/2026/06/13081409/Nissan_Micra_Duesseldorf_Bruessel_047-1400x788.webp?cacheBreak=1781331251 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/06/13081409/Nissan_Micra_Duesseldorf_Bruessel_047-700x394.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2026/06/13081409/Nissan_Micra_Duesseldorf_Bruessel_047-1400x788.jpg 2x" type="image/jpeg">
                         <img decoding="async" 
                                                                                                                                     class=" "
         
- src="https://www.bild.de/kaufberater/data/uploads/2026/05/27202553/VW-T-Roc-1-5-eTSI-110-kW-2867-2400x1600-1-700x394.jpg" alt="" width="700" height="394" loading="lazy" />
+ src="https://www.bild.de/kaufberater/data/uploads/2026/06/13081409/Nissan_Micra_Duesseldorf_Bruessel_047-700x394.jpg" alt="Nissan Micra Electric 2026" width="700" height="394" loading="lazy" />
 
                     </picture>
 
 
     <div class="u-category-teaser__content-wrapper">
-                    <h2 class="u-category-teaser__headline">Kompakt-SUV mit Verbrenner bis 50.000 Euro im Test</h2>
+                    <h2 class="u-category-teaser__headline">Das sind die besten Elektroautos bis 35.000 Euro</h2>
             </div>
 </a>
 
@@ -2731,7 +2800,7 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                                                                                                                                     class="u-category-teaser u-theme-default  "
         
  
-                    href="https://www.bild.de/kaufberater/anfaengerautos-unter-30000-euro-test/"
+                    href="https://www.bild.de/kaufberater/mittelklasse-limousinen-test/"
                     data-post-id=""
         
 >
@@ -2753,18 +2822,18 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                     style="--height: 178; --width: 318"
         
 >
-                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/05/18182912/Fiat_Grande_Panda_CBO20-318x178.webp?cacheBreak=1779121754 1x, https://www.bild.de/kaufberater/data/uploads/2026/05/18182912/Fiat_Grande_Panda_CBO20-654x366.webp?cacheBreak=1779121754 2x" type="image/webp">
-                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/05/18182912/Fiat_Grande_Panda_CBO20-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2026/05/18182912/Fiat_Grande_Panda_CBO20-654x366.jpg 2x" type="image/jpeg">
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/05/29061903/Tesla-Model-3-Maximale-Reichweite-RWD-3051-2400x1600-1-318x178.webp?cacheBreak=1780028349 1x, https://www.bild.de/kaufberater/data/uploads/2026/05/29061903/Tesla-Model-3-Maximale-Reichweite-RWD-3051-2400x1600-1-654x366.webp?cacheBreak=1780028349 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/05/29061903/Tesla-Model-3-Maximale-Reichweite-RWD-3051-2400x1600-1-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2026/05/29061903/Tesla-Model-3-Maximale-Reichweite-RWD-3051-2400x1600-1-654x366.jpg 2x" type="image/jpeg">
                         <img decoding="async" 
                                                                                                                                     class=" "
         
- src="https://www.bild.de/kaufberater/data/uploads/2026/05/18182912/Fiat_Grande_Panda_CBO20-318x178.jpg" alt="" width="318" height="178" loading="lazy" />
+ src="https://www.bild.de/kaufberater/data/uploads/2026/05/29061903/Tesla-Model-3-Maximale-Reichweite-RWD-3051-2400x1600-1-318x178.jpg" alt="" width="318" height="178" loading="lazy" />
 
                     </picture>
 
 
     <div class="u-category-teaser__content-wrapper">
-                    <h2 class="u-category-teaser__headline">Die besten Anfängerautos für unter 30.000 Euro</h2>
+                    <h2 class="u-category-teaser__headline">Die besten Mittelklasse-Limousinen im Test</h2>
             </div>
 </a>
 
@@ -2779,7 +2848,7 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                                                                                                                                     class="u-category-teaser u-theme-default  "
         
  
-                    href="https://www.bild.de/kaufberater/firmenwagen-test/"
+                    href="https://www.bild.de/kaufberater/autos-fuer-die-langstrecke-test/"
                     data-post-id=""
         
 >
@@ -2801,18 +2870,18 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
                     style="--height: 178; --width: 318"
         
 >
-                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/05/04135027/Mercedes-CLA-250-1840-2048x1365-2ba1f22722baab7b-318x178.webp?cacheBreak=1777895429 1x, https://www.bild.de/kaufberater/data/uploads/2026/05/04135027/Mercedes-CLA-250-1840-2048x1365-2ba1f22722baab7b-654x366.webp?cacheBreak=1777895429 2x" type="image/webp">
-                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/05/04135027/Mercedes-CLA-250-1840-2048x1365-2ba1f22722baab7b-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2026/05/04135027/Mercedes-CLA-250-1840-2048x1365-2ba1f22722baab7b-654x366.jpg 2x" type="image/jpeg">
+                                                                            <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/06/07114247/Skoda-Superb-2-0-TDI-4x4-2867-2400x1600-1-318x178.webp?cacheBreak=1780825374 1x, https://www.bild.de/kaufberater/data/uploads/2026/06/07114247/Skoda-Superb-2-0-TDI-4x4-2867-2400x1600-1-654x366.webp?cacheBreak=1780825374 2x" type="image/webp">
+                                        <source srcset="https://www.bild.de/kaufberater/data/uploads/2026/06/07114247/Skoda-Superb-2-0-TDI-4x4-2867-2400x1600-1-318x178.jpg 1x, https://www.bild.de/kaufberater/data/uploads/2026/06/07114247/Skoda-Superb-2-0-TDI-4x4-2867-2400x1600-1-654x366.jpg 2x" type="image/jpeg">
                         <img decoding="async" 
                                                                                                                                     class=" "
         
- src="https://www.bild.de/kaufberater/data/uploads/2026/05/04135027/Mercedes-CLA-250-1840-2048x1365-2ba1f22722baab7b-318x178.jpg" alt="Mercedes CLA" width="318" height="178" loading="lazy" />
+ src="https://www.bild.de/kaufberater/data/uploads/2026/06/07114247/Skoda-Superb-2-0-TDI-4x4-2867-2400x1600-1-318x178.jpg" alt="" width="318" height="178" loading="lazy" />
 
                     </picture>
 
 
     <div class="u-category-teaser__content-wrapper">
-                    <h2 class="u-category-teaser__headline">Das sind die besten Firmenwagen im Test</h2>
+                    <h2 class="u-category-teaser__headline">Die besten Autos mit über 800 Kilometern Reichweite im Test</h2>
             </div>
 </a>
 
@@ -3068,6 +3137,6 @@ window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/16
 </style>
 
 
-		<script src="https://www.bild.de/kaufberater/wp-content/themes/unitb-child/static/js/kaufberater-modules.min.js?v=1776849293600"></script>
+		<script src="https://www.bild.de/kaufberater/wp-content/themes/unitb-child/static/js/kaufberater-modules.min.js?v=1782207017009"></script>
 	</body>
 </html>
